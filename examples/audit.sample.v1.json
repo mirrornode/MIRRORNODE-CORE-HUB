@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "timestamp": "2026-01-26T20:00:00Z",
+    "run_id": "01JGQM7K8T9XYZ1234567890AB",
+    "hud_compat": "1.0.0",
+    "target": {
+      "repositories": ["mirrornode/osiris"],
+      "scope": ["src/**/*.js", "package.json"],
+      "constraints": {
+        "runtime_access": false,
+        "third_party_deps": "excluded",
+        "test_files": "excluded",
+        "note": "Static code analysis only - no runtime monitoring or penetration testing"
+      }
+    },
+    "engine": {
+      "version": "0.1.0",
+      "commit": "a1b2c3d4",
+      "analyzers": [
+        "secret-detector@1.0.0",
+        "governance-checker@1.0.0"
+      ]
+    }
+  },
+  "claims": [
+    {
+      "id": "CLAIM-01JGQM8K9T1XYZ2345678901BC",
+      "type": "SECURITY",
+      "statement": "No hardcoded secrets detected in source files",
+      "source": "secret-detector@1.0.0",
+      "confidence": 0.95,
+      "evidence_ids": ["EVIDENCE-01JGQM9K0T2XYZ3456789012CD"],
+      "finding_id": "FINDING-01JGQMAK1T3XYZ4567890123DE",
+      "risk_ids": []
+    },
+    {
+      "id": "CLAIM-01JGQMBK2T4XYZ5678901234EF",
+      "type": "GOVERNANCE",
+      "statement": "Repository includes LICENSE file per project policy",
+      "source": "governance-checker@1.0.0",
+      "confidence": 1.0,
+      "evidence_ids": ["EVIDENCE-01JGQMCK3T5XYZ6789012345FG"],
+      "finding_id": "FINDING-01JGQMDK4T6XYZ7890123456GH",
+      "risk_ids": ["RISK-01JGQMEK5T7XYZ8901234567HI"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVIDENCE-01JGQM9K0T2XYZ3456789012CD",
+      "type": "ABSENCE",
+      "description": "Searched all .js files for common secret patterns (API keys, tokens, passwords) - none found",
+      "location": null,
+      "search_criteria": [
+        "regex: (api[_-]?key|token|password)\\s*[=:]\\s*['\"]{^'\"]+['\"]",
+        "file_patterns: src/**/*.js",
+        "exclude_patterns: test/**"
+      ],
+      "claim_ids": ["CLAIM-01JGQM8K9T1XYZ2345678901BC"],
+      "finding_ids": ["FINDING-01JGQMAK1T3XYZ4567890123DE"]
+    },
+    {
+      "id": "EVIDENCE-01JGQMCK3T5XYZ6789012345FG",
+      "type": "METADATA",
+      "description": "LICENSE file exists at repository root",
+      "location": {
+        "repository": "mirrornode/osiris",
+        "path": "LICENSE",
+        "commit": "a1b2c3d4",
+        "url": "https://github.com/mirrornode/osiris/blob/main/LICENSE"
+      },
+      "search_criteria": null,
+      "claim_ids": ["CLAIM-01JGQMBK2T4XYZ5678901234EF"],
+      "finding_ids": ["FINDING-01JGQMDK4T6XYZ7890123456GH"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "FINDING-01JGQMAK1T3XYZ4567890123DE",
+      "claim_id": "CLAIM-01JGQM8K9T1XYZ2345678901BC",
+      "status": "SUPPORTED",
+      "reasoning": "Exhaustive regex search across all in-scope JavaScript files returned zero matches for common secret patterns (API keys, tokens, passwords). High confidence due to deterministic pattern matching.",
+      "evidence_ids": ["EVIDENCE-01JGQM9K0T2XYZ3456789012CD"],
+      "confidence": 0.95,
+      "risk_ids": []
+    },
+    {
+      "id": "FINDING-01JGQMDK4T6XYZ7890123456GH",
+      "claim_id": "CLAIM-01JGQMBK2T4XYZ5678901234EF",
+      "status": "UNSUPPORTED",
+      "reasoning": "LICENSE file exists but does not specify license type (empty or template-only). Project policy requires explicit license designation for legal clarity.",
+      "evidence_ids": ["EVIDENCE-01JGQMCK3T5XYZ6789012345FG"],
+      "confidence": 0.8,
+      "risk_ids": ["RISK-01JGQMEK5T7XYZ8901234567HI"]
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-01JGQMEK5T7XYZ8901234567HI",
+      "severity": "MEDIUM",
+      "category": "Legal / Licensing",
+      "description": "Repository lacks explicit license designation, creating legal ambiguity for downstream users and potential contributors. Without a clear license, the project's usage rights are undefined.",
+      "cause_chain": {
+        "claim_id": "CLAIM-01JGQMBK2T4XYZ5678901234EF",
+        "finding_id": "FINDING-01JGQMDK4T6XYZ7890123456GH"
+      },
+      "mitigation": [
+        "Add explicit license type to LICENSE file (e.g., MIT, Apache 2.0, GPL-3.0)",
+        "Include SPDX identifier in package.json: 'license': 'MIT'",
+        "Reference: https://choosealicense.com for guidance on license selection"
+      ],
+      "finding_ids": ["FINDING-01JGQMDK4T6XYZ7890123456GH"]
+    }
+  ]
+}
