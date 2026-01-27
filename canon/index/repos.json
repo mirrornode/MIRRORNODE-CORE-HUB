@@ -1,0 +1,31 @@
+{
+  "schema": "canon.index.v1",
+  "generated_at": "2026-01-27T23:02:28Z",
+  "repo_count": 24,
+  "repos": [
+    "mirrornode",
+    "MIRRORNODE-INFRA",
+    "mirrornode-index",
+    "MIRRORNODE-CORE-HUB",
+    "Mirror_surface",
+    "osiris",
+    "MirrorNode-HUD-Engine-Interface-Governance-Specification",
+    "osiris-ui",
+    "mirrornode-py",
+    "osiris-audit",
+    "theia-core",
+    "mirrornode-ring",
+    "-mirrornode-core",
+    "rotan-resonance",
+    "codespaces-react",
+    "Trismcrownflowchart",
+    "INPphase",
+    "vite-react",
+    "Fusion-Energy-Display-Web-Component---Grok_files",
+    "flags-sdk-hypertune-nextjs",
+    "examples",
+    "Rotan-demo",
+    "Rotan-neural-modality-kids-game",
+    "biometric-integrated-meditative-RPG"
+  ]
+}
