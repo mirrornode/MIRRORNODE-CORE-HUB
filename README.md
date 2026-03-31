@@ -4,165 +4,118 @@
 
 ---
 
-## What's Here
+## Architecture Overview
 
-This repository contains:
+MIRRORNODE operates as a manifest-driven agent lattice. As of commit `2e52538`, all agent definitions are centralized in `lib/agents.ts` — the single source of truth for the entire AI network.
 
-### 📋 **Schemas** (`/schemas/`)
-Canonical data schemas for MIRRORNODE systems:
-- `audit.v1.0.0.py` - Osiris audit artifact schema (Pydantic)
+```
+MIRRORNODE-CORE-HUB/          ← Canonical docs, schemas, coordination
+platform/                      ← Runtime: app/, lib/, fusion/, api/
+├── lib/
+│   └── agents.ts              ← Agent manifest (single source of truth)
+├── app/
+│   ├── agents/
+│   │   └── page.tsx           ← /agents Situation Room UI
+│   └── api/
+│       └── agents/
+│           ├── route.ts        ← GET /api/agents (full manifest)
+│           └── [id]/
+│               └── route.ts   ← GET /api/agents/[id] (single agent)
+└── fusion/
+    └── index.ts               ← Symbolic lattice engine (manifest integration pending)
+```
 
-### 📦 **Examples** (`/examples/`)
-Reference implementations and golden samples:
-- `audit.sample.v1.json` - Sample Osiris audit artifact
+---
 
-### 🎛️ **Lucian** (Coming Soon: `/lucian/`)
-Command orchestration layer:
-- Boot protocols
-- Command definitions (@Lucian prime, @mirror sweep, etc.)
-- Intelligence aggregation
-- Drift detection
+## Agent Manifest (`lib/agents.ts`)
+
+The `Agent` type and manifest array govern all 6 primary agents in the lattice.
+
+### Agent Type Definition
+
+```typescript
+export type Agent = {
+  id: string
+  name: string
+  domain: string
+  status: 'active' | 'pending' | 'offline'
+  description: string
+  symbolic_depth?: number
+  last_heartbeat_ts?: string
+}
+```
+
+### `getAgent(id)` Helper
+
+Use `getAgent(id)` to retrieve a single agent by ID from the manifest:
+
+```typescript
+import { getAgent } from '@/lib/agents'
+
+const agent = getAgent('lucian')
+// Returns Agent | undefined
+```
+
+This helper is the standard access pattern for all internal routes and components. Do not import the raw manifest array directly in UI components — always go through `getAgent()` or the `/api/agents` endpoint.
+
+---
+
+## API Routes
+
+| Route | Method | Description |
+|---|---|---|
+| `/api/agents` | GET | Returns full agent manifest as JSON |
+| `/api/agents/[id]` | GET | Returns single agent by ID; 404 if not found |
+
+### Example Response — `/api/agents`
+
+```json
+[
+  {
+    "id": "lucian",
+    "name": "Lucian",
+    "domain": "Command Orchestration",
+    "status": "active"
+  }
+]
+```
+
+---
+
+## UI — Situation Room (`/agents`)
+
+The `/agents` grid index provides a live view of all agents in the manifest, including:
+- Real-time status indicators
+- Domain labels
+- Lattice Depth (telemetry integration in progress)
+
+**Live deployment:** [Lattice Index](https://www.mirrornode.io/agents) | [JSON Manifest](https://www.mirrornode.io/api/agents)
 
 ---
 
 ## Osiris: Constrained Static Audit Engine
 
 ### What Osiris Is
-✅ A **static code analyzer** that crawls repositories  
-✅ A **governance checker** for project-declared policies  
-✅ An **audit artifact generator** for internal review  
-✅ A **read-only HUD** for exploring findings  
+✅ A **static code analyzer** that crawls repositories
+✅ A **governance checker** for project-declared policies
+✅ An **audit artifact generator** for internal review
+✅ A **read-only HUD** for exploring findings
 
 ### What Osiris Is NOT
-❌ **Not a compliance certification tool** (no SOC2, ISO, GDPR validation)  
-❌ **Not a penetration testing platform** (no runtime exploit validation)  
-❌ **Not a CVE database** (no live vulnerability matching)  
-❌ **Not a security monitoring service** (no runtime instrumentation)  
-
-### When to Use Osiris
-- Pre-deployment architecture reviews
-- Internal governance audits
-- Third-party code vetting (static analysis only)
-- Baseline security hygiene checks
-
-### When NOT to Use Osiris
-- Regulatory compliance certification
-- Production runtime security monitoring
-- Penetration testing or red team exercises
-- Dependency vulnerability scanning (use Snyk, Dependabot, etc.)
+❌ Not a compliance certification tool
+❌ Not a penetration testing platform
+❌ Not a CVE database
+❌ Not a security monitoring service
 
 ---
 
-## Glossary
+## Schemas (`/schemas/`)
 
-### Security (in Osiris context)
-**Static security pattern detection** - Osiris scans code for common vulnerability patterns (hardcoded secrets, insecure configurations, etc.) using deterministic analyzers. It does **not** perform:
-- Penetration testing
-- Runtime exploit validation
-- CVE matching against live systems
+- `audit.v1.0.0.py` — Osiris audit artifact schema (Pydantic)
 
-**UI Display:** "Security (Static Analysis Only)"
+## Examples (`/examples/`)
 
-### Governance (in Osiris context)
-Governance claims validate that a repository's structure and metadata align with **its own declared policies**, such as:
-- Presence of required files (LICENSE, README, CONTRIBUTING)
-- Adherence to naming conventions specified in project docs
-- Consistency with package.json declarations
-
-**Governance checks do NOT:**
-- Certify compliance with external regulations (GDPR, HIPAA, etc.)
-- Validate against industry standards (PCI-DSS, NIST, etc.)
-- Replace legal or compliance audits
-
-Think of it as "internal consistency checking" rather than "external standard validation."
-
-### Constraints
-Every Osiris audit artifact explicitly documents what was **NOT** analyzed:
-- `runtime_access: false` - No runtime monitoring or behavior analysis
-- `third_party_deps: excluded` - External dependencies not scanned
-- `test_files: excluded` - Test code not included in analysis
-
-This ensures transparency and legal defensibility.
-
----
-
-## Architecture: Engine-HUD Contract
-
-Osiris follows an **immutable artifact architecture**:
-
-```
-┌─────────────┐
-│   ENGINE    │  Produces canonical audit.json
-│  (Producer) │  • Runs analyzers
-│             │  • Validates referential integrity
-│             │  • Emits immutable artifact
-└──────┬──────┘
-       │
-       │ audit.json (immutable blob)
-       │
-       ▼
-┌─────────────┐
-│     HUD     │  Consumes audit.json (read-only)
-│  (Consumer) │  • Validates schema
-│             │  • Indexes metadata
-│             │  • Renders views
-│             │  • Never mutates artifact
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│  ASSISTANT  │  Query interface (constrained)
-│   (Index)   │  • Explains entities
-│             │  • Traces relationships
-│             │  • Mandatory citations
-│             │  • Cannot create new entities
-└─────────────┘
-```
-
-**Key Invariants:**
-1. **Single source of truth** - Engine produces exactly one `audit.json` per run
-2. **Immutability** - Artifacts cannot be modified after emission
-3. **Referential integrity** - All entity IDs resolve within the artifact
-4. **Zero mutation surface** - HUD and Assistant are pure consumers
-
----
-
-## Usage
-
-### Validate an Audit Artifact
-
-```python
-from schemas.audit_v1_0_0 import AuditArtifact
-import json
-
-# Load artifact
-with open('examples/audit.sample.v1.json') as f:
-    data = json.load(f)
-
-# Validate schema
-artifact = AuditArtifact(**data)
-
-# Validate references
-artifact.validate_references()
-
-# Compute integrity hash
-hash_value = artifact.compute_hash()
-print(f"Artifact hash: {hash_value}")
-```
-
-### Generate IDs for New Entities
-
-```python
-from schemas.audit_v1_0_0 import (
-    generate_claim_id,
-    generate_evidence_id,
-    generate_finding_id,
-    generate_risk_id
-)
-
-claim_id = generate_claim_id()  # CLAIM-01JGQM8K9T1XYZ...
-evidence_id = generate_evidence_id()  # EVIDENCE-01JGQM9K0T2XYZ...
-```
+- `audit.sample.v1.json` — Sample Osiris audit artifact
 
 ---
 
@@ -171,51 +124,27 @@ evidence_id = generate_evidence_id()  # EVIDENCE-01JGQM9K0T2XYZ...
 ```
 MIRRORNODE-CORE-HUB/
 ├── schemas/
-│   └── audit.v1.0.0.py          # Osiris artifact schema
+│   └── audit.v1.0.0.py
 ├── examples/
-│   └── audit.sample.v1.json     # Golden sample artifact
-├── lucian/                       # [Coming Soon] Command orchestration
-│   ├── boot.md
-│   ├── commands/
-│   ├── intelligence/
-│   ├── protocols/
-│   └── audit/
+│   └── audit.sample.v1.json
+├── canon/
+├── protocols/
+├── state/
 └── README.md
 ```
 
 ---
 
-## Contributing
-
-This is the canonical source of truth for MIRRORNODE schemas and protocols.
-
-### Schema Changes
-- All schema changes require ADR (Architectural Decision Record)
-- Breaking changes require major version bump (semver)
-- New fields should be optional when possible
-
-### Golden Samples
-- Must pass schema validation
-- Must pass reference integrity checks
-- Should demonstrate all entity types
-- Should include edge cases (ABSENCE evidence, UNSUPPORTED findings, etc.)
-
----
-
-## License
-
-[To be determined by Commander Siseon]
-
----
-
 ## Status
 
-**Last Updated:** 2026-01-26  
-**Osiris Schema:** v1.0.0 (Production Ready)  
-**Lucian Layer:** In Development  
+**Last Updated:** 2026-03-31
+**Deployment:** RISING_STAR v1.1.2
+**Agents Active:** 6
+**Manifest:** `lib/agents.ts` (Active)
+**Osiris Schema:** v1.0.0 (Production Ready)
 
 ---
 
-**MIRRORNODE** - Distributed Intelligence Lattice  
-**Commander:** Siseon Sogol  
-**Orchestrator:** Lucian (URSO)
+**MIRRORNODE** — Distributed Intelligence Lattice
+**Commander:** Sean Malm
+**Orchestrator:** Merlin (Dispatcher/Map Keeper)
