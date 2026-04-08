@@ -1,0 +1,17 @@
+name: Platform Deploy Audit
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify-lucian:
+    name: Notify Lucian of Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Lucian heartbeat (if reachable)
+        run: |
+          curl -s --max-time 5 http://localhost:7700/heartbeat || echo "[LUCIAN] Not reachable from CI — skipping live ping"
+          echo "Deploy event recorded at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        continue-on-error: true

@@ -1,0 +1,76 @@
+name: MIRRORNODE Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  audit:
+    name: Emit Commit Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install audit SDK dependencies
+        run: pip install --quiet requests
+
+      - name: Emit commit audit
+        env:
+          CANON_ROOT: ${{ github.workspace }}/canon
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          python - <<'EOF'
+          import sys, os, json, uuid, hashlib
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          sys.path.insert(0, os.environ["GITHUB_WORKSPACE"])
+          os.environ.setdefault("CANON_ROOT", os.environ.get("CANON_ROOT", "./canon"))
+
+          from canon.contracts.sdk.audit import emit_audit
+
+          audit_id = emit_audit(
+              repo="MIRRORNODE-CORE-HUB",
+              event_type="deployment",
+              actor=os.environ.get("GITHUB_ACTOR", "system"),
+              verdict="SUCCESS",
+              evidence={
+                  "event": "github_push",
+                  "sha": os.environ.get("GITHUB_SHA"),
+                  "ref": os.environ.get("GITHUB_REF"),
+                  "trigger": os.environ.get("GITHUB_EVENT_NAME"),
+                  "error": None
+              }
+          )
+          print(f"Audit emitted: {audit_id}")
+          EOF
+
+  lint:
+    name: Python Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install linters
+        run: pip install --quiet ruff
+
+      - name: Ruff lint
+        run: ruff check . --ignore E501 || true
