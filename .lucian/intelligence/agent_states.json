@@ -1,0 +1,13 @@
+{
+  "_note": "Updated by .lucian/commands/sync.sh — run: bash .lucian/commands/sync.sh <agent_name>",
+  "last_updated": "2026-04-25T00:00:00Z",
+  "agents": {
+    "Lucian": {"last_sync": "2026-04-25T00:00:00Z", "status": "active", "role": "orchestrator"},
+    "Osiris": {"last_sync": null, "status": "pending", "role": "audit"},
+    "Hermes": {"last_sync": null, "status": "pending", "role": "messaging"},
+    "Oracle": {"last_sync": null, "status": "pending", "role": "reasoning"},
+    "Claude": {"last_sync": null, "status": "external", "role": "code_architecture"},
+    "Grok": {"last_sync": null, "status": "external", "role": "analysis_reasoning"},
+    "Perplexity": {"last_sync": "2026-04-25T00:00:00Z", "status": "external", "role": "research_documentation"}
+  }
+}

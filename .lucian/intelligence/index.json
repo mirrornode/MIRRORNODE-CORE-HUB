@@ -1,0 +1,20 @@
+{
+  "_note": "Stub — replace by running: python3 ../mirrornode-index/canon/scripts/build_index.py && cp ../mirrornode-index/canon/repos.json .lucian/intelligence/index.json",
+  "generated_at": "2026-04-25T00:00:00Z",
+  "repos": [
+    {"name": "mirrornode", "tier": "CORE", "status": "active"},
+    {"name": "mirrornode-py", "tier": "CORE", "status": "active"},
+    {"name": "mirrornode-index", "tier": "CORE", "status": "active"},
+    {"name": "theia-core", "tier": "CORE", "status": "active"},
+    {"name": "MIRRORNODE-CORE-HUB", "tier": "CORE", "status": "active"},
+    {"name": "-mirrornode-core", "tier": "CORE", "status": "active"},
+    {"name": "osiris", "tier": "REVENUE", "status": "active"},
+    {"name": "osiris-audit", "tier": "REVENUE", "status": "active"},
+    {"name": "MirrorNode-HUD-Engine-Interface-Governance-Specification", "tier": "REVENUE", "status": "active"},
+    {"name": "Mirror_surface", "tier": "SURFACE", "status": "active"},
+    {"name": "INPphase", "tier": "EXPERIMENT", "status": "active"},
+    {"name": "examples", "tier": "EXPERIMENT", "status": "active"},
+    {"name": "Rotan-demo", "tier": "EXPERIMENT", "status": "active"},
+    {"name": "biometric-integrated-meditative-RPG", "tier": "EXPERIMENT", "status": "active"}
+  ]
+}

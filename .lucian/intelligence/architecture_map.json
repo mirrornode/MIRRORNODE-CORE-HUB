@@ -1,0 +1,12 @@
+{
+  "_note": "Populated by .lucian/commands/map.sh — run: bash .lucian/commands/map.sh",
+  "generated_at": null,
+  "tiers": {
+    "REVENUE": ["osiris", "osiris-audit", "MirrorNode-HUD-Engine-Interface-Governance-Specification"],
+    "CORE": ["mirrornode", "mirrornode-py", "mirrornode-index", "theia-core", "MIRRORNODE-CORE-HUB", "-mirrornode-core"],
+    "SURFACE": ["Mirror_surface"],
+    "EXPERIMENT": ["INPphase", "examples", "Rotan-demo", "biometric-integrated-meditative-RPG"]
+  },
+  "agents": ["Lucian", "Osiris", "Hermes", "Oracle"],
+  "signature": {"prime": 137, "lattice_constant": "phi", "resonance_key": "1:1:2:3:5:8"}
+}
