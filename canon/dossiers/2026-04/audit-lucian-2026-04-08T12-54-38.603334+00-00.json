@@ -1,0 +1,1 @@
+{"timestamp": "2026-04-08T12:54:38.603334+00:00", "repo": "lucian", "repo_hash": "b548d21abd9d2aa67ad1601a9e89ec42848698ea", "charter_hash": "UNCHARTERED", "event_type": "agent_invocation", "actor": "system", "verdict": "SUCCESS", "evidence": {"event": "heartbeat", "error": null}, "audit_id": "7d5357b8-e847-4a4b-af16-e09b08d40232"}

@@ -1,0 +1,13 @@
+name: Lucian Release
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'lucian/**', 'canon/**' ]
+
+jobs:
+  release:
+    uses: ./.github/workflows/reusable-runtime-release.yml
+    with:
+      runtime: lucian
+      health_port: "8001"
+      image_tag: ${{ github.sha }}

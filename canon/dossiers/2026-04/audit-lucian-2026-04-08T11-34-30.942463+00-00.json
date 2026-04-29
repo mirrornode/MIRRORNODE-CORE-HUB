@@ -1,0 +1,1 @@
+{"timestamp": "2026-04-08T11:34:30.942463+00:00", "repo": "lucian", "repo_hash": "e92294c06eaa1b476931a82d094686c7486dfb09", "charter_hash": "UNCHARTERED", "event_type": "execution", "actor": "system", "verdict": "SUCCESS", "evidence": {"event": "boot", "error": null}, "audit_id": "2343da2e-d378-48ed-85f8-361329ae1ff6"}

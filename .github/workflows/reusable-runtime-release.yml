@@ -1,0 +1,117 @@
+# .github/workflows/reusable-runtime-release.yml
+name: MIRRORNODE Reusable Runtime Release
+
+on:
+  workflow_call:
+    inputs:
+      runtime:
+        description: 'Runtime name (lucian or osiris)'
+        required: true
+        type: string
+      health_port:
+        description: 'Health check port'
+        required: true
+        type: string
+      health_path:
+        description: 'Health check path'
+        required: false
+        type: string
+        default: '/health'
+      image_tag:
+        description: 'Image tag (usually github.sha)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  release:
+    name: Build • Sign • Test • Promote (${{ inputs.runtime }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set runtime variables
+        id: vars
+        run: |
+          echo "IMAGE_REPO=${{ github.repository_owner }}/${{ inputs.runtime }}" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ inputs.runtime }}
+          file: ./${{ inputs.runtime }}/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.runtime }}:${{ inputs.image_tag }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image with Cosign (keyless OIDC)
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign --yes \
+            --fulcio-url=https://fulcio.sigstore.dev \
+            --rekor-url=https://rekor.sigstore.dev \
+            ghcr.io/${{ github.repository_owner }}/${{ inputs.runtime }}:${{ inputs.image_tag }}
+
+      - name: Verify image signature
+        run: |
+          cosign verify \
+            --certificate-identity-regexp="^https://github.com/${{ github.repository_owner }}/.github/workflows/.*" \
+            --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+            ghcr.io/${{ github.repository_owner }}/${{ inputs.runtime }}:${{ inputs.image_tag }}
+
+      - name: Prepare CI compose override
+        run: |
+          cat > docker-compose.ci.yml <<EOF
+          version: "3.8"
+          services:
+            ${{ inputs.runtime }}:
+              image: ghcr.io/${{ github.repository_owner }}/${{ inputs.runtime }}:${{ inputs.image_tag }}
+              healthcheck:
+                test: ["CMD-SHELL", "curl -fsS http://localhost:${{ inputs.health_port }}${{ inputs.health_path }} || exit 1"]
+                interval: 5s
+                timeout: 3s
+                retries: 12
+          EOF
+
+      - name: Run integration tests
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml up \
+            --abort-on-container-exit \
+            --exit-code-from tester
+
+      - name: Collect logs & artifacts
+        if: always()
+        run: |
+          mkdir -p tests/integration/reports
+          docker compose logs ${{ inputs.runtime }} > tests/integration/${{ inputs.runtime }}.log || true
+          docker compose logs tester > tests/integration/tester.log || true
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.runtime }}-integration-artifacts
+          path: tests/integration/
+          retention-days: 7
