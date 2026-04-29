@@ -1,32 +1,51 @@
-# SYSTEM CONTRACT
+# SYSTEM_CONTRACT.md
 
-## SINGLE ENTRY POINT
-All execution must go through:
-POST `/system/execute`
+## MIRRORNODE System Contract
 
-## TRACE REQUIREMENT
-Every run must produce:
-- step‑by‑step trace
-- structured logs
-- timestamps
+**Ground Truth Version:** 1.1 (April 28, 2026)  
+**Repository:** mirrornode/MIRRORNODE-CORE-HUB
 
-## CANON REQUIREMENT
-All steps must be persisted:
-- append‑only
-- no silent failures
+### Execution Authority
+**LUCIAN (Port 7700)** — Orchestration & Manifest — execution authority  
+**Real Entry Point:** `POST /dispatch`
 
-## REPLAY REQUIREMENT
-Every run must be:
-- reproducible
-- traceable
-- lineage‑linked (via `parentRunId` / `trace_id`)
+### Lattice Truth Surface
+- `GET /manifest`
+- `GET /lattice/status`
+- `GET /health`
+- `GET /heartbeat`
+- `GET /identity`
 
-## AGENT RULES
-Agents:
-- do not route
-- do not manage global state
-- only execute tasks
+### Audit Mechanism
+`emit_audit(repo, event_type, actor, verdict, evidence)`
 
-## FAILURE POLICY
-- No silent errors
-- All failures must be logged
+### Core Principles
+- Nodes do not self-route
+- LUCIAN dispatches commands through canon
+- No silent failures
+- Documentation must reflect real code paths only
+
+### Confirmed Agent Registry
+| Agent | Port | Role | Source |
+|---|---:|---|---|
+| LUCIAN | 7700 | Orchestration & Manifest | `lucian/runtime.py` |
+| OSIRIS | 7701 | Payment & Commerce (Stripe) | `osiris/runtime.py` |
+| HERMES | 7702 | Messaging & Protocol | Lucian registry |
+| THOTH | 7703 | Services & Health | Lucian registry |
+| THEIA | 7704 | Witness & Observation | Lucian registry |
+| PTAH | 7705 | Creation & Bridge | Lucian registry |
+| EVE | 7706 | Embodiment & Physical Manifest | Lucian registry |
+
+### Canon Structure
+- `canon/contracts/`
+- `canon/charters/`
+- `canon/api/`
+- `canon/dossiers/`
+
+### Explicit Non-Claims
+- `/system/execute` is not a real route
+- `/system/replay` is not a real route
+- `/execute-task` is not a real route
+- `mirrornode/osiris` is not the execution engine
+
+This file is the operational truth until the runtimes change.
