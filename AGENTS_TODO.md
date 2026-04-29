@@ -1,55 +1,55 @@
-# AGENTS_TODO
+# AGENTS_TODO.md
 
-## SYSTEM CONTRACT (NON-NEGOTIABLE)
-- All execution flows through `/system/execute`
-- All runs must produce a trace
-- All steps must be logged to canon
-- All runs must be replayable
+## MIRRORNODE Agents — Ground Truth Priorities
 
----
+### Shared Base
+- Route command execution through LUCIAN `POST /dispatch`
+- Expose health surfaces honestly
+- Audit runtime actions with `emit_audit()`
+- Avoid documenting non-existent endpoints
+- Keep repo roles aligned with real runtime boundaries
 
-## CURRENT PRIORITY
-- [ ] Ensure compliance with system contract
-- [ ] Eliminate duplicate or parallel execution paths
-- [ ] Standardize input/output schemas
+### LUCIAN (Port 7700)
+**Focus:** Orchestration & Manifest
+- [ ] Keep `POST /dispatch` as the canonical command entry point
+- [ ] Keep `/manifest` current with real lattice state
+- [ ] Keep `/lattice/status` aligned with reachable node health
+- [ ] Ensure dispatch actions emit canon audit records
+- [ ] Tighten command registry visibility from `canon.api.commands`
 
----
+### OSIRIS (Port 7701)
+**Focus:** Payment & Commerce
+- [ ] Keep Stripe routes isolated to commerce concerns
+- [ ] Maintain `/health`, `/heartbeat`, `/identity`, `/stripe/status`
+- [ ] Audit checkout, invoice, refund, subscription, and webhook flows
+- [ ] Keep UI shell concerns out of commerce runtime
 
-## TRACE INTEGRATION
-- [ ] Emit structured step logs
-- [ ] Include `step`, `agent`, `input`, `output`, `timestamp`
-- [ ] Ensure trace is consumable by UI
+### HERMES (Port 7702)
+**Focus:** Messaging & Protocol
+- [ ] Implement runtime or document registry-only status clearly
+- [ ] Add health endpoint when runtime exists
 
----
+### THOTH (Port 7703)
+**Focus:** Services & Health
+- [ ] Implement runtime or document registry-only status clearly
+- [ ] Add health endpoint when runtime exists
 
-## REPLAY SUPPORT
-- [ ] Accept `trace_id`
-- [ ] Support deterministic execution (when requested)
-- [ ] Preserve lineage (`parentRunId`)
+### THEIA (Port 7704)
+**Focus:** Witness & Observation
+- [ ] Implement runtime or document registry-only status clearly
+- [ ] Add health endpoint when runtime exists
 
----
+### PTAH (Port 7705)
+**Focus:** Creation & Bridge
+- [ ] Implement runtime or document registry-only status clearly
+- [ ] Add health endpoint when runtime exists
 
-## SELF-REPORTING
-- [ ] Log all actions to canon
-- [ ] Expose health/heartbeat endpoint
-- [ ] Surface errors clearly
+### EVE (Port 7706)
+**Focus:** Embodiment & Physical Manifest
+- [ ] Implement runtime or document registry-only status clearly
+- [ ] Add health endpoint when runtime exists
 
----
-
-## CLEANUP
-- [ ] Remove unused files and environments
-- [ ] Consolidate duplicate logic
-- [ ] Enforce single responsibility
-
----
-
-## UI / FRONTEND PRIORITIES
-- [ ] Implement `/trace/[runId]` viewer
-- [ ] Add replay button (calls `/system/replay`)
-- [ ] Display step "reason" clearly
-- [ ] Add latency indicators per step
-
-## UX REQUIREMENTS
-- [ ] Timeline must be sequential and clickable
-- [ ] Step detail must show input/output clearly
-- [ ] No internal naming exposed (Rotan/PTAH hidden)
+### Cleanup
+- [ ] Remove stale references to `/system/execute`
+- [ ] Remove stale references to replay and trace requirements not yet implemented
+- [ ] Separate aspirational architecture from active runtime truth
