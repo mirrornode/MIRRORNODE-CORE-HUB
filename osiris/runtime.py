@@ -44,8 +44,8 @@ class CheckoutRequest(BaseModel):
     product_name: str
     amount_cents: int
     currency: str = "usd"
-    success_url: str = "https://mirrornode.io/success"
-    cancel_url: str = "https://mirrornode.io/cancel"
+    success_url: str = "https://mirrornode.xyz/success"
+    cancel_url: str = "https://mirrornode.xyz/cancel"
     customer_email: Optional[str] = None
 
 class InvoiceRequest(BaseModel):

@@ -79,7 +79,7 @@ You should get back a Stripe Checkout session URL. Open it in your browser to co
 ## 8. Configure Stripe Webhooks
 
 1. In Stripe Dashboard → Developers → Webhooks → Add endpoint
-2. URL: `https://api.mirrornode.io/osiris/webhook` (or your deployed URL)
+2. URL: `https://api.mirrornode.xyz/osiris/webhook` (or your deployed URL)
 3. Events to listen for:
    - `checkout.session.completed`
    - `invoice.paid`

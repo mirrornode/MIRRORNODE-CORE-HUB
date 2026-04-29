@@ -89,7 +89,7 @@ The `/agents` grid index provides a live view of all agents in the manifest, inc
 - Domain labels
 - Lattice Depth (telemetry integration in progress)
 
-**Live deployment:** [Lattice Index](https://www.mirrornode.io/agents) | [JSON Manifest](https://www.mirrornode.io/api/agents)
+**Live deployment:** [Lattice Index](https://www.mirrornode.xyz/agents) | [JSON Manifest](https://www.mirrornode.xyz/api/agents)
 
 ---
 
