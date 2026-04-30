@@ -12,7 +12,16 @@ echo "=============================="
 echo ""
 echo "--- INTELLIGENCE LAYER ---"
 if [ -f "$INTEL/index.json" ]; then
-  echo "index.json: $(python3 -c "import json; d=json.load(open('$INTEL/index.json')); print('generated_at=' + d.get('generated_at','unknown') + ' repos=' + str(len(d.get('repos',[]))))")" 2>/dev/null || echo "index.json: present (parse error)"
+  echo "index.json: $(python3 -c "
+import json
+raw = json.load(open('$INTEL/index.json'))
+if isinstance(raw, list):
+    print('repos=' + str(len(raw)) + ' (list format)')
+elif isinstance(raw, dict):
+    print('generated_at=' + str(raw.get('generated_at','unknown')) + ' repos=' + str(len(raw.get('repos',[]))))
+else:
+    print('unknown format')
+" 2>/dev/null)" 2>/dev/null || echo "index.json: present (parse error)"
 else
   echo "index.json: MISSING"
 fi
@@ -24,7 +33,13 @@ else
 fi
 
 if [ -f "$INTEL/drift_log.json" ]; then
-  echo "drift_log.json: $(python3 -c "import json; d=json.load(open('$INTEL/drift_log.json')); print('swept_at=' + d.get('swept_at','unknown') + ' drifted=' + str(len(d.get('drifted_repos',[]))))")" 2>/dev/null || echo "drift_log.json: present"
+  echo "drift_log.json: $(python3 -c "
+import json
+d = json.load(open('$INTEL/drift_log.json'))
+swept = d.get('swept_at') or 'not yet swept'
+drifted = len(d.get('drifted_repos', []))
+print('swept_at=' + swept + ' drifted=' + str(drifted))
+" 2>/dev/null)" 2>/dev/null || echo "drift_log.json: present"
 else
   echo "drift_log.json: MISSING — run sweep first"
 fi
