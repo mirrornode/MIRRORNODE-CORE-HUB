@@ -1,0 +1,23 @@
+#!/bin/bash
+# MIRRORNODE canon — post-commit hook
+# CONTRACT REF: 56752dad | MIRRORNODE-CORE-HUB | 2026-05-05
+#
+# Fires code.ingest on every local commit.
+# Install: git config core.hooksPath .githooks
+#
+# Phase 1 validation only. Extend payload with full changed-file list
+# once emission is verified.
+
+BRANCH=$(git branch --show-current)
+COMMIT=$(git rev-parse HEAD)
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+curl -s -X POST http://localhost:7701/dev/code-ingest \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"repo\": \"MIRRORNODE-CORE-HUB\",
+    \"branch\": \"${BRANCH}\",
+    \"commit\": \"${COMMIT}\",
+    \"files\": [],
+    \"timestamp\": \"${TIMESTAMP}\"
+  }" && echo "[canon] code.ingest fired: ${COMMIT}" || echo "[canon] WARNING: code.ingest failed — check dev server"
