@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from typing import Optional
 from canon.contracts.sdk.audit import emit_audit
+from osiris.routes.execute import router as execute_router
 
 # ── Stripe ──────────────────────────────────────────────────────────────────
 try:
@@ -24,6 +25,14 @@ VERSION = "1.1.0"
 BOOT_TIME = datetime.now(timezone.utc).isoformat()
 
 app = FastAPI(title="Osiris", description="Payment & Commerce — Financial State Authority")
+
+app.include_router(execute_router)
+
+
+@app.get("/")
+def root():
+    return {"status": "ok", "node": "CORE-HUB", "version": VERSION}
+
 
 
 # ── Audit helper ────────────────────────────────────────────────────────────
