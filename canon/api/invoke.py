@@ -66,3 +66,15 @@ def invoke(name: str, **kwargs) -> InvocationResult:
         return InvocationResult(command=cmd.name, node=cmd.node, success=True, output=result)
     except Exception as exc:
         return InvocationResult(command=cmd.name, node=cmd.node, success=False, error=str(exc))
+
+
+def dispatch_command(name: str, payload: dict) -> dict:
+    """
+    Bridge helper: accepts a payload dict and dispatches via invoke().
+    Returns the InvocationResult as a plain dict.
+
+    Use this from HTTP routes and external callers.
+    Use invoke() directly for internal lattice calls.
+    """
+    result = invoke(name, **payload)
+    return result.to_dict()

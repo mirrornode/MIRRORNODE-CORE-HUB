@@ -54,6 +54,12 @@ COMMANDS: dict[str, Command] = {
         description="Emergency stop — graceful shutdown of all lattice nodes.",
         category="control",
     ),
+    "code.ingest": Command(
+        name="code.ingest",
+        node="CORE-HUB",
+        description="Ingest repository code changes into the canonical audit stream.",
+        category="runtime",
+    ),
 }
 
 
