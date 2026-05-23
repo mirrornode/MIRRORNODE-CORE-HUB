@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.xyz/canon/schemas/agent_roster.schema.json",
+  "title": "Agent Roster",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "roster_id",
+    "created_at",
+    "agents"
+  ],
+  "properties": {
+    "roster_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "agent_id",
+          "display_name",
+          "role",
+          "authority_scope",
+          "status",
+          "revoked",
+          "fallback_eligible"
+        ],
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authority_scope": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "suspended"
+            ]
+          },
+          "revoked": {
+            "type": "boolean"
+          },
+          "fallback_eligible": {
+            "type": "boolean"
+          },
+          "operator_signed_fallback_ref": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
