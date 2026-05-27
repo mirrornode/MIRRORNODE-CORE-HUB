@@ -53,9 +53,37 @@ jobs:
         id: verify
         run: echo "ok=true"
 
-  build-and-test:
-    name: Build • Sign • Test (${{ matrix.runtime }})
+  validate-release-surface:
+    name: Validate Runtime Release Surface
+    runs-on: ubuntu-latest
     needs: verify-platform
+    outputs:
+      ready: ${{ steps.surface.outputs.ready }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check runtime Docker surface
+        id: surface
+        run: |
+          missing=0
+          for f in lucian/Dockerfile osiris/Dockerfile docker-compose.yml; do
+            if [[ ! -f "$f" ]]; then
+              echo "::notice title=Runtime release disabled::Missing $f"
+              missing=1
+            fi
+          done
+
+          if [[ "$missing" -eq 0 ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-and-test:
+    if: github.event_name == 'push' && needs.validate-release-surface.outputs.ready == 'true'
+    name: Build • Sign • Test (${{ matrix.runtime }})
+    needs: [verify-platform, validate-release-surface]
     strategy:
       matrix:
         runtime: [lucian, osiris]
