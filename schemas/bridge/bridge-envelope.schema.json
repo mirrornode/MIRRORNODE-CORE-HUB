@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.xyz/schemas/bridge/bridge-envelope.schema.json",
+  "title": "BridgeEnvelope v0.1",
+  "description": "Governed event envelope for MIRRORNODE cross-node handoffs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "timestamp",
+    "source_node",
+    "target_node",
+    "event_type",
+    "claim_class",
+    "payload",
+    "routing",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique event identifier. UUID or deterministic event id preferred.",
+      "minLength": 8
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_node": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_node": {
+      "oneOf": [
+        {
+          "type": "string",
+          "const": "broadcast"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "handoff",
+        "reflection",
+        "canon_proposal",
+        "research_result",
+        "contradiction",
+        "operator_directive",
+        "security_verdict"
+      ]
+    },
+    "claim_class": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "spec",
+        "spec_behavioral",
+        "symbolic",
+        "session"
+      ]
+    },
+    "payload": {
+      "description": "Event-specific content. Must remain interpretable by recipient node.",
+      "type": ["object", "array", "string", "number", "boolean", "null"]
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requires_judge",
+        "requires_librarian",
+        "requires_operator_approval",
+        "write_target"
+      ],
+      "properties": {
+        "requires_judge": {
+          "type": "boolean"
+        },
+        "requires_librarian": {
+          "type": "boolean"
+        },
+        "requires_operator_approval": {
+          "type": "boolean"
+        },
+        "write_target": {
+          "type": "string",
+          "enum": [
+            "canon",
+            "spec",
+            "codex",
+            "archive",
+            "session",
+            "none"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "write_target": {
+                "const": "canon"
+              }
+            },
+            "required": ["write_target"]
+          },
+          "then": {
+            "properties": {
+              "requires_judge": {
+                "const": true
+              },
+              "requires_operator_approval": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_or_node",
+        "confidence"
+      ],
+      "properties": {
+        "model_or_node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "commit_sha": {
+          "type": "string"
+        },
+        "evidence_ref": {
+          "type": "string",
+          "description": "Optional reference to test, log, PR, endpoint response, or receipt."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "canon_proposal"
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "properties": {
+          "routing": {
+            "properties": {
+              "requires_judge": {
+                "const": true
+              },
+              "requires_operator_approval": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "claim_class": {
+            "const": "verified"
+          }
+        },
+        "required": ["claim_class"]
+      },
+      "then": {
+        "properties": {
+          "provenance": {
+            "required": ["model_or_node", "confidence", "evidence_ref"]
+          }
+        }
+      }
+    }
+  ]
+}
