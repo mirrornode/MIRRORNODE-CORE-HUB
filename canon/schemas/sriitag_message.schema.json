@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.xyz/canon/schemas/sriitag_message.schema.json",
+  "title": "SRIITAG Message",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "message_id",
+    "source",
+    "target",
+    "state",
+    "intent",
+    "proposed_action",
+    "created_at"
+  ],
+  "properties": {
+    "message_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "ADVISE_AND_PREPARE",
+        "REVIEW_REQUESTED",
+        "APPROVED_FOR_EXECUTION",
+        "EXECUTION_RECEIPT_REQUIRED",
+        "DENIED_OR_REVOKED"
+      ]
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proposed_action": {
+      "type": "string"
+    },
+    "authority_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ptah_verdict_ref": {
+      "type": "string"
+    },
+    "thoth_security_verdict_ref": {
+      "type": "string"
+    },
+    "operator_signoff_ref": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
