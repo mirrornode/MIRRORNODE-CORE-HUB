@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.xyz/canon/schemas/bootstrap_receipt.schema.json",
+  "title": "Bootstrap Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_id",
+    "machine_identity_ref",
+    "branch",
+    "commit",
+    "installed_files",
+    "schema_validation",
+    "required_clause_validation",
+    "created_at"
+  ],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "machine_identity_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commit": {
+      "type": "string",
+      "minLength": 7
+    },
+    "installed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "line_count"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "line_count": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "schema_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "json_syntax_valid"
+      ],
+      "properties": {
+        "json_syntax_valid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "required_clause_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_present",
+        "clauses"
+      ],
+      "properties": {
+        "all_present": {
+          "type": "boolean"
+        },
+        "clauses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "operator_signoff_ref": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

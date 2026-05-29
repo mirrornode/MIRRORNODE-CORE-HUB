@@ -1,0 +1,1 @@
+{"timestamp": "2026-04-20T00:16:01.863679+00:00", "repo": "lucian", "repo_hash": "f9f377910f4f743949774e118b0e8cee1cf1565a", "charter_hash": "UNCHARTERED", "event_type": "execution", "actor": "system", "verdict": "SUCCESS", "evidence": {"event": "lattice_status", "nodes_checked": 7, "error": null}, "audit_id": "52975e4c-1874-4064-9ba5-5566ff78035d"}
