@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.xyz/canon/schemas/machine_identity.schema.json",
+  "title": "Machine Identity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "machine_id",
+    "hostname",
+    "local_user",
+    "repo_path",
+    "branch",
+    "commit",
+    "created_at"
+  ],
+  "properties": {
+    "machine_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hostname": {
+      "type": "string",
+      "minLength": 1
+    },
+    "local_user": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commit": {
+      "type": "string",
+      "minLength": 7
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operator_signature_ref": {
+      "type": "string"
+    }
+  }
+}
