@@ -1,11 +1,7 @@
-cd ~/mirrornode
-
-# Create INDEX.md
-cat > canon/INDEX.md <<'EOINDEX'
 # MIRRORNODE Canon - Master Index
 
 **Status:** Operational  
-**Last Updated:** 2025-01-27  
+**Last Updated:** 2026-06-01  
 **Authority:** Desktop Commander + Oracle
 
 ---
@@ -53,9 +49,21 @@ canon/
 │   └── YYYY-MM/
 │       └── audit-{repo}-{timestamp}.json
 │
-└── index/                # System maps
-    └── github-{org}.json
+├── index/                # System maps
+│   └── github-{org}.json
+│
+└── status/               # Progress reports and metrics
+    ├── PROGRESS_REPORT_2026-06-01.md
+    ├── canon_completion_register.csv
+    ├── mirrornode_metrics.json
+    └── mirrornode_metrics_table.csv
 ```
+
+---
+
+## Progress Reports
+
+- [MIRRORNODE Progress Report — 2026-06-01](./status/PROGRESS_REPORT_2026-06-01.md) — Canon-visible completion tally (9/14 complete, 64%), Phase 1 locked, Phase 2 active, architecture integrity 89.5/100
 
 ---
 
@@ -153,4 +161,3 @@ const auditId = emitAudit({
 - **Canon Issues:** File in mirrornode/mirrornode repo
 - **Charter Conflicts:** Escalate to Operator (Sean)
 - **Audit SDK Bugs:** Include audit_id in report
-
