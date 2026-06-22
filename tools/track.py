@@ -159,11 +159,21 @@ def load_entries():
     try:
         with DATA_FILE.open("r", encoding="utf-8") as f:
             data = json.load(f)
-        if isinstance(data, list):
-            return data
-        return []
-    except (json.JSONDecodeError, OSError):
-        return []
+    except json.JSONDecodeError as exc:
+        raise SystemExit(
+            c_red(f"Refusing to overwrite invalid audit file: {DATA_FILE}")
+            + "\nFix or remove it manually."
+        ) from exc
+    except OSError as exc:
+        raise SystemExit(
+            c_red(f"Could not read audit file: {DATA_FILE}") + f"\n{exc}"
+        ) from exc
+    if not isinstance(data, list):
+        raise SystemExit(
+            c_red(f"Refusing to overwrite non-list audit file: {DATA_FILE}")
+            + "\nExpected a JSON array."
+        )
+    return data
 
 
 def save_entries(entries):
