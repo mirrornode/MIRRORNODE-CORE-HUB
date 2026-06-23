@@ -1,0 +1,455 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+umask 077
+
+MIRROR_HOME="${MIRROR_HOME:-$HOME/.mirrornode/@mirror}"
+LEDGER="${LEDGER:-$MIRROR_HOME/ledger.jsonl}"
+TERMINAL_LIST="${TERMINAL_LIST:-$MIRROR_HOME/terminal-list.txt}"
+SCRIPT_NAME="@mirror"
+SCHEMA_VERSION="1"
+
+usage() {
+  cat <<'USAGE'
+@mirror — official MIRRORNODE operator entrypoint
+
+Usage:
+  @mirror init
+  @mirror status
+  @mirror later <message>
+  @mirror handoff <from> <to> <message>
+  @mirror audit <topic> <details>
+  @mirror rotate <secret_name> <owner> <details>
+  @mirror agent <name> <state> <details>
+  @mirror brief [count]
+  @mirror validate
+  @mirror drill live-home [label]
+  @mirror install [--bin-dir <dir>]
+
+Examples:
+  @mirror later "Wire Merlin, Theia, Lucian, Grok, Claude, Rotan-Q"
+  @mirror handoff @mirror Merlin "Draft coordination matrix for agent wiring"
+  @mirror audit tracker "CLI ledger promoted to canonical ops log"
+  @mirror rotate STRIPE_SECRET_KEY platform "Review owner, scope, cadence, storage location, and revocation path"
+  @mirror agent Theia bounded-governance "Draft-only; declared governance surfaces only"
+  @mirror validate
+  @mirror drill live-home "operator receive-only handoff"
+  @mirror install --bin-dir "$HOME/.local/bin"
+USAGE
+}
+
+ts_utc() {
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+ensure_files() {
+  mkdir -p "$MIRROR_HOME"
+  chmod 700 "$MIRROR_HOME" 2>/dev/null || true
+  touch "$LEDGER" "$TERMINAL_LIST"
+  chmod 600 "$LEDGER" "$TERMINAL_LIST" 2>/dev/null || true
+}
+
+is_probable_secret_value() {
+  local value="${1:-}"
+
+  # Fast substring checks. Avoid complex Bash regex here; this runs on every payload field.
+  case "$value" in
+    *sk_live_*|*sk_test_*|*rk_live_*|*rk_test_*|\
+    *ghp_*|*gho_*|*ghu_*|*github_pat_*|\
+    *xoxb-*|*xoxa-*|*xoxp-*|*xoxr-*|*xoxs-*|\
+    *ya29.*|*-----BEGIN*PRIVATE*KEY-----*)
+      return 0
+      ;;
+  esac
+
+  # Lightweight anchored-ish provider checks.
+  [[ "$value" =~ AKIA[0-9A-Z]{16} ]] && return 0
+  [[ "$value" =~ AIza[0-9A-Za-z_-]{20,} ]] && return 0
+
+  # JWT-like three-part token check. Kept simple to avoid catastrophic regex behavior.
+  [[ "$value" =~ eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,} ]] && return 0
+
+  return 1
+}
+
+reject_probable_secrets_in_payload() {
+  local arg key value
+  for arg in "$@"; do
+    [[ "$arg" == *=* ]] || continue
+    key="${arg%%=*}"
+    value="${arg#*=}"
+
+    if is_probable_secret_value "$value"; then
+      echo "refusing to log probable secret value in field '$key'; pass names/references only" >&2
+      exit 1
+    fi
+  done
+}
+
+append_event() {
+  local kind="$1"
+  shift
+
+  reject_probable_secrets_in_payload "$@"
+
+  local now actor
+  now="$(ts_utc)"
+  actor="${MIRROR_ACTOR:-${USER:-unknown}}"
+
+  python3 - "$SCHEMA_VERSION" "$now" "$kind" "$actor" "$@" >> "$LEDGER" <<'PYAPPEND'
+import json, sys
+
+schema_version, ts, kind, actor = sys.argv[1:5]
+payload = {}
+for arg in sys.argv[5:]:
+    if "=" not in arg:
+        continue
+    k, v = arg.split("=", 1)
+    payload[k] = v
+
+record = {
+    "v": int(schema_version),
+    "ts": ts,
+    "kind": kind,
+    "actor": actor,
+    "payload": payload,
+}
+print(json.dumps(record, ensure_ascii=False, separators=(",", ":")))
+PYAPPEND
+}
+
+cmd_init() {
+  ensure_files
+  cat <<EOF2
+@mirror initialized
+home: $MIRROR_HOME
+ledger: $LEDGER
+terminal_list: $TERMINAL_LIST
+EOF2
+}
+
+cmd_status() {
+  ensure_files
+  local ledger_count terminal_count
+  ledger_count=$(wc -l < "$LEDGER" | tr -d ' ')
+  terminal_count=$(wc -l < "$TERMINAL_LIST" | tr -d ' ')
+  cat <<EOF2
+@mirror status
+home: $MIRROR_HOME
+ledger: $LEDGER ($ledger_count events)
+terminal_list: $TERMINAL_LIST ($terminal_count items)
+EOF2
+}
+
+cmd_later() {
+  ensure_files
+  local message="$*"
+  [[ -n "$message" ]] || { echo "later requires a message" >&2; exit 1; }
+  if is_probable_secret_value "$message"; then
+    echo "refusing to add probable secret value to terminal list" >&2
+    exit 1
+  fi
+  printf '[ ] %s | %s\n' "$(date +"%Y-%m-%d %H:%M:%S %Z")" "$message" >> "$TERMINAL_LIST"
+  append_event terminal_later message="$message"
+  echo "added to terminal list"
+}
+
+cmd_handoff() {
+  ensure_files
+  local from="${1:-}" to="${2:-}"
+  shift 2 || true
+  local message="$*"
+  [[ -n "$from" && -n "$to" && -n "$message" ]] || { echo "handoff requires: <from> <to> <message>" >&2; exit 1; }
+  append_event handoff from="$from" to="$to" message="$message"
+  echo "handoff logged"
+}
+
+cmd_audit() {
+  ensure_files
+  local topic="${1:-}"
+  shift || true
+  local details="$*"
+  [[ -n "$topic" && -n "$details" ]] || { echo "audit requires: <topic> <details>" >&2; exit 1; }
+  append_event audit topic="$topic" details="$details"
+  echo "audit event logged"
+}
+
+cmd_rotate() {
+  ensure_files
+  local secret_name="${1:-}" owner="${2:-}"
+  shift 2 || true
+  local details="$*"
+  [[ -n "$secret_name" && -n "$owner" && -n "$details" ]] || { echo "rotate requires: <secret_name> <owner> <details>" >&2; exit 1; }
+  if is_probable_secret_value "$secret_name"; then
+    echo "refusing to log probable secret value; pass a secret name like STRIPE_SECRET_KEY" >&2
+    exit 1
+  fi
+  append_event token_rotation_requested secret_name="$secret_name" owner="$owner" details="$details"
+  echo "rotation request logged"
+}
+
+cmd_agent() {
+  ensure_files
+  local name="${1:-}" state="${2:-}"
+  shift 2 || true
+  local details="$*"
+  [[ -n "$name" && -n "$state" && -n "$details" ]] || { echo "agent requires: <name> <state> <details>" >&2; exit 1; }
+  append_event agent_state name="$name" state="$state" details="$details"
+  echo "agent state logged"
+}
+
+cmd_brief() {
+  ensure_files
+  local count="${1:-10}"
+  if ! [[ "$count" =~ ^[0-9]+$ ]]; then
+    echo "brief count must be a non-negative integer" >&2
+    exit 1
+  fi
+  tail -n "$count" "$LEDGER"
+}
+
+cmd_validate() {
+  ensure_files
+  python3 - "$LEDGER" <<'PY'
+import json, sys
+from pathlib import Path
+
+ledger = Path(sys.argv[1])
+required = {"v", "ts", "kind", "actor", "payload"}
+count = 0
+
+with ledger.open("r", encoding="utf-8") as f:
+    for lineno, line in enumerate(f, start=1):
+        line = line.rstrip("\n")
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError as exc:
+            print(f"invalid JSONL at line {lineno}: {exc}", file=sys.stderr)
+            sys.exit(1)
+
+        missing = required - obj.keys()
+        if missing:
+            print(f"line {lineno} missing required fields: {sorted(missing)}", file=sys.stderr)
+            sys.exit(1)
+
+        if not isinstance(obj.get("payload"), dict):
+            print(f"line {lineno} payload must be an object", file=sys.stderr)
+            sys.exit(1)
+
+        count += 1
+
+print(f"ledger valid: {count} events")
+PY
+}
+
+validate_ledger_quiet() {
+  python3 - "$LEDGER" <<'PY'
+import json, sys
+from pathlib import Path
+
+ledger = Path(sys.argv[1])
+required = {"v", "ts", "kind", "actor", "payload"}
+
+with ledger.open("r", encoding="utf-8") as f:
+    for lineno, line in enumerate(f, start=1):
+        line = line.rstrip("\n")
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError as exc:
+            print(f"invalid JSONL at line {lineno}: {exc}", file=sys.stderr)
+            sys.exit(1)
+
+        missing = required - obj.keys()
+        if missing:
+            print(f"line {lineno} missing required fields: {sorted(missing)}", file=sys.stderr)
+            sys.exit(1)
+
+        if not isinstance(obj.get("payload"), dict):
+            print(f"line {lineno} payload must be an object", file=sys.stderr)
+            sys.exit(1)
+PY
+}
+
+ledger_event_count() {
+  wc -l < "$LEDGER" | tr -d ' '
+}
+
+verify_drill_handoff_received() {
+  local drill_id="$1"
+  python3 - "$LEDGER" "$drill_id" <<'PY'
+import json, sys
+from pathlib import Path
+
+ledger = Path(sys.argv[1])
+drill_id = sys.argv[2]
+match = None
+
+with ledger.open("r", encoding="utf-8") as f:
+    for lineno, line in enumerate(f, start=1):
+        line = line.rstrip("\n")
+        if not line:
+            continue
+        obj = json.loads(line)
+        payload = obj.get("payload", {})
+        if (
+            obj.get("kind") == "handoff"
+            and payload.get("drill_id") == drill_id
+            and payload.get("receive_only") == "true"
+        ):
+            match = (lineno, obj)
+
+if match is None:
+    print(f"drill handoff not found in ledger: {drill_id}", file=sys.stderr)
+    sys.exit(1)
+
+lineno, obj = match
+print(f"receive-only handoff verified: line {lineno}, ts {obj.get('ts')}, drill_id {drill_id}")
+PY
+}
+
+cmd_drill() {
+  local mode="${1:-}"
+  shift || true
+
+  if [[ "$mode" != "live-home" ]]; then
+    echo "drill requires explicit mode: live-home" >&2
+    echo "usage: @mirror drill live-home [label]" >&2
+    exit 1
+  fi
+
+  ensure_files
+  validate_ledger_quiet
+
+  local label="${*:-operator receive-only handoff}"
+  local before_count after_count drill_id message
+  before_count="$(ledger_event_count)"
+  drill_id="$(date -u +"%Y%m%dT%H%M%SZ")-$$"
+  message="live-home drill: $label"
+
+  append_event handoff \
+    from="@mirror-drill" \
+    to="@mirror" \
+    message="$message" \
+    drill_id="$drill_id" \
+    receive_only="true"
+
+  validate_ledger_quiet
+  verify_drill_handoff_received "$drill_id"
+  after_count="$(ledger_event_count)"
+
+  cat <<EOF2
+@mirror live-home drill complete
+home: $MIRROR_HOME
+ledger: $LEDGER
+events_before: $before_count
+events_after: $after_count
+EOF2
+}
+
+script_source_path() {
+  local source="${BASH_SOURCE[0]}"
+  local dir target
+
+  while [[ -L "$source" ]]; do
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
+    target="$(readlink "$source")"
+    [[ "$target" == /* ]] || target="$dir/$target"
+    source="$target"
+  done
+
+  dir="$(cd -P "$(dirname "$source")" && pwd)"
+  printf '%s/%s\n' "$dir" "$(basename "$source")"
+}
+
+resolve_existing_link() {
+  local link_path="$1"
+  local target dir
+  target="$(readlink "$link_path")"
+  [[ "$target" == /* ]] || {
+    dir="$(cd -P "$(dirname "$link_path")" && pwd)"
+    target="$dir/$target"
+  }
+  printf '%s\n' "$target"
+}
+
+cmd_install() {
+  local bin_dir="${MIRROR_BIN_DIR:-$HOME/.local/bin}"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --bin-dir)
+        bin_dir="${2:-}"
+        [[ -n "$bin_dir" ]] || { echo "install --bin-dir requires a directory" >&2; exit 1; }
+        shift 2
+        ;;
+      -h|--help)
+        echo "usage: @mirror install [--bin-dir <dir>]"
+        return 0
+        ;;
+      *)
+        echo "unknown install option: $1" >&2
+        echo "usage: @mirror install [--bin-dir <dir>]" >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  local source target existing_target
+  source="$(script_source_path)"
+  target="$bin_dir/$SCRIPT_NAME"
+
+  mkdir -p "$bin_dir"
+
+  if [[ -e "$target" || -L "$target" ]]; then
+    if [[ -L "$target" ]]; then
+      existing_target="$(resolve_existing_link "$target")"
+      if [[ "$existing_target" -ef "$source" ]]; then
+        echo "@mirror already installed: $target -> $source"
+      else
+        echo "refusing to replace existing symlink: $target -> $existing_target" >&2
+        exit 1
+      fi
+    elif [[ "$target" -ef "$source" ]]; then
+      echo "@mirror already installed: $target"
+    else
+      echo "refusing to overwrite existing file: $target" >&2
+      exit 1
+    fi
+  else
+    ln -s "$source" "$target"
+    echo "@mirror installed: $target -> $source"
+  fi
+
+  case ":$PATH:" in
+    *":$bin_dir:"*) ;;
+    *) echo "warning: $bin_dir is not currently on PATH" >&2 ;;
+  esac
+
+  echo "install did not modify mirror home or ledger"
+}
+
+main() {
+  local cmd="${1:-help}"
+  shift || true
+  case "$cmd" in
+    init) cmd_init "$@" ;;
+    status) cmd_status "$@" ;;
+    later) cmd_later "$@" ;;
+    handoff) cmd_handoff "$@" ;;
+    audit) cmd_audit "$@" ;;
+    rotate) cmd_rotate "$@" ;;
+    agent) cmd_agent "$@" ;;
+    brief) cmd_brief "$@" ;;
+    validate) cmd_validate "$@" ;;
+    drill) cmd_drill "$@" ;;
+    install) cmd_install "$@" ;;
+    help|-h|--help) usage ;;
+    *) echo "unknown command: $cmd" >&2; usage; exit 1 ;;
+  esac
+}
+
+main "$@"
