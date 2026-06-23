@@ -23,6 +23,8 @@ Usage:
   @mirror agent <name> <state> <details>
   @mirror brief [count]
   @mirror validate
+  @mirror migrate-provenance
+  @mirror test provenance-reject
   @mirror drill live-home [label]
   @mirror install [--bin-dir <dir>]
 
@@ -97,7 +99,7 @@ append_event() {
   actor="${MIRROR_ACTOR:-${USER:-unknown}}"
 
   python3 - "$SCHEMA_VERSION" "$now" "$kind" "$actor" "$@" >> "$LEDGER" <<'PYAPPEND'
-import json, sys
+import hashlib, json, os, sys
 
 schema_version, ts, kind, actor = sys.argv[1:5]
 payload = {}
@@ -107,12 +109,28 @@ for arg in sys.argv[5:]:
     k, v = arg.split("=", 1)
     payload[k] = v
 
+contributors_env = os.environ.get("MIRROR_CONTRIBUTORS", "")
+if contributors_env:
+    contributors = [c.strip() for c in contributors_env.split(",") if c.strip()]
+else:
+    contributors = [actor]
+
+if not contributors:
+    print("Missing or empty `contributors` array", file=sys.stderr)
+    sys.exit(1)
+
+authority_hash = hashlib.sha256(
+    json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+).hexdigest()
+
 record = {
     "v": int(schema_version),
     "ts": ts,
     "kind": kind,
     "actor": actor,
     "payload": payload,
+    "contributors": contributors,
+    "authorityHash": authority_hash,
 }
 print(json.dumps(record, ensure_ascii=False, separators=(",", ":")))
 PYAPPEND
@@ -211,12 +229,41 @@ cmd_brief() {
 cmd_validate() {
   ensure_files
   python3 - "$LEDGER" <<'PY'
-import json, sys
+import hashlib, json, re, sys
 from pathlib import Path
 
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
 ledger = Path(sys.argv[1])
-required = {"v", "ts", "kind", "actor", "payload"}
+required = {"v", "ts", "kind", "actor", "payload", "contributors", "authorityHash"}
 count = 0
+
+def authority_hash_for_payload(payload):
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+def enforce_provenance(lineno, obj):
+    contributors = obj.get("contributors")
+    authority_hash = obj.get("authorityHash")
+
+    if not isinstance(contributors, list) or len(contributors) == 0:
+        print(f"line {lineno}: missing or empty `contributors` array", file=sys.stderr)
+        sys.exit(1)
+    if not all(isinstance(c, str) and c for c in contributors):
+        print(f"line {lineno}: `contributors` must be a non-empty array of strings", file=sys.stderr)
+        sys.exit(1)
+    if not isinstance(authority_hash, str) or not HEX64.match(authority_hash):
+        print(f"line {lineno}: `authorityHash` must be a 64-character lowercase hex string", file=sys.stderr)
+        sys.exit(1)
+
+    payload = obj.get("payload", {})
+    expected = authority_hash_for_payload(payload)
+    if authority_hash != expected:
+        print(
+            f"line {lineno}: `authorityHash` mismatch (expected {expected}, got {authority_hash})",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 with ledger.open("r", encoding="utf-8") as f:
     for lineno, line in enumerate(f, start=1):
@@ -238,6 +285,7 @@ with ledger.open("r", encoding="utf-8") as f:
             print(f"line {lineno} payload must be an object", file=sys.stderr)
             sys.exit(1)
 
+        enforce_provenance(lineno, obj)
         count += 1
 
 print(f"ledger valid: {count} events")
@@ -246,11 +294,40 @@ PY
 
 validate_ledger_quiet() {
   python3 - "$LEDGER" <<'PY'
-import json, sys
+import hashlib, json, re, sys
 from pathlib import Path
 
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
 ledger = Path(sys.argv[1])
-required = {"v", "ts", "kind", "actor", "payload"}
+required = {"v", "ts", "kind", "actor", "payload", "contributors", "authorityHash"}
+
+def authority_hash_for_payload(payload):
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+def enforce_provenance(lineno, obj):
+    contributors = obj.get("contributors")
+    authority_hash = obj.get("authorityHash")
+
+    if not isinstance(contributors, list) or len(contributors) == 0:
+        print(f"line {lineno}: missing or empty `contributors` array", file=sys.stderr)
+        sys.exit(1)
+    if not all(isinstance(c, str) and c for c in contributors):
+        print(f"line {lineno}: `contributors` must be a non-empty array of strings", file=sys.stderr)
+        sys.exit(1)
+    if not isinstance(authority_hash, str) or not HEX64.match(authority_hash):
+        print(f"line {lineno}: `authorityHash` must be a 64-character lowercase hex string", file=sys.stderr)
+        sys.exit(1)
+
+    payload = obj.get("payload", {})
+    expected = authority_hash_for_payload(payload)
+    if authority_hash != expected:
+        print(
+            f"line {lineno}: `authorityHash` mismatch (expected {expected}, got {authority_hash})",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 with ledger.open("r", encoding="utf-8") as f:
     for lineno, line in enumerate(f, start=1):
@@ -271,6 +348,8 @@ with ledger.open("r", encoding="utf-8") as f:
         if not isinstance(obj.get("payload"), dict):
             print(f"line {lineno} payload must be an object", file=sys.stderr)
             sys.exit(1)
+
+        enforce_provenance(lineno, obj)
 PY
 }
 
@@ -308,6 +387,109 @@ if match is None:
 
 lineno, obj = match
 print(f"receive-only handoff verified: line {lineno}, ts {obj.get('ts')}, drill_id {drill_id}")
+PY
+}
+
+cmd_migrate_provenance() {
+  ensure_files
+  local backup="${LEDGER}.pre-provenance-$(date -u +%Y%m%dT%H%M%SZ)"
+  cp "$LEDGER" "$backup"
+  python3 - "$LEDGER" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+
+ledger = Path(sys.argv[1])
+lines = ledger.read_text(encoding="utf-8").splitlines()
+updated = []
+changed = 0
+
+for line in lines:
+    if not line.strip():
+        continue
+    obj = json.loads(line)
+    payload = obj.get("payload", {})
+    actor = obj.get("actor") or "unknown"
+    contributors = obj.get("contributors")
+    authority_hash = obj.get("authorityHash")
+
+    if not isinstance(contributors, list) or len(contributors) == 0:
+        obj["contributors"] = [actor]
+        changed += 1
+
+    expected = hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    if authority_hash != expected:
+        obj["authorityHash"] = expected
+        changed += 1
+
+    updated.append(json.dumps(obj, ensure_ascii=False, separators=(",", ":")))
+
+ledger.write_text("\n".join(updated) + ("\n" if updated else ""), encoding="utf-8")
+print(f"migrated {changed} provenance field(s) across {len(updated)} event(s)")
+print(f"backup: {ledger}.pre-provenance-*")
+PY
+  validate_ledger_quiet
+  echo "provenance migration complete"
+}
+
+cmd_test_provenance_reject() {
+  python3 - <<'PY'
+import hashlib, json, re, sys
+
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+def authority_hash_for_payload(payload):
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+def enforce_provenance(label, obj):
+    contributors = obj.get("contributors")
+    authority_hash = obj.get("authorityHash")
+
+    if not isinstance(contributors, list) or len(contributors) == 0:
+        raise ValueError("missing or empty `contributors` array")
+    if not all(isinstance(c, str) and c for c in contributors):
+        raise ValueError("`contributors` must be a non-empty array of strings")
+    if not isinstance(authority_hash, str) or not HEX64.match(authority_hash):
+        raise ValueError("`authorityHash` must be a 64-character lowercase hex string")
+
+    payload = obj.get("payload", {})
+    expected = authority_hash_for_payload(payload)
+    if authority_hash != expected:
+        raise ValueError("`authorityHash` mismatch")
+
+cases = [
+    ("missing contributors", {"payload": {"action": "test"}, "authorityHash": "0" * 64}),
+    ("empty contributors", {"contributors": [], "payload": {"action": "test"}, "authorityHash": "0" * 64}),
+    ("bad authorityHash", {"contributors": ["agent-A"], "payload": {"action": "test"}, "authorityHash": "not-hex"}),
+    (
+        "hash mismatch",
+        {
+            "contributors": ["agent-A"],
+            "payload": {"action": "test"},
+            "authorityHash": authority_hash_for_payload({"action": "other"}),
+        },
+    ),
+]
+
+for label, obj in cases:
+    try:
+        enforce_provenance(label, obj)
+    except ValueError:
+        print(f"reject ok: {label}")
+        continue
+    print(f"reject failed: {label} was accepted", file=sys.stderr)
+    sys.exit(1)
+
+good = {
+    "contributors": ["agent-A"],
+    "payload": {"action": "test"},
+    "authorityHash": authority_hash_for_payload({"action": "test"}),
+}
+enforce_provenance("valid sample", good)
+print("accept ok: valid provenance sample")
 PY
 }
 
@@ -445,6 +627,19 @@ main() {
     agent) cmd_agent "$@" ;;
     brief) cmd_brief "$@" ;;
     validate) cmd_validate "$@" ;;
+    migrate-provenance) cmd_migrate_provenance "$@" ;;
+    test)
+      local test_mode="${1:-}"
+      shift || true
+      case "$test_mode" in
+        provenance-reject) cmd_test_provenance_reject "$@" ;;
+        *)
+          echo "unknown test mode: ${test_mode:-<none>}" >&2
+          echo "usage: @mirror test provenance-reject" >&2
+          exit 1
+          ;;
+      esac
+      ;;
     drill) cmd_drill "$@" ;;
     install) cmd_install "$@" ;;
     help|-h|--help) usage ;;
