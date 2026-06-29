@@ -1,16 +1,33 @@
 import './App.css'
 import { useEffect, useState } from 'react'
 import { config } from './lib/config'
-import { getSystemSnapshot, type ScorecardSource, type ScorecardSystem } from './lib/systemAdapter'
+import {
+  getSystemSnapshot,
+  type EndpointHealth,
+  type ScorecardSource,
+  type ScorecardSystem,
+} from './lib/systemAdapter'
+
+function formatSyncTime(value: string | null) {
+  if (!value) return 'pending'
+  return new Date(value).toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
 
 export default function App() {
   const [system, setSystem] = useState<ScorecardSystem | null>(null)
   const [source, setSource] = useState<ScorecardSource | null>(null)
+  const [health, setHealth] = useState<EndpointHealth | null>(null)
+  const [syncedAt, setSyncedAt] = useState<string | null>(null)
 
   useEffect(() => {
-    getSystemSnapshot().then(({ system, source }) => {
+    getSystemSnapshot().then(({ system, source, health, syncedAt }) => {
       setSystem(system)
       setSource(source)
+      setHealth(health)
+      setSyncedAt(syncedAt)
     })
   }, [])
 
@@ -27,15 +44,30 @@ export default function App() {
   }
 
   const live = source === 'live endpoint'
+  const online = health === 'online'
 
   return (
     <main className="app-shell">
       <section className="hero">
         <div className="hero-topline">
           <p className="eyebrow">MIRRORNODE / detached local surface</p>
-          <div className={`source-badge ${live ? 'live' : 'mock'}`}>
-            <span className="source-dot" />
-            <span className="source-label">{source}</span>
+
+          <div className="status-band">
+            <div className={`source-badge ${live ? 'live' : 'mock'}`}>
+              <span className="source-dot" />
+              <span className="source-label">{source}</span>
+            </div>
+
+            <div className={`source-badge ${online ? 'live' : 'mock'}`}>
+              <span className="source-dot" />
+              <span className="source-label">
+                {online ? 'endpoint online' : 'endpoint degraded'}
+              </span>
+            </div>
+
+            <div className="source-badge neutral">
+              <span className="source-label">last sync {formatSyncTime(syncedAt)}</span>
+            </div>
           </div>
         </div>
 

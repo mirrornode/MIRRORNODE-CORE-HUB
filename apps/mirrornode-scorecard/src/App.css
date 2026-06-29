@@ -238,3 +238,24 @@ strong {
     align-items: flex-start;
   }
 }
+
+.status-band {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.source-badge.neutral {
+  border-color: rgba(140, 155, 180, 0.18);
+}
+
+.source-badge.neutral .source-label {
+  color: rgba(214, 222, 235, 0.82);
+}
+
+@media (max-width: 720px) {
+  .status-band {
+    width: 100%;
+  }
+}
