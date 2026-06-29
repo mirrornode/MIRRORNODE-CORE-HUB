@@ -1,8 +1,27 @@
 import './App.css'
+import { useEffect, useState } from 'react'
 import { config } from './lib/config'
-import { mockSystem } from './data/mockSystem'
+import { getSystemSnapshot, type ScorecardSystem } from './lib/systemAdapter'
 
 export default function App() {
+  const [system, setSystem] = useState<ScorecardSystem | null>(null)
+
+  useEffect(() => {
+    getSystemSnapshot().then(setSystem)
+  }, [])
+
+  if (!system) {
+    return (
+      <main className="app-shell">
+        <section className="hero">
+          <p className="eyebrow">MIRRORNODE / detached local surface</p>
+          <h1>System Integrity Scorecard</h1>
+          <p className="lede">Loading local system snapshot...</p>
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className="app-shell">
       <section className="hero">
@@ -15,17 +34,17 @@ export default function App() {
         <div className="card-grid">
           <article className="card">
             <span className="label">System status</span>
-            <strong>{mockSystem.status}</strong>
+            <strong>{system.status}</strong>
           </article>
 
           <article className="card">
             <span className="label">Kernel</span>
-            <code>{mockSystem.kernel}</code>
+            <code>{system.kernel}</code>
           </article>
 
           <article className="card">
             <span className="label">Phase</span>
-            <strong>{mockSystem.phase}</strong>
+            <strong>{system.phase}</strong>
           </article>
 
           <article className="card">
@@ -40,7 +59,7 @@ export default function App() {
 
           <article className="card">
             <span className="label">Active agents</span>
-            <strong>{mockSystem.metrics.activeAgents}</strong>
+            <strong>{system.metrics.activeAgents}</strong>
           </article>
         </div>
 
@@ -48,12 +67,12 @@ export default function App() {
           <div className="panel-head">
             <h2>Incident Center</h2>
             <span className="panel-meta">
-              Open {mockSystem.metrics.openIncidents} · Resolved {mockSystem.metrics.resolved}
+              Open {system.metrics.openIncidents} · Resolved {system.metrics.resolved}
             </span>
           </div>
 
           <div className="incident-list">
-            {mockSystem.incidents.map((incident) => (
+            {system.incidents.map((incident) => (
               <article className="incident" key={incident.id}>
                 <div>
                   <p className="incident-id">{incident.id}</p>
