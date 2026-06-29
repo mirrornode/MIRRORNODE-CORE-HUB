@@ -2,8 +2,12 @@ import { config } from './config'
 import { mockSystem } from '../data/mockSystem'
 
 export type ScorecardSystem = typeof mockSystem
+export type ScorecardSource = 'live endpoint' | 'mock fallback'
 
-export async function getSystemSnapshot(): Promise<ScorecardSystem> {
+export async function getSystemSnapshot(): Promise<{
+  system: ScorecardSystem
+  source: ScorecardSource
+}> {
   try {
     const response = await fetch(`${config.apiBaseUrl}/api/mirror/system`)
 
@@ -12,8 +16,14 @@ export async function getSystemSnapshot(): Promise<ScorecardSystem> {
     }
 
     const data = await response.json()
-    return data as ScorecardSystem
+    return {
+      system: data as ScorecardSystem,
+      source: 'live endpoint',
+    }
   } catch {
-    return mockSystem
+    return {
+      system: mockSystem,
+      source: 'mock fallback',
+    }
   }
 }

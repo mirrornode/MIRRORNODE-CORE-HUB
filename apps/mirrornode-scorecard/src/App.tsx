@@ -1,13 +1,17 @@
 import './App.css'
 import { useEffect, useState } from 'react'
 import { config } from './lib/config'
-import { getSystemSnapshot, type ScorecardSystem } from './lib/systemAdapter'
+import { getSystemSnapshot, type ScorecardSource, type ScorecardSystem } from './lib/systemAdapter'
 
 export default function App() {
   const [system, setSystem] = useState<ScorecardSystem | null>(null)
+  const [source, setSource] = useState<ScorecardSource | null>(null)
 
   useEffect(() => {
-    getSystemSnapshot().then(setSystem)
+    getSystemSnapshot().then(({ system, source }) => {
+      setSystem(system)
+      setSource(source)
+    })
   }, [])
 
   if (!system) {
@@ -22,10 +26,19 @@ export default function App() {
     )
   }
 
+  const live = source === 'live endpoint'
+
   return (
     <main className="app-shell">
       <section className="hero">
-        <p className="eyebrow">MIRRORNODE / detached local surface</p>
+        <div className="hero-topline">
+          <p className="eyebrow">MIRRORNODE / detached local surface</p>
+          <div className={`source-badge ${live ? 'live' : 'mock'}`}>
+            <span className="source-dot" />
+            <span className="source-label">{source}</span>
+          </div>
+        </div>
+
         <h1>System Integrity Scorecard</h1>
         <p className="lede">
           Local projection shell for Theia event and state APIs.
