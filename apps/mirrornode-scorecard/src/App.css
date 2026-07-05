@@ -1,0 +1,261 @@
+:root {
+  color-scheme: dark;
+  --bg: #0c1117;
+  --panel: #121923;
+  --panel-2: #18212d;
+  --border: #263244;
+  --text: #e6edf3;
+  --muted: #9fb0c3;
+  --accent: #4db6ac;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0f14 0%, var(--bg) 100%);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 48px 20px;
+}
+
+.hero {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  line-height: 1.02;
+}
+
+.lede {
+  margin: 0 0 32px;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #c7f3ee;
+  font-size: 0.95rem;
+}
+
+strong {
+  color: #d7ffe5;
+}
+
+.panel {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(18, 25, 35, 0.78);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.panel-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.incident-list {
+  display: grid;
+  gap: 12px;
+}
+
+.incident {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.incident h3,
+.incident-id {
+  margin: 0;
+}
+
+.incident h3 {
+  margin-top: 4px;
+  font-size: 1rem;
+}
+
+.incident-id {
+  color: var(--accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.incident-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.78rem;
+}
+
+.tag.muted {
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .panel-head,
+  .incident {
+    flex-direction: column;
+  }
+}
+
+.hero-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+    rgba(9, 14, 22, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 8px 24px rgba(0,0,0,0.28);
+  backdrop-filter: blur(10px);
+}
+
+.source-badge.live {
+  border-color: rgba(89, 217, 168, 0.22);
+}
+
+.source-badge.mock {
+  border-color: rgba(255, 184, 77, 0.22);
+}
+
+.source-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.source-badge.live .source-dot,
+.source-badge.live .source-label {
+  color: #59d9a8;
+}
+
+.source-badge.mock .source-dot,
+.source-badge.mock .source-label {
+  color: #ffb84d;
+}
+
+.source-label {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .hero-topline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.status-band {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.source-badge.neutral {
+  border-color: rgba(140, 155, 180, 0.18);
+}
+
+.source-badge.neutral .source-label {
+  color: rgba(214, 222, 235, 0.82);
+}
+
+@media (max-width: 720px) {
+  .status-band {
+    width: 100%;
+  }
+}
