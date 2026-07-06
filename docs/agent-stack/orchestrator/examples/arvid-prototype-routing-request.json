@@ -1,0 +1,32 @@
+{
+  "trace_id": "trace-arvid-prototype-example",
+  "operator_intent": "Verify and polish the Arvid playable prototype while keeping it separate from governance ratification.",
+  "task_summary": "Verify and polish Arvid playable prototype.",
+  "service_area": "family_game",
+  "required_capabilities": [
+    "frontend_review",
+    "playability_check",
+    "continuity_tracking"
+  ],
+  "sensitivity": {
+    "secrets": false,
+    "payments": false,
+    "legal": false,
+    "private_context": true,
+    "production": false,
+    "canon": false
+  },
+  "source_inputs": [
+    "Arvid Continuity HUD P1 prototype"
+  ],
+  "expected_output": "Playable prototype review with build status and next polish recommendation.",
+  "blocked_actions": [
+    "deploy_publicly_without_review",
+    "collect_child_private_data",
+    "convert_to_commercial_offer"
+  ],
+  "desired_reviewers": [
+    "theia",
+    "operator"
+  ]
+}

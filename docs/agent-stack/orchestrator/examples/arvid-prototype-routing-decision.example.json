@@ -1,0 +1,49 @@
+{
+  "trace_id": "trace-arvid-prototype-example",
+  "service_area": "family_game",
+  "selected_path": [
+    {
+      "agent_id": "theia",
+      "reason": "Keep continuity, family context, and prototype scope aligned without turning the game lane into governance authority.",
+      "allowed_actions": [
+        "continuity_review",
+        "scope_check",
+        "polish_recommendation"
+      ],
+      "required_output": "Prototype continuity note with playability status and next polish recommendation."
+    },
+    {
+      "agent_id": "operator",
+      "reason": "Approve whether the prototype remains private, gets more polish, or moves toward a public/demo lane.",
+      "allowed_actions": [
+        "approve_private_playtest",
+        "request_polish",
+        "defer_public_release"
+      ],
+      "required_output": "Operator decision on next prototype movement."
+    }
+  ],
+  "required_reviews": [
+    "operator_approval",
+    "theia_continuity_review"
+  ],
+  "blocked_actions_triggered": [
+    "deploy_publicly_without_review",
+    "collect_child_private_data",
+    "convert_to_commercial_offer"
+  ],
+  "approval_needed_before": [
+    "public_deployment",
+    "analytics_or_data_collection",
+    "commercial_packaging",
+    "sharing_identifying_child_context"
+  ],
+  "deferred_actions": [
+    "public_release",
+    "monetization",
+    "account_system",
+    "leaderboards_or_tracking"
+  ],
+  "confidence": "medium",
+  "review_boundary": "This routing decision supports private prototype review only. It does not authorize public deployment, data collection, commercial packaging, or governance ratification."
+}

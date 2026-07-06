@@ -1,0 +1,29 @@
+{
+  "patch_id": "patch-github-ssh-revoke-example",
+  "patch_type": "ssh_key_revoke",
+  "status": "draft_example",
+  "subject": {
+    "system": "github",
+    "account": "github-user-or-org-member",
+    "scope": "user_ssh_keys"
+  },
+  "credential": {
+    "kind": "ssh_public_key",
+    "algorithm": "ssh-ed25519",
+    "fingerprint_sha256": "SHA256:example-fingerprint",
+    "label": "seans-old-laptop-2026-07"
+  },
+  "requested_action": "remove_public_key_from_allowed_key_set",
+  "authority_boundary": "This patch models access revocation by allowlist removal. It does not mutate cryptographic key material or delete local files.",
+  "required_verification": [
+    "public_key_removed_from_github_account",
+    "ssh_auth_test_fails_for_revoked_key",
+    "replacement_access_path_confirmed_if_needed"
+  ],
+  "blocked_actions": [
+    "delete_local_private_key_without_backup_review",
+    "remove_last_valid_access_path_without_recovery_plan",
+    "revoke_org_sso_access_without_scope_review",
+    "treat_revocation_as_proof_of_key_destruction"
+  ]
+}
