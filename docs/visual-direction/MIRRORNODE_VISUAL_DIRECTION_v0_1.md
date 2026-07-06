@@ -39,7 +39,7 @@ The console works because it has the right balance:
 | Gated intervention controls | Shows power without implying reckless execution. |
 | Agent lanes | Makes the stack legible as roles, not a blur of names. |
 | Timeline and nexus | Shows state, causality, and intervention as a sequence. |
-| Osiris split visible | Prevents commercial, execution, and agent authority from collapsing. |
+| Osiris split visible | Prevents commercial offer, operational surface, and agent role from collapsing. |
 | Evidence and drift panels | Makes review and validation visible as first-class functions. |
 
 ## 3. Visual Principles
