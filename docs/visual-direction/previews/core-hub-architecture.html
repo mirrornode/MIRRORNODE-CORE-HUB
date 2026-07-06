@@ -1,0 +1,330 @@
+<div id="core-hub-architecture" class="viz-surface">
+  <style>
+    #core-hub-architecture {
+      color: var(--foreground);
+    }
+    #core-hub-architecture * {
+      box-sizing: border-box;
+    }
+    #core-hub-architecture .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    #core-hub-architecture .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 8px 0 12px;
+    }
+    #core-hub-architecture .stage {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--card) 54%, transparent);
+      overflow: hidden;
+    }
+    #core-hub-architecture svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 620px;
+    }
+    #core-hub-architecture .band {
+      fill: color-mix(in srgb, var(--muted) 18%, transparent);
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+    #core-hub-architecture .band-label {
+      fill: var(--muted-foreground);
+      font-weight: 500;
+    }
+    #core-hub-architecture .link {
+      stroke: var(--border);
+      stroke-width: 2;
+      fill: none;
+    }
+    #core-hub-architecture .link[data-kind="gate"] {
+      stroke-dasharray: 6 5;
+    }
+    #core-hub-architecture .link.is-focus {
+      stroke: var(--viz-series-1);
+      stroke-opacity: .86;
+    }
+    #core-hub-architecture .node rect {
+      fill: color-mix(in srgb, var(--card) 74%, transparent);
+      stroke: var(--border);
+      stroke-width: 1.4;
+    }
+    #core-hub-architecture .node[data-kind="governance"] rect {
+      fill: color-mix(in srgb, var(--viz-series-2) 18%, var(--card));
+    }
+    #core-hub-architecture .node[data-kind="orchestrator"] rect {
+      fill: color-mix(in srgb, var(--viz-series-1) 16%, var(--card));
+    }
+    #core-hub-architecture .node[data-kind="agent"] rect {
+      fill: color-mix(in srgb, var(--viz-series-4) 14%, var(--card));
+    }
+    #core-hub-architecture .node[data-kind="commercial"] rect {
+      fill: color-mix(in srgb, var(--viz-series-3) 16%, var(--card));
+    }
+    #core-hub-architecture .node[data-kind="execution"] rect {
+      fill: color-mix(in srgb, var(--viz-series-5) 14%, var(--card));
+    }
+    #core-hub-architecture .node[data-kind="adapter"] rect {
+      fill: color-mix(in srgb, var(--muted) 52%, var(--card));
+    }
+    #core-hub-architecture .node text {
+      fill: var(--foreground);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+      font-weight: 500;
+    }
+    #core-hub-architecture .node .sub {
+      fill: var(--muted-foreground);
+      font-weight: 400;
+    }
+    #core-hub-architecture .node.is-muted,
+    #core-hub-architecture .link.is-muted {
+      opacity: .16;
+    }
+    #core-hub-architecture .node.is-selected rect {
+      stroke: var(--ring);
+      stroke-width: 2.5;
+    }
+    #core-hub-architecture .detail {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    #core-hub-architecture .panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: color-mix(in srgb, var(--card) 50%, transparent);
+      min-width: 0;
+    }
+    #core-hub-architecture .panel h3 {
+      margin: 0 0 6px;
+    }
+    #core-hub-architecture .panel p {
+      margin: 0;
+      color: var(--muted-foreground);
+    }
+    #core-hub-architecture .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+    }
+    #core-hub-architecture .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #core-hub-architecture .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    #core-hub-architecture .swatch.gov { background: color-mix(in srgb, var(--viz-series-2) 38%, var(--card)); }
+    #core-hub-architecture .swatch.orch { background: color-mix(in srgb, var(--viz-series-1) 34%, var(--card)); }
+    #core-hub-architecture .swatch.agent { background: color-mix(in srgb, var(--viz-series-4) 32%, var(--card)); }
+    #core-hub-architecture .swatch.exec { background: color-mix(in srgb, var(--viz-series-5) 32%, var(--card)); }
+    #core-hub-architecture .swatch.comm { background: color-mix(in srgb, var(--viz-series-3) 34%, var(--card)); }
+    #core-hub-architecture .swatch.adapt { background: color-mix(in srgb, var(--muted) 80%, var(--card)); }
+    @media (max-width: 720px) {
+      #core-hub-architecture .summary,
+      #core-hub-architecture .detail {
+        grid-template-columns: 1fr;
+      }
+      #core-hub-architecture svg {
+        min-height: 760px;
+      }
+    }
+  </style>
+
+  <div class="summary">
+    <div class="card viz-stat">
+      <div class="text-small">Review artifacts</div>
+      <div class="viz-stat-value">8</div>
+      <div class="text-small">July 4 CORE-HUB packet</div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-small">Registry records</div>
+      <div class="viz-stat-value">9</div>
+      <div class="text-small">agents, offer, surface</div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-small">Starter schemas</div>
+      <div class="viz-stat-value">3</div>
+      <div class="text-small">card, request, decision</div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-small">Manual trials</div>
+      <div class="viz-stat-value">2</div>
+      <div class="text-small">Osiris, Arvid</div>
+    </div>
+  </div>
+
+  <div class="viz-controls controls" aria-label="Architecture filters">
+    <button class="btn btn-primary" type="button" data-filter="all" aria-pressed="true">All</button>
+    <button class="btn" type="button" data-filter="governance" aria-pressed="false">Governance</button>
+    <button class="btn" type="button" data-filter="orchestrator" aria-pressed="false">Orchestrator</button>
+    <button class="btn" type="button" data-filter="agent" aria-pressed="false">Agents</button>
+    <button class="btn" type="button" data-filter="execution" aria-pressed="false">Execution</button>
+    <button class="btn" type="button" data-filter="commercial" aria-pressed="false">Commercial</button>
+  </div>
+
+  <div class="stage">
+    <svg viewBox="0 0 1040 700" role="img" aria-label="CORE-HUB architecture showing governance, adaptive orchestration, agents, execution, commercial surfaces, and adapters">
+      <g id="coreHubBands"></g>
+      <g id="coreHubLinks"></g>
+      <g id="coreHubNodes"></g>
+    </svg>
+  </div>
+
+  <div class="detail">
+    <div class="panel" aria-live="polite">
+      <h3 id="coreHubSelectedTitle">CORE-HUB</h3>
+      <p id="coreHubSelectedCopy">Canon/control layer. It ratifies registry entries, authority boundaries, material execution definitions, and policy gates.</p>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <span><span class="swatch gov"></span>Governance</span>
+        <span><span class="swatch orch"></span>Orchestrator</span>
+        <span><span class="swatch agent"></span>Agent seat</span>
+        <span><span class="swatch exec"></span>Execution</span>
+        <span><span class="swatch comm"></span>Commercial</span>
+        <span><span class="swatch adapt"></span>Adapter or artifact</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const root = document.getElementById('core-hub-architecture');
+      const nodeLayer = root.querySelector('#coreHubNodes');
+      const linkLayer = root.querySelector('#coreHubLinks');
+      const bandLayer = root.querySelector('#coreHubBands');
+      const title = root.querySelector('#coreHubSelectedTitle');
+      const copy = root.querySelector('#coreHubSelectedCopy');
+      const buttons = Array.from(root.querySelectorAll('[data-filter]'));
+      const svgns = 'http://www.w3.org/2000/svg';
+      const bands = [
+        { label: 'Governance and Ratification', y: 24, h: 112 },
+        { label: 'Adaptive Orchestration', y: 158, h: 146 },
+        { label: 'Agent Review Seats', y: 326, h: 146 },
+        { label: 'Operational, Commercial, and Adapter Surfaces', y: 494, h: 170 }
+      ];
+      const nodes = [
+        { id: 'core', label: 'CORE-HUB', sub: 'canon/control', x: 520, y: 82, w: 158, kind: 'governance', group: 'governance', detail: 'Canon/control layer. It ratifies registry entries, authority boundaries, material execution definitions, and policy gates.' },
+        { id: 'registry', label: 'Registry Rules', sub: 'status ladder', x: 250, y: 82, w: 152, kind: 'governance', group: 'governance', detail: 'Defines status, evidence class, lane, blocked actions, and ratification requirements for every record.' },
+        { id: 'policy', label: 'Policy Gates', sub: 'review limits', x: 790, y: 82, w: 152, kind: 'governance', group: 'governance', detail: 'Determines when security, evidence, canon, production, payment, legal, or private-context review is required.' },
+        { id: 'orchestrator', label: 'Adaptive Path', sub: 'routing proposal', x: 520, y: 232, w: 166, kind: 'orchestrator', group: 'orchestrator', detail: 'Routes by service area, capability, status, blocked actions, and output contract. It recommends paths; it does not approve authority.' },
+        { id: 'service', label: 'Service Areas', sub: 'task domain', x: 220, y: 232, w: 150, kind: 'orchestrator', group: 'orchestrator', detail: 'Classifies work as canon, security, evidence, commercial, execution, memory, family/game, repo, or deployment.' },
+        { id: 'capability', label: 'Capabilities', sub: 'what can help', x: 820, y: 232, w: 150, kind: 'orchestrator', group: 'orchestrator', detail: 'Maps functions such as sequencing, evidence review, security review, trace design, curation, and playability checks.' },
+        { id: 'schemas', label: 'Schemas', sub: 'card/request/decision', x: 520, y: 286, w: 162, kind: 'adapter', group: 'orchestrator', detail: 'Starter machine-readable contracts: agent card, routing request, and routing decision.' },
+        { id: 'theia', label: 'THEIA', sub: 'integration', x: 150, y: 400, w: 126, kind: 'agent', group: 'agent', detail: 'Integrates returns, tracks coherence, and escalates unresolved conflict. Recommendations remain reviewable.' },
+        { id: 'ptah', label: 'Ptah', sub: 'security review', x: 300, y: 400, w: 126, kind: 'agent', group: 'agent', detail: 'Security and authority-risk seat. Advisory until CORE-HUB defines binding force.' },
+        { id: 'thoth', label: 'THOTH', sub: 'evidence review', x: 450, y: 400, w: 126, kind: 'agent', group: 'agent', detail: 'Reviews claims against available sources and flags contradiction risk. Not final truth authority until ratified.' },
+        { id: 'hermes', label: 'Hermes', sub: 'routing evidence', x: 590, y: 400, w: 126, kind: 'agent', group: 'agent', detail: 'Reports routing evidence and progress. Does not convert route success into approval.' },
+        { id: 'merlin', label: 'Merlin', sub: 'sequencing', x: 740, y: 400, w: 126, kind: 'agent', group: 'agent', detail: 'Plans sequence and dependency order. Dependency order does not authorize execution.' },
+        { id: 'librarian', label: 'Librarian', sub: 'curation', x: 890, y: 400, w: 126, kind: 'agent', group: 'agent', detail: 'Recommends placement and protects source integrity. Archive placement does not ratify canon.' },
+        { id: 'offer', label: 'Osiris Audit', sub: 'commercial limited', x: 190, y: 570, w: 152, kind: 'commercial', group: 'commercial', detail: 'Commercial review service. It does not certify MIRRORNODE governance status, grant registry authority, or create canon approval.' },
+        { id: 'exec', label: 'Execution Surface', sub: 'trace and review', x: 425, y: 570, w: 164, kind: 'execution', group: 'execution', detail: 'Carries out approved bounded work only after task-specific approval, trace, allowed actions, and review checkpoint.' },
+        { id: 'arvid', label: 'Arvid Prototype', sub: 'family/game lane', x: 645, y: 570, w: 154, kind: 'execution', group: 'execution', detail: 'Playable prototype lane. It stays separate from governance and commercial pressure unless public/deploy/privacy/payment scope appears.' },
+        { id: 'adapters', label: 'Adapters', sub: 'tools/providers', x: 850, y: 570, w: 144, kind: 'adapter', group: 'execution', detail: 'GitHub, Vercel, Stripe, Toolhouse, Cursor, and model providers connect as scoped adapters. Availability is not permission.' },
+        { id: 'osirisAgent', label: 'Osiris Agent', sub: 'draft frozen', x: 90, y: 640, w: 126, kind: 'agent', group: 'agent', detail: 'Reserved internal agent seat. It remains draft frozen and does not inherit authority from the offer or execution surface.' }
+      ];
+      const links = [
+        ['core', 'registry', 'solid'], ['core', 'policy', 'solid'], ['registry', 'orchestrator', 'gate'], ['policy', 'orchestrator', 'gate'],
+        ['service', 'orchestrator', 'solid'], ['capability', 'orchestrator', 'solid'], ['orchestrator', 'schemas', 'solid'],
+        ['orchestrator', 'theia', 'gate'], ['orchestrator', 'ptah', 'gate'], ['orchestrator', 'thoth', 'gate'], ['orchestrator', 'hermes', 'gate'], ['orchestrator', 'merlin', 'gate'], ['orchestrator', 'librarian', 'gate'],
+        ['ptah', 'exec', 'gate'], ['thoth', 'offer', 'gate'], ['theia', 'arvid', 'solid'], ['merlin', 'exec', 'solid'], ['librarian', 'schemas', 'solid'],
+        ['offer', 'exec', 'gate'], ['adapters', 'exec', 'gate'], ['osirisAgent', 'offer', 'gate']
+      ];
+      function byId(id) {
+        return nodes.find((node) => node.id === id);
+      }
+      function makeEl(name, attrs) {
+        const el = document.createElementNS(svgns, name);
+        Object.entries(attrs || {}).forEach(([key, value]) => el.setAttribute(key, value));
+        return el;
+      }
+      function render() {
+        bands.forEach((band) => {
+          const rect = makeEl('rect', { class: 'band', x: 24, y: band.y, width: 992, height: band.h, rx: 8 });
+          const text = makeEl('text', { class: 'band-label text-small', x: 44, y: band.y + 24 });
+          text.textContent = band.label;
+          bandLayer.appendChild(rect);
+          bandLayer.appendChild(text);
+        });
+        links.forEach(([fromId, toId, kind]) => {
+          const from = byId(fromId);
+          const to = byId(toId);
+          const path = makeEl('path', {
+            class: 'link',
+            'data-from': fromId,
+            'data-to': toId,
+            'data-kind': kind,
+            d: `M ${from.x} ${from.y + 24} C ${from.x} ${(from.y + to.y) / 2}, ${to.x} ${(from.y + to.y) / 2}, ${to.x} ${to.y - 24}`
+          });
+          linkLayer.appendChild(path);
+        });
+        nodes.forEach((node) => {
+          const group = makeEl('g', { class: 'node', 'data-id': node.id, 'data-kind': node.kind, 'data-group': node.group, transform: `translate(${node.x}, ${node.y})` });
+          const rect = makeEl('rect', { x: -node.w / 2, y: -27, width: node.w, height: 54, rx: 8 });
+          const label = makeEl('text', { y: -7 });
+          label.textContent = node.label;
+          const sub = makeEl('text', { class: 'sub text-small', y: 12 });
+          sub.textContent = node.sub;
+          group.appendChild(rect);
+          group.appendChild(label);
+          group.appendChild(sub);
+          group.addEventListener('click', () => selectNode(node.id));
+          nodeLayer.appendChild(group);
+        });
+        selectNode('core');
+      }
+      function selectNode(id) {
+        const node = byId(id);
+        title.textContent = node.label;
+        copy.textContent = node.detail;
+        root.querySelectorAll('.node').forEach((el) => {
+          el.classList.toggle('is-selected', el.getAttribute('data-id') === id);
+        });
+        root.querySelectorAll('.link').forEach((el) => {
+          const connected = el.getAttribute('data-from') === id || el.getAttribute('data-to') === id;
+          el.classList.toggle('is-focus', connected);
+        });
+      }
+      function setFilter(filter) {
+        buttons.forEach((button) => {
+          const active = button.getAttribute('data-filter') === filter;
+          button.setAttribute('aria-pressed', String(active));
+          button.classList.toggle('btn-primary', active);
+        });
+        root.querySelectorAll('.node').forEach((el) => {
+          const show = filter === 'all' || el.getAttribute('data-group') === filter || el.getAttribute('data-kind') === filter;
+          el.classList.toggle('is-muted', !show);
+        });
+        root.querySelectorAll('.link').forEach((el) => {
+          const from = byId(el.getAttribute('data-from'));
+          const to = byId(el.getAttribute('data-to'));
+          const show = filter === 'all' || from.group === filter || to.group === filter || from.kind === filter || to.kind === filter;
+          el.classList.toggle('is-muted', !show);
+        });
+      }
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => setFilter(button.getAttribute('data-filter')));
+      });
+      render();
+    })();
+  </script>
+</div>
