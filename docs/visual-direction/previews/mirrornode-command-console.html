@@ -1,0 +1,467 @@
+<div id="mirrornode-command-console">
+  <style>
+    #mirrornode-command-console {
+      color: var(--foreground);
+      border: 1px solid color-mix(in srgb, var(--primary) 34%, var(--border));
+      border-radius: 8px;
+      padding: 12px;
+      background:
+        radial-gradient(circle at 50% 62%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 28%),
+        radial-gradient(circle at 88% 10%, color-mix(in srgb, var(--viz-series-3) 16%, transparent), transparent 24%),
+        color-mix(in srgb, var(--background) 88%, var(--card));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+    #mirrornode-command-console * {
+      box-sizing: border-box;
+    }
+    #mirrornode-command-console .topbar {
+      display: grid;
+      grid-template-columns: minmax(180px, .9fr) minmax(220px, 1.2fr) minmax(180px, .8fr);
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: color-mix(in srgb, var(--card) 56%, transparent);
+      margin-bottom: 10px;
+    }
+    #mirrornode-command-console .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    #mirrornode-command-console .mark {
+      width: 34px;
+      height: 34px;
+      border: 1px solid color-mix(in srgb, var(--primary) 70%, var(--border));
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      box-shadow: 0 0 18px color-mix(in srgb, var(--primary) 30%, transparent);
+    }
+    #mirrornode-command-console .brand-title {
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+    #mirrornode-command-console .brand-sub,
+    #mirrornode-command-console .micro {
+      color: var(--muted-foreground);
+    }
+    #mirrornode-command-console .command {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--muted-foreground);
+      background: color-mix(in srgb, var(--background) 72%, transparent);
+      min-width: 0;
+    }
+    #mirrornode-command-console .status-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      text-align: center;
+    }
+    #mirrornode-command-console .status-strip div {
+      border-left: 1px solid var(--border);
+      min-width: 0;
+    }
+    #mirrornode-command-console .status-strip div:first-child {
+      border-left: 0;
+    }
+    #mirrornode-command-console .state-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #mirrornode-command-console .metric {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      min-width: 0;
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--card) 70%, transparent), transparent),
+        color-mix(in srgb, var(--background) 58%, var(--card));
+    }
+    #mirrornode-command-console .metric.is-blocked {
+      border-color: color-mix(in srgb, var(--destructive) 46%, var(--border));
+      box-shadow: inset 0 0 24px color-mix(in srgb, var(--destructive) 10%, transparent);
+    }
+    #mirrornode-command-console .metric-label {
+      color: var(--muted-foreground);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    #mirrornode-command-console .metric-value {
+      font-size: calc(var(--font-size-base) * 2);
+      font-weight: 500;
+      margin: 4px 0;
+    }
+    #mirrornode-command-console .ribbon {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      letter-spacing: .32em;
+      color: color-mix(in srgb, var(--primary) 84%, var(--foreground));
+      background: color-mix(in srgb, var(--card) 44%, transparent);
+      margin-bottom: 10px;
+    }
+    #mirrornode-command-console .layout {
+      display: grid;
+      grid-template-columns: minmax(220px, .85fr) minmax(420px, 1.8fr) minmax(260px, 1fr);
+      gap: 10px;
+    }
+    #mirrornode-command-console .stack {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    #mirrornode-command-console .panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--card) 48%, transparent);
+      overflow: hidden;
+      min-width: 0;
+    }
+    #mirrornode-command-console .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    #mirrornode-command-console .panel-body {
+      padding: 12px;
+    }
+    #mirrornode-command-console pre {
+      margin: 0;
+      white-space: pre-wrap;
+      color: color-mix(in srgb, var(--viz-series-2) 72%, var(--foreground));
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    #mirrornode-command-console .table {
+      display: grid;
+      gap: 8px;
+    }
+    #mirrornode-command-console .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted-foreground);
+    }
+    #mirrornode-command-console .row strong {
+      color: var(--foreground);
+      font-weight: 500;
+    }
+    #mirrornode-command-console .bars {
+      display: inline-grid;
+      grid-template-columns: repeat(8, 5px);
+      gap: 3px;
+    }
+    #mirrornode-command-console .bars span {
+      width: 5px;
+      height: 13px;
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--primary) 48%, var(--border));
+    }
+    #mirrornode-command-console .timeline {
+      position: relative;
+      min-height: 92px;
+    }
+    #mirrornode-command-console .timeline-line {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), color-mix(in srgb, var(--destructive) 80%, var(--primary)), var(--primary), transparent);
+    }
+    #mirrornode-command-console .event {
+      position: absolute;
+      top: 28px;
+      transform: translateX(-50%);
+      text-align: center;
+      min-width: 72px;
+    }
+    #mirrornode-command-console .event-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 2px solid var(--primary);
+      background: var(--card);
+      margin: 12px auto 0;
+      box-shadow: 0 0 18px color-mix(in srgb, var(--primary) 42%, transparent);
+    }
+    #mirrornode-command-console .event.blocked .event-dot {
+      border-color: var(--destructive);
+      box-shadow: 0 0 24px color-mix(in srgb, var(--destructive) 52%, transparent);
+    }
+    #mirrornode-command-console .nexus {
+      display: grid;
+      grid-template-columns: minmax(130px, .8fr) minmax(220px, 1.4fr) minmax(130px, .8fr);
+      gap: 12px;
+      align-items: center;
+      min-height: 260px;
+    }
+    #mirrornode-command-console .nexus-side {
+      display: grid;
+      gap: 10px;
+    }
+    #mirrornode-command-console .nexus-chip {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px;
+      background: color-mix(in srgb, var(--background) 52%, var(--card));
+    }
+    #mirrornode-command-console .orb {
+      position: relative;
+      aspect-ratio: 1;
+      max-width: 260px;
+      margin: auto;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--primary) 55%, var(--border));
+      background:
+        repeating-radial-gradient(circle, color-mix(in srgb, var(--primary) 30%, transparent) 0 2px, transparent 2px 24px),
+        radial-gradient(circle, color-mix(in srgb, var(--primary) 46%, transparent), transparent 58%);
+      box-shadow: 0 0 40px color-mix(in srgb, var(--primary) 30%, transparent), inset 0 0 48px color-mix(in srgb, var(--primary) 22%, transparent);
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+    #mirrornode-command-console .orb-core {
+      width: 74px;
+      height: 74px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--primary) 70%, var(--border));
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--primary) 24%, var(--card));
+    }
+    #mirrornode-command-console .path-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+    #mirrornode-command-console .step {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      background: color-mix(in srgb, var(--card) 46%, transparent);
+    }
+    #mirrornode-command-console .mini-line {
+      height: 28px;
+      width: 100%;
+    }
+    #mirrornode-command-console .progress {
+      height: 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--background) 70%, transparent);
+    }
+    #mirrornode-command-console .progress span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--viz-series-2) 70%, var(--primary)));
+    }
+    #mirrornode-command-console .action {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 8px;
+      color: var(--muted-foreground);
+    }
+    #mirrornode-command-console .execute {
+      width: 100%;
+      margin-top: 4px;
+      border-color: color-mix(in srgb, var(--primary) 48%, var(--border));
+      color: var(--muted-foreground);
+    }
+    @media (max-width: 980px) {
+      #mirrornode-command-console .topbar,
+      #mirrornode-command-console .layout,
+      #mirrornode-command-console .nexus {
+        grid-template-columns: 1fr;
+      }
+      #mirrornode-command-console .state-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      #mirrornode-command-console .path-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 520px) {
+      #mirrornode-command-console .state-row {
+        grid-template-columns: 1fr;
+      }
+      #mirrornode-command-console {
+        padding: 8px;
+      }
+    }
+  </style>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">MN</div>
+      <div>
+        <div class="brand-title">MirrorNode</div>
+        <div class="brand-sub text-small">CORE-HUB CONTINUITY CONSOLE</div>
+      </div>
+    </div>
+    <div class="command text-small">Command: route by service area, capability, boundary, and review gate...</div>
+    <div class="status-strip text-small">
+      <div><span class="micro">CORE LINK</span><br>Online</div>
+      <div><span class="micro">SYNC</span><br>98.7%</div>
+      <div><span class="micro">MODE</span><br>Overview</div>
+    </div>
+  </div>
+
+  <div class="state-row">
+    <div class="metric">
+      <div class="metric-label text-small">Canon</div>
+      <div class="metric-value">10</div>
+      <div class="micro text-small">ratification-ready rules</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label text-small">Draft</div>
+      <div class="metric-value">5</div>
+      <div class="micro text-small">pending authority seats</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label text-small">Active Limited</div>
+      <div class="metric-value">3</div>
+      <div class="micro text-small">Hermes, offer, surface</div>
+    </div>
+    <div class="metric is-blocked">
+      <div class="metric-label text-small">Blocked</div>
+      <div class="metric-value">6</div>
+      <div class="micro text-small">material actions gated</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label text-small">Evidence</div>
+      <div class="metric-value">8</div>
+      <div class="micro text-small">review artifacts</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label text-small">System Health</div>
+      <div class="metric-value">98.7%</div>
+      <div class="micro text-small">docs-only lane stable</div>
+    </div>
+  </div>
+
+  <div class="ribbon text-small">STATE -> CAUSALITY -> INTERVENTION</div>
+
+  <div class="layout">
+    <div class="stack">
+      <section class="panel">
+        <div class="panel-head text-small"><span>Live Terminal</span><span>Review</span></div>
+        <div class="panel-body">
+          <pre class="text-small">mirrornode@core:~$ status --core-hub
+> Review packet: assembled
+> Authority: governed
+> Automation: blocked
+> Osiris split: stable
+> Adaptive path: draft-ready
+> Material execution: gated
+> Next: docs-only PR</pre>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head text-small"><span>Agent Lanes</span><span>9 records</span></div>
+        <div class="panel-body table text-small">
+          <div class="row"><strong>THEIA</strong><span>Integrating</span><span class="bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></div>
+          <div class="row"><strong>Ptah</strong><span>Advisory</span><span class="bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></div>
+          <div class="row"><strong>THOTH</strong><span>Evidence</span><span class="bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></div>
+          <div class="row"><strong>Merlin</strong><span>Sequencing</span><span class="bars"><span></span><span></span><span></span><span></span><span></span><span></span></span></div>
+          <div class="row"><strong>Librarian</strong><span>Curation</span><span class="bars"><span></span><span></span><span></span><span></span><span></span><span></span></span></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="panel">
+        <div class="panel-head text-small"><span>Canonical Timeline</span><span>Auto-follow</span></div>
+        <div class="panel-body timeline">
+          <div class="timeline-line"></div>
+          <div class="event" style="left: 12%"><div class="text-small">Hermes</div><div class="micro text-small">return</div><div class="event-dot"></div></div>
+          <div class="event" style="left: 34%"><div class="text-small">Merlin</div><div class="micro text-small">sequence</div><div class="event-dot"></div></div>
+          <div class="event blocked" style="left: 54%"><div class="text-small">Blocked</div><div class="micro text-small">auto-exec</div><div class="event-dot"></div></div>
+          <div class="event" style="left: 74%"><div class="text-small">THEIA</div><div class="micro text-small">integrate</div><div class="event-dot"></div></div>
+          <div class="event" style="left: 91%"><div class="text-small">CORE</div><div class="micro text-small">review</div><div class="event-dot"></div></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head text-small"><span>Continuity Nexus</span><span>Adaptive path</span></div>
+        <div class="panel-body nexus">
+          <div class="nexus-side text-small">
+            <div class="nexus-chip">Service Areas<br><span class="micro">9 mapped</span></div>
+            <div class="nexus-chip">Capabilities<br><span class="micro">route by function</span></div>
+            <div class="nexus-chip">Schemas<br><span class="micro">3 valid</span></div>
+          </div>
+          <div class="orb">
+            <div class="orb-core">CORE<br><span class="micro text-small">HUB</span></div>
+          </div>
+          <div class="nexus-side text-small">
+            <div class="nexus-chip">Osiris Audit<br><span class="micro">commercial limited</span></div>
+            <div class="nexus-chip">Execution Surface<br><span class="micro">trace required</span></div>
+            <div class="nexus-chip">Arvid Prototype<br><span class="micro">family/game lane</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head text-small"><span>Causality To Intervention Path</span><span>Manual trial</span></div>
+        <div class="panel-body path-row text-small">
+          <div class="step">1<br>Classify</div>
+          <div class="step">2<br>Resolve</div>
+          <div class="step">3<br>Gate</div>
+          <div class="step">4<br>Review</div>
+          <div class="step">5<br>Approve</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="panel">
+        <div class="panel-head text-small"><span>Evidence Resolution</span><span>Live</span></div>
+        <div class="panel-body table text-small">
+          <div class="row"><strong>Agent card schema</strong><span>valid</span><span>100%</span></div>
+          <div class="progress"><span style="width: 100%"></span></div>
+          <div class="row"><strong>Routing request</strong><span>valid</span><span>100%</span></div>
+          <div class="progress"><span style="width: 100%"></span></div>
+          <div class="row"><strong>Routing decision</strong><span>valid</span><span>100%</span></div>
+          <div class="progress"><span style="width: 100%"></span></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head text-small"><span>Drift Detector</span><span>Nominal</span></div>
+        <div class="panel-body">
+          <svg class="mini-line" viewBox="0 0 260 28" role="img" aria-label="Drift level line within normal range">
+            <polyline fill="none" stroke="currentColor" stroke-width="2" points="0,18 20,17 40,19 60,13 80,16 100,15 120,19 140,11 160,14 180,17 200,10 220,14 240,13 260,16"></polyline>
+          </svg>
+          <div class="text-small">Drift level <strong>12%</strong> within normal range</div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head text-small"><span>Intervention Actions</span><span>Gated</span></div>
+        <div class="panel-body text-small">
+          <div class="action"><span>Open CORE-HUB docs PR</span><span>Ready</span></div>
+          <div class="action"><span>Run Osiris manual routing trial</span><span>Queued</span></div>
+          <div class="action"><span>Execute automation</span><span>Blocked</span></div>
+          <button class="btn execute" type="button" disabled>EXECUTION REQUIRES RATIFICATION</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
