@@ -1,0 +1,39 @@
+{
+  "trace_id": "trace-osiris-fulfillment-example",
+  "operator_intent": "Prepare a safe plan for Osiris Audit fulfillment automation without authorizing implementation.",
+  "task_summary": "Prepare Osiris Audit fulfillment automation.",
+  "service_area": "operational_execution",
+  "required_capabilities": [
+    "workflow_design",
+    "payment_boundary_awareness",
+    "security_review",
+    "trace_design"
+  ],
+  "sensitivity": {
+    "secrets": true,
+    "payments": true,
+    "legal": false,
+    "private_context": false,
+    "production": true,
+    "canon": false
+  },
+  "source_inputs": [
+    "Osiris Audit Offer",
+    "CORE-HUB Ratification Preflight",
+    "Modular Adaptive Orchestrator Spec"
+  ],
+  "expected_output": "Reviewable routing recommendation with required safeguards and deferred implementation list.",
+  "blocked_actions": [
+    "deploy",
+    "change_payment_configuration",
+    "handle_secrets",
+    "create_automation",
+    "mark_execution_approved"
+  ],
+  "desired_reviewers": [
+    "merlin",
+    "ptah",
+    "thoth",
+    "theia"
+  ]
+}

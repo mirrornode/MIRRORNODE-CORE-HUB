@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.local/schemas/routing-decision.schema.json",
+  "title": "MIRRORNODE Routing Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trace_id",
+    "service_area",
+    "selected_path",
+    "required_reviews",
+    "blocked_actions_triggered",
+    "approval_needed_before",
+    "deferred_actions",
+    "confidence",
+    "review_boundary"
+  ],
+  "properties": {
+    "trace_id": { "type": "string", "minLength": 1 },
+    "service_area": { "type": "string", "minLength": 1 },
+    "selected_path": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["agent_id", "reason", "allowed_actions", "required_output"],
+        "properties": {
+          "agent_id": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "allowed_actions": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "required_output": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "required_reviews": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "blocked_actions_triggered": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "approval_needed_before": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "deferred_actions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low", "unknown"]
+    },
+    "review_boundary": { "type": "string", "minLength": 1 }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "trace_id": "trace-osiris-fulfillment-example",
+  "service_area": "operational_execution",
+  "selected_path": [
+    {
+      "agent_id": "merlin",
+      "reason": "Sequence the automation concept, dependency order, and deferral list without authorizing implementation.",
+      "allowed_actions": [
+        "planning",
+        "dependency_mapping",
+        "handoff_preparation"
+      ],
+      "required_output": "Sequencing return with explicit non-implementation boundary."
+    },
+    {
+      "agent_id": "ptah",
+      "reason": "Review payment, secret, deployment, connector, and automation risk before any material execution.",
+      "allowed_actions": [
+        "security_review",
+        "risk_flagging",
+        "blocked_action_identification"
+      ],
+      "required_output": "Advisory security return with hold recommendations and unresolved risk list."
+    },
+    {
+      "agent_id": "thoth",
+      "reason": "Check source-backed claims, evidence gaps, and unsupported authority language.",
+      "allowed_actions": [
+        "source_review",
+        "evidence_classification",
+        "contradiction_flagging"
+      ],
+      "required_output": "Evidence boundary return with confirmed, partial, contradicted, and unresolved claims separated."
+    },
+    {
+      "agent_id": "theia",
+      "reason": "Integrate advisory returns into one reviewable execution checkpoint.",
+      "allowed_actions": [
+        "integration_recommendation",
+        "boundary_correction",
+        "operator_checkpoint_preparation"
+      ],
+      "required_output": "Integrated checkpoint packet for operator review."
+    }
+  ],
+  "required_reviews": [
+    "operator_approval",
+    "ptah_security_review",
+    "thoth_evidence_review",
+    "theia_integration_review"
+  ],
+  "blocked_actions_triggered": [
+    "deploy",
+    "change_payment_configuration",
+    "handle_secrets",
+    "create_automation",
+    "mark_execution_approved"
+  ],
+  "approval_needed_before": [
+    "implementation",
+    "deployment",
+    "payment_configuration_change",
+    "secret_or_connector_access",
+    "scheduled_workflow_creation",
+    "customer_facing_execution_claim"
+  ],
+  "deferred_actions": [
+    "write_fulfillment_automation",
+    "connect_stripe_or_supabase_runtime",
+    "configure_webhooks",
+    "create_background_jobs",
+    "publish_operational_claims"
+  ],
+  "confidence": "high",
+  "review_boundary": "This routing decision is a review recommendation only. It does not authorize implementation, deployment, automation, payment changes, secret handling, registry promotion, or canon ratification."
+}

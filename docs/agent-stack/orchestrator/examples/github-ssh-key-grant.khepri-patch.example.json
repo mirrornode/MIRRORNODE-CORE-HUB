@@ -1,0 +1,29 @@
+{
+  "patch_id": "patch-github-ssh-grant-example",
+  "patch_type": "ssh_key_grant",
+  "status": "draft_example",
+  "subject": {
+    "system": "github",
+    "account": "github-user-or-org-member",
+    "scope": "user_ssh_keys"
+  },
+  "credential": {
+    "kind": "ssh_public_key",
+    "algorithm": "ssh-ed25519",
+    "fingerprint_sha256": "SHA256:example-fingerprint",
+    "label": "seans-old-laptop-2026-07"
+  },
+  "requested_action": "add_public_key_to_allowed_key_set",
+  "authority_boundary": "This patch models an access-list grant. It does not create private key material, prove repo authorization, or approve production access.",
+  "required_verification": [
+    "public_key_added_to_github_account",
+    "ssh_auth_test_succeeds",
+    "repo_fetch_test_succeeds"
+  ],
+  "blocked_actions": [
+    "print_private_key",
+    "store_private_key_in_repo",
+    "grant_org_sso_without_review",
+    "treat_authentication_as_authorization"
+  ]
+}

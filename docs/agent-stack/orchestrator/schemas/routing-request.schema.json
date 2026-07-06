@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.local/schemas/routing-request.schema.json",
+  "title": "MIRRORNODE Routing Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trace_id",
+    "operator_intent",
+    "task_summary",
+    "service_area",
+    "required_capabilities",
+    "sensitivity",
+    "source_inputs",
+    "expected_output",
+    "blocked_actions",
+    "desired_reviewers"
+  ],
+  "properties": {
+    "trace_id": { "type": "string", "minLength": 1 },
+    "operator_intent": { "type": "string", "minLength": 1 },
+    "task_summary": { "type": "string", "minLength": 1 },
+    "service_area": { "type": "string", "minLength": 1 },
+    "required_capabilities": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "sensitivity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secrets", "payments", "legal", "private_context", "production", "canon"],
+      "properties": {
+        "secrets": { "type": "boolean" },
+        "payments": { "type": "boolean" },
+        "legal": { "type": "boolean" },
+        "private_context": { "type": "boolean" },
+        "production": { "type": "boolean" },
+        "canon": { "type": "boolean" }
+      }
+    },
+    "source_inputs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "expected_output": { "type": "string", "minLength": 1 },
+    "blocked_actions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "desired_reviewers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  }
+}
