@@ -1,0 +1,73 @@
+schemaVersion: "0.1"
+id: CG-0029
+title: Continuity Console v0.1 Definition
+matterType: product
+initiator: operator
+createdAt: 2026-07-18T14:30:00Z
+updatedAt: 2026-07-18T14:30:00Z
+workflowState: framing
+disposition:
+  status: pending
+  authority: null
+  decidedAt: null
+  record: null
+decisionQuestion: >-
+  Should MIRRORNODE repurpose the existing System Integrity Scorecard into a
+  read-only Continuity Console at /continuity, with private operational actions
+  remaining exclusively in MOPCON?
+scope:
+  includes:
+    - public continuity purpose and boundary
+    - scorecard reuse plan
+    - page anatomy
+    - data truth and freshness rules
+    - Council Grounds representation
+    - public versus private field separation
+    - v0.1 implementation boundary
+  excludes:
+    - route implementation
+    - runtime or MOPCON changes
+    - email, calendar, or finance ingestion
+    - autonomous status inference
+    - private trace exposure
+authorityPath:
+  finalAuthority: operator
+  canonAction: separate-explicit-action
+requiredReviews:
+  - theia
+  - ptah
+  - osiris
+optionalReviews:
+  - merlin
+  - thoth
+  - grok
+  - claude
+referenceArtifacts:
+  - id: CONTINUITY-DEFINITION-DRAFT
+    kind: document
+    href: ../../../docs/continuity/CONTINUITY_CONSOLE_V0_1_DEFINITION.md
+    canonical: false
+  - id: SCORECARD-APP
+    kind: repository
+    href: ../../../../apps/mirrornode-scorecard/
+    canonical: false
+  - id: PLATFORM-HOME
+    kind: repository
+    href: https://github.com/mirrornode/mirrornode-platform
+    canonical: false
+  - id: MOPCON-RUNTIME-PR-3
+    kind: pull-request
+    href: https://github.com/mirrornode/mirrornode-operator-console/pull/3
+    canonical: false
+openQuestions:
+  - exact verification cadence and freshness thresholds
+  - whether reviewed snapshots require a signed manifest in v0.1
+  - navigation placement within Platform
+  - whether public GitHub status is fetched at request time or generated during build
+currentRevision: ../../../docs/continuity/CONTINUITY_CONSOLE_V0_1_DEFINITION.md
+nextRequiredStep: Review the public/private boundary and data truth model before implementation authority is granted.
+historyPath: history/
+notes:
+  - Continuity is read-only orientation, not operator control.
+  - Missing or mock data must not render as live truth.
+  - Personal integrations are excluded from the public surface in v0.1.
