@@ -1,0 +1,82 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://mirrornode.xyz/schemas/council/disposition.schema.yaml
+title: MIRRORNODE Council Disposition
+schemaVersion: "0.1"
+type: object
+additionalProperties: false
+required:
+  - schemaVersion
+  - matterId
+  - status
+  - authority
+  - decidedAt
+  - rationale
+  - scopeOfDecision
+  - nextAction
+properties:
+  schemaVersion:
+    const: "0.1"
+  matterId:
+    type: string
+    pattern: '^CG-[0-9]{4}$'
+  status:
+    enum: [ratified, revision-required, parked, rejected]
+  authority:
+    const: operator
+  decidedAt:
+    type: string
+    format: date-time
+  artifact:
+    type: object
+    additionalProperties: false
+    required: [reference, versionOrCommit]
+    properties:
+      reference: {type: string}
+      versionOrCommit: {type: string}
+  rationale:
+    type: string
+    minLength: 10
+  scopeOfDecision:
+    type: array
+    minItems: 1
+    items: {type: string}
+  conditions:
+    type: array
+    items: {type: string}
+  unresolved:
+    type: array
+    items: {type: string}
+  nextAction:
+    type: object
+    additionalProperties: false
+    required: [kind, description]
+    properties:
+      kind:
+        enum: [canon-action, revision, reopen-condition, archive-only, no-action]
+      description: {type: string}
+      authorized: {type: boolean}
+  canonAction:
+    type: object
+    additionalProperties: false
+    properties:
+      status:
+        enum: [not-authorized, authorized-pending, completed]
+      reference:
+        type: [string, 'null']
+  receipts:
+    type: array
+    items: {type: string}
+allOf:
+  - if:
+      properties:
+        status: {const: ratified}
+    then:
+      required: [artifact, canonAction]
+  - if:
+      properties:
+        status: {const: revision-required}
+    then:
+      properties:
+        nextAction:
+          properties:
+            kind: {const: revision}
