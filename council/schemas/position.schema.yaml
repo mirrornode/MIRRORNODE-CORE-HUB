@@ -1,0 +1,73 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://mirrornode.xyz/schemas/council/position.schema.yaml
+title: MIRRORNODE Council Position
+schemaVersion: "0.1"
+type: object
+additionalProperties: false
+required:
+  - schemaVersion
+  - id
+  - matterId
+  - author
+  - role
+  - kind
+  - createdAt
+  - source
+  - contentPath
+properties:
+  schemaVersion:
+    const: "0.1"
+  id:
+    type: string
+    pattern: '^POS-[0-9]{4}$'
+  matterId:
+    type: string
+    pattern: '^CG-[0-9]{4}$'
+  author:
+    type: string
+    minLength: 1
+  role:
+    type: string
+    minLength: 1
+  kind:
+    enum: [proposal, support, objection, amendment, critique, condition, dissent, synthesis-note]
+  createdAt:
+    type: string
+    format: date-time
+  source:
+    type: object
+    additionalProperties: false
+    required: [form, reference]
+    properties:
+      form:
+        enum: [agent-response, human-note, pull-request-review, issue-comment, document, external-research]
+      reference:
+        type: string
+      capturedBy:
+        type: string
+      receipt:
+        type: [string, 'null']
+  contentPath:
+    type: string
+  respondsTo:
+    type: array
+    uniqueItems: true
+    items:
+      type: string
+      pattern: '^POS-[0-9]{4}$'
+  supersedes:
+    type: [string, 'null']
+    pattern: '^POS-[0-9]{4}$'
+  stance:
+    enum: [support, support-with-conditions, oppose, neutral, unresolved]
+  claims:
+    type: array
+    items: {type: string}
+  requestedChanges:
+    type: array
+    items: {type: string}
+  provenanceNotes:
+    type: array
+    items: {type: string}
+  immutableOriginal:
+    const: true

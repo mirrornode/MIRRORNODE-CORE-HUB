@@ -1,0 +1,29 @@
+schemaVersion: "0.1"
+id: CG-0000
+title: Replace with matter title
+matterType: protocol
+initiator: operator
+createdAt: 1970-01-01T00:00:00Z
+updatedAt: 1970-01-01T00:00:00Z
+workflowState: intake
+disposition:
+  status: pending
+  authority: null
+  decidedAt: null
+  record: null
+decisionQuestion: Replace with the bounded decision question.
+scope:
+  includes: []
+  excludes: []
+authorityPath:
+  finalAuthority: operator
+  canonAction: separate-explicit-action
+requiredReviews: []
+optionalReviews: []
+referenceArtifacts: []
+openQuestions: []
+currentRevision: null
+nextRequiredStep: Complete framing.
+historyPath: history/
+notes:
+  - Automation may not move this matter into ratified status.

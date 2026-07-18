@@ -1,0 +1,66 @@
+schemaVersion: "0.1"
+id: CG-0028
+title: MIRRORFRAME v0.1 Schema Ratification
+matterType: protocol
+initiator: operator
+createdAt: 2026-07-18T14:08:49Z
+updatedAt: 2026-07-18T14:08:49Z
+workflowState: deliberating
+disposition:
+  status: pending
+  authority: null
+  decidedAt: null
+  record: null
+decisionQuestion: >-
+  Should MIRRORFRAME v0.1 be ratified as the shared governance contract for
+  MIRRORNODE surfaces, and if not, what exact schema corrections are required first?
+scope:
+  includes:
+    - MIRRORFRAME v0.1 content schema
+    - state and presentation distinction
+    - boundary pattern model
+    - primary-action governance
+    - publishability enforcement
+    - canonical examples
+  excludes:
+    - platform component implementation
+    - Parallax conformance implementation
+    - runtime authority changes
+    - deployment or route changes
+authorityPath:
+  finalAuthority: operator
+  canonAction: separate-explicit-action
+requiredReviews:
+  - theia
+  - merlin
+  - thoth
+optionalReviews:
+  - claude
+  - grok
+  - perplexity
+  - ptah
+  - osiris
+referenceArtifacts:
+  - id: PR-28
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/28
+    canonical: false
+  - id: MIRRORFRAME-SCHEMA-DRAFT
+    kind: document
+    href: ../../../docs/mirrorframe/MIRRORFRAME_V0_1_SCHEMA_RATIFICATION_DRAFT.md
+    canonical: false
+openQuestions:
+  - canonical Mirror Mirror route
+  - declaration storage location
+  - evidence requirements for reviewed state
+  - acknowledgement ownership
+  - vocabulary ownership
+  - production gate composition
+  - MopCon extension boundary
+currentRevision: ../../../docs/mirrorframe/MIRRORFRAME_V0_1_SCHEMA_RATIFICATION_DRAFT.md
+nextRequiredStep: Collect attributed review positions and prepare a source-linked synthesis packet.
+historyPath: history/
+notes:
+  - Synthesis-ready does not imply agreement or ratification.
+  - Automation may not set disposition.status to ratified.
+  - Ratification authorizes but does not perform canon action.

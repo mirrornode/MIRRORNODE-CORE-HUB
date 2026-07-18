@@ -1,0 +1,18 @@
+schemaVersion: "0.1"
+eventId: EVT-CG-0028-0001
+matterId: CG-0028
+occurredAt: 2026-07-18T14:08:49Z
+actor: operator
+kind: workflow-transition
+from: null
+to: deliberating
+reason: >-
+  MIRRORFRAME PR #28 contains a bounded ratification draft with known open
+  questions and requires attributed review before Operator disposition.
+source:
+  kind: pull-request
+  reference: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/28
+authorityEffect: none
+notes:
+  - This event records workflow state only.
+  - No disposition or canon authority is implied.
