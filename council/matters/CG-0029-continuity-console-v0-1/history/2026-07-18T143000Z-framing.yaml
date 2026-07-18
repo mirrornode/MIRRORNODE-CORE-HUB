@@ -1,0 +1,19 @@
+schemaVersion: "0.1"
+eventId: EVT-CG-0029-0001
+matterId: CG-0029
+occurredAt: 2026-07-18T14:30:00Z
+actor: theia
+kind: workflow-transition
+from: null
+to: framing
+reason: >-
+  The Operator directed Step 1: define the Continuity Console before code,
+  including its public/private boundary, data truth model, scorecard reuse,
+  and implementation scope.
+source:
+  kind: operator-direction
+  reference: conversation-2026-07-18-step-1
+authorityEffect: none
+notes:
+  - This opens a definition matter only.
+  - No implementation or deployment authority is granted.
