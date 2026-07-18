@@ -21,7 +21,7 @@ The Continuity Console is not MOPCON.
 
 | Surface | Purpose | Authority |
 |---|---|---|
-| Continuity Console | Read-only system orientation and verified continuity record | No execution, approval, mutation, or hidden access |
+| Continuity Console | Read-only system orientation and source-labeled continuity record | No execution, approval, mutation, or hidden access |
 | MOPCON | Private operator workflow and runtime control | Explicit Operator actions behind review boundaries |
 
 Public Continuity must never expose:
@@ -32,9 +32,10 @@ Public Continuity must never expose:
 - private trace bodies,
 - secrets or environment values,
 - internal-only infrastructure details,
-- raw customer or audit data.
+- raw customer or audit data,
+- direct private-console routes unless an authenticated access layer exists.
 
-When action is required, Continuity links to the appropriate private or review surface. It does not perform the action.
+When action is required, Continuity states that Operator action is required and points to a safe public explanation or authenticated handoff. It does not perform the action.
 
 ## 3. MIRRORFRAME declaration
 
@@ -45,17 +46,17 @@ const continuityFrame: MirrorFrameDeclaration = {
     id: "continuity-console",
     name: "Continuity Console",
     purpose:
-      "Presents a read-only, source-labeled view of current MIRRORNODE status, active work, council matters, and recent verified change.",
+      "Presents a read-only, source-labeled view of MIRRORNODE status, active work, council matters, and recent verified change.",
   },
   identity: {
     systemName: "MIRRORNODE",
     frameLabel: "MIRRORFRAME",
     systemHomeHref: "https://mirrornode.xyz",
-    mirrorMirrorHref: "https://mirrornode.xyz/mirror",
+    mirrorMirrorHref: "/mirror",
   },
   presentation: {
-    state: "reviewed",
-    description: "Source-labeled continuity snapshot",
+    state: "static",
+    description: "Build-generated continuity view",
   },
   boundary: {
     pattern: "no-execution",
@@ -69,13 +70,15 @@ const continuityFrame: MirrorFrameDeclaration = {
   },
   stewardship: {
     steward: "MIRRORNODE",
-    authorityReminder: "Status is limited to the cited sources and verification time.",
-    mirrorMirrorHref: "https://mirrornode.xyz/mirror",
+    authorityReminder: "Status is limited to the cited sources and generation time.",
+    mirrorMirrorHref: "/mirror",
   },
 };
 ```
 
-`reviewed` is valid only when the displayed snapshot has completed a defined verification pass. Unverified or fallback content must use `static` and disclose its source condition.
+The surface remains `static` in v0.1. Individual records may be source-verified, but source verification does not convert the page itself into a human-reviewed artifact.
+
+The final Mirror Mirror route remains subject to the MIRRORFRAME ratification decision. `/mirror` is a proposed internal route, not a confirmed production URL.
 
 ## 4. Page anatomy
 
@@ -83,20 +86,22 @@ const continuityFrame: MirrorFrameDeclaration = {
 
 Required fields:
 
-- overall orientation status,
-- verified-at timestamp,
+- snapshot condition,
+- generated-at timestamp,
 - data source mode,
-- stale or degraded disclosure,
-- link back to Mirror Mirror.
+- stale, partial, or unavailable disclosure,
+- return path.
 
 Allowed source modes:
 
-- `verified-snapshot`
+- `source-verified-snapshot`
 - `partial-snapshot`
 - `static-fallback`
 - `unavailable`
 
-The interface must never silently present fallback data as live data.
+The header must not synthesize a single system health score. It describes the completeness and freshness of the snapshot only.
+
+The interface must never silently present fallback data as live or current data.
 
 ### 4.2 Current system
 
@@ -117,9 +122,9 @@ Each item declares:
 - last verification time,
 - evidence link,
 - public boundary,
-- safe next route.
+- safe next route or `Operator action required` label.
 
-Do not expose internal hostnames, secrets, trace payloads, or unsupported live-state claims.
+Do not expose internal hostnames, secrets, trace payloads, private routes, or unsupported live-state claims.
 
 ### 4.3 Active work
 
@@ -160,7 +165,7 @@ It must not display `ratified` unless an Operator disposition record exists.
 
 ### 4.5 Continuity record
 
-Shows a concise chronological record of verified changes:
+Shows a concise chronological record of source-verified changes:
 
 - merges,
 - dispositions,
@@ -193,8 +198,8 @@ Recommended types:
 
 ```ts
 type ContinuityFreshness = "current" | "aging" | "stale" | "unknown";
-type ContinuityVisibility = "public" | "operator-link-only";
-type ContinuityAuthority = "informational" | "reviewed-record";
+type ContinuityVisibility = "public" | "operator-summary-only";
+type ContinuityAuthority = "informational" | "source-verified" | "operator-disposition";
 
 type ContinuityEvidence = {
   source: string;
@@ -209,19 +214,37 @@ Rules:
 
 1. No item may claim current status without a timestamp and source.
 2. Missing data must render as unavailable, not healthy.
-3. Mock data must be labeled and must not contribute to an overall health claim.
-4. Public data must be allowlisted rather than filtered after retrieval.
-5. Operator-only records may be represented by safe summaries and private links, never by copied sensitive content.
+3. Mock data must be labeled and must not contribute to any overall status claim.
+4. Public data must be allowlisted before snapshot generation.
+5. Operator-only records may be represented by safe summaries, never by copied sensitive content.
+6. `source-verified` means the source and timestamp were validated; it does not mean a human approved the underlying system state.
+7. `operator-disposition` may only be used for an actual Operator disposition record.
 
-## 6. Source adapters
+## 6. Source and generation model
+
+### v0.1 generation ruling
+
+Continuity v0.1 uses a build-generated static snapshot.
+
+A controlled generation step gathers allowlisted public data, writes a typed snapshot artifact, and records `generatedAt`. The public page renders that artifact without holding GitHub credentials or calling private systems at request time.
+
+This avoids:
+
+- exposing tokens,
+- public rate-limit dependence,
+- unstable request-time failures,
+- accidental private-data retrieval,
+- ambiguous live-state claims.
 
 ### v0.1 allowed sources
 
 - GitHub pull requests, commits, and checks,
 - Council Grounds matter files in CORE-HUB,
 - explicit static surface registry,
-- safe runtime health summary after local verification,
-- safe MOPCON availability summary after local verification.
+- safe runtime health summary captured during a documented verification pass,
+- safe MOPCON availability summary captured during a documented verification pass.
+
+Runtime and MOPCON summaries age according to their captured timestamp. A local verification result must not be described as currently live after its freshness window expires.
 
 ### Deferred sources
 
@@ -230,7 +253,8 @@ Rules:
 - finances,
 - customer records,
 - raw runtime traces,
-- autonomous agent status inference.
+- autonomous agent status inference,
+- request-time GitHub API calls from the public page.
 
 Connected personal services must not enter the public Continuity Console without a separate privacy and authority decision.
 
@@ -243,7 +267,7 @@ Retain from `apps/mirrornode-scorecard`:
 - last-sync display,
 - card-based system overview,
 - incident or attention-list pattern,
-- live/fallback adapter concept.
+- adapter concept.
 
 Replace or revise:
 
@@ -252,7 +276,8 @@ Replace or revise:
 - raw API and WebSocket URL display,
 - active-agent count without evidence,
 - incident data that is mock or unsupported,
-- silent mock fallback behavior.
+- silent mock fallback behavior,
+- request-time live endpoint assumptions.
 
 The old scorecard remains a design and adapter reference. The canonical product route should be implemented in `mirrornode-platform` rather than deployed as a separate public application.
 
@@ -275,20 +300,23 @@ Private operational depth remains in MOPCON, including:
 - trace retrieval,
 - Operator notes.
 
+In v0.1, public Continuity does not expose a direct MOPCON URL. It may display `Operator action required` and a safe handoff description.
+
 ## 9. v0.1 implementation boundary
 
 ### In scope
 
 - new `/continuity` route in Platform,
-- static typed data contract,
+- typed build-generated snapshot contract,
 - source and verification labels,
 - Current system section,
 - Active work section,
 - Council matters section,
 - Continuity record section,
-- links to evidence and private MOPCON where appropriate,
+- safe evidence links,
 - responsive and accessible rendering,
-- explicit unavailable and stale states.
+- explicit unavailable and stale states,
+- a generation script or build step for the allowlisted snapshot.
 
 ### Out of scope
 
@@ -296,10 +324,12 @@ Private operational depth remains in MOPCON, including:
 - automatic PR mutation,
 - autonomous council transitions,
 - realtime sockets,
-- email/calendar/finance ingestion,
+- email, calendar, or finance ingestion,
 - private trace display,
+- direct private-console links without authentication,
 - cross-repository write actions,
-- automatic health conclusions from incomplete data.
+- automatic health conclusions from incomplete data,
+- request-time public GitHub API access.
 
 ## 10. Acceptance criteria
 
@@ -309,9 +339,11 @@ The definition is ready for implementation when:
 2. every displayed status has a source and verification rule,
 3. mock fallback cannot appear as live truth,
 4. Council Grounds state and disposition are represented separately,
-5. MOPCON actions remain private and linked rather than duplicated,
-6. the scorecard reuse plan is accepted,
-7. the Operator approves the implementation boundary.
+5. MOPCON actions remain private and are not duplicated,
+6. the page does not create a synthetic overall health score,
+7. v0.1 uses a build-generated allowlisted snapshot,
+8. the scorecard reuse plan is accepted,
+9. the Operator approves the implementation boundary.
 
 ## 11. Decision summary
 
@@ -319,4 +351,4 @@ Continuity Console v0.1 should be implemented as a read-only `/continuity` route
 
 It provides orientation, not control.
 
-It may report verified state, active work, council matters, and recent change. It may not execute, approve, infer hidden state, or silently substitute mock data for evidence.
+It reports source-labeled state, active work, council matters, and recent change from a build-generated snapshot. It does not execute, approve, infer hidden state, expose private routes, create a synthetic health score, or silently substitute mock data for evidence.
