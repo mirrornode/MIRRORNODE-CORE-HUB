@@ -1,0 +1,19 @@
+schemaVersion: "0.1"
+eventId: EVT-CG-0029-0002
+matterId: CG-0029
+occurredAt: 2026-07-18T16:10:00Z
+actor: theia
+kind: workflow-transition
+from: framing
+to: assembled
+reason: >-
+  The definition now separates public orientation from private operator action,
+  uses a build-generated allowlisted snapshot, avoids synthetic health scoring,
+  and records the first attributed review position.
+source:
+  kind: pull-request
+  reference: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/29
+authorityEffect: none
+notes:
+  - Assembly does not imply approval or implementation authority.
+  - Ptah feasibility review and Osiris boundary review remain required.
