@@ -4,8 +4,8 @@ title: Continuity Console v0.1 Definition
 matterType: product
 initiator: operator
 createdAt: 2026-07-18T14:30:00Z
-updatedAt: 2026-07-18T14:30:00Z
-workflowState: framing
+updatedAt: 2026-07-18T16:10:00Z
+workflowState: assembled
 disposition:
   status: pending
   authority: null
@@ -60,14 +60,16 @@ referenceArtifacts:
     href: https://github.com/mirrornode/mirrornode-operator-console/pull/3
     canonical: false
 openQuestions:
-  - exact verification cadence and freshness thresholds
-  - whether reviewed snapshots require a signed manifest in v0.1
+  - exact freshness windows by source class
+  - whether snapshot generation requires a signed manifest in v0.1
   - navigation placement within Platform
-  - whether public GitHub status is fetched at request time or generated during build
+  - final canonical Mirror Mirror route
 currentRevision: ../../../docs/continuity/CONTINUITY_CONSOLE_V0_1_DEFINITION.md
-nextRequiredStep: Review the public/private boundary and data truth model before implementation authority is granted.
+nextRequiredStep: Obtain Ptah feasibility review and Osiris boundary review before Operator disposition.
 historyPath: history/
 notes:
   - Continuity is read-only orientation, not operator control.
   - Missing or mock data must not render as live truth.
   - Personal integrations are excluded from the public surface in v0.1.
+  - v0.1 uses a build-generated allowlisted snapshot.
+  - Public v0.1 does not expose a direct private MOPCON route.
