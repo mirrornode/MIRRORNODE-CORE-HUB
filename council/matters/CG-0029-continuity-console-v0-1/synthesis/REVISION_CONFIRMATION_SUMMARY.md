@@ -59,7 +59,9 @@ These are not defects in the revised definition.
 
 No unresolved conflict remains between the required positions at the definition level.
 
-Ptah confirms technical implementability. Osiris confirms that the revised publication boundary is sufficient as a governing definition while retaining later execution gates. Both preserve the recorded separation between definition approval, implementation authority, snapshot generation, deployment, and publication.
+Ptah confirms technical implementability. Osiris confirms that the revised publication boundary is sufficient as a governing definition while preserving later gates.
+
+Both positions preserve the recorded separation between definition approval, implementation authority, snapshot generation, deployment, and publication.
 
 ## Readiness conclusion
 
