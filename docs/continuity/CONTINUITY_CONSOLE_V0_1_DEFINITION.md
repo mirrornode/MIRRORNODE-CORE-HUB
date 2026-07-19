@@ -1,43 +1,70 @@
 # MIRRORNODE Continuity Console v0.1
 
-**Status:** Definition Draft  
+**Status:** Revised Definition Draft  
+**Revision authority:** CG-0029 Operator disposition — revision required  
 **Implementation authority:** Not granted by this document  
+**Publication authority:** Not granted by this document  
 **Reference implementation target:** `mirrornode-platform/continuity`
 
 ## 1. Purpose
 
 The Continuity Console is the read-only MIRRORNODE orientation surface for answering four questions:
 
-1. Where does the system currently stand?
-2. What work is active or blocked?
-3. What council matters require review or decision?
-4. What changed since the last verified checkpoint?
+1. Where does the publicly disclosable system record currently stand?
+2. What publicly disclosable work is active, blocked, stale, or completed?
+3. What publicly disclosable council matters require review or decision?
+4. What publicly disclosable changes occurred within the defined display horizon?
 
-It repurposes the existing System Integrity Scorecard rather than creating a new product.
+It repurposes the existing System Integrity Scorecard as a design and adapter reference rather than creating or deploying a separate product.
 
-## 2. Product boundary
+Continuity publishes intentionally approved public facts. It is not a filtered projection of MOPCON, the agent runtime, connected services, or private repositories.
+
+## 2. Product and authority boundary
 
 The Continuity Console is not MOPCON.
 
 | Surface | Purpose | Authority |
 |---|---|---|
-| Continuity Console | Read-only system orientation and source-labeled continuity record | No execution, approval, mutation, or hidden access |
-| MOPCON | Private operator workflow and runtime control | Explicit Operator actions behind review boundaries |
+| Continuity Console | Read-only public orientation and source-labeled continuity record | No execution, approval, mutation, hidden access, or inferred authority |
+| MOPCON | Private operator workflow and runtime control | Explicit Operator actions behind private review and approval boundaries |
 
-Public Continuity must never expose:
+Public Continuity must never expose or reproduce:
 
-- execution prompts,
-- Operator notes,
-- approval or rejection controls,
-- private trace bodies,
-- secrets or environment values,
-- internal-only infrastructure details,
-- raw customer or audit data,
-- direct private-console routes unless an authenticated access layer exists.
+- execution objectives, prompts, plans, rationales, results, or routing,
+- Operator notes or approval and rejection activity,
+- trace, session, request, correlation, or internal sequential identifiers,
+- private runtime health detail, model configuration, agent availability, or topology,
+- secrets, credentials, environment values, connection strings, cookies, or headers,
+- private or local URLs, hostnames, IP addresses, ports, sockets, preview deployments, or authenticated routes,
+- customer, audit-client, prospect, vendor, payment, financial, contractual, calendar, email, contact, family, identity, or location data,
+- unpublished vulnerabilities, security incidents, exploit detail, defensive gaps, or remediation status,
+- private repository names, branches, commits, pull requests, checks, artifacts, logs, or file paths,
+- raw Council positions, objections, rationale, missing-review details, or next actions unless separately approved for public disclosure,
+- generated summaries of private records,
+- mock incidents, unsupported counts, or inferred system health.
 
-When action is required, Continuity states that Operator action is required and points to a safe public explanation or authenticated handoff. It does not perform the action.
+Nothing becomes safe for publication merely because it has a source, type, timestamp, or public-looking label.
 
-## 3. MIRRORFRAME declaration
+When further status cannot be disclosed, the default public wording is:
+
+> Further status is not publicly available.
+
+`Operator action required` may appear only when the existence and description of the action have received separate affirmative publication approval.
+
+## 3. Separate authorization gates
+
+The following are distinct decisions:
+
+1. approval of this definition,
+2. authorization to implement the route,
+3. authorization to generate a populated snapshot,
+4. human approval of the first populated public snapshot,
+5. authorization to deploy or publish,
+6. later approval of material source, field, retention, or visibility changes.
+
+Approval at one gate does not imply approval at another.
+
+## 4. MIRRORFRAME declaration
 
 ```ts
 const continuityFrame: MirrorFrameDeclaration = {
@@ -46,13 +73,13 @@ const continuityFrame: MirrorFrameDeclaration = {
     id: "continuity-console",
     name: "Continuity Console",
     purpose:
-      "Presents a read-only, source-labeled view of MIRRORNODE status, active work, council matters, and recent verified change.",
+      "Presents a read-only, source-labeled view of intentionally approved public MIRRORNODE status, work, matters, and recent change.",
   },
   identity: {
     systemName: "MIRRORNODE",
     frameLabel: "MIRRORFRAME",
     systemHomeHref: "https://mirrornode.xyz",
-    mirrorMirrorHref: "/mirror",
+    mirrorMirrorHref: null,
   },
   presentation: {
     state: "static",
@@ -60,52 +87,69 @@ const continuityFrame: MirrorFrameDeclaration = {
   },
   boundary: {
     pattern: "no-execution",
-    statement: "Read-only orientation; no execution, approval, or hidden system access.",
+    statement:
+      "Read-only public orientation; no execution, approval, hidden-system access, or publication of unapproved private-derived material.",
   },
   primaryAction: {
     mode: "enabled",
-    label: "Inspect current matters",
+    label: "Inspect public matters",
     href: "#council-matters",
     intent: "inspect",
   },
   stewardship: {
     steward: "MIRRORNODE",
-    authorityReminder: "Status is limited to the cited sources and generation time.",
-    mirrorMirrorHref: "/mirror",
+    authorityReminder:
+      "Source checking does not approve the underlying system, decision, security state, or publication scope.",
+    mirrorMirrorHref: null,
   },
 };
 ```
 
-The surface remains `static` in v0.1. Individual records may be source-verified, but source verification does not convert the page itself into a human-reviewed artifact.
+The surface remains `static` in v0.1. Individual records may display `source checked`, but that label means only that the cited public source and verification time were checked.
 
-The final Mirror Mirror route remains subject to the MIRRORFRAME ratification decision. `/mirror` is a proposed internal route, not a confirmed production URL.
+Visible source-check wording must include or link to this clarification:
 
-## 4. Page anatomy
+> Source and timestamp checked; underlying state not approved by this label.
 
-### 4.1 Snapshot header
+The final Mirror Mirror route remains unresolved and must not be fabricated in this definition or implementation.
+
+## 5. Page anatomy
+
+### 5.1 Snapshot header
 
 Required fields:
 
 - snapshot condition,
 - generated-at timestamp,
+- last successful generation timestamp,
 - data source mode,
-- stale, partial, or unavailable disclosure,
-- return path.
+- partial, stale, disputed, withdrawn, or unavailable disclosure,
+- safe return path.
+
+Allowed snapshot conditions:
+
+- `complete`
+- `partial`
+- `stale`
+- `disputed`
+- `unavailable`
 
 Allowed source modes:
 
-- `source-verified-snapshot`
+- `source-checked-snapshot`
 - `partial-snapshot`
-- `static-fallback`
+- `retained-validated-snapshot`
 - `unavailable`
 
-The header must not synthesize a single system health score. It describes the completeness and freshness of the snapshot only.
+`retained-validated-snapshot` means a previously schema-valid and publication-approved artifact retained after a later generation failure. It never means mock, synthetic, regenerated, or silently refreshed content.
 
-The interface must never silently present fallback data as live or current data.
+The header must not synthesize a single system-health score. It describes snapshot completeness, age, and disclosure condition only.
 
-### 4.2 Current system
+`generatedAt` is the artifact-generation time. It must never be presented as the time the underlying facts were verified.
 
-Shows safe summaries for:
+### 5.2 Current system
+
+The section may show only separately approved public projection records for registered surfaces such as:
 
 - Platform,
 - agent runtime,
@@ -113,183 +157,331 @@ Shows safe summaries for:
 - Parallax,
 - Osiris,
 - Council Grounds,
-- other explicitly registered surfaces.
+- other explicitly registered public surfaces.
 
-Each item declares:
+Private-system observations may enter only as pre-approved public projection records. The generator must not inspect a private payload and decide what excerpt is safe.
 
+Each public system item declares:
+
+- public item identifier that does not expose an internal sequential identifier,
 - surface name,
-- current presentation state,
-- last verification time,
-- evidence link,
-- public boundary,
-- safe next route or `Operator action required` label.
+- public presentation state,
+- verification time,
+- record condition,
+- approved evidence link or no link,
+- public boundary statement,
+- safe next route or nondisclosure wording.
 
-Do not expose internal hostnames, secrets, trace payloads, private routes, or unsupported live-state claims.
+Static verification must not be labeled `live`, `online now`, or equivalent.
 
-### 4.3 Active work
+### 5.3 Active work
 
-Shows repository-backed work items such as:
+The section may show only work records explicitly approved for public aggregation.
 
-- open pull requests,
-- draft pull requests,
-- blocked or failing checks,
-- recently merged work,
-- declared next technical action.
+Candidate records include:
+
+- public pull requests,
+- public check results,
+- public recently merged work,
+- public declared next technical action.
+
+Public repository visibility alone does not authorize aggregation.
 
 Every work item must distinguish:
 
-- active,
-- waiting for verification,
-- blocked,
-- stale review,
-- completed.
+- `active`
+- `waiting-verification`
+- `blocked`
+- `stale-review`
+- `completed`
+- `disputed`
+- `corrected`
+- `withdrawn`
 
-A failed check is not automatically a failed product state. The display must identify the exact PR or commit context.
+A failed check is not automatically a failed product state. The display must identify the exact approved public context without exposing private strategy, security detail, staffing cadence, or launch timing.
 
-### 4.4 Council matters
+### 5.4 Council matters
 
-Shows registered Council Grounds matters with:
+Council data requires a separate public projection. The raw matter file is not automatically the public record.
 
-- matter ID,
-- decision question,
+A public Council projection may include only fields explicitly marked for publication, such as:
+
+- public matter label,
+- approved decision question,
 - workflow state,
 - disposition status,
-- required reviews received or missing,
-- unresolved objections,
-- next required step,
-- source link.
+- approved next-step summary,
+- approved public source link.
 
-The page must keep workflow state separate from Operator disposition.
+Raw positions, objections, reviewer gaps, detailed rationale, and internal next actions remain excluded unless separately approved.
 
-It must not display `ratified` unless an Operator disposition record exists.
+Workflow state and Operator disposition must remain separate.
 
-### 4.5 Continuity record
+`ratified` may appear only when an attributable Operator disposition record exists and the public projection accurately describes the scope of that disposition.
 
-Shows a concise chronological record of source-verified changes:
+### 5.5 Continuity record
 
-- merges,
-- dispositions,
-- canon actions,
-- handoff receipts,
+The public continuity record is a bounded display projection, not the authoritative archive.
+
+Allowed event classes:
+
+- merge,
+- disposition,
+- canon action,
+- handoff receipt,
 - deployment verification,
-- material state changes.
+- material state change,
+- correction,
+- withdrawal.
 
-Each entry requires:
+Each public entry requires:
 
-- timestamp,
-- event type,
-- source reference,
-- actor or authority,
-- short factual description.
+- non-enumerable public identifier,
+- event time,
+- record condition,
+- approved source reference or no link,
+- actor or authority label appropriate for publication,
+- short factual description,
+- correction target where applicable.
 
-The record is append-oriented. Corrections must preserve the original entry and add a correcting record.
+The authoritative source remains append-oriented. The public projection may tombstone unsafe material.
 
-## 5. Data truth model
+A public tombstone states that a record was corrected or withdrawn without repeating the prohibited content. Sensitive originals must not remain inside client-readable JSON, HTML, source maps, assets, or downloadable static artifacts.
 
-Every displayed item must include or inherit:
+### 5.6 Public history horizon
 
-- `source`
-- `verifiedAt`
-- `freshness`
-- `visibility`
-- `authority`
+v0.1 displays at most the most recent 90 days or 50 public events, whichever is smaller.
 
-Recommended types:
+Older authoritative records remain in their source repositories but are not automatically aggregated into the public route.
+
+Any change to this horizon requires a separate review of scraping, inference, operational-cadence, and enumeration risk.
+
+## 6. Data truth and record-condition model
 
 ```ts
 type ContinuityFreshness = "current" | "aging" | "stale" | "unknown";
-type ContinuityVisibility = "public" | "operator-summary-only";
-type ContinuityAuthority = "informational" | "source-verified" | "operator-disposition";
+
+type ContinuityRecordCondition =
+  | "normal"
+  | "partial"
+  | "disputed"
+  | "corrected"
+  | "withdrawn"
+  | "unavailable";
+
+type ContinuityAuthority =
+  | "informational"
+  | "source-checked"
+  | "operator-disposition";
+
+type ContinuitySourceClass =
+  | "github-pr"
+  | "github-check"
+  | "council-projection"
+  | "deployment-verification"
+  | "runtime-public-projection"
+  | "mopcon-public-projection"
+  | "surface-registry";
 
 type ContinuityEvidence = {
-  source: string;
+  sourceClass: ContinuitySourceClass;
+  sourceLabel: string;
+  sourceHref: string | null;
   verifiedAt: string | null;
   freshness: ContinuityFreshness;
-  visibility: ContinuityVisibility;
+  condition: ContinuityRecordCondition;
   authority: ContinuityAuthority;
 };
 ```
 
 Rules:
 
-1. No item may claim current status without a timestamp and source.
-2. Missing data must render as unavailable, not healthy.
-3. Mock data must be labeled and must not contribute to any overall status claim.
-4. Public data must be allowlisted before snapshot generation.
-5. Operator-only records may be represented by safe summaries, never by copied sensitive content.
-6. `source-verified` means the source and timestamp were validated; it does not mean a human approved the underlying system state.
-7. `operator-disposition` may only be used for an actual Operator disposition record.
+1. No item may claim current status without a valid `verifiedAt` and approved public source.
+2. Missing data renders as unavailable, never healthy.
+3. Mock or synthetic data is prohibited from populated production snapshots.
+4. Public data is allowlisted before generation; denylist filtering is insufficient.
+5. Private-derived material is excluded unless it arrives as a separately approved public projection record.
+6. `source-checked` does not imply product, security, implementation, deployment, or publication approval.
+7. `operator-disposition` means only that an attributable Operator disposition record exists within the cited scope.
+8. Unknown fields are rejected.
+9. Arbitrary metadata bags are prohibited.
+10. Sources that disagree produce a `disputed` record; the generator does not select a winner.
+11. A disputed derived status is suppressed.
+12. A record whose public description becomes unsafe may be tombstoned as `withdrawn` while the authoritative source preserves the original.
 
-## 6. Source and generation model
+## 7. Freshness windows
 
-### v0.1 generation ruling
+Freshness is calculated from `verifiedAt`, the current rendering time, and the source class. It is never accepted as an unsupported editorial assertion.
 
-Continuity v0.1 uses a build-generated static snapshot.
+Default v0.1 windows:
 
-A controlled generation step gathers allowlisted public data, writes a typed snapshot artifact, and records `generatedAt`. The public page renders that artifact without holding GitHub credentials or calling private systems at request time.
+| Source class | Current | Aging | Stale |
+|---|---:|---:|---:|
+| GitHub pull request or check | 0–24 hours | >24–72 hours | >72 hours |
+| Council public projection | 0–72 hours | >72 hours–7 days | >7 days |
+| Deployment verification | 0–24 hours | >24–48 hours | >48 hours |
+| Runtime public projection | 0–4 hours | >4–12 hours | >12 hours |
+| MOPCON public projection | 0–4 hours | >4–12 hours | >12 hours |
+| Static surface registry | 0–30 days | >30–90 days | >90 days |
 
-This avoids:
+`verifiedAt: null` always produces `unknown` and cannot contribute to a current page-level condition.
 
-- exposing tokens,
-- public rate-limit dependence,
-- unstable request-time failures,
-- accidental private-data retrieval,
-- ambiguous live-state claims.
+Freshness is calculated during generation and independently recalculated during rendering. A historically current artifact cannot remain visually current indefinitely.
 
-### v0.1 allowed sources
+Snapshot-level status never overrides stale, disputed, or unavailable records.
 
-- GitHub pull requests, commits, and checks,
-- Council Grounds matter files in CORE-HUB,
-- explicit static surface registry,
-- safe runtime health summary captured during a documented verification pass,
-- safe MOPCON availability summary captured during a documented verification pass.
+## 8. Source, field, and link allowlists
 
-Runtime and MOPCON summaries age according to their captured timestamp. A local verification result must not be described as currently live after its freshness window expires.
+The generator uses checked-in allowlists for:
 
-### Deferred sources
+- permitted repositories and source locations,
+- permitted public projection files,
+- permitted record types,
+- permitted fields,
+- permitted enum values,
+- permitted evidence-link origins,
+- permitted redirect destinations.
 
-- email,
-- calendar,
-- finances,
-- customer records,
-- raw runtime traces,
-- autonomous agent status inference,
-- request-time GitHub API calls from the public page.
+Public evidence links must:
 
-Connected personal services must not enter the public Continuity Console without a separate privacy and authority decision.
+- use HTTPS,
+- resolve to an approved public origin,
+- resolve to a public resource,
+- reject authentication redirects,
+- reject private repositories and expiring artifact links,
+- reject local, preview, CI-artifact, raw-log, and private-console destinations.
 
-## 7. Existing scorecard reuse
+No arbitrary source text or URL is copied into a display field without validation.
 
-Retain from `apps/mirrornode-scorecard`:
+## 9. Snapshot generation and validation
 
-- status-band pattern,
+### 9.1 Artifact location
+
+The proposed generated artifact lives inside Platform at:
+
+```text
+content/continuity/snapshot.generated.json
+```
+
+It does not live under `public/` and is not automatically exposed as a raw endpoint.
+
+### 9.2 Separate commands
+
+```text
+npm run continuity:generate
+npm run continuity:validate
+```
+
+Generation and build validation remain separate.
+
+The production build may run:
+
+```text
+npm run continuity:validate && next build
+```
+
+The production build must not require source credentials or network access.
+
+### 9.3 Generator behavior
+
+The controlled generator:
+
+1. reads checked-in source, field, and link allowlists;
+2. reads only approved public sources and prepared public projection records;
+3. normalizes records into the strict contract;
+4. rejects unknown fields, unsupported enums, unapproved sources, and unsafe links;
+5. calculates freshness from source-class thresholds;
+6. records source revisions or references;
+7. calculates a content hash;
+8. writes a temporary artifact;
+9. validates the complete temporary artifact;
+10. atomically replaces the prior valid artifact only after all checks pass.
+
+The generator must not:
+
+- write to source repositories,
+- create, modify, merge, close, label, or comment on pull requests,
+- mutate Council matters,
+- access broader private data than required,
+- summarize private payloads into allegedly safe output,
+- create mock fallback data.
+
+### 9.4 Failure-closed behavior
+
+On generation or validation failure:
+
+- do not overwrite or delete the last valid artifact;
+- do not update `generatedAt` or `lastSuccessfulAt`;
+- record the failed attempt only in controlled CI or generation receipts;
+- render a retained artifact only with its original timestamps and actual age;
+- mark retained content stale when its freshness window expires;
+- display `Snapshot unavailable` when no valid artifact exists;
+- fail the production build when no valid artifact exists;
+- never produce plausible-looking mock content;
+- never imply that retention equals renewed verification.
+
+A partial permitted input may produce a partial snapshot only when missing sections are explicitly unavailable and the header reports `partial`.
+
+### 9.5 Source disagreement
+
+When approved sources disagree:
+
+- preserve attributable public references and verification times,
+- mark the affected record `disputed`,
+- suppress derived conclusions,
+- do not automatically select a winner,
+- withhold the dispute from public display when describing it would cross a privacy boundary.
+
+## 10. Minimal provenance
+
+A v0.1 snapshot requires:
+
+- schema version,
+- generated-at time,
+- generation attempt time,
+- last successful generation time,
+- source revision or reference list,
+- content hash,
+- generator version,
+- record counts by section,
+- snapshot condition.
+
+A signed manifest is deferred for v0.1 while generation and deployment remain inside one controlled CI trust boundary. Signing becomes required before snapshots cross trust domains or are generated outside the deployment chain.
+
+## 11. Existing scorecard reuse
+
+Retain as patterns:
+
+- status-band layout,
 - source disclosure,
-- last-sync display,
+- last-sync or generated-at display,
 - card-based system overview,
-- incident or attention-list pattern,
-- adapter concept.
+- attention-list hierarchy,
+- degraded and unavailable-state treatment,
+- adapter separation between source records and presentation.
 
-Replace or revise:
+Rewrite for Next.js and the new contract:
 
-- `detached local surface` framing,
-- assumed Theia event/state API dependency,
-- raw API and WebSocket URL display,
-- active-agent count without evidence,
-- incident data that is mock or unsupported,
-- silent mock fallback behavior,
-- request-time live endpoint assumptions.
+- the Vite application shell,
+- client-side `useEffect` loading flow,
+- live endpoint adapter,
+- Vite environment configuration,
+- API and WebSocket URL display,
+- active-agent count,
+- incident mock data,
+- silent catch-to-mock fallback,
+- live-versus-mock source model,
+- types derived from sample or mock data.
 
-The old scorecard remains a design and adapter reference. The canonical product route should be implemented in `mirrornode-platform` rather than deployed as a separate public application.
+The canonical route is implemented in Platform as a static server component. The detached Vite app is not imported wholesale.
 
-## 8. Route and visibility ruling
+## 12. Route and private-surface boundary
 
-Canonical public route:
+Canonical proposed public route:
 
 ```text
 /continuity
 ```
-
-Public Continuity contains safe, read-only summaries.
 
 Private operational depth remains in MOPCON, including:
 
@@ -298,57 +490,85 @@ Private operational depth remains in MOPCON, including:
 - approval and rejection,
 - execution,
 - trace retrieval,
-- Operator notes.
+- Operator notes,
+- private health and topology detail.
 
-In v0.1, public Continuity does not expose a direct MOPCON URL. It may display `Operator action required` and a safe handoff description.
+Public v0.1 exposes no direct MOPCON URL or access instruction.
 
-## 9. v0.1 implementation boundary
+## 13. Deployment and artifact inspection conditions
 
-### In scope
+Before first public deployment:
 
-- new `/continuity` route in Platform,
-- typed build-generated snapshot contract,
-- source and verification labels,
-- Current system section,
-- Active work section,
-- Council matters section,
-- Continuity record section,
-- safe evidence links,
-- responsive and accessible rendering,
-- explicit unavailable and stale states,
-- a generation script or build step for the allowlisted snapshot.
+1. all source-class freshness windows are implemented and tested;
+2. `verifiedAt` and `generatedAt` are visibly and semantically distinct;
+3. source, field, enum, repository, path, and outbound-link allowlists are checked in;
+4. unknown fields and schema drift fail closed;
+5. private-derived summaries are absent unless supplied as approved public projections;
+6. no request-time GitHub or private-system calls exist;
+7. no credentials exist in the deployed route or build output;
+8. MOPCON-derived objectives, plans, decisions, traces, notes, topology, and routes are absent;
+9. visible source-check wording cannot reasonably imply approval;
+10. stale, partial, disputed, corrected, withdrawn, and unavailable displays are verified;
+11. public-history horizon and non-enumerable identifiers are enforced;
+12. evidence links and redirects are validated;
+13. fixtures contain no production or private records;
+14. built HTML, JavaScript, JSON, source maps, metadata, comments, static assets, and published build artifacts are scanned for prohibited fields and strings;
+15. type-check, lint, contract tests, freshness tests, generator tests, rendering tests, production build, accessibility, and responsive checks pass;
+16. a human disclosure review approves the first populated snapshot;
+17. the Operator separately authorizes implementation and later publication.
+
+## 14. v0.1 implementation boundary
+
+### In scope only after separate authorization
+
+- `/continuity` static server route in Platform,
+- strict typed snapshot contract,
+- checked-in source, field, and link allowlists,
+- separate generation and validation commands,
+- Current system public projection section,
+- Active work public projection section,
+- Council public projection section,
+- bounded Continuity record section,
+- evidence and timestamp labels,
+- stale, partial, disputed, corrected, withdrawn, and unavailable states,
+- content hash and source-reference provenance,
+- build-output disclosure scan,
+- accessibility and responsive verification.
 
 ### Out of scope
 
-- automatic execution,
-- automatic PR mutation,
-- autonomous council transitions,
+- runtime execution,
+- automatic repository mutation,
+- autonomous Council transitions,
 - realtime sockets,
-- email, calendar, or finance ingestion,
+- request-time GitHub or private-system access,
 - private trace display,
-- direct private-console links without authentication,
-- cross-repository write actions,
-- automatic health conclusions from incomplete data,
-- request-time public GitHub API access.
+- direct private-console linking,
+- email, calendar, finance, contact, customer, payment, or contractual ingestion,
+- automatic health conclusions,
+- mock fallback,
+- aggregation of public data without affirmative publication approval,
+- publication of the first populated snapshot without human disclosure review and Operator authorization.
 
-## 10. Acceptance criteria
+## 15. Acceptance criteria for later implementation authorization
 
-The definition is ready for implementation when:
+A later confirmation matter may recommend implementation authorization only when:
 
-1. public and private fields are explicitly separated,
-2. every displayed status has a source and verification rule,
-3. mock fallback cannot appear as live truth,
-4. Council Grounds state and disposition are represented separately,
-5. MOPCON actions remain private and are not duplicated,
-6. the page does not create a synthetic overall health score,
-7. v0.1 uses a build-generated allowlisted snapshot,
-8. the scorecard reuse plan is accepted,
-9. the Operator approves the implementation boundary.
+1. Ptah confirms that the revised definition is implementable in current Platform without importing the Vite app wholesale;
+2. Osiris confirms that the revised definition satisfies the required disclosure, freshness, history, correction, and failure boundaries;
+3. source-class freshness windows are accepted;
+4. failure-closed and atomic replacement semantics are accepted;
+5. strict allowlists and URL validation are accepted;
+6. public projection, tombstone, history-horizon, and non-enumeration rules are accepted;
+7. implementation and publication remain separately authorized;
+8. the Operator issues a new explicit disposition granting implementation authority.
 
-## 11. Decision summary
+## 16. Revision summary
 
-Continuity Console v0.1 should be implemented as a read-only `/continuity` route in `mirrornode-platform`, using the existing scorecard as a design and adapter reference.
+This revision incorporates the conditions recorded by Ptah and Osiris under CG-0029.
 
-It provides orientation, not control.
+The route remains feasible and directionally supported, but implementation is not yet authorized.
 
-It reports source-labeled state, active work, council matters, and recent change from a build-generated snapshot. It does not execute, approve, infer hidden state, expose private routes, create a synthetic health score, or silently substitute mock data for evidence.
+The governing rule is:
+
+> Continuity publishes intentionally approved public facts. It does not automatically sanitize, summarize, or expose private operations.
