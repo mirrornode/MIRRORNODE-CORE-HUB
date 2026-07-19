@@ -1,0 +1,265 @@
+schemaVersion: "0.1"
+id: CG-0031
+title: Council Authorization Gate v0.1
+matterType: governance-enforcement-authorization
+initiator: operator
+createdAt: 2026-07-19T00:00:00Z
+updatedAt: 2026-07-19T00:00:00Z
+workflowState: proposed
+authorityEffect: none-until-operator-disposition
+
+disposition:
+  status: reserved
+  authority: operator
+  decidedAt: null
+  rationale: null
+
+decisionQuestion: >-
+  Should MIRRORNODE authorize a bounded Phase 0 implementation and local
+  validation of a reusable Council Authorization Gate, including a scoped CI
+  pilot for the mirrornode-platform /continuity boundary that verifies an
+  accepting Operator disposition exists in CG-0030 before the check may pass?
+
+derivedArchitecture:
+  councilRole: authority-record
+  operatorRole: final-authority
+  ledgerRole: non-operative-continuity
+  ciRole: deterministic-verification-and-failure
+  runtimeRole: execution-after-authorized-implementation
+  invariant: >-
+    The gate verifies previously recorded authority. It does not create,
+    infer, amend, revoke, or publish authority.
+
+anchors:
+  - id: CL-0000
+    kind: continuity-record
+    href: ../../../docs/continuity/OPERATOR_CONTINUITY_LEDGER_V0_1.md
+    requiredState: merged
+  - id: MIRRORNODE-CORE-HUB-PR-30
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/30
+    requiredState: merged
+  - id: CG-0030
+    kind: council-matter
+    href: ../CG-0030-continuity-console-phase-0-implementation-authority/
+    requiredState: merged-before-cg-0031-acceptance
+  - id: MIRRORNODE-CORE-HUB-PR-31
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/31
+    requiredState: merged-before-cg-0031-acceptance
+  - id: EXISTING-CANON-GATE
+    kind: engineering-reference
+    href: ../../../.github/workflows/canon-gate.yml
+    requiredState: reference-only
+
+target:
+  mechanism: council-authorization-gate-v0-1
+  authorityRepository: mirrornode/MIRRORNODE-CORE-HUB
+  implementationRepository: mirrornode/mirrornode-platform
+  pilotAuthorityMatter: CG-0030
+  pilotSurface: /continuity
+  phase: phase-0
+
+authorizationRequested:
+  contractDesign: true
+  validatorImplementation: true
+  localValidation: true
+  scopedCiWorkflow: true
+  ciPassFailBehavior: true
+  requiredBranchProtectionActivation: false
+  organizationWideRollout: false
+  runtimeEnforcement: false
+
+authorizedScopeRequested:
+  - strict-authorization-requirement-schema
+  - checked-in-accepting-disposition-allowlist
+  - exact-matter-id-validation
+  - exact-authority-repository-validation
+  - immutable-authority-commit-pinning
+  - exact-authority-record-path-validation
+  - operator-disposition-validation
+  - accepting-disposition-validation
+  - machine-readable-condition-validation
+  - reject-unknown-conditions
+  - reject-unsatisfied-conditions
+  - exact-implementation-repository-match
+  - protected-path-allowlist-match
+  - authorized-scope-match
+  - supersession-and-revocation-checks
+  - deterministic-reason-codes
+  - disclosure-minimized-ci-output
+  - failure-closed-validation
+  - fixture-based-positive-tests
+  - fixture-based-negative-tests
+  - scoped-mirrornode-platform-ci-pilot
+  - implementation-evidence-packet
+
+explicitlyNotAuthorized:
+  - authority-creation-by-ci
+  - authority-inference-by-ci
+  - authority-amendment-by-ci
+  - authority-revocation-by-ci
+  - council-record-writes
+  - continuity-ledger-writes
+  - implementation-repository-writes
+  - runtime-state-writes
+  - cross-repository-writes
+  - inferred-approval-from-merged-pr
+  - inferred-approval-from-review
+  - inferred-approval-from-ci-success
+  - inferred-approval-from-ledger-status
+  - inferred-approval-from-source-checked-status
+  - free-text-rationale-authority-inference
+  - mutable-branch-authority-source
+  - unpinned-remote-authority-source
+  - cached-last-known-good-authority
+  - bypass-or-override-mechanism
+  - emergency-self-authorization
+  - branch-protection-modification
+  - required-check-activation
+  - organization-wide-rollout
+  - all-repository-rollout
+  - unrelated-path-blocking
+  - runtime-modification
+  - mopcon-modification
+  - deployment
+  - publication
+  - production-data-ingestion
+  - private-deliberation-disclosure
+  - private-rationale-disclosure
+  - customer-data-disclosure
+  - secret-disclosure
+
+authoritySemantics:
+  sourceOfAuthority: operator-disposition-in-council-record
+  gateRole: verifier-only
+  acceptingDispositions:
+    - accepted
+    - accepted-with-conditions
+  prohibitedInferenceSources:
+    - merged-pull-request
+    - approved-review
+    - successful-ci-check
+    - continuity-ledger-status
+    - source-checked-artifact
+  operatorAuthorityRequired: true
+  decidedAtRequired: true
+  rationaleRequired: true
+
+conditionSemantics:
+  machineReadableRequired: true
+  freeTextMayNotSatisfyConditions: true
+  unknownConditionBehavior: fail
+  ambiguousConditionBehavior: fail
+  unsatisfiedConditionBehavior: fail
+  missingEvidenceBehavior: fail
+
+sourcePinning:
+  repositoryRequired: true
+  immutableCommitShaRequired: true
+  recordPathRequired: true
+  mutableBranchRefProhibited: true
+  tagOnlyRefProhibited: true
+
+scopeMatching:
+  matterIdExact: true
+  authorityRepositoryExact: true
+  implementationRepositoryExact: true
+  protectedPathAllowlistRequired: true
+  authorizedScopeMatchRequired: true
+  unrelatedChanges: not-governed-by-this-pilot
+
+failureBehavior:
+  missingRecord: fail
+  malformedRecord: fail
+  unpinnedRecord: fail
+  matterMismatch: fail
+  repositoryMismatch: fail
+  pathMismatch: fail
+  nonOperatorDisposition: fail
+  nonAcceptingDisposition: fail
+  unknownDisposition: fail
+  missingDecisionTimestamp: fail
+  missingRationale: fail
+  unknownCondition: fail
+  unsatisfiedCondition: fail
+  supersededRecord: fail
+  revokedAuthority: fail
+  conflictingAuthorityRecords: fail
+  authorityFallback: prohibited
+
+privacyAndDiagnostics:
+  minimumNecessaryOutput: true
+  allowedOutput:
+    - matter-id
+    - validation-stage
+    - pass-fail
+    - stable-reason-code
+    - safe-remediation-summary
+  prohibitedOutput:
+    - private-deliberation
+    - private-operator-rationale
+    - credentials
+    - customer-data
+    - internal-topology
+    - unrelated-governance-records
+
+pilotBoundary:
+  authorityMatter: CG-0030
+  authorityRepository: mirrornode/MIRRORNODE-CORE-HUB
+  implementationRepository: mirrornode/mirrornode-platform
+  protectedSurface: /continuity
+  workflowMayRunAndFail: true
+  requiredMergeCheck: false
+  branchProtectionChange: false
+  additionalRepositories: prohibited
+  additionalPaths: prohibited
+
+requiredReviews:
+  - ptah
+  - osiris
+
+reviewRequests:
+  ptah: review-requests/PTAH_CI_ENFORCEMENT_FEASIBILITY_REVIEW.md
+  osiris: review-requests/OSIRIS_AUTHORITY_PRIVACY_ABUSE_BOUNDARY_REVIEW.md
+
+acceptanceEvidence:
+  required:
+    - authorization-requirement-schema
+    - accepting-disposition-allowlist
+    - validator-source
+    - pinned-source-validation-test
+    - matter-id-mismatch-test
+    - repository-mismatch-test
+    - path-scope-mismatch-test
+    - non-operator-disposition-test
+    - non-accepting-disposition-test
+    - accepted-disposition-pass-test
+    - accepted-with-conditions-pass-test
+    - unknown-condition-failure-test
+    - unsatisfied-condition-failure-test
+    - superseded-record-failure-test
+    - revoked-authority-failure-test
+    - conflicting-record-failure-test
+    - disclosure-safe-diagnostics-test
+    - scoped-ci-pilot-result
+    - no-unrelated-path-enforcement-confirmation
+    - no-runtime-authority-confirmation
+
+postImplementationGates:
+  requiredMergeCheckActivationRequired: true
+  branchProtectionChangeRequired: true
+  broaderRepositoryRolloutRequired: true
+  additionalProtectedScopeRequired: true
+  separateCouncilMatterRequired: true
+
+nextRequiredStep: >-
+  Obtain Ptah and Osiris advisory reviews, then reserve implementation until a
+  recorded Operator disposition accepts CG-0031. PR #31 and CG-0030 must be
+  merged before CG-0031 may be accepted.
+
+notes:
+  - Creating CG-0031 does not authorize implementation or CI activation.
+  - Ptah and Osiris reviews are advisory and do not alter authority.
+  - The initial pilot is limited to CG-0030 and the Platform /continuity boundary.
+  - Required branch protection and broader rollout remain separate future decisions.
