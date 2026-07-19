@@ -1,0 +1,77 @@
+schemaVersion: "0.1"
+id: CG-0029
+title: Continuity Console v0.1 Definition
+matterType: product
+initiator: operator
+createdAt: 2026-07-18T14:30:00Z
+updatedAt: 2026-07-19T09:42:00Z
+workflowState: closed
+disposition:
+  status: revision-required
+  authority: operator
+  decidedAt: 2026-07-19T09:19:42Z
+  record: disposition/2026-07-19T091942Z-revision-required.yaml
+decisionQuestion: >-
+  Should MIRRORNODE repurpose the existing System Integrity Scorecard into a
+  read-only Continuity Console at /continuity, with private operational actions
+  remaining exclusively in MOPCON?
+scope:
+  includes:
+    - public continuity purpose and boundary
+    - scorecard reuse plan
+    - page anatomy
+    - data truth and freshness rules
+    - Council Grounds representation
+    - public versus private field separation
+    - v0.1 implementation boundary
+  excludes:
+    - route implementation
+    - runtime or MOPCON changes
+    - email, calendar, or finance ingestion
+    - autonomous status inference
+    - private trace exposure
+authorityPath:
+  finalAuthority: operator
+  canonAction: separate-explicit-action
+requiredReviews:
+  - theia
+  - ptah
+  - osiris
+optionalReviews:
+  - merlin
+  - thoth
+  - grok
+  - claude
+referenceArtifacts:
+  - id: CONTINUITY-DEFINITION-DRAFT
+    kind: document
+    href: ../../../docs/continuity/CONTINUITY_CONSOLE_V0_1_DEFINITION.md
+    canonical: false
+  - id: SCORECARD-APP
+    kind: repository
+    href: ../../../../apps/mirrornode-scorecard/
+    canonical: false
+  - id: PLATFORM-HOME
+    kind: repository
+    href: https://github.com/mirrornode/mirrornode-platform
+    canonical: false
+  - id: MOPCON-RUNTIME-PR-3
+    kind: pull-request
+    href: https://github.com/mirrornode/mirrornode-operator-console/pull/3
+    canonical: false
+openQuestions:
+  - explicit Operator authorization to finalize and merge PR #29 as a definition-and-record action
+  - later separate Operator decision on Platform implementation authority
+currentRevision: ../../../docs/continuity/CONTINUITY_CONSOLE_V0_1_DEFINITION.md
+nextRequiredStep: Operator decides whether PR #29 may be finalized and merged as a documentary definition record only; implementation remains a separate future matter.
+historyPath: history/
+notes:
+  - Continuity is read-only orientation, not operator control.
+  - Missing or mock data must not render as live truth.
+  - Personal integrations are excluded from the public surface in v0.1.
+  - v0.1 uses a build-generated allowlisted snapshot.
+  - Public v0.1 does not expose a direct private MOPCON route.
+  - All required reviews support the direction with conditions.
+  - Operator disposition is revision-required; implementation remains unauthorized.
+  - POS-0004 confirms all Ptah definition-level blockers are resolved.
+  - POS-0005 confirms all Osiris definition-level conditions are resolved; residual items are future implementation and authorization gates.

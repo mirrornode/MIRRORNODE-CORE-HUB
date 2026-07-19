@@ -1,0 +1,20 @@
+schemaVersion: "0.1"
+eventId: EVT-CG-0029-0004
+matterId: CG-0029
+occurredAt: 2026-07-19T09:19:42Z
+actor: operator
+kind: workflow-transition
+from: synthesis-ready
+to: closed
+reason: >-
+  The Operator selected Option B, accepting the Continuity Console direction in
+  principle while requiring the reconciled Ptah and Osiris controls before any
+  implementation authority may be granted.
+source:
+  kind: operator-disposition
+  reference: disposition/2026-07-19T091942Z-revision-required.yaml
+authorityEffect: revision-authorized
+notes:
+  - The definition revision is authorized.
+  - Platform implementation, deployment, and publication remain unauthorized.
+  - A later separate matter is required for confirmation and implementation authority.

@@ -1,0 +1,20 @@
+schemaVersion: "0.1"
+eventId: EVT-CG-0029-0003
+matterId: CG-0029
+occurredAt: 2026-07-19T09:11:00Z
+actor: theia
+kind: workflow-transition
+from: assembled
+to: synthesis-ready
+reason: >-
+  All required attributed positions were received and preserved. The completed
+  synthesis identifies shared conclusions, reconciles implementation and
+  disclosure tensions, and presents a bounded recommendation for Operator
+  disposition.
+source:
+  kind: decision-packet
+  reference: synthesis/OPERATOR_DECISION_PACKET_DRAFT.md
+authorityEffect: none
+notes:
+  - Synthesis-ready does not itself select a disposition.
+  - Final recommendation is revision-required before implementation authority.

@@ -1,0 +1,35 @@
+schemaVersion: "0.1"
+matterId: CG-0029
+status: revision-required
+authority: operator
+decidedAt: 2026-07-19T09:19:42Z
+rationale: >-
+  The Continuity Console direction is accepted in principle, but the definition
+  requires the reconciled freshness, generation-failure, disclosure,
+  public-history, evidence-link, and first-publication controls identified by
+  the required Ptah and Osiris reviews before implementation authority may be
+  granted.
+scopeOfDecision:
+  - authorize revision of CONTINUITY_CONSOLE_V0_1_DEFINITION.md against the bounded Ptah and Osiris requirements
+  - preserve all attributed positions and disagreement context
+  - prepare the revised definition for narrow confirmation review
+conditions:
+  - no Platform implementation before a later explicit Operator authorization
+  - no deployment or publication of a populated snapshot
+  - no MOPCON or runtime changes
+  - no personal-integration or private-data ingestion
+unresolved:
+  - confirmation that the revised definition satisfies Ptah implementation conditions
+  - confirmation that the revised definition satisfies Osiris disclosure conditions
+  - later Operator decision on implementation authority
+nextAction:
+  kind: revision
+  description: >-
+    Revise CONTINUITY_CONSOLE_V0_1_DEFINITION.md and return the revised definition
+    for narrow Ptah and Osiris confirmation review.
+  authorized: true
+canonAction:
+  status: not-authorized
+  reference: null
+receipts:
+  - operator-approval-in-conversation-2026-07-19T09:19:42Z
