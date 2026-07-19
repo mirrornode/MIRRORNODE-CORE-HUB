@@ -146,6 +146,22 @@ updated_at:
 - **Next action:** create the private evidence ledger and begin recording immediately
 - **Next checkpoint:** first reconciled monthly entry
 
+### CL-0008 — Business Identity Repository Baseline
+
+- **Type:** milestone and active workstream
+- **Status:** implemented at documentary-baseline level
+- **Authority:** merged commit `14b912372a845afcbb159d0122af94d9e4353400` on the private repository's `main` branch
+- **Authoritative source:** `INPhase-Resplendence-Cognition/inphase-mirrornode-resplendent-agentic-dynamics`
+- **Established:** repository charter, asset-inventory scaffold, Operator decision log, formation register, identity-architecture draft, and sensitive-file exclusions
+- **Custody:** private business-identity repository; the continuity ledger stores only the bounded reference and status
+- **Authorization state:** documentary preparation authorized; legal formation, filings, EIN application, banking, Stripe realignment, asset transfer, intellectual-property assignment, and contract execution remain unauthorized
+- **Publication state:** private; no public projection authorized
+- **Decision state:** working umbrella identity recorded as a draft; legal entity, service-facing trade name, ownership conclusions, and formation disposition remain unresolved
+- **Evidence:** commit `14b9123`; six new files and 133 insertions; `main` synchronized with `origin/main`
+- **Risks:** candidate identity mistaken for legal clearance, access or authorship mistaken for ownership, and premature account or asset changes
+- **Next action:** inventory current assets and account holders, then verify jurisdictional and name-clearance requirements before preparing an Operator decision packet
+- **Next checkpoint:** first populated asset inventory and evidence-backed formation/identity decision packet
+
 ## Active operational risks
 
 ### Continuity fragmentation
@@ -178,6 +194,12 @@ Presentation may outpace verified operation.
 
 **Control:** competition and public claims must be built from registered evidence only.
 
+### Identity draft mistaken for formation
+
+A repository name, working umbrella identity, draft architecture, or synchronized commit may be mistaken for legal formation, name clearance, ownership transfer, or commercial authority.
+
+**Control:** retain explicit separation between documentary preparation, Operator disposition, legal execution, account changes, and publication.
+
 ## Continuity checkpoint cadence
 
 After every meaningful session, register:
@@ -193,9 +215,11 @@ A future Librarian implementation may reconcile new commits, merged PRs, decisio
 
 ## Immediate sequence
 
-1. Open a separate Council matter for Continuity Console v0.1 implementation authorization.
-2. Define Librarian custody and reconciliation rules.
-3. Select the first complete Osiris matter as the reference case.
-4. Connect runtime, MOPCON, customer delivery, and evidence records to that matter.
-5. Begin the private Gemini competition evidence ledger.
-6. End each work session with a continuity checkpoint.
+1. Review and finalize this documentary continuity ledger.
+2. Open a separate Council matter for Continuity Console v0.1 implementation authorization.
+3. Define Librarian custody and reconciliation rules.
+4. Populate the private business asset inventory and prepare the bounded formation/identity decision sequence.
+5. Select the first complete Osiris matter as the reference case.
+6. Connect runtime, MOPCON, customer delivery, and evidence records to that matter.
+7. Begin the private Gemini competition evidence ledger.
+8. End each work session with a continuity checkpoint.
