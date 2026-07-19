@@ -5,6 +5,10 @@
 **Purpose:** preserve identity, authority, evidence, boundaries, and next checkpoints across active MIRRORNODE work  
 **Does not replace:** Operator dispositions, ratified canon, Council Grounds records, merged repository artifacts, or runtime evidence
 
+## Non-operative boundary
+
+This ledger is non-operative by itself. It records continuity and authority but does not instantiate runtime components, decide matters, execute actions, publish information, infer authorization, populate snapshots, or perform autonomous reconciliation.
+
 ## Authority order
 
 When records conflict, resolve them in this order:
@@ -70,6 +74,17 @@ updated_at:
 `not-requested`, `pending`, `revision-authorized`, `implementation-authorized`, `deployment-authorized`, `publication-authorized`, `rejected`, `expired`
 
 ## Initial continuity records
+
+### CL-0000 — Purpose of the Operator Continuity Ledger
+
+- **Type:** invariant
+- **Status:** permanent
+- **Authority:** Operator
+- **Purpose:** preserve the authoritative chain of identity, decisions, implementation state, evidence, and custody across the MIRRORNODE ecosystem
+- **Invariant:** the Ledger records; it does not decide, execute, publish, or infer authority
+- **Boundary:** the Ledger provides continuity between decision, authorization, implementation, evidence, and publication without collapsing those activities into one system
+- **Next action:** apply this invariant to every future `CL-XXXX` entry
+- **Next checkpoint:** any proposed change to the Ledger's authority or operative boundary requires explicit Operator disposition
 
 ### CL-0001 — Council Grounds v0.1
 
@@ -216,7 +231,7 @@ A future Librarian implementation may reconcile new commits, merged PRs, decisio
 ## Immediate sequence
 
 1. Review and finalize this documentary continuity ledger.
-2. Open a separate Council matter for Continuity Console v0.1 implementation authorization.
+2. Open a separate Council matter for Continuity Console v0.1 Phase 0 implementation authorization.
 3. Define Librarian custody and reconciliation rules.
 4. Populate the private business asset inventory and prepare the bounded formation/identity decision sequence.
 5. Select the first complete Osiris matter as the reference case.
