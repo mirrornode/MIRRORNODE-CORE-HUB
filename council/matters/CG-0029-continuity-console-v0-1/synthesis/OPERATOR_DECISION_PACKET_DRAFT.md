@@ -1,10 +1,10 @@
-# CG-0029 Operator Decision Packet — Draft
+# CG-0029 Operator Decision Packet
 
 **Matter:** Continuity Console v0.1 Definition  
-**Workflow state:** Assembled  
+**Workflow state:** Synthesis-ready  
 **Disposition:** Pending  
 **Decision authority:** Operator  
-**Packet status:** Incomplete — awaiting Ptah and Osiris positions
+**Packet status:** Complete for disposition
 
 ## 1. Decision required
 
@@ -12,157 +12,243 @@ Choose whether MIRRORNODE should proceed toward implementation of a public, read
 
 The proposed surface would reuse the existing System Integrity Scorecard as a design and adapter reference, render a build-generated allowlisted snapshot, and leave all execution and approval controls inside private MOPCON.
 
-## 2. Proposed decision statement
+## 2. Positions received
 
-> Approve Continuity Console v0.1 for implementation in `mirrornode-platform` as a static, read-only `/continuity` route using a typed, build-generated, allowlisted snapshot. The route may present source-labeled system orientation, active work, Council Grounds matters, and recent continuity records. It may not execute actions, mutate repositories, expose private MOPCON routes or data, ingest personal integrations, synthesize an overall health score, or present mock or stale data as current truth.
-
-This wording remains provisional until all required reviews are received.
-
-## 3. Evidence currently assembled
-
-| Evidence | Finding | Decision relevance |
+| Position | Stance | Core finding |
 |---|---|---|
-| Existing scorecard app | Real React/Vite surface with source badges, sync time, system cards, incident list, and live/mock adapter | Confirms reuse opportunity; also exposes silent fallback and unsupported-state risks |
-| Platform home metadata | Platform is intentionally a static public orientation surface without unsupported live-state claims | Supports `/continuity` placement if the route remains read-only and source-labeled |
-| MOPCON PR #3 | Contains runtime health, planning, approval/rejection, execution, and trace controls | Establishes the private action boundary that Continuity must not duplicate |
-| Council Grounds | Separates workflow state, attributed positions, synthesis, and Operator disposition | Gives Continuity a safe source for matter summaries without granting decision authority |
-| Theia position POS-0001 | Supports with conditions: static surface state, build snapshot, no direct MOPCON route, no synthetic health score | Conditions incorporated into the current definition |
+| Theia — POS-0001 | Support with conditions | Public orientation and private action must remain separate; use a static build snapshot; expose no direct MOPCON route; create no synthetic health score |
+| Ptah — POS-0002 | Support with conditions | Implementation is feasible as a static Next.js server route reading a strict local artifact; generation and build validation must remain separate |
+| Osiris — POS-0003 | Support with conditions | The artifact must be an intentionally approved public disclosure product, not an automatically sanitized projection of private systems |
 
-## 4. Current areas of agreement
+All required reviewers support the direction conditionally. No reviewer opposes the Continuity concept or identifies an architectural blocker.
 
-The assembled evidence currently supports these points:
+## 3. Areas of agreement
 
-1. Continuity and MOPCON are distinct surfaces.
-2. Continuity is orientation, not control.
-3. The scorecard should be reused conceptually rather than deployed as a separate product.
-4. Public data must be allowlisted before snapshot generation.
-5. Every status requires source and timestamp metadata.
-6. Missing information renders as unavailable, not healthy.
-7. Workflow state and Operator disposition remain separate.
-8. Email, calendar, finances, customer data, and private traces are outside v0.1.
-9. The public route must not call private systems or hold GitHub credentials at request time.
-10. The page must not create an overall system-health score from incomplete evidence.
+The positions converge on the following:
 
-## 5. Required positions
+1. `/continuity` belongs in `mirrornode-platform` as a static, read-only route.
+2. The detached Vite scorecard should not be imported wholesale.
+3. Scorecard presentation patterns may be selectively reused.
+4. The page should consume one strict, locally stored, build-generated snapshot artifact.
+5. The deployed route should perform no request-time GitHub or private-system calls.
+6. Generation must use explicit source, field, record-type, and URL allowlists.
+7. Unknown fields and schema drift must fail closed.
+8. Missing data must render unavailable rather than healthy.
+9. `generatedAt` and source `verifiedAt` are distinct facts.
+10. Freshness must be computed from source-specific windows and recalculated when rendered.
+11. Workflow state, review completion, Operator disposition, merge state, deployment state, and product approval must remain separate.
+12. MOPCON actions, routes, prompts, plans, notes, traces, topology, and private health details remain private.
+13. Email, calendar, finance, customer, payment, and personal data remain outside public v0.1.
+14. No mock fallback, synthetic active-agent count, or inferred overall health score is permitted.
+15. Implementation authorization and first-snapshot publication authorization are separate decisions.
 
-### Theia — received
+## 4. Reconciled implementation shape
 
-**Stance:** Support with conditions.  
-**Status:** Conditions incorporated.
+### Route
 
-### Ptah — pending
+```text
+app/continuity/page.tsx
+```
 
-Must determine:
+Static server component. No fetch calls. No client state required for v0.1.
 
-- implementation feasibility in current Platform,
-- minimal typed snapshot contract,
-- generation script and artifact location,
-- stale/failure behavior,
-- reuse versus rewrite,
-- required tests and blockers.
+### Artifact
 
-### Osiris — pending
+```text
+content/continuity/snapshot.generated.json
+```
 
-Must determine:
+The artifact remains outside `public/` and is imported through a validating reader.
 
-- privacy and inference risks,
-- freshness and authority-overstatement risks,
-- prohibited fields,
-- partial/failure behavior,
-- public-history risks,
-- deployment conditions.
+### Supporting boundary
 
-## 6. Unresolved questions
+```text
+lib/continuity/contract.ts
+lib/continuity/schema.ts
+lib/continuity/readSnapshot.ts
+lib/continuity/freshness.ts
+scripts/generate-continuity-snapshot.mts
+scripts/validate-continuity-snapshot.mts
+```
 
-1. What freshness windows apply to GitHub, Council, deployment, runtime, and MOPCON records?
-2. Does the generated snapshot require a signed manifest in v0.1?
-3. Where does Continuity appear in Platform navigation?
-4. What is the final canonical Mirror Mirror route?
-5. Should snapshot generation run manually, during CI, or during deployment build?
-6. What public continuity-history retention window is appropriate?
-7. How are source disagreement and disputed records represented?
+### Build behavior
 
-## 7. Non-negotiable implementation boundary
+```text
+continuity:generate
+```
 
-An approval must not authorize:
+runs manually or in a credential-scoped preparation workflow.
 
-- runtime execution,
-- PR creation, merging, closing, or labeling,
-- Council state transitions,
-- autonomous health conclusions,
-- private MOPCON linking without authentication,
-- private trace or Operator-note exposure,
-- email, calendar, finance, or customer-data ingestion,
-- hidden request-time calls to GitHub or private infrastructure,
-- replacement of stale data with unlabeled mock data.
+```text
+continuity:validate && next build
+```
 
-## 8. Decision options
+validates the existing artifact without source credentials or network access.
 
-### Option A — Approve implementation
+Generation writes to a temporary artifact, validates it, then atomically replaces the previous valid artifact. A failed generation does not overwrite the last valid artifact. With no valid initial artifact, production build fails.
 
-Use only after Ptah and Osiris reviews confirm the boundary is feasible and safe.
+## 5. Conflict and tension analysis
 
-Effect:
+### Retained stale artifact versus failure-closed withdrawal
 
-- PR #29 may be finalized and merged as the governing definition.
-- A separate implementation branch may be opened in `mirrornode-platform`.
-- Implementation remains subject to build, accessibility, source-label, and privacy verification.
+Ptah permits retaining the last valid artifact and rendering it according to its actual age. Osiris requires failure-closed behavior and warns against silently retaining plausible-looking content.
+
+These positions are compatible if the rule is:
+
+- retained content never receives a new generation or verification timestamp;
+- each retained record is visibly stale;
+- the page header states that refresh failed;
+- sensitive or withdrawn records are removed from the public projection through tombstones;
+- no retained snapshot may be presented as current or complete.
+
+### `source-verified` terminology
+
+Ptah uses `source-verified` as a machine authority value. Osiris identifies likely public misinterpretation.
+
+Reconciled rule:
+
+- internal machine value may be `source-checked`;
+- visible text states that the source and timestamp were checked;
+- the label does not imply product, security, implementation, deployment, or Operator approval.
+
+### Operator-action wording
+
+The current definition permits `Operator action required`. Osiris finds this unsafe by default.
+
+Reconciled rule:
+
+- default public wording: `Further status is not publicly available`;
+- an action-required label appears only when the existence and description of that action have separate disclosure approval.
+
+### Append-only continuity versus protective withdrawal
+
+The authoritative repository record remains append-oriented. The public projection may tombstone or withdraw unsafe content without deleting the authoritative source record.
+
+The public artifact must not preserve prohibited content inside client-readable JSON merely to demonstrate immutability.
+
+## 6. Required definition revision
+
+Before implementation authority is granted, the definition must add or change the following:
+
+1. Define source-specific freshness windows.
+2. Rename `static-fallback` to `retained-checked-snapshot` or equivalent and prohibit mock or synthetic fallback.
+3. Require atomic artifact replacement and preservation of the prior valid artifact on generation failure.
+4. Require production-build failure when no valid initial artifact exists.
+5. Require strict Zod validation and rejection of unknown fields.
+6. Require checked-in source, repository, path, field, record-type, enumeration, and evidence-origin allowlists.
+7. Separate source generation from build-time validation.
+8. Recalculate freshness during rendering.
+9. Exclude private-derived material unless it arrives as a separately approved public projection.
+10. Replace the public `source-verified` label with `source checked` and an explicit non-approval explanation.
+11. Replace default `Operator action required` wording with `Further status is not publicly available`.
+12. Add `disputed`, `corrected`, and `withdrawn` record conditions.
+13. Define disagreement behavior without automatic reconciliation.
+14. Define a bounded public-history display and retention policy.
+15. Prohibit enumerable internal identifiers in public output.
+16. Distinguish authoritative append-only preservation from public tombstoning.
+17. Validate public HTTPS evidence origins and redirects.
+18. Extend prohibited-data inspection across the complete deployable output, including JSON, bundles, source maps, metadata, comments, and published build artifacts.
+19. Require content hash and source-revision provenance for the generated artifact.
+20. Require human disclosure review of the first populated snapshot.
+21. Require separate Operator authorization to publish the first snapshot after route implementation.
+
+## 7. Explicitly prohibited scope
+
+No approval under CG-0029 may authorize:
+
+- runtime execution;
+- PR creation, merging, closing, labeling, or mutation;
+- autonomous Council transitions or consensus claims;
+- private MOPCON URLs or access instructions;
+- objectives, prompts, plans, approvals, rejections, notes, results, or traces;
+- private health detail, topology, agent availability, model configuration, or routing data;
+- email, calendar, contacts, location, family, finance, payment, customer, audit-client, vendor, contract, or personal identity data;
+- unpublished vulnerabilities, incidents, severity, remediation, or defensive gaps;
+- private repository metadata or strategy-bearing public aggregation;
+- arbitrary URLs or source text;
+- mock incidents, synthetic counts, or inferred system health;
+- request-time GitHub or private-system access;
+- publication of the first populated snapshot without separate authorization.
+
+## 8. Remaining Operator-policy questions
+
+The technical and boundary reviews leave four policy values to be set during the revision:
+
+1. Exact freshness windows by source class.
+2. Public continuity-history display horizon.
+3. Final Platform navigation placement.
+4. Final canonical Mirror Mirror route.
+
+These do not invalidate the concept, but they prevent the present definition from being implementation-ready.
+
+## 9. Decision options
+
+### Option A — Ratify for implementation now
+
+Not recommended. The current definition does not yet contain the required failure, freshness, disclosure, history, and publication rules.
 
 ### Option B — Revision required
 
-Use when the direction is correct but required reviews identify unresolved design, security, or truth-model defects.
+Recommended.
 
 Effect:
 
-- PR #29 remains draft.
-- CG-0029 returns to framing or assembled after revision.
-- No Platform implementation begins.
+- preserve all three attributed positions;
+- revise the definition with the reconciled requirements in Section 6;
+- keep PR #29 draft;
+- grant no Platform implementation or deployment authority yet;
+- return the revised definition for a narrow confirmation pass;
+- then present a ratification decision.
 
 ### Option C — Park
 
-Use when the concept remains valid but current runtime, Platform, business, or competition priorities make implementation premature.
-
-Effect:
-
-- Definition and positions remain preserved.
-- No implementation authority is granted.
+Use only if current business or competition priorities make the work premature.
 
 ### Option D — Reject
 
-Use when the public Continuity concept creates more confusion, exposure, or maintenance burden than value.
+Not supported by the evidence. No required reviewer recommends rejection.
 
-Effect:
+## 10. Final recommendation
 
-- The scorecard remains detached or private.
-- CG-0029 closes with a rejection rationale.
+**Select Option B — Revision required.**
 
-## 9. Current recommendation
+The product direction is coherent, useful, and technically feasible. The remaining defects are not reasons to abandon it; they are exactly the kind of disclosure and failure-boundary details that must be settled before a public continuity surface exists.
 
-**Provisional recommendation: proceed toward Option A, but do not approve yet.**
+The revision should be tightly bounded to the requirements in Section 6. It should not reopen the governing purpose, move actions into Continuity, add personal integrations, or expand the product scope.
 
-The concept is coherent and the first review corrections materially improved it. The packet lacks the required implementation-feasibility and boundary-risk positions. Approval before those positions would defeat the Council Grounds protocol this matter is intended to exercise.
+After the revision, Ptah and Osiris need only confirm that their requested conditions were incorporated. A new broad deliberation is unnecessary unless the revision changes the product boundary.
 
-## 10. Operator disposition block
-
-Complete only after synthesis-ready state.
+## 11. Operator disposition block
 
 ```yaml
 matterId: CG-0029
-status: ratified | revision-required | parked | rejected
+status: revision-required
 authority: operator
 decidedAt: <timestamp>
-selectedOption: A | B | C | D
+selectedOption: B
 rationale: >-
-  <Operator rationale>
+  The Continuity Console direction is accepted in principle, but the definition
+  requires the reconciled freshness, generation-failure, disclosure,
+  public-history, evidence-link, and first-publication controls identified by
+  the required Ptah and Osiris reviews before implementation authority may be
+  granted.
 approvedScope:
-  - <exact scope>
+  - revise the definition using the bounded requirements in the decision packet
+  - preserve all attributed positions and disagreement context
+  - prepare the revised definition for narrow confirmation review
 prohibitedScope:
-  - <exact exclusions>
+  - Platform implementation
+  - deployment
+  - publication of a populated snapshot
+  - MOPCON or runtime changes
+  - personal integration ingestion
+  - private data projection
 nextAction: >-
-  <single next action>
-canonAction: separate-explicit-action | none
+  Revise CONTINUITY_CONSOLE_V0_1_DEFINITION.md according to Section 6 and return
+  the revision for Ptah and Osiris confirmation.
+canonAction: none
 ```
 
-## 11. Immediate next step
+## 12. Authority note
 
-Obtain and register exact attributed positions from Ptah and Osiris. Then prepare a conflict-aware synthesis and replace this draft's provisional recommendation with a final recommendation for Operator disposition.
+This synthesis does not itself select Option B. Only the Operator may record the disposition.
