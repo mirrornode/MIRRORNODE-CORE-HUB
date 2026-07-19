@@ -4,8 +4,8 @@ title: Continuity Console v0.1 Definition
 matterType: product
 initiator: operator
 createdAt: 2026-07-18T14:30:00Z
-updatedAt: 2026-07-18T16:10:00Z
-workflowState: assembled
+updatedAt: 2026-07-19T09:11:00Z
+workflowState: synthesis-ready
 disposition:
   status: pending
   authority: null
@@ -61,11 +61,11 @@ referenceArtifacts:
     canonical: false
 openQuestions:
   - exact freshness windows by source class
-  - whether snapshot generation requires a signed manifest in v0.1
+  - public continuity-history display horizon
   - navigation placement within Platform
   - final canonical Mirror Mirror route
 currentRevision: ../../../docs/continuity/CONTINUITY_CONSOLE_V0_1_DEFINITION.md
-nextRequiredStep: Obtain Ptah feasibility review and Osiris boundary review before Operator disposition.
+nextRequiredStep: Operator selects a disposition from the completed decision packet.
 historyPath: history/
 notes:
   - Continuity is read-only orientation, not operator control.
@@ -73,3 +73,5 @@ notes:
   - Personal integrations are excluded from the public surface in v0.1.
   - v0.1 uses a build-generated allowlisted snapshot.
   - Public v0.1 does not expose a direct private MOPCON route.
+  - All required reviews support the direction with conditions.
+  - Final synthesis recommends revision-required before implementation authority.
