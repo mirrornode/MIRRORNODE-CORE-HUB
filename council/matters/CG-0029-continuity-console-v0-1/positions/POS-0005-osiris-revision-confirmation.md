@@ -53,3 +53,52 @@ The revised `CONTINUITY_CONSOLE_V0_1_DEFINITION.md` resolves the definition-leve
 5. Public GitHub records, evidence links, and Council data are explicitly treated as publication candidates requiring review and allowlisting. Public visibility alone does not authorize aggregation.
 
 6. `disputed`, `corrected`, and `withdrawn` conditions are defined for public records. The snapshot model also distinguishes partial and unavailable conditions.
+
+7. Generation, validation, schema-drift, and unknown-field failures are closed explicitly. Invalid generation cannot replace the last valid artifact, and production build fails when no valid artifact exists.
+
+8. Freshness and condition are represented per record. Partial snapshots must disclose unavailable sections, and snapshot-level status cannot override stale, disputed, or unavailable records.
+
+9. Public history is bounded to the most recent 90 days or 50 public events, whichever is smaller. Public identifiers must be non-enumerable, and internal sequential identifiers are prohibited.
+
+10. The public projection may tombstone corrected or withdrawn unsafe material without repeating it. The authoritative source preserves provenance separately, while sensitive originals are excluded from all client-readable artifacts.
+
+11. Evidence links require HTTPS, approved public origins, approved redirect destinations, and public resources. Authentication redirects, private repositories, expiring artifacts, local addresses, previews, CI artifacts, raw logs, and private-console destinations are rejected.
+
+12. Prohibited-data controls expressly cover built HTML, JavaScript, JSON, source maps, metadata, comments, static assets, published build artifacts, and other client-readable output.
+
+13. Human disclosure approval of the first populated snapshot is separated from definition approval, route implementation authorization, populated-snapshot generation authorization, and deployment or publication authorization.
+
+## Residual conditions
+
+No unresolved definition-level Osiris condition remains.
+
+The following deployment-boundary conditions remain necessarily unfulfilled because implementation, populated-snapshot generation, deployment, and publication are still unauthorized:
+
+* implementation and tests must enforce the recorded source-class freshness rules;
+* checked-in source, field, enum, repository, path, evidence-origin, and redirect allowlists must be inspected;
+* generator and renderer failure behavior must be verified against malformed, stale, partial, disputed, corrected, withdrawn, and unavailable fixtures;
+* non-enumerable identifiers and the public-history horizon must be enforced;
+* the completed build output must be scanned for prohibited data across every deployable asset;
+* fixtures must be confirmed free of production and private records;
+* the first populated snapshot must receive human disclosure review;
+* the Operator must separately authorize implementation and, later, publication.
+
+These are execution and authorization gates, not defects in the revised definition.
+
+## Boundary conclusion
+
+The revised definition now incorporates the disclosure, freshness, authority-language, failure, disagreement, history, correction, link-validation, and first-publication boundaries required by POS-0003.
+
+This confirmation is limited to the revised definition at PR #29 head `30fc4dee685148911bbb91767500a405a79aeefc`. It does not confirm any future implementation, generator, populated snapshot, build artifact, deployment, or publication.
+
+It does not alter the recorded `revision-required` disposition and does not grant authority beyond the already authorized definition revision.
+
+## Recommendation
+
+Record this confirmation as satisfaction of the Osiris definition-revision condition.
+
+Retain CG-0029’s existing disposition and authorization boundaries. Any later implementation authority must be separately granted, and any populated snapshot must return for disclosure review before publication authorization.
+
+## Attribution rule
+
+This is Osiris’s exact supplemental confirmation position for CG-0029. Preserve it verbatim when registered under `positions/`. It supplements and does not modify, supersede, summarize, or replace POS-0003.
