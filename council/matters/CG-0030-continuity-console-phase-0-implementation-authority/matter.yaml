@@ -4,15 +4,21 @@ title: Continuity Console v0.1 Phase 0 Implementation Authority
 matterType: implementation-authorization
 initiator: operator
 createdAt: 2026-07-19T00:00:00Z
-updatedAt: 2026-07-19T00:00:00Z
-workflowState: proposed
-authorityEffect: none-until-operator-disposition
+updatedAt: 2026-07-24T09:50:07Z
+workflowState: closed
+authorityEffect: bounded-phase-0-implementation-authority
 
 disposition:
-  status: reserved
+  status: accepted
   authority: operator
-  decidedAt: null
-  rationale: null
+  decidedAt: 2026-07-24T09:50:07Z
+  rationale: >-
+    Operator approved CG-0030 after the required Ptah and Osiris advisory reviews.
+    Acceptance authorizes only the bounded Phase 0 implementation and local validation
+    of the read-only /continuity route in mirrornode-platform within the exact recorded
+    scope. Deployment, publication, populated production snapshots, private-data ingestion,
+    MOPCON modification, runtime modification, and inferred authority remain unauthorized.
+  record: disposition/2026-07-24T095007Z-accepted.yaml
 
 decisionQuestion: >-
   Should MIRRORNODE authorize a bounded Phase 0 implementation and local
@@ -164,6 +170,12 @@ reviewRequests:
   ptah: review-requests/PTAH_IMPLEMENTATION_FEASIBILITY_REVIEW.md
   osiris: review-requests/OSIRIS_PRIVACY_AUTHORITY_DISCLOSURE_REVIEW.md
 
+positions:
+  ptah: positions/POS-0001-ptah-implementation-feasibility-review.md
+  osiris: positions/POS-0002-osiris-privacy-authority-disclosure-review.md
+
+reviewSynthesis: synthesis/REVIEW_SYNTHESIS.md
+
 acceptanceEvidence:
   required:
     - implementation-diff
@@ -189,10 +201,12 @@ postImplementationGates:
   separateCouncilMatterRequired: true
 
 nextRequiredStep: >-
-  Obtain Ptah and Osiris advisory reviews, then reserve implementation until a
-  recorded Operator disposition accepts CG-0030.
+  Merge the documentary CG-0030 record, then perform the separately authorized Phase 0
+  implementation and local validation in mirrornode-platform. Do not deploy, publish,
+  generate a populated production snapshot, or cross any private-data boundary without
+  a later recorded Operator authorization.
 
 notes:
-  - Creating this matter does not authorize implementation.
-  - Ptah and Osiris reviews are advisory and do not alter authority.
+  - CG-0030 acceptance authorizes bounded Phase 0 implementation and local validation only.
+  - Ptah and Osiris reviews are advisory and are now recorded.
   - Deployment, publication, and populated production snapshots remain outside this matter.
