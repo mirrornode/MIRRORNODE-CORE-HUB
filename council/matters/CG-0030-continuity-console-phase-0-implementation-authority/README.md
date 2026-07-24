@@ -1,101 +1,79 @@
 # CG-0030 — Continuity Console v0.1 Phase 0 Implementation Authority
 
-## Purpose
+## Final State
 
-CG-0030 is a **proposed** governance matter. It does not grant authority by itself.
+**Workflow state:** Closed  
+**Operator disposition:** `accepted`  
+**Authority effect:** bounded Phase 0 implementation and local validation only
 
-Its purpose is to decide whether to authorize a **bounded Phase 0 implementation** of the public, read-only `/continuity` route in `mirrornode-platform`, using a **validated, build-generated public snapshot artifact** with a strict, typed contract. Implementation and local validation are the only authorities requested by this matter. Deployment, publication, and populated production snapshots require separate Council matters and recorded Operator disposition.
+CG-0030 authorizes a **bounded Phase 0 implementation** of the public, read-only `/continuity` route in `mirrornode-platform`, using a validated, build-generated public snapshot artifact with a strict typed contract.
+
+It does **not** authorize deployment, publication, a populated production snapshot, private-data ingestion, MOPCON modification, runtime modification, or inferred authority.
 
 ## Anchors
 
-This matter stands on MIRRORNODE's own recorded authority:
+This authority stands on:
 
-- **CG-0029** — Continuity Console definition and public `/continuity` surface design.
-- **Merged PR #29** — Recorded Platform definition of the Continuity Console.
-- **CL-0000** — Purpose and invariant of the Operator Continuity Ledger: it records, and does not decide, execute, publish, or infer authority.
-- **Merged PR #30** — Operator Continuity Ledger v0.1, including CL-0000 and the non-operative boundary.
-- **Platform vs MOPCON boundary** — The `/continuity` route is a public Platform surface; MOPCON remains a separate, private governance console.
+- **CG-0029** — merged Continuity Console definition.
+- **PR #29** — merged definition-and-record action.
+- **CL-0000** — Operator Continuity Ledger invariant: the ledger records and does not decide, execute, publish, or infer authority.
+- **PR #30** — merged Operator Continuity Ledger v0.1.
+- **Platform/MOPCON boundary** — `/continuity` is a public Platform presentation surface; MOPCON remains separate and private.
 
-CG-0030 may only be accepted once all anchor requirements in `matter.yaml` are satisfied.
+## Authorized Phase 0 Scope
 
-## Phase 0 Scope
+Phase 0 may implement and locally validate:
 
-Phase 0 is deliberately small. It requests **implementation and local validation only**, under a strict public boundary.
+- an implementation branch in `mirrornode/mirrornode-platform` for `/continuity`;
+- a static, read-only `/continuity` route rendered from a validated build-generated public snapshot;
+- a narrow typed snapshot schema with strict validation;
+- checked-in allowlists for sources, fields, paths, enums, and evidence links;
+- fixture-only development data;
+- calculated freshness and source-class freshness windows;
+- atomic snapshot replacement and retained last-valid behavior;
+- failure-closed production-build validation;
+- accessibility and responsive-layout validation;
+- lint, type-check, tests, and production-build validation;
+- an implementation evidence packet.
 
-### Authorized (Requested)
+## Explicitly Not Authorized
 
-If CG-0030 is accepted, Phase 0 may implement:
+CG-0030 does not authorize:
 
-- An implementation branch in `mirrornode/mirrornode-platform` for `/continuity`.
-- A **static, read-only** `/continuity` route that renders from a validated, build-generated public snapshot artifact.
-- A narrow, typed public snapshot contract with strict schema validation and checked-in allowlists for sources, fields, paths, enums, and evidence links.
-- Fixture-only development data; no live continuity data and no production data.
-- Calculated freshness and source-class freshness windows, with explicit `as of` metadata and retained last-valid snapshot behavior.
-- Failure-closed production build validation: if no valid snapshot artifact exists, the production build must fail. An invalid or newly generated artifact must never replace the retained last-valid artifact.
-- Accessibility, responsive layout, lint, type-check, tests, and production build validation.
-- Preparation of an implementation evidence packet: diff, schema, allowlists, fixture snapshot, validation and freshness tests, retained-valid behavior tests, build results, and Platform/MOPCON boundary confirmation.
+- a populated production snapshot or live continuity data;
+- deployment;
+- publication or external announcement;
+- private ledger ingestion;
+- request-time GitHub, Council, runtime, or MOPCON access;
+- customer, personal, secret, or private operational data;
+- MOPCON modification;
+- runtime modification;
+- Operator controls or dashboards;
+- CL or CG record writes;
+- autonomous Librarian or background-agent behavior;
+- inferred approval or authority from `source-checked` status.
 
-### Not Authorized
+## Required Reviews
 
-Phase 0 does **not** authorize:
+The required advisory reviews are recorded:
 
-- Any populated production snapshot or live continuity data.
-- Deployment of `/continuity` to production or public environments.
-- Publication or external announcement of continuity information via the Platform route.
-- Private Ledger ingestion or direct use of Council, GitHub, runtime, or MOPCON state at request time.
-- Use of customer data, personal data, secrets, or private operational material.
-- Operator controls, dashboards, or actions in `/continuity`.
-- Editing or authoring of continuity records (CL) or governance records (CG) via the Platform route.
-- Autonomous Librarian behavior, background agents, or automatic generation of CL/CG records.
-- Any language that implies approval or authority merely because material is source-checked.
+- **POS-0001 — Ptah:** `feasible-with-conditions`; no definition revision required.
+- **POS-0002 — Osiris:** `safe-with-conditions`; no additional definition-level privacy or authority control required.
 
-## Data, Rendering, and Language Boundaries
+Their conditions are already encoded in this matter and the merged Continuity definition.
 
-Phase 0 is bounded by three structural constraints:
+## Post-Implementation Gates
 
-- **Data boundary:** development data is fixture-only; production data, private sources, and request-time sources are prohibited. Any private-derived material must pass through an approved public projection before it can appear in a snapshot.
-- **Rendering boundary:** `/continuity` is public, read-only, and snapshot-driven. It does not support operator actions, editing, decision generation, execution, publication authority, or authority inference.
-- **Language constraints:** the route may use status language such as `source-checked`, `current`, `stale`, and `unavailable`. Authority terms such as `source-verified`, `approved`, `authorized`, and `ratified` are prohibited. Source checking does **not** constitute approval, authorization, ratification, or publication authority.
+Even after Phase 0 implementation and local validation succeed, the following remain separate future decisions:
 
-These boundaries keep Phase 0 firmly in a presentation-of-governed-material posture.
-
-## Platform vs MOPCON
-
-CG-0030 applies only to the **Platform** `/continuity` route:
-
-- Platform: public, read-only, snapshot-driven.
-- MOPCON: unmodified by this matter; private record access, searching, and correlation remain **not authorized** by CG-0030 and require separate governance.
-
-No MOPCON behavior is changed or permitted by accepting this Phase 0 implementation authority.
-
-## Reviews, Evidence, and Post-Implementation Gates
-
-CG-0030 requests:
-
-- **Ptah** — Implementation feasibility review limited to the typed snapshot contract, checked-in allowlists, generation/validation separation, fixture-only data, retained last-valid behavior, and failure-closed build behavior.
-- **Osiris** — Privacy, authority, and disclosure review limited to public/private field boundaries, publication candidacy, freshness, non-approving language, retained last-valid behavior, and nondisclosure on failure.
-
-Acceptance requires an evidence packet as enumerated in `acceptanceEvidence` in `matter.yaml`. Even after implementation is complete, the following gates remain:
-
-- Populated snapshot review.
-- Deployment authority.
-- Publication authority.
-- Disclosure review.
-- A separate Council matter to grant any of these.
+- populated snapshot review;
+- disclosure review;
+- deployment authority;
+- publication authority;
+- any expansion beyond the authorized Phase 0 boundary.
 
 ## Operator Disposition
 
-CG-0030 encodes that **authority remains latent**:
+The Operator accepted CG-0030 on 2026-07-24 after the required Ptah and Osiris reviews.
 
-- `workflowState: proposed` and `authorityEffect: none-until-operator-disposition` must remain in place while the matter is under review.
-- Operator disposition and rationale must be recorded before any implementation becomes effective.
-
-Creating CG-0030 records a proposal. Only the Operator's recorded disposition can turn that proposal into a live implementation authority.
-
-## Constitutional Boundary
-
-CG-0030 authorizes only a bounded implementation effort.
-
-It does not modify the authority order established by the Operator Continuity Ledger, does not alter Council Grounds governance, and does not create new authority for the Platform.
-
-The `/continuity` route remains a presentation surface whose authority derives entirely from previously approved governance artifacts.
+The recorded disposition authorizes only the bounded Phase 0 implementation and local-validation scope described above. All later exposure, production-data, deployment, and publication decisions remain separately governed.
