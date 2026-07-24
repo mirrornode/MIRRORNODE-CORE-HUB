@@ -1,0 +1,295 @@
+schemaVersion: "0.1"
+id: CG-0031
+title: Council Authorization Gate v0.1
+matterType: governance-enforcement-authorization
+initiator: operator
+createdAt: 2026-07-19T00:00:00Z
+updatedAt: 2026-07-24T09:59:49Z
+workflowState: closed
+authorityEffect: bounded-phase-0-verifier-implementation-authority
+
+disposition:
+  status: accepted-with-conditions
+  authority: operator
+  decidedAt: 2026-07-24T09:59:49Z
+  rationale: >-
+    Operator approved CG-0031 after the required Ptah and Osiris advisory reviews and
+    after CG-0030 / PR #31 were merged. Acceptance authorizes only bounded Phase 0
+    contract design, validator implementation, local validation, and a scoped non-required
+    CI pilot for CG-0030 and mirrornode-platform /continuity. CI remains verifier-only and
+    does not create, infer, amend, revoke, publish, or extend authority.
+  record: disposition/2026-07-24T095949Z-accepted-with-conditions.yaml
+
+decisionQuestion: >-
+  Should MIRRORNODE authorize a bounded Phase 0 implementation and local
+  validation of a reusable Council Authorization Gate, including a scoped CI
+  pilot for the mirrornode-platform /continuity boundary that verifies an
+  accepting Operator disposition exists in CG-0030 before the check may pass?
+
+derivedArchitecture:
+  councilRole: authority-record
+  operatorRole: final-authority
+  ledgerRole: non-operative-continuity
+  ciRole: deterministic-verification-and-failure
+  runtimeRole: execution-after-authorized-implementation
+  invariant: >-
+    The gate verifies previously recorded authority. It does not create,
+    infer, amend, revoke, or publish authority.
+
+anchors:
+  - id: CL-0000
+    kind: continuity-record
+    href: ../../../docs/continuity/OPERATOR_CONTINUITY_LEDGER_V0_1.md
+    requiredState: merged
+  - id: MIRRORNODE-CORE-HUB-PR-30
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/30
+    requiredState: merged
+  - id: CG-0030
+    kind: council-matter
+    href: ../CG-0030-continuity-console-phase-0-implementation-authority/
+    requiredState: merged
+  - id: MIRRORNODE-CORE-HUB-PR-31
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/31
+    requiredState: merged
+  - id: EXISTING-CANON-GATE
+    kind: engineering-reference
+    href: ../../../.github/workflows/canon-gate.yml
+    requiredState: reference-only
+
+target:
+  mechanism: council-authorization-gate-v0-1
+  authorityRepository: mirrornode/MIRRORNODE-CORE-HUB
+  implementationRepository: mirrornode/mirrornode-platform
+  pilotAuthorityMatter: CG-0030
+  pilotSurface: /continuity
+  phase: phase-0
+
+authorizationRequested:
+  contractDesign: true
+  validatorImplementation: true
+  localValidation: true
+  scopedCiWorkflow: true
+  ciPassFailBehavior: true
+  requiredBranchProtectionActivation: false
+  organizationWideRollout: false
+  runtimeEnforcement: false
+
+authorizedScopeRequested:
+  - strict-authorization-requirement-schema
+  - checked-in-accepting-disposition-allowlist
+  - exact-matter-id-validation
+  - exact-authority-repository-validation
+  - immutable-authority-commit-pinning
+  - exact-authority-record-path-validation
+  - operator-disposition-validation
+  - accepting-disposition-validation
+  - machine-readable-condition-validation
+  - reject-unknown-conditions
+  - reject-unsatisfied-conditions
+  - exact-implementation-repository-match
+  - protected-path-allowlist-match
+  - authorized-scope-match
+  - supersession-and-revocation-checks
+  - deterministic-reason-codes
+  - disclosure-minimized-ci-output
+  - failure-closed-validation
+  - fixture-based-positive-tests
+  - fixture-based-negative-tests
+  - scoped-mirrornode-platform-ci-pilot
+  - implementation-evidence-packet
+
+explicitlyNotAuthorized:
+  - authority-creation-by-ci
+  - authority-inference-by-ci
+  - authority-amendment-by-ci
+  - authority-revocation-by-ci
+  - council-record-writes
+  - continuity-ledger-writes
+  - implementation-repository-writes
+  - runtime-state-writes
+  - cross-repository-writes
+  - inferred-approval-from-merged-pr
+  - inferred-approval-from-review
+  - inferred-approval-from-ci-success
+  - inferred-approval-from-ledger-status
+  - inferred-approval-from-source-checked-status
+  - free-text-rationale-authority-inference
+  - mutable-branch-authority-source
+  - unpinned-remote-authority-source
+  - cached-last-known-good-authority
+  - bypass-or-override-mechanism
+  - emergency-self-authorization
+  - branch-protection-modification
+  - required-check-activation
+  - organization-wide-rollout
+  - all-repository-rollout
+  - unrelated-path-blocking
+  - runtime-modification
+  - mopcon-modification
+  - deployment
+  - publication
+  - production-data-ingestion
+  - private-deliberation-disclosure
+  - private-rationale-disclosure
+  - customer-data-disclosure
+  - secret-disclosure
+
+authoritySemantics:
+  sourceOfAuthority: operator-disposition-in-council-record
+  gateRole: verifier-only
+  acceptingDispositions:
+    - accepted
+    - accepted-with-conditions
+  prohibitedInferenceSources:
+    - merged-pull-request
+    - approved-review
+    - successful-ci-check
+    - continuity-ledger-status
+    - source-checked-artifact
+  operatorAuthorityRequired: true
+  decidedAtRequired: true
+  rationaleRequired: true
+
+conditionSemantics:
+  machineReadableRequired: true
+  freeTextMayNotSatisfyConditions: true
+  unknownConditionBehavior: fail
+  ambiguousConditionBehavior: fail
+  unsatisfiedConditionBehavior: fail
+  missingEvidenceBehavior: fail
+
+operatorConditions:
+  - id: ANTI_SELF_MODIFICATION
+    requirement: >-
+      The evaluated change must not be able to weaken the gate definition, authority
+      binding, validator identity, or protected-path declaration and then validate itself
+      against that weakened state.
+    satisfactionEvidence:
+      - immutable-authority-controlled-gate-configuration-or-equivalent-detection
+      - negative-fixture-proves-protected-path-narrowing-cannot-evade-gate
+    failureBehavior: fail
+  - id: PILOT_SCOPE_FIXED
+    requirement: >-
+      The pilot remains limited to CG-0030, mirrornode/MIRRORNODE-CORE-HUB,
+      mirrornode/mirrornode-platform, and /continuity.
+    failureBehavior: fail
+
+sourcePinning:
+  repositoryRequired: true
+  immutableCommitShaRequired: true
+  recordPathRequired: true
+  mutableBranchRefProhibited: true
+  tagOnlyRefProhibited: true
+
+scopeMatching:
+  matterIdExact: true
+  authorityRepositoryExact: true
+  implementationRepositoryExact: true
+  protectedPathAllowlistRequired: true
+  authorizedScopeMatchRequired: true
+  unrelatedChanges: not-governed-by-this-pilot
+
+failureBehavior:
+  missingRecord: fail
+  malformedRecord: fail
+  unpinnedRecord: fail
+  matterMismatch: fail
+  repositoryMismatch: fail
+  pathMismatch: fail
+  nonOperatorDisposition: fail
+  nonAcceptingDisposition: fail
+  unknownDisposition: fail
+  missingDecisionTimestamp: fail
+  missingRationale: fail
+  unknownCondition: fail
+  unsatisfiedCondition: fail
+  supersededRecord: fail
+  revokedAuthority: fail
+  conflictingAuthorityRecords: fail
+  authorityFallback: prohibited
+
+privacyAndDiagnostics:
+  minimumNecessaryOutput: true
+  allowedOutput:
+    - matter-id
+    - validation-stage
+    - pass-fail
+    - stable-reason-code
+    - safe-remediation-summary
+  prohibitedOutput:
+    - private-deliberation
+    - private-operator-rationale
+    - credentials
+    - customer-data
+    - internal-topology
+    - unrelated-governance-records
+
+pilotBoundary:
+  authorityMatter: CG-0030
+  authorityRepository: mirrornode/MIRRORNODE-CORE-HUB
+  implementationRepository: mirrornode/mirrornode-platform
+  protectedSurface: /continuity
+  workflowMayRunAndFail: true
+  requiredMergeCheck: false
+  branchProtectionChange: false
+  additionalRepositories: prohibited
+  additionalPaths: prohibited
+
+requiredReviews:
+  - ptah
+  - osiris
+
+reviewRequests:
+  ptah: review-requests/PTAH_CI_ENFORCEMENT_FEASIBILITY_REVIEW.md
+  osiris: review-requests/OSIRIS_AUTHORITY_PRIVACY_ABUSE_BOUNDARY_REVIEW.md
+
+positions:
+  ptah: positions/POS-0001-ptah-ci-enforcement-feasibility-review.md
+  osiris: positions/POS-0002-osiris-authority-privacy-abuse-boundary-review.md
+
+reviewSynthesis: synthesis/REVIEW_SYNTHESIS.md
+
+acceptanceEvidence:
+  required:
+    - authorization-requirement-schema
+    - accepting-disposition-allowlist
+    - validator-source
+    - pinned-source-validation-test
+    - matter-id-mismatch-test
+    - repository-mismatch-test
+    - path-scope-mismatch-test
+    - non-operator-disposition-test
+    - non-accepting-disposition-test
+    - accepted-disposition-pass-test
+    - accepted-with-conditions-pass-test
+    - unknown-condition-failure-test
+    - unsatisfied-condition-failure-test
+    - superseded-record-failure-test
+    - revoked-authority-failure-test
+    - conflicting-record-failure-test
+    - disclosure-safe-diagnostics-test
+    - anti-self-modification-test
+    - protected-path-narrowing-evasion-test
+    - scoped-ci-pilot-result
+    - no-unrelated-path-enforcement-confirmation
+    - no-runtime-authority-confirmation
+
+postImplementationGates:
+  requiredMergeCheckActivationRequired: true
+  branchProtectionChangeRequired: true
+  broaderRepositoryRolloutRequired: true
+  additionalProtectedScopeRequired: true
+  separateCouncilMatterRequired: true
+
+nextRequiredStep: >-
+  Merge the documentary CG-0031 record, then implement and locally validate the bounded
+  Phase 0 verifier and scoped non-required CI pilot against CG-0030 /continuity. Do not
+  activate a required merge check, modify branch protection, expand repository or path
+  scope, add runtime enforcement, deploy, or publish without a later Operator disposition.
+
+notes:
+  - CG-0031 acceptance authorizes verifier implementation and a scoped non-required pilot only.
+  - Ptah and Osiris advisory reviews are recorded and converge on the anti-self-modification condition.
+  - Required branch protection and broader rollout remain separate future decisions.
