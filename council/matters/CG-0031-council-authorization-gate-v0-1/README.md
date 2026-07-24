@@ -1,36 +1,16 @@
 # CG-0031 — Council Authorization Gate v0.1
 
-## Purpose
+## Final State
 
-CG-0031 is a **proposed** governance matter. It does not grant authority by itself and does not implement or activate a CI gate.
+**Workflow state:** Closed  
+**Operator disposition:** `accepted-with-conditions`  
+**Authority effect:** bounded Phase 0 verifier implementation and scoped non-required CI pilot only
 
-Its purpose is to decide whether MIRRORNODE should authorize a bounded Phase 0 implementation of a **Council Authorization Gate**: a deterministic repository check that verifies an accepting Operator disposition already exists before scoped implementation work may pass CI.
+CG-0031 authorizes implementation and local validation of a reusable **Council Authorization Gate** whose only role is to verify that a previously recorded Operator disposition already authorizes an exact implementation scope.
 
 The gate does not create authority. It verifies previously recorded authority.
 
-## Derived Architectural Consequence
-
-This matter follows from the separation already established across MIRRORNODE:
-
-- **Council Grounds** records matters, reviews, and Operator dispositions.
-- **The Operator** alone grants or withholds authority through recorded disposition.
-- **The Operator Continuity Ledger** preserves continuity and authority state but remains non-operative.
-- **CI** may enforce a recorded boundary without deciding it.
-- **Runtime** executes only after authorized implementation exists.
-
-The missing transition is therefore explicit: implementation-facing repositories need a deterministic way to reject work whose required authority has not yet become effective.
-
-CG-0031 records that consequence for review. Logical necessity does not itself constitute implementation authority.
-
-## Phase 0 Question
-
-Should MIRRORNODE authorize implementation and local validation of a reusable Council Authorization Gate, with an initial scoped CI pilot for the `mirrornode-platform` `/continuity` boundary and CG-0030?
-
-The pilot would verify a pinned Council record and fail when the required accepting Operator disposition is absent, malformed, mismatched, superseded, revoked, or conditionally unsatisfied.
-
 ## Authority Model
-
-The authority chain must remain:
 
 ```text
 Operator disposition in Council Grounds
@@ -42,102 +22,84 @@ Deterministic CI validation
 Scoped implementation check passes or fails
 ```
 
-The gate may answer only:
+Council Grounds remains the authority record. The Operator remains final authority. The Operator Continuity Ledger remains non-operative. CI remains verifier-only. Runtime receives no new authority from this matter.
 
-> Does the referenced governance record already authorize this exact repository, surface, and implementation scope?
+## Authorized Phase 0 Scope
 
-It may not answer whether authority ought to be granted.
+Phase 0 may implement and locally validate:
 
-## Phase 0 Scope Requested
+- a strict machine-readable authorization-requirement contract;
+- a reusable validator with deterministic pass/fail behavior and stable reason codes;
+- exact matter, authority repository, immutable commit, record path, implementation repository, protected path, and scope matching;
+- an accepting-disposition allowlist limited initially to `accepted` and `accepted-with-conditions`;
+- machine-readable condition validation;
+- supersession, revocation, conflict, and failure-closed checks;
+- disclosure-minimized diagnostics;
+- positive and negative fixtures;
+- a scoped CI pilot in `mirrornode-platform` for CG-0030 and `/continuity`;
+- an implementation evidence packet.
 
-If CG-0031 is accepted, Phase 0 may implement:
+## Operator Conditions
 
-- A strict, machine-readable authorization-requirement contract.
-- A reusable validator with deterministic pass/fail behavior and stable reason codes.
-- Validation of an exact Council matter ID, repository, path scope, authority source commit, record path, Operator disposition, accepting state, and applicable conditions.
-- An allowlist of accepting dispositions, initially limited to `accepted` and `accepted-with-conditions`.
-- Machine-readable condition checking; unknown or unsatisfied conditions fail closed.
-- Exact source pinning to a repository, immutable commit SHA, and record path. Mutable branch references may not establish authority.
-- Exact target matching for repository and protected path scope.
-- Failure-closed behavior for missing, malformed, conflicting, stale, superseded, revoked, unpinned, or unsupported records.
-- Fixture-based passing and failing test cases.
-- A scoped CI pilot in `mirrornode-platform` for changes within the `/continuity` implementation boundary that reference CG-0030.
-- An implementation evidence packet containing contract, validator, tests, CI results, boundary confirmation, and failure cases.
+### ANTI_SELF_MODIFICATION
 
-## Not Authorized
+The evaluated change must not be able to weaken the gate definition, authority binding, validator identity, or protected-path declaration and then validate itself against that weakened state.
 
-CG-0031 does **not** authorize:
+Implementation evidence must prove either immutable authority-controlled gate configuration or equivalent detection that fails unauthorized self-modification.
 
-- Granting, inferring, amending, revoking, or recording authority through CI.
-- Treating a merged PR, approved review, successful check, Ledger entry, or source-checked artifact as an Operator disposition.
-- Parsing free-text rationale to infer authorization or satisfy conditions.
-- Reading authority from mutable branch heads or unpinned remote artifacts.
-- Writing to Council Grounds, the Operator Continuity Ledger, implementation repositories, or runtime state.
-- A bypass, override, emergency approval, or self-authorization mechanism.
-- Organization-wide or all-repository rollout.
-- Branch-protection changes or making the pilot check a required merge check.
-- Blocking unrelated files, repositories, surfaces, or workstreams.
-- Runtime, MOPCON, deployment, publication, or production-data changes.
-- Exposure of private deliberation, private rationale, or sensitive operational data in CI logs.
+A negative fixture must prove that narrowing or altering the protected `/continuity` declaration cannot evade the gate.
 
-## Initial Pilot Boundary
+### PILOT_SCOPE_FIXED
 
-Phase 0 is intentionally narrow:
+The Phase 0 pilot is limited to:
 
-- **Authority record:** CG-0030.
-- **Authority repository:** `mirrornode/MIRRORNODE-CORE-HUB`.
-- **Implementation repository:** `mirrornode/mirrornode-platform`.
-- **Protected surface:** the `/continuity` implementation boundary.
-- **Gate effect:** the CI job passes or fails; required branch-protection activation remains unauthorized.
+- authority matter: CG-0030;
+- authority repository: `mirrornode/MIRRORNODE-CORE-HUB`;
+- implementation repository: `mirrornode/mirrornode-platform`;
+- protected surface: `/continuity`.
 
-The validator may be reusable by design, but no other repository or path becomes governed by CG-0031.
+## Explicitly Not Authorized
 
-## Conditions and Failure Behavior
+CG-0031 does not authorize:
 
-An `accepted-with-conditions` disposition is effective only when every applicable condition is represented in a supported machine-readable form and is satisfied by reviewable evidence.
+- authority creation, inference, amendment, or revocation by CI;
+- Council or Continuity Ledger writes;
+- implementation-repository or runtime writes by the gate;
+- mutable or unpinned authority sources;
+- cached last-known-good authority;
+- bypass, override, or emergency self-authorization;
+- required merge-check activation;
+- branch-protection changes;
+- organization-wide or broader repository rollout;
+- unrelated-path blocking;
+- runtime or MOPCON enforcement/modification;
+- deployment;
+- publication;
+- production-data ingestion;
+- disclosure of private deliberation, rationale, credentials, customer data, or internal topology.
 
-The gate must fail closed when:
+## Required Reviews
 
-- the authority record is missing or malformed;
-- the matter ID, repository, path, or requested scope does not match;
-- the record is not pinned to an immutable commit;
-- disposition authority is not the Operator;
-- disposition state is non-accepting or unknown;
-- required timestamps or rationale are absent;
-- a condition is unknown, ambiguous, or unsatisfied;
-- the record has been superseded or revoked;
-- authoritative records conflict.
+The required advisory reviews are recorded:
 
-No last-known-good authority fallback is permitted. Authority is not a cached data product.
+- **POS-0001 — Ptah:** `feasible-with-conditions`.
+- **POS-0002 — Osiris:** `safe-with-conditions`.
 
-## Privacy and Disclosure Boundary
+Both positions converge on the anti-self-modification condition above. No unresolved conflict remains.
 
-CI output should expose only the minimum information required to diagnose a failure, such as matter ID, validation stage, and stable reason code.
+## Post-Implementation Gates
 
-The gate must not print private Council deliberation, private Operator rationale, credentials, customer data, internal topology, or unrelated governance records.
+The following remain separate future decisions:
 
-## Reviews
-
-CG-0031 requests:
-
-- **Ptah** — implementation feasibility review limited to the authority input contract, immutable source pinning, repository and path matching, condition representation, deterministic failure behavior, testability, and initial pilot topology.
-- **Osiris** — authority, privacy, and abuse-boundary review limited to non-inference, non-creation of authority, supersession and revocation behavior, disclosure-safe diagnostics, bypass resistance, and separation from runtime authority.
-
-Both reviews are advisory. Neither review changes `authorityEffect` or grants implementation authority.
+- required merge-check activation;
+- branch-protection changes;
+- broader repository rollout;
+- additional protected paths or surfaces;
+- runtime enforcement;
+- deployment or publication.
 
 ## Operator Disposition
 
-While CG-0031 remains under review:
+The Operator accepted CG-0031 with conditions on 2026-07-24 after CG-0030 / PR #31 were merged and after the required Ptah and Osiris reviews.
 
-- `workflowState: proposed`
-- `authorityEffect: none-until-operator-disposition`
-
-must remain unchanged.
-
-Only a recorded accepting Operator disposition may authorize Phase 0 implementation. Activation as a required merge check, broader rollout, or additional protected scopes requires a later Council matter.
-
-## Constitutional Boundary
-
-CG-0031 does not move governance into CI.
-
-Council Grounds remains the authority record. The Operator remains final authority. The Ledger remains non-operative. CI is limited to deterministic verification and scoped failure. Runtime receives no new authority from this matter.
+The recorded disposition authorizes only the bounded Phase 0 verifier implementation, local validation, and scoped non-required CI pilot described above.
