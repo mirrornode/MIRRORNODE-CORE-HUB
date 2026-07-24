@@ -1,8 +1,8 @@
 # MIRRORNODE MCP Surface Contract v0.1
 
-**Status:** Council Review Draft  
+**Status:** Revised Definition Draft  
 **Matter:** CG-0032  
-**Drafting authority:** Operator-authorized documentation action, 2026-07-23  
+**Revision authority:** Operator `revision-required` disposition, 2026-07-23  
 **Implementation authority:** Not granted by this document  
 **Deployment authority:** Not granted by this document  
 **Remote-exposure authority:** Not granted by this document  
@@ -10,7 +10,7 @@
 
 ## 1. Purpose
 
-This contract defines the permitted role, disclosure boundary, integrity semantics, failure behavior, and expansion gate for a MIRRORNODE Model Context Protocol (MCP) surface.
+This contract defines the permitted role, disclosure boundary, integrity semantics, deterministic failure behavior, protocol-surface boundary, and expansion gate for a MIRRORNODE Model Context Protocol (MCP) surface.
 
 The current local prototype proved technical feasibility. That proof does not by itself authorize the prototype as architecture, approve its current outputs for continued exposure, or authorize additional capabilities.
 
@@ -47,7 +47,24 @@ MCP surface
 external model runtime
 ```
 
-No canonical MIRRORNODE surface may depend on MCP output to establish authority, validity, approval, truth, or execution permission.
+No canonical MIRRORNODE surface may depend on MCP output to establish authority, validity, approval, truth, integrity, or execution permission.
+
+### 2.1 Primitive-independent protocol boundary
+
+The term **MCP surface** in this contract applies to every server primitive, negotiated capability, extension, and output channel that can deliver data or behavior across the MCP boundary.
+
+This includes, without limitation:
+
+- tools,
+- resources,
+- prompts,
+- templates,
+- notifications or subscriptions,
+- server instructions,
+- extensions,
+- newly introduced protocol primitives or negotiated capabilities.
+
+No primitive or protocol evolution may bypass the projection, prohibited-data, anti-capability, failure, disclosure, or expansion rules in this contract merely because it is not implemented as a tool.
 
 ## 3. Current observed prototype
 
@@ -78,7 +95,7 @@ Observed validation result during prototype testing:
 }
 ```
 
-This section records evidence only. It does not approve any listed tool or output shape.
+This section records evidence only. It does not approve any listed tool, primitive, capability, or output shape.
 
 ## 4. Authority boundary
 
@@ -140,6 +157,8 @@ Projection must be constructed before the external-model boundary.
 
 Permitted output fields must be explicitly allowlisted. Unknown fields must be rejected.
 
+This rule applies to every MCP primitive, capability, extension, and output channel covered by section 2.1.
+
 A field is not safe merely because it is:
 
 - present in a canonical record,
@@ -151,7 +170,7 @@ A field is not safe merely because it is:
 
 ## 8. Prohibited projection data by default
 
-Unless separately reviewed and explicitly allowlisted, the MCP surface must not expose:
+Unless separately reviewed and explicitly allowlisted, no MCP primitive, capability, extension, or output channel may expose:
 
 - raw ledger payloads,
 - raw Council positions or deliberation,
@@ -174,7 +193,7 @@ An MCP projection must not expose arbitrary canonical free text to an external m
 
 Projected content must be treated as data, never as instructions to the consuming model.
 
-No ledger entry, document field, payload string, issue text, repository content, or other projected material may grant new tool authority, change system instructions, alter Operator authority, or authorize execution.
+No ledger entry, document field, payload string, issue text, repository content, resource, prompt, template, notification, server instruction, extension payload, or other projected material may grant new tool authority, change system instructions, alter Operator authority, or authorize execution.
 
 ## 10. Current-tool conformance status
 
@@ -189,6 +208,8 @@ The current four-tool prototype remains frozen for review. Its present output sh
 
 No implementation change is authorized by this table.
 
+The same conformance rule applies to any non-tool MCP primitive if one is later proposed.
+
 ## 11. Minimum permitted projection classes
 
 A future implementation may expose only contract-reviewed classes such as:
@@ -199,28 +220,75 @@ A future implementation may expose only contract-reviewed classes such as:
 - separately approved summaries constructed from allowlisted fields,
 - separately approved public projection artifacts.
 
-Every concrete field remains subject to review. This section is not a tool authorization list.
+Every concrete field and output channel remains subject to review. This section is not a tool, resource, prompt, or capability authorization list.
 
-## 12. Failure contract
+## 12. Deterministic failure contract
 
 The MCP surface must fail closed and visibly.
 
 It must never substitute mock, inferred, cached, stale, or fabricated data for unavailable canonical state unless a separate contract explicitly authorizes a labeled retained artifact.
 
-Required conditions include:
+### 12.1 Machine-readable outcome vocabulary
 
-| Condition | Required projection behavior |
-|---|---|
-| canonical source missing | return unavailable; do not create or initialize canonical state |
-| source unreadable or permission denied | return unavailable with disclosure-safe reason code |
-| malformed source | return failed check; do not partially certify the source |
-| unsupported schema | return unsupported; do not guess field meaning |
-| integrity mismatch | return failed check using neutral semantics |
-| partial scan | clearly mark partial; never report complete success |
-| stale source | report staleness only if freshness semantics are explicitly defined |
-| MCP internal error | return unavailable; do not fall back to direct shell or filesystem access |
+Every MCP operation or data delivery that can fail, degrade, or be incomplete must expose one bounded machine-readable outcome from this vocabulary:
+
+- `success`
+- `partial`
+- `unavailable`
+- `failed`
+- `unsupported`
+
+Implementations may add human-readable explanatory text only as supplemental information. Free text alone must never classify the outcome.
+
+### 12.2 Completeness semantics
+
+Where scanning, enumeration, aggregation, or validation can be incomplete, the response must separately declare completeness as one of:
+
+- `complete`
+- `partial`
+- `not-applicable`
+
+`success` must not be used to imply a complete scan when completeness is `partial`.
+
+### 12.3 Stable disclosure-safe reason codes
+
+Every non-`success` outcome must include at least one stable machine-readable reason code.
+
+The minimum required reason-code vocabulary is:
+
+- `SOURCE_MISSING`
+- `SOURCE_UNREADABLE`
+- `SOURCE_MALFORMED`
+- `SCHEMA_UNSUPPORTED`
+- `INTEGRITY_MISMATCH`
+- `SCAN_INCOMPLETE`
+- `SOURCE_STALE`
+- `MCP_INTERNAL_ERROR`
+
+A later implementation matter may define additional reason codes only if they remain bounded, stable, disclosure-reviewed, and schema-validated.
+
+Reason codes must not embed local paths, usernames, hostnames, secrets, stack traces, raw source content, or sensitive topology.
+
+### 12.4 Required condition mapping
+
+| Condition | Outcome | Completeness | Required reason code | Required behavior |
+|---|---|---|---|---|
+| canonical source missing | `unavailable` | `not-applicable` | `SOURCE_MISSING` | do not create or initialize canonical state |
+| source unreadable or permission denied | `unavailable` | `not-applicable` | `SOURCE_UNREADABLE` | disclose no sensitive source detail |
+| malformed source | `failed` | `not-applicable` | `SOURCE_MALFORMED` | do not partially certify the source |
+| unsupported schema | `unsupported` | `not-applicable` | `SCHEMA_UNSUPPORTED` | do not guess field meaning |
+| integrity mismatch | `failed` | `complete` or `partial` as actually observed | `INTEGRITY_MISMATCH` | use neutral integrity semantics |
+| partial scan | `partial` | `partial` | `SCAN_INCOMPLETE` | never report complete success |
+| stale source | `partial` or `unavailable` as separately defined by the implementation contract | actual observed completeness | `SOURCE_STALE` | report staleness only under explicit freshness semantics |
+| MCP internal error | `unavailable` | `not-applicable` | `MCP_INTERNAL_ERROR` | do not fall back to direct shell or filesystem access |
 
 Failure responses must minimize local path, topology, implementation, and sensitive-state disclosure.
+
+### 12.5 Conformance requirement
+
+A later implementation matter must require positive and negative fixtures that prove the exact outcome, completeness, and reason-code mapping for every supported failure condition.
+
+Unknown outcome values, unknown completeness values, unknown reason codes, or free-text-only failure classification must fail schema validation.
 
 ## 13. Transport and local-user boundary
 
@@ -242,7 +310,7 @@ Future review must determine whether user scope remains acceptable. This contrac
 
 ## 14. Permanent anti-capabilities for this projection class
 
-A read-only MIRRORNODE MCP projection must not expose capabilities that can directly:
+Across every MCP primitive, capability, extension, or output channel, a read-only MIRRORNODE MCP projection must not expose capabilities that can directly:
 
 - mutate the canonical ledger,
 - create, amend, accept, reject, revoke, or infer Council disposition,
@@ -283,30 +351,33 @@ Before an MCP implementation may be accepted as governed infrastructure, a later
 - explicit transport configuration,
 - read-only enforcement tests,
 - positive and negative projection-schema fixtures,
-- failure-mode tests,
+- deterministic failure-semantics fixtures,
 - prompt-injection boundary tests,
 - secret-disclosure tests,
 - unknown-field rejection tests,
 - canonical-rule drift tests where applicable,
+- protocol-primitive enumeration and capability review,
 - documented upgrade and rollback procedure,
 - evidence that no alternate authority path is introduced.
 
 ## 17. Surface-expansion gate
 
-No fifth tool or materially expanded output field may be added to an accepted MCP surface without review against this contract.
+No materially expanded MCP primitive, capability, extension, output channel, tool, resource, prompt, template, notification/subscription, server instruction, or output field may be added to an accepted MCP surface without review against this contract.
 
 A proposed expansion must identify:
 
-1. the exact tool or field;
+1. the exact primitive, capability, extension, channel, tool, resource, prompt, template, notification/subscription, server instruction, or field;
 2. its canonical source;
 3. its disclosure justification;
 4. its authority semantics;
-5. its failure behavior;
+5. its deterministic failure behavior;
 6. its injection risk;
 7. its test evidence;
 8. whether it changes the architectural class of the MCP surface.
 
-Silence or prior tool acceptance does not authorize expansion.
+Unknown or newly introduced MCP primitives and negotiated capabilities are denied by default until separately reviewed.
+
+Silence, protocol evolution, or prior acceptance of another primitive does not authorize expansion.
 
 ## 18. Separate authorization gates
 
@@ -319,18 +390,19 @@ The following remain separate decisions:
 5. authorization to register the surface with additional model runtimes;
 6. authorization for any remote tunnel or network exposure;
 7. authorization to deploy or operate the surface persistently;
-8. authorization to add a capability;
+8. authorization to add or materially expand any MCP primitive, capability, extension, output channel, or field;
 9. authorization to propose any write-capable architectural class.
 
 Approval at one gate does not imply approval at another.
 
 ## 19. Current prototype freeze
 
-Pending CG-0032 disposition, the current prototype is retained only as observed local evidence.
+Pending CG-0032 final disposition, the current prototype is retained only as observed local evidence.
 
 The review boundary is:
 
 - no fifth tool,
+- no new resource, prompt, template, notification/subscription, server instruction, extension, or negotiated capability,
 - no MCP code relocation,
 - no repository creation for the executable,
 - no output-shape remediation,
@@ -341,6 +413,6 @@ The review boundary is:
 
 ## 20. Decision requested from CG-0032
 
-CG-0032 should decide only whether this document is an acceptable governing definition for a read-only MCP projection surface and whether a later, separately authorized implementation-remediation matter may be opened against it.
+CG-0032 should decide only whether this revised document is an acceptable governing definition for a read-only MCP projection surface and whether a later, separately authorized implementation-remediation matter may be opened against it.
 
 Acceptance of CG-0032 would not itself authorize any executable change.
