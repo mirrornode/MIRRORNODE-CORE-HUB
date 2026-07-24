@@ -4,20 +4,20 @@ title: MCP Surface Contract v0.1
 matterType: governance-definition
 initiator: operator
 createdAt: 2026-07-24T04:42:42Z
-updatedAt: 2026-07-24T05:20:39Z
-workflowState: revision-required
-authorityEffect: none-until-operator-disposition
+updatedAt: 2026-07-24T05:51:48Z
+workflowState: closed
+authorityEffect: governing-definition-only
 
 disposition:
-  status: revision-required
+  status: accepted
   authority: operator
-  decidedAt: 2026-07-24T05:20:39Z
+  decidedAt: 2026-07-24T05:51:48Z
   rationale: >-
-    Operator approved the Council synthesis recommendation. Revision authority is
-    limited to R1 deterministic failure semantics and R2 a primitive-independent
-    MCP boundary, followed by bounded confirmation review. No executable MCP
-    change is authorized.
-  record: disposition/2026-07-24T052039Z-revision-required.yaml
+    Operator accepted the revised MCP Surface Contract v0.1 after the bounded R1
+    and R2 revision cycle and Ptah, Thoth, and Osiris confirmation. Acceptance
+    authorizes finalization and merge of PR #33 as a governance-definition
+    record only. No executable MCP change is authorized.
+  record: disposition/2026-07-24T055148Z-accepted.yaml
 
 decisionQuestion: >-
   Should MIRRORNODE adopt MCP Surface Contract v0.1 as the governing definition
@@ -35,6 +35,9 @@ operatorAuthorization:
     - R1-deterministic-failure-semantics-revision
     - R2-primitive-independent-boundary-revision
     - bounded-confirmation-review
+    - acceptance-of-governance-definition
+    - finalization-of-pr-33
+    - merge-of-pr-33-as-governance-definition-record
   grantedAt: 2026-07-23
   explicitlyDoesNotAuthorize:
     - mcp-code-change
@@ -57,7 +60,7 @@ anchors:
   - id: MCP-SURFACE-CONTRACT-DRAFT
     kind: document
     href: ../../../docs/mcp/MCP_SURFACE_CONTRACT_V0_1.md
-    requiredState: revision-authorized
+    requiredState: accepted-governing-definition
   - id: MIRROR-CANONICAL-ENTRYPOINT
     kind: mechanism
     href: ../../../tools/@mirror
@@ -185,6 +188,7 @@ acceptanceConditions:
 requiredRevisionThemes:
   R1:
     title: deterministic-failure-semantics
+    status: resolved-and-confirmed
     requires:
       - bounded-machine-readable-outcome-vocabulary
       - stable-disclosure-safe-reason-codes
@@ -193,6 +197,7 @@ requiredRevisionThemes:
       - conformance-tests-against-machine-readable-semantics
   R2:
     title: primitive-independent-mcp-boundary
+    status: resolved-and-confirmed
     requires:
       - projection-rules-cover-all-mcp-primitives-and-capabilities
       - prohibited-data-rules-cover-all-mcp-primitives-and-capabilities
@@ -205,17 +210,24 @@ confirmationReviewsRequired:
   - thoth
   - osiris
 
+confirmationState:
+  ptah: confirmed
+  thoth: confirmed
+  osiris: confirmed-with-residual-future-conditions
+  definitionBlockersRemaining: false
+
 theiaRereviewCondition: >-
   Required only if the revision changes architectural role, authority direction,
   or separate-authorization gates.
 
 nextRequiredStep: >-
-  Revise MCP_SURFACE_CONTRACT_V0_1.md only as necessary to resolve R1 and R2,
-  then obtain Ptah, Thoth, and Osiris confirmation reviews. Do not modify the MCP
-  executable or its registration. After confirmation synthesis, reserve final
-  acceptance or further revision disposition to the Operator.
+  Finalize and merge PR #33 as a governance-definition record only. Any
+  executable remediation, implementation location, output-shape change,
+  additional model-runtime attachment, remote exposure, capability expansion,
+  deployment, publication, or write-capable MCP proposal requires separate
+  future authority.
 
 notes:
   - The prior prototype review informed this draft but does not substitute for review of the contract text.
-  - Acceptance of this matter would define governance only; it would not authorize executable remediation.
+  - Acceptance of this matter defines governance only; it does not authorize executable remediation.
   - Any write-capable MCP proposal is a different architectural class and requires a separate Council matter.
