@@ -1,0 +1,55 @@
+schemaVersion: "0.1"
+matterId: CG-0032
+status: revision-required
+authority: operator
+decidedAt: 2026-07-24T05:20:39Z
+rationale: >-
+  Operator approved the Council synthesis recommendation. Revision authority is
+  limited to resolving R1 deterministic failure semantics and R2 a
+  primitive-independent MCP boundary, followed by bounded confirmation review.
+  No executable MCP change is authorized.
+authorizedRevisionScope:
+  - deterministic-machine-readable-outcome-vocabulary
+  - stable-disclosure-safe-reason-codes
+  - explicit-completeness-semantics
+  - prohibit-free-text-only-failure-classification
+  - conformance-test-requirement-for-failure-semantics
+  - primitive-independent-projection-boundary
+  - primitive-independent-prohibited-data-boundary
+  - primitive-independent-anti-capabilities
+  - primitive-independent-expansion-gate
+  - documentary-record-updates
+  - ptah-confirmation-review
+  - thoth-confirmation-review
+  - osiris-confirmation-review
+explicitlyNotAuthorized:
+  - mcp-code-change
+  - mcp-code-relocation
+  - executable-repository-creation
+  - fifth-tool
+  - expanded-tool-output
+  - new-mcp-resource
+  - new-mcp-prompt
+  - new-mcp-template
+  - new-mcp-notification-or-subscription
+  - claude-registration-change
+  - additional-model-runtime-attachment
+  - remote-exposure
+  - tunnel-activation
+  - persistent-service-operation
+  - runtime-execution
+  - shell-execution
+  - filesystem-write
+  - repository-write
+  - ledger-write
+  - council-disposition-write-by-mcp
+  - operator-identity-assertion-by-mcp
+  - secret-access
+  - deployment
+  - publication
+  - write-capable-mcp-class
+nextRequiredStep: >-
+  Revise MCP_SURFACE_CONTRACT_V0_1.md only as necessary to resolve R1 and R2,
+  update CG-0032 documentary state, then obtain Ptah, Thoth, and Osiris
+  confirmation reviews. Theia re-review is required only if architectural role,
+  authority direction, or separate-authorization gates change.

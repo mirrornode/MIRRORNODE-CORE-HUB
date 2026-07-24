@@ -1,0 +1,63 @@
+schemaVersion: "0.1"
+matterId: CG-0032
+status: accepted
+authority: operator
+decidedAt: 2026-07-24T05:51:48Z
+decision: >-
+  Accept the revised MCP Surface Contract v0.1 and authorize finalization and
+  merge of PR #33 as a governance-definition record only.
+rationale: >-
+  The initial Council review supported the downstream read-only projection
+  architecture subject to R1 deterministic failure semantics and R2 a
+  primitive-independent MCP boundary. The Operator authorized those bounded
+  documentary revisions. Ptah, Thoth, and Osiris subsequently confirmed the
+  revised definition with no remaining definition-level blocker. Acceptance
+  therefore applies to the governing definition and documentary Council record
+  only.
+authorizes:
+  - acceptance-of-mcp-surface-contract-v0-1-governance-definition
+  - finalization-of-cg-0032-documentary-record
+  - finalization-of-pr-33
+  - merge-of-pr-33-as-governance-definition-record
+  - later-separate-council-matter-may-be-opened-for-implementation-remediation
+explicitlyDoesNotAuthorize:
+  - mcp-executable-change
+  - mcp-executable-relocation
+  - executable-repository-creation
+  - output-shape-remediation
+  - fifth-tool
+  - new-mcp-resource
+  - new-mcp-prompt
+  - new-mcp-template
+  - new-mcp-notification-or-subscription
+  - new-mcp-server-instruction
+  - new-mcp-extension
+  - new-negotiated-mcp-capability
+  - claude-registration-change
+  - additional-model-runtime-attachment
+  - chatgpt-attachment
+  - remote-tunnel
+  - network-exposure
+  - persistent-service-operation
+  - daemonization
+  - deployment
+  - publication
+  - runtime-execution
+  - shell-execution
+  - filesystem-write
+  - repository-write
+  - ledger-write
+  - council-disposition-write-through-mcp
+  - operator-identity-assertion-through-mcp
+  - secret-access
+  - write-capable-mcp-class
+boundary: >-
+  This accepting disposition establishes the revised MCP Surface Contract v0.1
+  as the governing definition for a read-only downstream MIRRORNODE MCP
+  projection surface. It does not ratify the current local prototype as a
+  compliant implementation and grants no executable authority.
+nextRequiredStep: >-
+  Finalize and merge PR #33 as a governance-definition record only. Any
+  executable remediation, implementation placement, additional runtime
+  attachment, remote exposure, capability expansion, deployment, publication,
+  or write-capable MCP proposal requires separate future authority.

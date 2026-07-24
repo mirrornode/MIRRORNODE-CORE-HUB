@@ -1,0 +1,233 @@
+schemaVersion: "0.1"
+id: CG-0032
+title: MCP Surface Contract v0.1
+matterType: governance-definition
+initiator: operator
+createdAt: 2026-07-24T04:42:42Z
+updatedAt: 2026-07-24T05:51:48Z
+workflowState: closed
+authorityEffect: governing-definition-only
+
+disposition:
+  status: accepted
+  authority: operator
+  decidedAt: 2026-07-24T05:51:48Z
+  rationale: >-
+    Operator accepted the revised MCP Surface Contract v0.1 after the bounded R1
+    and R2 revision cycle and Ptah, Thoth, and Osiris confirmation. Acceptance
+    authorizes finalization and merge of PR #33 as a governance-definition
+    record only. No executable MCP change is authorized.
+  record: disposition/2026-07-24T055148Z-accepted.yaml
+
+decisionQuestion: >-
+  Should MIRRORNODE adopt MCP Surface Contract v0.1 as the governing definition
+  for a read-only downstream MCP projection surface, while preserving the current
+  local four-tool prototype as frozen evidence and requiring a separate later
+  authorization for any executable remediation, relocation, additional runtime
+  attachment, remote exposure, or capability expansion?
+
+operatorAuthorization:
+  grantedFor:
+    - documentation-only-contract-drafting
+    - council-matter-record
+    - review-request-packet
+    - draft-pull-request
+    - R1-deterministic-failure-semantics-revision
+    - R2-primitive-independent-boundary-revision
+    - bounded-confirmation-review
+    - acceptance-of-governance-definition
+    - finalization-of-pr-33
+    - merge-of-pr-33-as-governance-definition-record
+  grantedAt: 2026-07-23
+  explicitlyDoesNotAuthorize:
+    - mcp-code-change
+    - fifth-tool
+    - executable-relocation
+    - new-executable-repository
+    - output-shape-remediation
+    - claude-scope-change
+    - additional-model-runtime-attachment
+    - chatgpt-attachment
+    - remote-tunnel
+    - network-exposure
+    - daemonization
+    - deployment
+    - publication
+    - write-capability
+    - canonical-ledger-mutation
+
+anchors:
+  - id: MCP-SURFACE-CONTRACT-DRAFT
+    kind: document
+    href: ../../../docs/mcp/MCP_SURFACE_CONTRACT_V0_1.md
+    requiredState: accepted-governing-definition
+  - id: MIRROR-CANONICAL-ENTRYPOINT
+    kind: mechanism
+    href: ../../../tools/@mirror
+    requiredState: reference-only
+  - id: COUNCIL-GROUNDS-PILOT
+    kind: council-matter
+    href: ../CG-0029-continuity-console-v0-1/
+    requiredState: reference-only
+  - id: OPERATOR-CONTINUITY-LEDGER
+    kind: document
+    href: ../../../docs/continuity/OPERATOR_CONTINUITY_LEDGER_V0_1.md
+    requiredState: reference-only
+
+observedPrototype:
+  location: "~/code/mirrornode-mcp/server.py"
+  trackedInCoreHub: false
+  transport: stdio
+  registrationScope: claude-code-user
+  tools:
+    - mirrornode_status
+    - ledger_summary
+    - recent_ledger_events
+    - validate_ledger_provenance
+  observedValidation:
+    valid: true
+    eventsChecked: 45
+    errors: 0
+  evidenceMeaning: >-
+    Observation only. The prototype is technically operational but is not
+    ratified architecture and its current output shapes are not automatically
+    approved by this matter.
+
+proposedRole:
+  architecturalClass: downstream-read-only-projection
+  canonicalAuthority: false
+  executionAuthority: false
+  dispositionAuthority: false
+  publicationAuthority: false
+  invariant: >-
+    Canonical MIRRORNODE mechanisms may feed an approved projection into MCP.
+    No canonical mechanism may depend on MCP output to establish authority,
+    approval, truth, integrity, or execution permission.
+
+authorizedScopeRequested:
+  - projection-role-definition
+  - canonical-dependency-direction
+  - field-allowlist-principle
+  - prompt-injection-boundary
+  - integrity-semantics-definition
+  - failure-contract-definition
+  - anti-capability-definition
+  - implementation-evidence-requirements
+  - surface-expansion-gate
+  - separate-authorization-gates
+
+explicitlyNotAuthorized:
+  - mcp-code-change
+  - mcp-code-relocation
+  - executable-repository-creation
+  - fifth-tool
+  - expanded-tool-output
+  - new-mcp-resource
+  - new-mcp-prompt
+  - new-mcp-template
+  - new-mcp-notification-or-subscription
+  - direct-raw-ledger-approval
+  - local-path-disclosure-approval
+  - canonical-rule-duplication-ratification
+  - claude-registration-change
+  - additional-model-runtime-attachment
+  - remote-exposure
+  - tunnel-activation
+  - persistent-service-operation
+  - runtime-execution
+  - shell-execution
+  - filesystem-write
+  - repository-write
+  - ledger-write
+  - council-disposition-write
+  - operator-identity-assertion
+  - secret-access
+  - deployment
+  - publication
+  - write-capable-mcp-class
+
+currentToolReviewFlags:
+  mirrornode_status:
+    status: review-required
+    issue: local-path-disclosure
+  ledger_summary:
+    status: review-required
+    issue: local-path-disclosure
+  recent_ledger_events:
+    status: nonconforming-as-shaped
+    issue: raw-ledger-and-model-interpretable-text-exposure
+  validate_ledger_provenance:
+    status: review-required
+    issue: neutral-semantics-and-canonical-rule-ownership
+
+requiredReviews:
+  - theia
+  - ptah
+  - thoth
+  - osiris
+
+reviewRequests:
+  theia: review-requests/THEIA_ARCHITECTURAL_INTEGRATION_REVIEW.md
+  ptah: review-requests/PTAH_IMPLEMENTATION_CONTRACT_REVIEW.md
+  thoth: review-requests/THOTH_SECURITY_BOUNDARY_REVIEW.md
+  osiris: review-requests/OSIRIS_DISCLOSURE_AUTHORITY_REVIEW.md
+
+acceptanceConditions:
+  - projection-role-is-unambiguous
+  - dependency-direction-preserves-canonical-authority
+  - raw-canonical-state-is-not-approved-by-default
+  - integrity-language-does-not-imply-authorization-or-truth
+  - failure-behavior-is-closed-and-disclosure-minimized
+  - deterministic-failure-semantics-are-machine-readable
+  - prompt-injection-boundary-is-explicit
+  - primitive-independent-boundary-is-explicit
+  - permanent-read-only-anti-capabilities-are-explicit
+  - implementation-location-remains-separate-future-decision
+  - current-prototype-remains-frozen-until-later-authorization
+
+requiredRevisionThemes:
+  R1:
+    title: deterministic-failure-semantics
+    status: resolved-and-confirmed
+    requires:
+      - bounded-machine-readable-outcome-vocabulary
+      - stable-disclosure-safe-reason-codes
+      - explicit-completeness-semantics
+      - prohibit-free-text-only-failure-classification
+      - conformance-tests-against-machine-readable-semantics
+  R2:
+    title: primitive-independent-mcp-boundary
+    status: resolved-and-confirmed
+    requires:
+      - projection-rules-cover-all-mcp-primitives-and-capabilities
+      - prohibited-data-rules-cover-all-mcp-primitives-and-capabilities
+      - anti-capabilities-cover-all-mcp-primitives-and-capabilities
+      - expansion-gate-covers-all-mcp-primitives-and-capabilities
+      - protocol-evolution-cannot-bypass-review
+
+confirmationReviewsRequired:
+  - ptah
+  - thoth
+  - osiris
+
+confirmationState:
+  ptah: confirmed
+  thoth: confirmed
+  osiris: confirmed-with-residual-future-conditions
+  definitionBlockersRemaining: false
+
+theiaRereviewCondition: >-
+  Required only if the revision changes architectural role, authority direction,
+  or separate-authorization gates.
+
+nextRequiredStep: >-
+  Finalize and merge PR #33 as a governance-definition record only. Any
+  executable remediation, implementation location, output-shape change,
+  additional model-runtime attachment, remote exposure, capability expansion,
+  deployment, publication, or write-capable MCP proposal requires separate
+  future authority.
+
+notes:
+  - The prior prototype review informed this draft but does not substitute for review of the contract text.
+  - Acceptance of this matter defines governance only; it does not authorize executable remediation.
+  - Any write-capable MCP proposal is a different architectural class and requires a separate Council matter.
