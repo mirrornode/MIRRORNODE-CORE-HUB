@@ -1,0 +1,50 @@
+schemaVersion: "0.1"
+matterId: CG-0030
+status: accepted
+authority: operator
+decidedAt: 2026-07-24T09:50:07Z
+rationale: >-
+  Operator approved CG-0030 after the required Ptah and Osiris advisory reviews.
+  Acceptance authorizes only the bounded Phase 0 implementation and local validation
+  of the read-only /continuity route in mirrornode-platform within the exact scope
+  recorded in matter.yaml. It does not authorize deployment, publication, a populated
+  production snapshot, private-data ingestion, MOPCON modification, runtime modification,
+  or any inferred authority.
+authorized:
+  - implementation-branch-in-mirrornode-platform
+  - static-continuity-route
+  - typed-public-snapshot-contract
+  - fixture-only-development-data
+  - checked-in-allowlists
+  - strict-schema-validation
+  - calculated-freshness
+  - atomic-snapshot-replacement
+  - retain-last-valid-snapshot
+  - failure-closed-production-build-validation
+  - accessibility-responsive-lint-typecheck-test-build-validation
+  - implementation-evidence-packet
+explicitlyNotAuthorized:
+  - populated-production-snapshot
+  - deployment
+  - publication
+  - external-announcement
+  - private-ledger-ingestion
+  - private-derived-material-without-approved-public-projection
+  - request-time-private-source-access
+  - mopcon-modification
+  - runtime-modification
+  - customer-data
+  - personal-data
+  - secrets
+  - operator-controls
+  - continuity-record-writes
+  - council-record-writes
+  - autonomous-librarian-behavior
+  - background-agent-behavior
+  - inferred-approval
+postImplementationGates:
+  populatedSnapshotReviewRequired: true
+  deploymentAuthorityRequired: true
+  publicationAuthorityRequired: true
+  disclosureReviewRequired: true
+  separateCouncilMatterRequired: true
