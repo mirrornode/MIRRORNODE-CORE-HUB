@@ -1,8 +1,8 @@
 # MIRRORNODE MCP Surface Contract v0.1
 
-**Status:** Revised Definition Draft  
+**Status:** Accepted Governing Definition  
 **Matter:** CG-0032  
-**Revision authority:** Operator `revision-required` disposition, 2026-07-23  
+**Acceptance authority:** Operator accepted disposition, 2026-07-23  
 **Implementation authority:** Not granted by this document  
 **Deployment authority:** Not granted by this document  
 **Remote-exposure authority:** Not granted by this document  
@@ -14,7 +14,7 @@ This contract defines the permitted role, disclosure boundary, integrity semanti
 
 The current local prototype proved technical feasibility. That proof does not by itself authorize the prototype as architecture, approve its current outputs for continued exposure, or authorize additional capabilities.
 
-This document governs what an MCP surface may become if later accepted by Operator disposition.
+This document is the accepted governing definition for any later-authorized MIRRORNODE read-only MCP projection surface.
 
 ## 2. Architectural role
 
@@ -397,9 +397,9 @@ Approval at one gate does not imply approval at another.
 
 ## 19. Current prototype freeze
 
-Pending CG-0032 final disposition, the current prototype is retained only as observed local evidence.
+Following CG-0032 acceptance, the current prototype remains retained only as observed local evidence pending separate implementation authority.
 
-The review boundary is:
+The review boundary remains:
 
 - no fifth tool,
 - no new resource, prompt, template, notification/subscription, server instruction, extension, or negotiated capability,
@@ -409,10 +409,10 @@ The review boundary is:
 - no new model-runtime attachment,
 - no remote exposure,
 - no write capability,
-- no representation that the prototype is ratified architecture.
+- no representation that the prototype is a contract-conforming implementation.
 
-## 20. Decision requested from CG-0032
+## 20. CG-0032 disposition
 
-CG-0032 should decide only whether this revised document is an acceptable governing definition for a read-only MCP projection surface and whether a later, separately authorized implementation-remediation matter may be opened against it.
+CG-0032 accepted this revised document as the governing definition for a read-only MCP projection surface and permits a later, separately authorized implementation-remediation matter to be opened against it.
 
-Acceptance of CG-0032 would not itself authorize any executable change.
+Acceptance of CG-0032 does not itself authorize any executable change.
