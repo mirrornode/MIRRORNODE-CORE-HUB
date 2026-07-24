@@ -1,56 +1,28 @@
 # CG-0032 — MCP Surface Contract v0.1
 
-**Workflow state:** Proposed  
-**Authority effect:** None until Operator disposition  
+**Workflow state:** Closed  
+**Operator disposition:** Accepted  
+**Authority effect:** Governing definition only  
 **Matter type:** Governance definition  
 **Implementation authority:** Not granted
 
-## Decision question
+## Decision
 
-Should MIRRORNODE adopt `MCP_SURFACE_CONTRACT_V0_1.md` as the governing definition for a read-only downstream MCP projection surface, while preserving the current four-tool local prototype as frozen evidence and requiring separate later authorization for executable remediation, relocation, additional model-runtime attachment, remote exposure, or capability expansion?
+The Operator accepted `MCP_SURFACE_CONTRACT_V0_1.md` as the governing definition for a read-only downstream MCP projection surface and authorized finalization and merge of PR #33 as a governance-definition record only.
+
+The accepting disposition does not authorize executable remediation, relocation, additional model-runtime attachment, remote exposure, deployment, publication, capability expansion, or write authority.
 
 ## Why this matter exists
 
-A local MCP prototype has now been demonstrated through Claude Code. The prototype exposes four read-only tools and successfully returned an integrity-check result covering 45 local ledger events with no reported errors.
+A local MCP prototype was demonstrated through Claude Code. The prototype exposes four read-only tools and successfully returned an integrity-check result covering 45 local ledger events with no reported errors.
 
 That technical observation established feasibility. It did not establish architectural authorization.
 
-The Council review that followed identified four governance gaps:
+CG-0032 defines the **governance layer only** for what a future MIRRORNODE MCP projection surface may become.
 
-1. the executable is local and untracked;
-2. raw ledger and local-path disclosure are not yet governed as projection-safe output;
-3. integrity language can be mistaken for authority, truth, approval, or safety;
-4. the dependency direction between canonical MIRRORNODE state and MCP has not been contractually fixed.
+## Accepted architectural role
 
-CG-0032 addresses those gaps at the **definition layer only**.
-
-## Operator authorization for this step
-
-The Operator authorized the documentation step after Council review.
-
-Authorized now:
-
-- draft the MCP Surface Contract;
-- record CG-0032;
-- prepare review requests;
-- open a documentary review PR.
-
-Not authorized now:
-
-- edit `~/code/mirrornode-mcp/server.py`;
-- add a fifth tool;
-- relocate the executable;
-- create a repository for the executable;
-- remediate current tool output shapes;
-- alter Claude registration scope;
-- connect additional model runtimes;
-- expose the MCP remotely;
-- deploy or daemonize the service;
-- create any write-capable MCP function.
-
-## Proposed architectural role
-
-The draft defines MCP as a **downstream read-only projection surface**.
+MCP is a **downstream read-only projection surface**.
 
 ```text
 Operator / Council authority
@@ -66,7 +38,9 @@ MCP surface
 external model runtime
 ```
 
-MCP does not create authority and canonical MIRRORNODE mechanisms may not depend on MCP output for authorization, truth, approval, or execution permission.
+MCP does not create authority and canonical MIRRORNODE mechanisms may not depend on MCP output for authorization, truth, approval, integrity, or execution permission.
+
+The contract applies across the entire MCP protocol surface, including tools, resources, prompts, templates, notifications/subscriptions, server instructions, extensions, and future negotiated capabilities.
 
 ## Current prototype evidence
 
@@ -91,38 +65,70 @@ Observed integrity-check result:
 }
 ```
 
-The observation is evidence only. The current output shapes are not approved by this matter.
+The observation is evidence only. The current prototype is not accepted as a contract-conforming implementation by CG-0032.
 
-## Known review flags
+## Current prototype review flags
 
 - `mirrornode_status`: exposes local paths and requires output minimization review.
 - `ledger_summary`: exposes a local path and requires output minimization review.
-- `recent_ledger_events`: returns raw ledger events and is marked nonconforming as currently shaped.
+- `recent_ledger_events`: returns raw ledger events and is nonconforming as currently shaped.
 - `validate_ledger_provenance`: requires neutral semantics and resolution of duplicated canonical validation logic.
 
-No remediation is authorized while this matter is under review.
+These flags remain unresolved implementation questions. Acceptance of the contract does not remediate them.
 
-## Required reviews
+## Council review
 
-- Theia — architectural integration and dependency direction
-- Ptah — implementation contract and canonical-rule ownership
-- Thoth — security boundary, prompt injection, and anti-capabilities
-- Osiris — disclosure, authority language, and failure presentation
+Initial positions:
 
-## Review target
+- POS-0001 — Theia: support; no architectural definition defect.
+- POS-0002 — Ptah: support with R1 revision required.
+- POS-0003 — Thoth: support with R2 revision required.
+- POS-0004 — Osiris: support conditioned on incorporation of R1/R2.
+
+The Operator then recorded a `revision-required` disposition limited to:
+
+- R1 — deterministic failure semantics;
+- R2 — primitive-independent MCP boundary;
+- bounded confirmation review.
+
+Confirmation positions:
+
+- POS-0005 — Ptah: confirmed.
+- POS-0006 — Thoth: confirmed.
+- POS-0007 — Osiris: confirmed with residual future implementation conditions.
+
+No definition-level blocker remained after confirmation.
+
+## Final Operator disposition
+
+**Status:** `accepted`
+
+The final disposition authorizes:
+
+- acceptance of MCP Surface Contract v0.1 as a governance definition;
+- finalization of the CG-0032 documentary record;
+- finalization and merge of PR #33 as a governance-definition record only;
+- opening a later separate Council matter for implementation remediation if the Operator chooses.
+
+It does not authorize:
+
+- editing `~/code/mirrornode-mcp/server.py`;
+- adding or materially expanding any MCP primitive or capability;
+- relocating or creating a repository for the executable;
+- remediating current output shapes;
+- altering Claude registration scope;
+- connecting ChatGPT or any additional model runtime;
+- exposing MCP remotely;
+- deploying or daemonizing the service;
+- shell, filesystem, repository, ledger, runtime, or Council writes;
+- any write-capable MCP architectural class.
+
+## Governing definition
 
 `../../../docs/mcp/MCP_SURFACE_CONTRACT_V0_1.md`
 
-## Required sequence
+## Next boundary
 
-1. Review the actual contract text.
-2. Record attributable positions.
-3. Synthesize disagreements and conditions without resolving them by implication.
-4. Reserve final disposition to the Operator.
-5. If accepted, open a separate later matter for executable remediation and implementation location.
+CG-0032 is complete after PR #33 merges.
 
-## Boundary
-
-This matter is documentary governance only.
-
-An accepting disposition on CG-0032 would not authorize MCP implementation changes, deployment, remote exposure, ChatGPT attachment, additional model runtimes, capability expansion, or write authority.
+Any executable remediation or implementation decision must begin under separate future authority and must satisfy the accepted MCP Surface Contract v0.1. Canon promotion, if desired, is also a separate explicit action.
