@@ -1,0 +1,212 @@
+schemaVersion: "0.1"
+id: CG-0030
+title: Continuity Console v0.1 Phase 0 Implementation Authority
+matterType: implementation-authorization
+initiator: operator
+createdAt: 2026-07-19T00:00:00Z
+updatedAt: 2026-07-24T09:50:07Z
+workflowState: closed
+authorityEffect: bounded-phase-0-implementation-authority
+
+disposition:
+  status: accepted
+  authority: operator
+  decidedAt: 2026-07-24T09:50:07Z
+  rationale: >-
+    Operator approved CG-0030 after the required Ptah and Osiris advisory reviews.
+    Acceptance authorizes only the bounded Phase 0 implementation and local validation
+    of the read-only /continuity route in mirrornode-platform within the exact recorded
+    scope. Deployment, publication, populated production snapshots, private-data ingestion,
+    MOPCON modification, runtime modification, and inferred authority remain unauthorized.
+  record: disposition/2026-07-24T095007Z-accepted.yaml
+
+decisionQuestion: >-
+  Should MIRRORNODE authorize a bounded Phase 0 implementation and local
+  validation of the public, read-only /continuity route in
+  mirrornode-platform, without authorizing deployment, publication, or a
+  populated production snapshot?
+
+target:
+  repository: mirrornode/mirrornode-platform
+  surface: /continuity
+  phase: phase-0
+
+anchors:
+  - id: CG-0029
+    kind: council-matter
+    requiredState: closed
+  - id: MIRRORNODE-CORE-HUB-PR-29
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/29
+    requiredState: merged
+  - id: CL-0000
+    kind: continuity-record
+    href: ../../../docs/continuity/OPERATOR_CONTINUITY_LEDGER_V0_1.md
+    requiredState: merged
+  - id: MIRRORNODE-CORE-HUB-PR-30
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/30
+    requiredState: merged
+  - id: PLATFORM-MOPCON-BOUNDARY
+    kind: boundary
+    requiredState: preserved
+
+authorizationRequested:
+  implementation: true
+  localValidation: true
+  deployment: false
+  publication: false
+  populatedProductionSnapshot: false
+
+authorizedScopeRequested:
+  - implementation-branch-in-mirrornode-platform
+  - static-continuity-route
+  - typed-public-snapshot-contract
+  - fixture-only-development-data
+  - checked-in-source-allowlist
+  - checked-in-field-allowlist
+  - checked-in-path-allowlist
+  - checked-in-enum-allowlist
+  - checked-in-evidence-link-allowlist
+  - strict-schema-validation
+  - reject-unknown-fields
+  - calculated-freshness
+  - source-class-freshness-windows
+  - atomic-snapshot-replacement
+  - retain-last-valid-snapshot
+  - fail-production-build-without-valid-snapshot
+  - accessibility-validation
+  - responsive-layout-validation
+  - lint
+  - type-check
+  - tests
+  - production-build-validation
+  - implementation-evidence-packet
+
+explicitlyNotAuthorized:
+  - populated-production-snapshot
+  - deployment
+  - publication
+  - external-announcement
+  - private-ledger-ingestion
+  - private-derived-material-without-approved-public-projection
+  - request-time-github-access
+  - request-time-council-access
+  - request-time-runtime-access
+  - request-time-mopcon-access
+  - mopcon-modification
+  - runtime-modification
+  - customer-data
+  - personal-data
+  - secrets
+  - operator-controls
+  - operator-dashboard
+  - continuity-record-writes
+  - council-record-writes
+  - automatic-cl-record-generation
+  - automatic-cg-record-generation
+  - autonomous-librarian-behavior
+  - background-agent-behavior
+  - inferred-approval
+  - source-verified-authority-language
+
+dataBoundary:
+  developmentData: fixture-only
+  productionData: prohibited
+  privateSources: prohibited
+  requestTimeSources: prohibited
+  publicProjectionRequiredForPrivateDerivedMaterial: true
+
+renderingBoundary:
+  readOnly: true
+  staticProjection: true
+  operatorActions: false
+  editing: false
+  decisionGeneration: false
+  execution: false
+  publicationAuthority: false
+  authorityInference: false
+
+snapshotRequirements:
+  typed: true
+  strictSchema: true
+  rejectUnknownFields: true
+  calculatedFreshness: true
+  atomicReplacement: true
+  retainLastValid: true
+  mockDataMayNotBeTreatedAsFallback: true
+  productionBuildRequiresValidSnapshot: true
+
+languageConstraints:
+  allowedStatusLanguage:
+    - source-checked
+    - current
+    - stale
+    - unavailable
+  prohibitedAuthorityImplications:
+    - source-verified
+    - approved
+    - authorized
+    - ratified
+  clarificationRequired: >-
+    Source checking does not constitute approval, authorization,
+    ratification, or publication authority.
+
+platformMopconBoundary:
+  platform:
+    public: true
+    readOnly: true
+    snapshotDriven: true
+  mopcon:
+    modified: false
+    privateRecordAccess: not-authorized
+    searchAndCorrelation: not-authorized-by-this-matter
+
+requiredReviews:
+  - ptah
+  - osiris
+
+reviewRequests:
+  ptah: review-requests/PTAH_IMPLEMENTATION_FEASIBILITY_REVIEW.md
+  osiris: review-requests/OSIRIS_PRIVACY_AUTHORITY_DISCLOSURE_REVIEW.md
+
+positions:
+  ptah: positions/POS-0001-ptah-implementation-feasibility-review.md
+  osiris: positions/POS-0002-osiris-privacy-authority-disclosure-review.md
+
+reviewSynthesis: synthesis/REVIEW_SYNTHESIS.md
+
+acceptanceEvidence:
+  required:
+    - implementation-diff
+    - typed-schema
+    - allowlists
+    - fixture-snapshot
+    - validation-tests
+    - freshness-tests
+    - retained-valid-snapshot-test
+    - invalid-snapshot-build-failure-test
+    - no-valid-snapshot-build-failure-test
+    - lint-result
+    - type-check-result
+    - test-result
+    - production-build-result
+    - platform-mopcon-boundary-confirmation
+
+postImplementationGates:
+  populatedSnapshotReviewRequired: true
+  deploymentAuthorityRequired: true
+  publicationAuthorityRequired: true
+  disclosureReviewRequired: true
+  separateCouncilMatterRequired: true
+
+nextRequiredStep: >-
+  Merge the documentary CG-0030 record, then perform the separately authorized Phase 0
+  implementation and local validation in mirrornode-platform. Do not deploy, publish,
+  generate a populated production snapshot, or cross any private-data boundary without
+  a later recorded Operator authorization.
+
+notes:
+  - CG-0030 acceptance authorizes bounded Phase 0 implementation and local validation only.
+  - Ptah and Osiris reviews are advisory and are now recorded.
+  - Deployment, publication, and populated production snapshots remain outside this matter.
