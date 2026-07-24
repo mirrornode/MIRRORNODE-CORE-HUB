@@ -1,0 +1,67 @@
+schemaVersion: "0.1"
+matterId: CG-0031
+status: accepted-with-conditions
+authority: operator
+decidedAt: 2026-07-24T09:59:49Z
+rationale: >-
+  Operator approved CG-0031 after the required Ptah and Osiris advisory reviews and
+  after CG-0030 / PR #31 were merged. Acceptance authorizes only the bounded Phase 0
+  contract design, validator implementation, local validation, and scoped non-required
+  CI pilot for CG-0030 and mirrornode-platform /continuity. CI remains verifier-only and
+  does not create, infer, amend, revoke, publish, or extend authority.
+conditions:
+  - id: ANTI_SELF_MODIFICATION
+    machineReadable: true
+    requirement: >-
+      The evaluated change must not be able to weaken the gate definition, authority
+      binding, validator identity, or protected-path declaration and then validate itself
+      against that weakened state.
+    satisfactionEvidence:
+      - immutable-authority-controlled-gate-configuration-or-equivalent-detection
+      - negative-fixture-proves-protected-path-narrowing-cannot-evade-gate
+    failureBehavior: fail
+  - id: PILOT_SCOPE_FIXED
+    machineReadable: true
+    requirement: >-
+      The Phase 0 pilot remains limited to authority matter CG-0030, authority repository
+      mirrornode/MIRRORNODE-CORE-HUB, implementation repository mirrornode/mirrornode-platform,
+      and protected surface /continuity.
+    failureBehavior: fail
+authorized:
+  - strict-authorization-requirement-contract-design
+  - reusable-validator-implementation
+  - immutable-authority-source-pinning
+  - exact-matter-repository-path-and-scope-validation
+  - machine-readable-condition-validation
+  - deterministic-failure-reason-codes
+  - disclosure-minimized-diagnostics
+  - fixture-based-positive-and-negative-tests
+  - scoped-mirrornode-platform-ci-pilot
+  - local-validation
+  - implementation-evidence-packet
+explicitlyNotAuthorized:
+  - authority-creation-by-ci
+  - authority-inference-by-ci
+  - authority-amendment-by-ci
+  - authority-revocation-by-ci
+  - required-merge-check-activation
+  - branch-protection-modification
+  - organization-wide-rollout
+  - broader-repository-rollout
+  - unrelated-path-blocking
+  - runtime-enforcement
+  - runtime-modification
+  - mopcon-modification
+  - deployment
+  - publication
+  - production-data-ingestion
+  - council-record-writes
+  - continuity-ledger-writes
+  - implementation-repository-writes-by-the-gate
+  - cross-repository-writes
+postImplementationGates:
+  requiredMergeCheckActivationRequired: true
+  branchProtectionChangeRequired: true
+  broaderRepositoryRolloutRequired: true
+  additionalProtectedScopeRequired: true
+  separateCouncilMatterRequired: true
