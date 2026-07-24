@@ -4,15 +4,21 @@ title: Council Authorization Gate v0.1
 matterType: governance-enforcement-authorization
 initiator: operator
 createdAt: 2026-07-19T00:00:00Z
-updatedAt: 2026-07-19T00:00:00Z
-workflowState: proposed
-authorityEffect: none-until-operator-disposition
+updatedAt: 2026-07-24T09:59:49Z
+workflowState: closed
+authorityEffect: bounded-phase-0-verifier-implementation-authority
 
 disposition:
-  status: reserved
+  status: accepted-with-conditions
   authority: operator
-  decidedAt: null
-  rationale: null
+  decidedAt: 2026-07-24T09:59:49Z
+  rationale: >-
+    Operator approved CG-0031 after the required Ptah and Osiris advisory reviews and
+    after CG-0030 / PR #31 were merged. Acceptance authorizes only bounded Phase 0
+    contract design, validator implementation, local validation, and a scoped non-required
+    CI pilot for CG-0030 and mirrornode-platform /continuity. CI remains verifier-only and
+    does not create, infer, amend, revoke, publish, or extend authority.
+  record: disposition/2026-07-24T095949Z-accepted-with-conditions.yaml
 
 decisionQuestion: >-
   Should MIRRORNODE authorize a bounded Phase 0 implementation and local
@@ -42,11 +48,11 @@ anchors:
   - id: CG-0030
     kind: council-matter
     href: ../CG-0030-continuity-console-phase-0-implementation-authority/
-    requiredState: merged-before-cg-0031-acceptance
+    requiredState: merged
   - id: MIRRORNODE-CORE-HUB-PR-31
     kind: pull-request
     href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/31
-    requiredState: merged-before-cg-0031-acceptance
+    requiredState: merged
   - id: EXISTING-CANON-GATE
     kind: engineering-reference
     href: ../../../.github/workflows/canon-gate.yml
@@ -154,6 +160,22 @@ conditionSemantics:
   unsatisfiedConditionBehavior: fail
   missingEvidenceBehavior: fail
 
+operatorConditions:
+  - id: ANTI_SELF_MODIFICATION
+    requirement: >-
+      The evaluated change must not be able to weaken the gate definition, authority
+      binding, validator identity, or protected-path declaration and then validate itself
+      against that weakened state.
+    satisfactionEvidence:
+      - immutable-authority-controlled-gate-configuration-or-equivalent-detection
+      - negative-fixture-proves-protected-path-narrowing-cannot-evade-gate
+    failureBehavior: fail
+  - id: PILOT_SCOPE_FIXED
+    requirement: >-
+      The pilot remains limited to CG-0030, mirrornode/MIRRORNODE-CORE-HUB,
+      mirrornode/mirrornode-platform, and /continuity.
+    failureBehavior: fail
+
 sourcePinning:
   repositoryRequired: true
   immutableCommitShaRequired: true
@@ -223,6 +245,12 @@ reviewRequests:
   ptah: review-requests/PTAH_CI_ENFORCEMENT_FEASIBILITY_REVIEW.md
   osiris: review-requests/OSIRIS_AUTHORITY_PRIVACY_ABUSE_BOUNDARY_REVIEW.md
 
+positions:
+  ptah: positions/POS-0001-ptah-ci-enforcement-feasibility-review.md
+  osiris: positions/POS-0002-osiris-authority-privacy-abuse-boundary-review.md
+
+reviewSynthesis: synthesis/REVIEW_SYNTHESIS.md
+
 acceptanceEvidence:
   required:
     - authorization-requirement-schema
@@ -242,6 +270,8 @@ acceptanceEvidence:
     - revoked-authority-failure-test
     - conflicting-record-failure-test
     - disclosure-safe-diagnostics-test
+    - anti-self-modification-test
+    - protected-path-narrowing-evasion-test
     - scoped-ci-pilot-result
     - no-unrelated-path-enforcement-confirmation
     - no-runtime-authority-confirmation
@@ -254,12 +284,12 @@ postImplementationGates:
   separateCouncilMatterRequired: true
 
 nextRequiredStep: >-
-  Obtain Ptah and Osiris advisory reviews, then reserve implementation until a
-  recorded Operator disposition accepts CG-0031. PR #31 and CG-0030 must be
-  merged before CG-0031 may be accepted.
+  Merge the documentary CG-0031 record, then implement and locally validate the bounded
+  Phase 0 verifier and scoped non-required CI pilot against CG-0030 /continuity. Do not
+  activate a required merge check, modify branch protection, expand repository or path
+  scope, add runtime enforcement, deploy, or publish without a later Operator disposition.
 
 notes:
-  - Creating CG-0031 does not authorize implementation or CI activation.
-  - Ptah and Osiris reviews are advisory and do not alter authority.
-  - The initial pilot is limited to CG-0030 and the Platform /continuity boundary.
+  - CG-0031 acceptance authorizes verifier implementation and a scoped non-required pilot only.
+  - Ptah and Osiris advisory reviews are recorded and converge on the anti-self-modification condition.
   - Required branch protection and broader rollout remain separate future decisions.
