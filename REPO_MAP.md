@@ -19,13 +19,15 @@
 | MIRRORNODE-CORE-HUB | active/canonical | Root of truth, canon, agents, docs |
 | osiris | UI shell | Vite/React UI shell (not execution engine) |
 | mirrornode-platform | active/canonical | Next.js frontend (TypeScript) |
-| mirrornode-backend | placeholder | FastAPI backend stub |
-| mirrornode-py | active/canonical | Python utilities |
+| mirrornode-agent-runtime | active/canonical | Approval-gated headless agent execution runtime |
+| mirrornode-operator-console | active/canonical | Private Operator control surface for runtime inspection and approval-gated interaction |
+| mirrornode-backend | legacy | Backend and LUCIAN-dispatch contract lineage; not current execution authority |
+| mirrornode-py | active/canonical | Python utilities / symbolic engine; not current agent execution runtime |
 | theia-core | active/canonical | Flagship architecture (Python) |
 | mirrornode-index | placeholder | Index stub (Python) |
 | osiris-audit | active/canonical | OSIRIS audit library (JavaScript) |
 | library | active/canonical | OSIRIS audit lib |
-| mirrornode | legacy | TypeScript monorepo - superseded by CORE-HUB |
+| mirrornode | legacy | Earlier monorepo and architecture lineage; historical runtime contracts are not current execution truth |
 | Mirror_surface | placeholder | User-facing surface (Python) |
 | MIRRORNODE-INFRA | placeholder | Infrastructure stub |
 | mirrornode-docs | placeholder | Documentation stub |

@@ -2,50 +2,77 @@
 
 ## MIRRORNODE System Contract
 
-**Ground Truth Version:** 1.1 (April 28, 2026)  
+**Ground Truth Version:** 1.2 (July 24, 2026)
 **Repository:** mirrornode/MIRRORNODE-CORE-HUB
+**Basis:** verified current implementation evidence
 
-### Execution Authority
-**LUCIAN (Port 7700)** — Orchestration & Manifest — execution authority  
-**Real Entry Point:** `POST /dispatch`
+## Authority Boundary
 
-### Lattice Truth Surface
-- `GET /manifest`
-- `GET /lattice/status`
-- `GET /health`
-- `GET /heartbeat`
-- `GET /identity`
+The **Operator** is the execution authority.
 
-### Audit Mechanism
-`emit_audit(repo, event_type, actor, verdict, evidence)`
+`mirrornode-agent-runtime` is the current verified headless execution mechanism. It may execute an agent plan only after explicit Operator approval.
 
-### Core Principles
-- Nodes do not self-route
-- LUCIAN dispatches commands through canon
-- No silent failures
-- Documentation must reflect real code paths only
+- `MIRRORNODE-CORE-HUB` — governance, canon, and cross-repository contracts
+- `mirrornode-agent-runtime` — approval-gated execution and trace production
+- `mirrornode-operator-console` — private Operator control surface
+- `mirrornode-platform` — public projection surface
 
-### Confirmed Agent Registry
-| Agent | Port | Role | Source |
-|---|---:|---|---|
-| LUCIAN | 7700 | Orchestration & Manifest | `lucian/runtime.py` |
-| OSIRIS | 7701 | Payment & Commerce (Stripe) | `osiris/runtime.py` |
-| HERMES | 7702 | Messaging & Protocol | Lucian registry |
-| THOTH | 7703 | Services & Health | Lucian registry |
-| THEIA | 7704 | Witness & Observation | Lucian registry |
-| PTAH | 7705 | Creation & Bridge | Lucian registry |
-| EVE | 7706 | Embodiment & Physical Manifest | Lucian registry |
+No application surface may independently expand Operator authority.
 
-### Canon Structure
-- `canon/contracts/`
-- `canon/charters/`
-- `canon/api/`
-- `canon/dossiers/`
+## Current Verified Execution Path
 
-### Explicit Non-Claims
-- `/system/execute` is not a real route
-- `/system/replay` is not a real route
-- `/execute-task` is not a real route
-- `mirrornode/osiris` is not the execution engine
+1. `POST /plans` creates a proposed plan.
+2. `POST /plans/{plan_id}/approve` records explicit Operator approval.
+3. `POST /plans/{plan_id}/execute` executes only an approved plan.
+4. `GET /trace/{trace_id}` retrieves the resulting trace.
 
-This file is the operational truth until the runtimes change.
+Direct execution through `POST /agent` is disabled by the current runtime implementation.
+
+`GET /health` reports runtime state, approval-boundary state, and the current allowlisted agents.
+
+## Current Runtime Agent Allowlist
+
+- Hermes
+- Lucian
+- Merlin
+- Oracle
+- Osiris
+- Ptah
+- Theia
+- Thoth
+
+Allowlisting describes runtime availability. It does not independently grant execution, governance, or publication authority.
+
+## Historical Runtime Generation
+
+Earlier MIRRORNODE contracts describe LUCIAN on port 7700, `POST /dispatch`, OSIRIS on port 7701, and a 7700–7706 agent-port registry.
+
+During the 2026-07-24 Customer Zero follow-up review, the examined checkouts of `mirrornode`, `mirrornode-py`, and `mirrornode-backend` contained no tracked `lucian/runtime.py` or `osiris/runtime.py` matching that declared generation, and no verified HTTP `POST /dispatch` implementation was found.
+
+Those records are preserved as historical architecture lineage and must not be represented as the current execution topology without new implementation evidence.
+
+## Evidence Boundary
+
+The current verified execution source is `mirrornode-agent-runtime/app/main.py`.
+
+The governed audit-emission contract and runtime execution traces are related evidence surfaces but are not interchangeable.
+
+## Core Principles
+
+- Operator approval is required before agent execution.
+- Governance authority does not originate in the runtime.
+- MOPCON presents Operator control; it does not define runtime authority.
+- Public projection does not imply private-system authority.
+- Documentation must reflect verified code paths.
+- Historical architecture remains historical unless current evidence re-establishes it.
+- Conflicting sources require reconciliation rather than silent selection.
+
+## Explicit Non-Claims
+
+- The historical 7700–7706 registry is not the currently verified runtime topology.
+- `POST /dispatch` is not the currently verified command entry point.
+- `mirrornode/osiris` is not the current execution engine.
+- An allowlisted agent is not automatically authorized to execute.
+- Runtime availability does not imply publication approval.
+
+This contract represents current operational architecture only to the extent supported by verified implementation evidence. When the runtime changes, this contract must be reconciled again.
