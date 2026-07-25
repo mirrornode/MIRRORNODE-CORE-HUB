@@ -59,6 +59,16 @@ Treat those runtime references as stale unless they are verified in the current 
 
 ## Osiris: Constrained Static Audit Engine
 
+### Product and Tooling Boundary
+
+The constrained static audit engine, governed audit artifact schema, and buyer-facing **Osiris Audit v1** service are related but distinct surfaces.
+
+Deterministic scanners may supply evidence to an Osiris Audit v1 review, but scanner output, scores, or PASS status do not by themselves constitute a buyer-facing Osiris Audit v1 finding, conclusion, or delivery.
+
+Historical implementations such as **OSIRIS Audit Tool v0** remain prototype evidence unless separately promoted. Their incomplete or internal-only status must not be interpreted as the capability or approval state of the current Osiris Audit v1 service.
+
+The `audit.v1.0.0.py` production-ready designation applies to the governed **artifact schema**, not to every historical audit implementation.
+
 ### What Osiris Is
 
 - A static code analyzer that crawls repositories
