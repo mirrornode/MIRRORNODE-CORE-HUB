@@ -2,53 +2,66 @@
 set -euo pipefail
 
 # CM-SOURCE-001 shared handoff generator.
-# Produces one common-context packet plus bounded assignments for each principal.
-# It does not grant permissions, promote canon, or execute external actions by itself.
+# Produces one common-context packet plus bounded assignments.
+# It does not grant permissions, change node classification, promote canon,
+# or execute external actions by itself.
 
 ROOT="${1:-./cm-source-001-handoffs}"
 mkdir -p "$ROOT"
 
 COMMON=$(cat <<'EOF'
-CM-SOURCE-001 — MIRRORNODE Source, Authority & Execution Reconstitution
+CM-SOURCE-001 — MIRRORNODE State, Authority & Source Reconciliation
 
 STATUS
-Approved for discovery/reconciliation by the Operator on 2026-08-09. Not canonical until Ptah evaluation and explicit Operator ratification.
+Approved for discovery/reconciliation by the Operator on 2026-08-09. Candidate only; no canon change without the established evaluation and Operator-ratification path.
+
+VOCABULARY
+- Operator / Siseon = final governance disposition and ratification.
+- node = named MIRRORNODE lattice presence.
+- collaborating intelligence = external AI collaborator unless canon explicitly classifies it as a MIRRORNODE node.
+- role = operating responsibility; does not grant authority.
+- capability = demonstrated technical ability.
+- permission = authenticated access within a service/repository/account.
+- governance authority = right to decide/approve/ratify within a defined governance envelope.
+- runtime execution authority = narrower technical execution/dispatch authority.
+- custody / owning source = repository/service responsibility; not an authority grant.
+- canon = ratified governance state.
+- operational state = current provenance-backed synthesis.
+- implementation state = code/service behavior that actually exists.
+- evidence = attributable support for a claim.
+- projection = derived view such as MOPCON or @mirror.
 
 OBJECTIVE
-Reconcile governance, source-of-truth hierarchy, implementation ownership, principal roles, effective capabilities, evidence standards, @mirror handoffs, MOPCON projection, and public transparency into one auditable operating architecture.
+Reconcile governance, operational state, implementation custody, node/collaborator roles, verified capabilities and permissions, authority boundaries, evidence standards, @mirror handoffs, MOPCON projection, and external transparency into one readable and auditable operating model.
 
 SHARED RULES
-1. Capability is never inferred from role.
-2. Authority is never inferred from capability.
-3. Observed state is never silently promoted to canon.
-4. Implementation truth belongs to the owning repo/service.
-5. Operational synthesis must retain provenance.
-6. Conflicts are surfaced, classified, and resolved through the owning authority; never silently flattened.
-7. Every consequential action must be attributable to a principal, authority envelope, evidence basis, changed artifact, and receipt.
-8. Preserve historical canon and supersede explicitly.
+1. Role does not imply capability.
+2. Capability does not imply permission.
+3. Permission does not imply governance authority.
+4. Runtime execution authority must not be confused with final governance authority.
+5. Operational state does not silently supersede canon.
+6. Canon does not prove that implementation still matches it.
+7. Implementation claims must point to the owning repo/service and current evidence.
+8. Conflicts are surfaced, classified, and resolved through the appropriate review/authority path; never silently flattened.
+9. Consequential actions should retain actor, authority basis, changed artifact, evidence, and receipt where available.
+10. Preserve historical canon and supersede explicitly.
 
-SOURCE MODEL UNDER REVIEW
-CANON = what governs; primary surface MIRRORNODE-CORE-HUB.
-STATE = current operational truth resolved from owning sources.
-IMPLEMENTATION = what exists/executes in the owning repo/service.
-EVIDENCE = what proves a claim.
-REFERENCE = bounded/versioned @mirror projections.
-PUBLIC = approved provenance-backed disclosure subset.
-
-KNOWN EARLY DISCREPANCIES
-- CORE-HUB is authoritative but some role descriptions are stale relative to current operations.
-- mirrornode-workspace has become a highly active operational synthesis surface but is explicitly not canon.
-- MOPCON remote history appears behind later known local/runtime work and needs reconciliation.
-- Perplexity's older research/Judge/Librarian description understates demonstrated execution responsibility; candidate role is Implementation & Execution Manager.
-- Grok has an installed GitHub App with a recent updated-permissions request; exact effective scopes remain to verify.
-- No single reconciled effective-capability registry currently exists.
-- @mirror needs one current protocol definition.
+KNOWN VERIFIED / ACTIVE DISCREPANCIES
+- CORE-HUB remains the governed canon surface, but some role/runtime wording is stale.
+- SYSTEM_CONTRACT.md is April 28, 2026; later agent-runtime implementation changed after that date and requires explicit contract reconciliation.
+- CORE-HUB README uses Merlin as unqualified “Orchestrator”; current operating practice separates integration, planning, runtime dispatch, and implementation management.
+- MOPCON later work is preserved: feat/f04-verified-topology is 11 commits ahead of MOPCON main.
+- MOPCON feat/f04 runtime UI is NOT compatible with agent-runtime main: it targets the divergent Build Week /decision contract, while runtime main uses separate /approve and /execute endpoints.
+- Canon Gate PR #35 and #36 passed configured CI before Codex found semantic false-negative paths. PR #37 is the current structural-parser correction and must clear both CI and fresh review-thread inspection.
+- Perplexity's older research/Judge/Librarian description understates the Operator-reported implementation relationship; candidate operating title is Implementation & Execution Manager, not an authority grant.
+- Copilot participation/permissions are not verified in this workstream; do not claim otherwise.
 
 COLLABORATION EXPECTATION
-You are receiving the shared picture intentionally. Perform your bounded lane, but note dependencies, contradictions, risks, or improvements you see in adjacent lanes. Do not silently assume another principal's authority or overwrite another lane. Return evidence and explicit uncertainty.
+You are receiving the shared picture intentionally. Perform your bounded lane, but note dependencies, contradictions, risks, or improvements you see in adjacent lanes. Do not silently assume another participant's authority, node classification, permission, or custody. Return evidence and explicit uncertainty.
 
 RETURN FORMAT
-- principal
+- identity
+- classification (node / collaborating intelligence / human / service)
 - assignment
 - sources inspected
 - verified findings
@@ -74,31 +87,33 @@ ${assignment}
 EOF
 }
 
-write_packet "theia" "Own integration and reconciliation. Maintain the discrepancy register; verify repository ownership/current state; assemble the final source hierarchy and cross-lane synthesis. Do not self-ratify. Prepare candidate canon changes and promotion packet only after evidence/reviews are complete."
+write_packet "theia" "Own integration and reconciliation. Maintain the discrepancy register and terminology consistency; verify repository custody/current state; assemble the cross-lane synthesis. Do not self-ratify. Preserve Ptah evaluation and Thoth security verdicts."
 
-write_packet "perplexity" "Act as Implementation & Execution Manager. Inventory your own current actionable relationships and connected-service capabilities where you can verify them; distinguish granted permissions from actions you have merely been asked to perform. Review implementation repositories and identify concrete source/implementation gaps. Carry out low-risk approved implementation/documentation tasks within effective permissions when useful, returning exact evidence and receipts. Escalate governance, destructive, financial/legal, or security-sensitive changes."
+write_packet "perplexity" "Act under the candidate operating title Implementation & Execution Manager. Inventory verifiable connected-service permissions separately from technical capability and requested actions. Identify concrete implementation gaps and carry out only bounded, approved, low-risk actions within effective permissions, returning exact evidence and receipts."
 
-write_packet "gemini" "Perform broad-context synthesis and adversarial review of the proposed source model. Look for conceptual gaps, duplicated authorities, user-facing/product implications, and places where the hierarchy will become confusing at scale. Review how the model should project into MOPCON and public/external documentation. Return proposed wording and contradictions; do not treat synthesis as ratification."
+write_packet "gemini" "Perform broad-context synthesis and adversarial review of the source/custody model and terminology. Look for overloaded language, duplicated responsibilities, missing audience distinctions, product implications, and confusing MOPCON/public projections. Return contradictions and replacement wording; do not treat synthesis as ratification."
 
-write_packet "merlin" "Own decomposition and dependency mapping. Turn CM-SOURCE-001 into a dependency-aware execution map: inputs, owners, blockers, review gates, sequencing, and handoffs. Identify which work can proceed in parallel and which must wait for evidence or authority disposition. Reconcile your current role with existing Merlin repository descriptions and report stale claims."
+write_packet "merlin" "Own decomposition and dependency mapping. Convert the current verified state into an execution map: inputs, custody, blockers, review gates, sequencing, and handoffs. Reconcile planning/dispatcher/orchestrator language and identify where older Merlin descriptions conflict with the candidate responsibility split."
 
-write_packet "oracle" "Perform evidence-sufficiency review. For each major claim in the source model and principal registry, classify whether evidence is sufficient for VERIFIED, PARTIALLY VERIFIED, OPERATOR-REPORTED, STALE, UNKNOWN, or CONTRADICTORY. Identify what evidence would close each gap. Do not decide policy; judge whether claims are adequately supported."
+write_packet "oracle" "Perform evidence-sufficiency review. For each major claim, classify whether evidence supports VERIFIED, PARTIALLY VERIFIED, OPERATOR-REPORTED, STALE, UNKNOWN, CONTRADICTORY, or VERIFIED FALSE. State what evidence would close each gap."
 
-write_packet "ptah" "Evaluate candidate governance/source artifacts for promotion readiness. Check structural coherence, authority boundaries, supersession mechanics, source ownership, non-self-ratification, and whether the proposed Perplexity/Grok/action-capability language changes authority or merely records state. Return PASS / PASS WITH CONDITIONS / FAIL with exact required corrections."
+write_packet "ptah" "Evaluate candidate governance/source artifacts for promotion readiness. Check structural coherence, supersession mechanics, authority boundaries, node/collaborator classification, source custody, and whether candidate role language changes authority or only describes operating responsibility. Return PASS / PASS WITH CONDITIONS / FAIL with exact required corrections."
 
-write_packet "thoth" "Review security consequences of the source model, principal capability registry, @mirror protocol, MOPCON projection, and external-action principals. Identify credential leakage, privilege confusion, stale permission risk, unsafe execution paths, and required security verdict fields. Do not expand permissions."
+write_packet "thoth" "Review security consequences of the source model, identity/capability/permission registry, @mirror protocol, MOPCON projection, and external-action collaborators. Identify credential leakage, privilege confusion, stale permission risk, unsafe execution paths, and required security verdict fields. Do not expand permissions."
 
-write_packet "osiris" "Perform structural assurance review against declared governance. Check that source classes, evidence references, action provenance, implementation ownership, discrepancy handling, and public/private boundaries are internally consistent and auditable. Return findings and evidence gaps."
+write_packet "osiris" "Perform structural assurance review against declared governance. Check source classes, evidence references, action provenance, implementation custody, discrepancy handling, public/private boundaries, and whether CI/review evidence is represented without overclaiming."
 
-write_packet "grok" "Inventory and report your currently effective action capabilities with particular attention to GitHub: authenticated principal/app identity if visible, repository scope, read/write abilities, PR/issue/actions capabilities, and recent actions. Separately review the architecture adversarially and suggest implementation improvements. Do not infer governance authority from technical permissions and do not alter canon without an explicit bounded assignment."
+write_packet "grok" "Inventory currently effective action capabilities where directly verifiable, especially GitHub identity/scope, and separate capability from permission and authority. Also review the architecture adversarially and suggest implementation improvements. Do not alter canon without a separate bounded authorization."
+
+write_packet "codex" "Perform adversarial code/review verification. Inspect Canon Gate PR #37 for false negatives/positives, unified-diff edge cases, terminology that overstates verifier guarantees, and regression-test adequacy. Separately inspect the runtime-main versus Build Week versus MOPCON API contract discrepancy and identify the smallest technically coherent reconciliation path. Return review evidence, not ratification."
 
 cat > "$ROOT/README.md" <<'EOF'
 # CM-SOURCE-001 handoffs
 
 Generated by `handoff-all.sh`.
 
-Each file contains the same shared operating picture plus a bounded assignment. Return results using the specified return format so they can be merged into the discrepancy register and promotion packet without losing attribution.
+Each packet contains the same reconciled vocabulary and verified discrepancy baseline plus one bounded assignment. Participation does not imply MIRRORNODE node classification, service permission, or governance authority.
 EOF
 
 printf 'Generated CM-SOURCE-001 handoffs in %s\n' "$ROOT"
-printf 'Packets: theia perplexity gemini merlin oracle ptah thoth osiris grok\n'
+printf 'Packets: theia perplexity gemini merlin oracle ptah thoth osiris grok codex\n'
