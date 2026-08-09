@@ -18,26 +18,22 @@ import re
 import subprocess
 import sys
 
-# -- Ground truth files -------------------------------------------------
 CONTRACT_FILE = "SYSTEM_CONTRACT.md"
 REPO_MAP_FILE = "REPO_MAP.md"
 AGENTS_FILE = "AGENTS_TODO.md"
 
-# -- Routes declared non-real in the contract ---------------------------
 PHANTOM_ROUTES = [
     "/system/execute",
     "/system/replay",
     "/execute-task",
 ]
 
-# -- Prose patterns that conflict with LUCIAN as execution authority ----
 AUTHORITY_CONFLICTS = [
     r"osiris.*execution.*(engine|authority|core)",
     r"execution.*(engine|authority|core).*osiris",
     r"triaden?gine",
 ]
 
-# -- Canonical agent ports (7700-7706) ----------------------------------
 CANONICAL_PORTS = {"7700", "7701", "7702", "7703", "7704", "7705", "7706"}
 
 
@@ -67,7 +63,6 @@ def load_contract() -> str:
 
 
 def _repo_map_was_present() -> bool:
-    """Return whether REPO_MAP.md existed on the PR base commit."""
     base = os.environ.get("BASE_SHA", "HEAD~1")
     try:
         result = subprocess.run(
@@ -81,7 +76,6 @@ def _repo_map_was_present() -> bool:
 
 
 def check_governance_files_present() -> list:
-    """Protect required governance files without inventing base-branch state."""
     violations = []
 
     for filename in [CONTRACT_FILE, AGENTS_FILE]:
@@ -101,27 +95,42 @@ def check_governance_files_present() -> list:
 
 
 def _added_diff_lines(diff: str):
-    """Yield complete added lines while excluding only real diff headers."""
+    """Yield added source lines by parsing unified-diff hunk structure.
+
+    File headers such as ``+++ b/file`` occur outside hunks. Inside a hunk,
+    every line beginning with ``+`` is source content, including source that
+    itself starts with ``++`` and therefore appears as ``+++ ...`` in the diff.
+    """
+    in_hunk = False
+
     for line in diff.splitlines():
-        if not line.startswith("+"):
+        if line.startswith("diff --git "):
+            in_hunk = False
             continue
-        if line.startswith("+++ "):
+        if line.startswith("@@"):
+            in_hunk = True
             continue
-        yield line
+        if not in_hunk:
+            continue
+        if line.startswith("+"):
+            yield line
 
 
 def _route_is_negated(line: str, route: str) -> bool:
-    """Return whether this line clearly documents *this route* as prohibited."""
+    """Return True only for explicit negation directly attached to this route."""
     escaped = re.escape(route)
+    spacer = r"[\s`'\"():=\-]*"
 
     before_route = re.compile(
         rf"\b(?:never\s+reference|do\s+not\s+(?:reference|use|call|expose)|"
-        rf"don't\s+(?:reference|use|call|expose)|prohibited|forbidden|phantom)"
-        rf"\b[^;\n]*{escaped}",
+        rf"don't\s+(?:reference|use|call|expose)|"
+        rf"prohibited\s+route|forbidden\s+route|phantom\s+route)"
+        rf"{spacer}{escaped}",
         re.IGNORECASE,
     )
     after_route = re.compile(
-        rf"{escaped}[^;\n]*\b(?:is\s+(?:not\s+a\s+real|non-real|prohibited|forbidden|phantom|non-existent)|"
+        rf"{escaped}{spacer}(?:"
+        rf"is\s+(?:not\s+a\s+real\s+route|non-real|prohibited|forbidden|phantom|non-existent)|"
         rf"must\s+not\s+be\s+(?:used|referenced|called|exposed)|"
         rf"should\s+not\s+be\s+(?:used|referenced|called|exposed))\b",
         re.IGNORECASE,
@@ -131,7 +140,6 @@ def _route_is_negated(line: str, route: str) -> bool:
 
 
 def check_phantom_routes(diff: str) -> list:
-    """Flag additions of routes declared non-real unless that route is negated."""
     violations = []
 
     for line in _added_diff_lines(diff):
@@ -149,7 +157,6 @@ def check_phantom_routes(diff: str) -> list:
 
 
 def check_authority_conflicts(diff: str) -> list:
-    """Flag prose that contradicts LUCIAN as declared execution authority."""
     violations = []
     for pattern_str in AUTHORITY_CONFLICTS:
         pattern = re.compile(
@@ -165,7 +172,6 @@ def check_authority_conflicts(diff: str) -> list:
 
 
 def check_unregistered_ports(diff: str) -> list:
-    """Flag new port declarations outside the canonical 7700-7706 range."""
     violations = []
     pattern = re.compile(
         r"^\+.*port[:\s]+([0-9]{4,5})",
