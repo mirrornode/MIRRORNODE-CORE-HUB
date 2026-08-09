@@ -20,6 +20,18 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
         diff = "+ Never reference /system/replay from runtime code\n"
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
+    def test_unrelated_negation_does_not_exempt_route(self):
+        diff = '+ app.post("/system/execute", handler)  # do not cache\n'
+        violations = canon_gate.check_phantom_routes(diff)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("/system/execute", violations[0])
+
+    def test_unrelated_word_does_not_exempt_route(self):
+        diff = '+ app.post("/system/replay", donut_handler)\n'
+        violations = canon_gate.check_phantom_routes(diff)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("/system/replay", violations[0])
+
     def test_bare_phantom_route_is_flagged(self):
         route = "/execute" + "-task"
         diff = f"+ POST {route}\n"
@@ -30,6 +42,12 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
     def test_diff_metadata_is_ignored(self):
         diff = "+++ b/docs/routes.md\n"
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
+
+    def test_added_line_starting_with_two_pluses_is_scanned(self):
+        diff = '+++counter; fetch("/system/execute")\n'
+        violations = canon_gate.check_phantom_routes(diff)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("/system/execute", violations[0])
 
 
 class CanonGateRepoMapTests(unittest.TestCase):
