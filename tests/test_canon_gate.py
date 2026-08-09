@@ -32,6 +32,14 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
         diff = raw_diff("Never reference /system/replay")
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
+    def test_article_before_route_is_not_flagged(self):
+        diff = raw_diff("Do not expose the /system/execute route")
+        self.assertEqual(canon_gate.check_phantom_routes(diff), [])
+
+    def test_route_noun_after_route_is_not_flagged(self):
+        diff = raw_diff("The /system/replay route is prohibited")
+        self.assertEqual(canon_gate.check_phantom_routes(diff), [])
+
     def test_unrelated_negation_does_not_exempt_route(self):
         route = "/system/" + "execute"
         diff = raw_diff(f'app.post("{route}", handler)  # do not cache')
@@ -45,6 +53,22 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
         self.assertIn(route, violations[0])
+
+    def test_documentary_first_occurrence_does_not_exempt_active_second_occurrence(self):
+        route = "/system/" + "execute"
+        diff = raw_diff(
+            f'/* {route} is prohibited */ app.post("{route}", handler)'
+        )
+        violations = canon_gate.check_phantom_routes(diff)
+        self.assertEqual(len(violations), 1)
+        self.assertIn(route, violations[0])
+
+    def test_two_documentary_occurrences_are_allowed(self):
+        route = "/system/" + "execute"
+        diff = raw_diff(
+            f'{route} is prohibited; do not reference {route}'
+        )
+        self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
     def test_unrelated_word_does_not_exempt_route(self):
         route = "/system/" + "replay"
