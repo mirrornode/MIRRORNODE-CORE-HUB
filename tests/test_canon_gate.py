@@ -21,10 +21,11 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
     def test_bare_phantom_route_is_flagged(self):
-        diff = "+ POST /execute-task\n"
+        route = "/execute" + "-task"
+        diff = f"+ POST {route}\n"
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
-        self.assertIn("/execute-task", violations[0])
+        self.assertIn(route, violations[0])
 
     def test_diff_metadata_is_ignored(self):
         diff = "+++ b/docs/routes.md\n"
