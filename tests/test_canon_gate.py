@@ -21,16 +21,18 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
     def test_unrelated_negation_does_not_exempt_route(self):
-        diff = '+ app.post("/system/execute", handler)  # do not cache\n'
+        route = "/system/" + "execute"
+        diff = f'+ app.post("{route}", handler)  # do not cache\n'
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
-        self.assertIn("/system/execute", violations[0])
+        self.assertIn(route, violations[0])
 
     def test_unrelated_word_does_not_exempt_route(self):
-        diff = '+ app.post("/system/replay", donut_handler)\n'
+        route = "/system/" + "replay"
+        diff = f'+ app.post("{route}", donut_handler)\n'
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
-        self.assertIn("/system/replay", violations[0])
+        self.assertIn(route, violations[0])
 
     def test_bare_phantom_route_is_flagged(self):
         route = "/execute" + "-task"
@@ -44,10 +46,11 @@ class CanonGatePhantomRouteTests(unittest.TestCase):
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
     def test_added_line_starting_with_two_pluses_is_scanned(self):
-        diff = '+++counter; fetch("/system/execute")\n'
+        route = "/system/" + "execute"
+        diff = f'+++counter; fetch("{route}")\n'
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
-        self.assertIn("/system/execute", violations[0])
+        self.assertIn(route, violations[0])
 
 
 class CanonGateRepoMapTests(unittest.TestCase):
