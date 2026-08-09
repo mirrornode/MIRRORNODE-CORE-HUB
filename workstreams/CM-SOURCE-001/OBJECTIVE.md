@@ -1,92 +1,106 @@
-# CM-SOURCE-001 — MIRRORNODE Source, Authority & Execution Reconstitution
+# CM-SOURCE-001 — MIRRORNODE State, Authority & Source Reconciliation
 
 **Status:** APPROVED FOR DISCOVERY / RECONCILIATION  
 **Operator authorization:** Granted 2026-08-09  
-**Promotion state:** Not canonical until Ptah evaluation and explicit Operator ratification  
+**Promotion state:** Candidate only; no canon change without the existing evaluation and Operator-ratification path  
 
 ## Objective
 
-Reconcile MIRRORNODE governance, source-of-truth hierarchy, implementation ownership, principal roles, effective capabilities, evidence standards, handoff protocol, and public transparency model into one auditable operating architecture.
+Reconcile MIRRORNODE governance, current operational state, implementation custody, node and collaborator roles, verified capabilities and permissions, authority boundaries, evidence standards, handoff conventions, and external projections into one readable and auditable operating model.
 
-This work MUST preserve prior canon as history. Existing canonical artifacts are superseded only through the established promotion process; they are never silently overwritten or retroactively reinterpreted.
+This work preserves prior canon as history. A stale or contradicted canonical statement is recorded as a discrepancy until it is explicitly superseded through the established promotion process.
 
-## Working group
+The vocabulary for this workstream is defined in `TERMINOLOGY_STANDARD_CANDIDATE.md`. Where an older artifact uses an overloaded term such as **authority**, **orchestrator**, **principal**, or **truth**, this workstream MUST state the intended scope rather than silently inherit the ambiguity.
 
-- **Operator / Siseon** — final disposition, ratification, priorities, covenants, exceptions.
-- **THEIA** — integration, continuity, source reconciliation, orchestration, discrepancy tracking.
-- **Perplexity** — Implementation & Execution Manager; converts approved direction into verified progress, performs connected-service actions within effective permissions, maintains implementation follow-through, returns evidence and receipts.
-- **Gemini** — synthesis, broad-context review, alternative framing, product/visual perspective, contradiction discovery.
-- **Merlin** — decomposition, dependency mapping, task routing, sequencing, coordination architecture.
+## Authority and participation
 
-Additional review principals:
+- **Operator / Siseon** — final governance disposition, ratification, priorities, covenants, and exceptions.
+- **THEIA** — integration, continuity, reconciliation, operating coordination, discrepancy custody, and cross-lane synthesis. THEIA prepares and coordinates; THEIA does not self-ratify or override Ptah evaluation or Thoth security verdicts.
+- **MIRRORNODE nodes** — named lattice presences whose current identity, runtime role, capability, permission, and authority must be separately evidenced.
+- **Collaborating intelligences** — external AI collaborators such as Perplexity, Gemini, Grok, Codex, or Copilot unless and until a canonical registry explicitly classifies them as MIRRORNODE nodes.
 
-- **Oracle** — evidence sufficiency and claim-verifiability review; asks whether a claimed state is sufficiently evidenced to be treated as true.
-- **Ptah** — promotion/evaluation gate for canonical changes.
-- **Thoth** — security verdicts and boundary review where security implications exist.
-- **Osiris** — assurance/audit review where structural evidence and compliance-to-declared-policy are relevant.
-- **Grok** — implementation/adversarial/prototyping contributor with action capability recorded separately from authority.
+### Current collaborator lanes
 
-## Governing separation
+- **Perplexity** — candidate operating title: **Implementation & Execution Manager**; converts approved direction into verified implementation progress and returns evidence/receipts within verified permissions.
+- **Gemini** — broad-context synthesis, alternative framing, product/visual perspective, and contradiction discovery.
+- **Codex / Copilot** — implementation and code-review collaborators used as adversarial verification surfaces; review output is evidence, not ratification.
+- **Grok** — implementation/adversarial/prototyping collaborator; effective permissions require separate verification.
 
-1. Capability is never inferred from role.
-2. Authority is never inferred from capability.
-3. Observed state is never silently promoted to canon.
-4. Implementation truth belongs to the repository/service that owns the implementation.
-5. Operational state may synthesize multiple sources but must retain provenance.
-6. Public claims must be derived from verified source and approved disclosure rules.
-7. Every consequential action must be attributable to a principal, authority envelope, evidence basis, and receipt.
+### Review lanes
 
-## Source hierarchy under review
+- **Ptah** — evaluation/promotion gate under current CORE-HUB governance; candidate changes do not bypass Ptah.
+- **Thoth** — security-boundary review and security verdicts where applicable.
+- **Osiris** — structural assurance/audit review against declared policy and evidence.
+- **Oracle** — evidence sufficiency and claim-verifiability review.
+- **Merlin** — decomposition, dependency mapping, sequencing, and coordination architecture, subject to reconciliation with stale role descriptions.
 
-### CANON — what governs
-Primary surface: `MIRRORNODE-CORE-HUB`.
+## Required separations
 
-### STATE — what is operationally true now
-Resolved from owning operational sources. `mirrornode-workspace` may synthesize business/continuity state but does not override governance or implementation truth.
+1. Role does not imply capability.
+2. Capability does not imply permission.
+3. Permission does not imply governance authority.
+4. Runtime execution authority is narrower than governance authority and must be named explicitly.
+5. Repository/service custody does not imply governance authority.
+6. Operational state does not silently supersede canon.
+7. Canon does not prove that an implementation still matches it.
+8. Every consequential action should retain actor, authority basis, changed artifact, evidence, and receipt where available.
 
-### IMPLEMENTATION TRUTH — what exists and executes
-Owned by the repository/service implementing the component, including at minimum:
+## Source classes under review
 
-- `mirrornode-agent-runtime` — runtime execution and agent behavior.
-- `mirrornode-operator-console` — operator-facing control/observability.
+### CANON — what has been ratified
+Primary governed surface: `MIRRORNODE-CORE-HUB` and its explicit promotion records.
+
+### OPERATIONAL STATE — what is happening now
+A provenance-backed synthesis resolved from current owning sources. `mirrornode-workspace` may carry current business/continuity synthesis but does not override canon or implementation evidence.
+
+### IMPLEMENTATION STATE — what actually exists or executes
+Owned by the repository, deployment, or authenticated service implementing the surface, including:
+
+- `mirrornode-agent-runtime` — current runtime implementation evidence;
+- `mirrornode-operator-console` — MOPCON implementation and operator-facing projection;
 - `mirrornode-platform` — public/product-facing implementation.
 
-### EVIDENCE — what proves a claim
-Commits, permission grants, authenticated service records, tests, deployments, decisions, receipts, review reports, and immutable/append-only traces where applicable.
+### EVIDENCE — what supports a claim
+Commits, authenticated service records, permissions, tests, CI, deployments, decisions, reviews, receipts, and other attributable records.
 
-### REFERENCE — what another principal receives
-Versioned, attributable `@mirror` projections derived from authoritative sources.
+### PROJECTION — what another audience receives
+Derived views such as MOPCON, `@mirror` handoffs, advisor packets, and public status material. A projection must retain provenance and must not become a competing authority surface.
 
-### PUBLIC — what outsiders may rely upon
-A deliberately derived, provenance-backed subset that excludes credentials, private reasoning, sensitive infrastructure, and non-public security details.
+## Verified state conflicts already identified
+
+- CORE-HUB `SYSTEM_CONTRACT.md` is versioned April 28, 2026 and declares LUCIAN on port 7700 as “execution authority” with `POST /dispatch`; later runtime evidence includes an Operator-approval execution flow and therefore requires explicit runtime-contract reconciliation rather than assuming the older contract is still implementation-current.
+- CORE-HUB README still names Merlin as `Orchestrator (Dispatcher/Map Keeper)` while the current operating model separates integration, planning, runtime dispatch, and implementation management. This is a vocabulary and state discrepancy, not a reason to silently rewrite canon.
+- MOPCON `main` is behind preserved later remote branches; later implementation evidence exists and should be consolidated, not rebuilt from memory.
+- Codex has repeatedly demonstrated that green CI can coexist with semantic verifier defects. Review feedback must therefore be tracked as part of verification state rather than treated as optional commentary.
 
 ## Required outputs
 
-1. Authority Constitution.
-2. Source-of-Truth Architecture.
-3. Principal & Capability Registry.
+1. Governance Authority Map.
+2. Source & Custody Architecture.
+3. Node / Collaborator Capability-Permission Registry.
 4. Action & Provenance Standard.
 5. `@mirror` Handoff Protocol.
 6. MOPCON Projection Contract.
 7. External Transparency Model.
-8. Discrepancy Register covering stale, conflicting, claimed, verified, unknown, and superseded material.
-9. Promotion packet for Ptah evaluation and Operator ratification.
+8. Terminology Standard.
+9. Discrepancy Register.
+10. Promotion packet for the established evaluation and Operator-ratification path.
 
 ## Execution phases
 
-A. Inventory.  
-B. Reconcile.  
-C. Classify.  
-D. Principal redefinition.  
-E. Authority disposition.  
-F. Canon/source rebuild.  
-G. MOPCON projection.  
-H. Maintenance.
+A. Inventory evidence.  
+B. Reconcile state.  
+C. Classify canon / operational / implementation / evidence / projection.  
+D. Reconcile identities, roles, capabilities, permissions, and authority.  
+E. Resolve or explicitly retain discrepancies.  
+F. Prepare candidate successor artifacts.  
+G. Project verified state into MOPCON and handoff surfaces.  
+H. Establish maintenance and re-verification cadence.
 
 ## Collaboration principle
 
-Each participating principal receives the shared objective and enough of the full plan to understand the work of the others. Assignments remain bounded, but cross-context is intentional: contributors should be able to identify conflicts, dependencies, and opportunities to improve another lane without silently taking over that lane.
+Participants receive enough shared context to identify contradictions and dependencies, but assignments remain bounded. Cross-review is encouraged; silent authority transfer is not.
 
-## Immediate first evidence lane
+## Immediate evidence lane
 
-GitHub is the first implementation/source inventory. Establish repository ownership, current branch/commit state, stale-vs-current documentation, relevant principal/action evidence, and the gap between current CORE-HUB governance descriptions and newer operational architecture.
+Use GitHub as the first implementation inventory: verify repository custody, current branches/commits, open and merged PRs, review threads, CI results, stale documentation, runtime-contract differences, and the gap between canonical descriptions and current implementation evidence.
