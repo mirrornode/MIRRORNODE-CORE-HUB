@@ -40,12 +40,6 @@ AUTHORITY_CONFLICTS = [
 # -- Canonical agent ports (7700-7706) ----------------------------------
 CANONICAL_PORTS = {"7700", "7701", "7702", "7703", "7704", "7705", "7706"}
 
-# -- Negation context: added prose documenting a route as prohibited -----
-NEGATION_CONTEXT = re.compile(
-    r"(not a real|non-real|never reference|do not|don.t|prohibited|forbidden|phantom|non.exist)",
-    re.IGNORECASE,
-)
-
 
 def get_diff() -> str:
     base = os.environ.get("BASE_SHA", "HEAD~1")
@@ -97,9 +91,6 @@ def check_governance_files_present() -> list:
                 "Governance files are protected and cannot be removed."
             )
 
-    # REPO_MAP.md is protected if it already existed on the base branch.
-    # This avoids falsely blocking a repository that is introducing it for
-    # the first time while still preventing deletion from established repos.
     if _repo_map_was_present() and not os.path.exists(REPO_MAP_FILE):
         violations.append(
             f"CONTRACT DELETION: '{REPO_MAP_FILE}' is missing. "
@@ -110,26 +101,44 @@ def check_governance_files_present() -> list:
 
 
 def _added_diff_lines(diff: str):
-    """Yield complete added lines while excluding diff metadata."""
+    """Yield complete added lines while excluding only real diff headers."""
     for line in diff.splitlines():
-        if line.startswith("+") and not line.startswith("+++"):
-            yield line
+        if not line.startswith("+"):
+            continue
+        if line.startswith("+++ "):
+            continue
+        yield line
+
+
+def _route_is_negated(line: str, route: str) -> bool:
+    """Return whether this line clearly documents *this route* as prohibited."""
+    escaped = re.escape(route)
+
+    before_route = re.compile(
+        rf"\b(?:never\s+reference|do\s+not\s+(?:reference|use|call|expose)|"
+        rf"don't\s+(?:reference|use|call|expose)|prohibited|forbidden|phantom)"
+        rf"\b[^;\n]*{escaped}",
+        re.IGNORECASE,
+    )
+    after_route = re.compile(
+        rf"{escaped}[^;\n]*\b(?:is\s+(?:not\s+a\s+real|non-real|prohibited|forbidden|phantom|non-existent)|"
+        rf"must\s+not\s+be\s+(?:used|referenced|called|exposed)|"
+        rf"should\s+not\s+be\s+(?:used|referenced|called|exposed))\b",
+        re.IGNORECASE,
+    )
+
+    return bool(before_route.search(line) or after_route.search(line))
 
 
 def check_phantom_routes(diff: str) -> list:
-    """Flag additions of routes declared non-real unless clearly negated.
-
-    Negation is evaluated against the complete added line. This is important:
-    matching only through the route token cannot see wording that follows it,
-    such as ``/system/execute is not a real route``.
-    """
+    """Flag additions of routes declared non-real unless that route is negated."""
     violations = []
 
     for line in _added_diff_lines(diff):
         for route in PHANTOM_ROUTES:
             if route.lower() not in line.lower():
                 continue
-            if NEGATION_CONTEXT.search(line):
+            if _route_is_negated(line, route):
                 continue
             violations.append(
                 f"PHANTOM ROUTE: '{route}' is declared non-real in "
