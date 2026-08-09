@@ -7,8 +7,8 @@ Runs on every PR targeting main. Reads SYSTEM_CONTRACT.md, REPO_MAP.md,
 and AGENTS_TODO.md as ground truth, then checks the incoming diff for
 contract violations before any merge is allowed.
 
-Exit 0 = clean, merge allowed.
-Exit 1 = violation found, merge blocked.
+Exit 0 = contract checks passed.
+Exit 1 = violation or validation failure found.
 
 Expand PHANTOM_ROUTES and AUTHORITY_CONFLICTS as contracts evolve.
 """
@@ -40,6 +40,12 @@ AUTHORITY_CONFLICTS = [
 # -- Canonical agent ports (7700-7706) ----------------------------------
 CANONICAL_PORTS = {"7700", "7701", "7702", "7703", "7704", "7705", "7706"}
 
+# -- Negation context: added prose documenting a route as prohibited -----
+NEGATION_CONTEXT = re.compile(
+    r"(not a real|non-real|never reference|do not|don.t|prohibited|forbidden|phantom|non.exist)",
+    re.IGNORECASE,
+)
+
 
 def get_diff() -> str:
     base = os.environ.get("BASE_SHA", "HEAD~1")
@@ -47,12 +53,14 @@ def get_diff() -> str:
     try:
         result = subprocess.run(
             ["git", "diff", base, head, "--unified=0"],
-            capture_output=True, text=True, check=True
+            capture_output=True,
+            text=True,
+            check=True,
         )
         return result.stdout
-    except subprocess.CalledProcessError as e:
-        print(f"[Canon Gate] WARNING: Could not get diff: {e}")
-        return ""
+    except subprocess.CalledProcessError as exc:
+        print(f"[Canon Gate] ERROR: Could not get diff: {exc}")
+        sys.exit(1)
 
 
 def load_contract() -> str:
@@ -64,31 +72,70 @@ def load_contract() -> str:
         sys.exit(1)
 
 
+def _repo_map_was_present() -> bool:
+    """Return whether REPO_MAP.md existed on the PR base commit."""
+    base = os.environ.get("BASE_SHA", "HEAD~1")
+    try:
+        result = subprocess.run(
+            ["git", "show", f"{base}:{REPO_MAP_FILE}"],
+            capture_output=True,
+            text=True,
+        )
+        return result.returncode == 0
+    except OSError:
+        return False
+
+
 def check_governance_files_present() -> list:
-    """Core governance files cannot be deleted."""
+    """Protect required governance files without inventing base-branch state."""
     violations = []
-    for f in [CONTRACT_FILE, REPO_MAP_FILE, AGENTS_FILE]:
-        if not os.path.exists(f):
+
+    for filename in [CONTRACT_FILE, AGENTS_FILE]:
+        if not os.path.exists(filename):
             violations.append(
-                f"CONTRACT DELETION: '{f}' is missing. "
-                f"Governance files are protected and cannot be removed."
+                f"CONTRACT DELETION: '{filename}' is missing. "
+                "Governance files are protected and cannot be removed."
             )
+
+    # REPO_MAP.md is protected if it already existed on the base branch.
+    # This avoids falsely blocking a repository that is introducing it for
+    # the first time while still preventing deletion from established repos.
+    if _repo_map_was_present() and not os.path.exists(REPO_MAP_FILE):
+        violations.append(
+            f"CONTRACT DELETION: '{REPO_MAP_FILE}' is missing. "
+            "Governance files are protected and cannot be removed."
+        )
+
     return violations
 
 
+def _added_diff_lines(diff: str):
+    """Yield complete added lines while excluding diff metadata."""
+    for line in diff.splitlines():
+        if line.startswith("+") and not line.startswith("+++"):
+            yield line
+
+
 def check_phantom_routes(diff: str) -> list:
-    """Flag additions of routes declared non-real in the contract."""
+    """Flag additions of routes declared non-real unless clearly negated.
+
+    Negation is evaluated against the complete added line. This is important:
+    matching only through the route token cannot see wording that follows it,
+    such as ``/system/execute is not a real route``.
+    """
     violations = []
-    for route in PHANTOM_ROUTES:
-        pattern = re.compile(
-            r"^\+.*" + re.escape(route),
-            re.MULTILINE | re.IGNORECASE
-        )
-        if pattern.search(diff):
+
+    for line in _added_diff_lines(diff):
+        for route in PHANTOM_ROUTES:
+            if route.lower() not in line.lower():
+                continue
+            if NEGATION_CONTEXT.search(line):
+                continue
             violations.append(
                 f"PHANTOM ROUTE: '{route}' is declared non-real in "
                 f"{CONTRACT_FILE} but appears as an addition in this PR."
             )
+
     return violations
 
 
@@ -98,7 +145,7 @@ def check_authority_conflicts(diff: str) -> list:
     for pattern_str in AUTHORITY_CONFLICTS:
         pattern = re.compile(
             r"^\+.*" + pattern_str,
-            re.MULTILINE | re.IGNORECASE
+            re.MULTILINE | re.IGNORECASE,
         )
         if pattern.search(diff):
             violations.append(
@@ -111,13 +158,16 @@ def check_authority_conflicts(diff: str) -> list:
 def check_unregistered_ports(diff: str) -> list:
     """Flag new port declarations outside the canonical 7700-7706 range."""
     violations = []
-    pattern = re.compile(r"^\+.*port[:\s]+([0-9]{4,5})", re.MULTILINE | re.IGNORECASE)
+    pattern = re.compile(
+        r"^\+.*port[:\s]+([0-9]{4,5})",
+        re.MULTILINE | re.IGNORECASE,
+    )
     for match in pattern.finditer(diff):
         port = match.group(1)
         if port not in CANONICAL_PORTS:
             violations.append(
                 f"UNREGISTERED PORT: Port {port} is not in the canonical "
-                f"agent registry (7700-7706). Update AGENTS_TODO.md first."
+                "agent registry (7700-7706). Update AGENTS_TODO.md first."
             )
     return violations
 
@@ -134,22 +184,22 @@ def main():
     diff = get_diff()
 
     if not diff:
-        print("[Canon Gate] No diff detected. Passing.")
+        print("[Canon Gate] No diff detected. Contract check passed.")
         sys.exit(0)
 
     print("[Canon Gate] Running checks...\n")
 
     violations = (
-        check_governance_files_present() +
-        check_phantom_routes(diff) +
-        check_authority_conflicts(diff) +
-        check_unregistered_ports(diff)
+        check_governance_files_present()
+        + check_phantom_routes(diff)
+        + check_authority_conflicts(diff)
+        + check_unregistered_ports(diff)
     )
 
     if violations:
         print("[Canon Gate] RESULT: VIOLATIONS FOUND - merge blocked\n")
-        for i, v in enumerate(violations, 1):
-            print(f"  {i}. {v}")
+        for index, violation in enumerate(violations, 1):
+            print(f"  {index}. {violation}")
         print(
             "\n[Canon Gate] Resolve all violations against "
             f"{CONTRACT_FILE} before this PR can merge."
@@ -157,8 +207,11 @@ def main():
         print("[Canon Gate] " + "=" * 50)
         sys.exit(1)
 
-    print("[Canon Gate] RESULT: All checks passed. Contract coherent.")
-    print("[Canon Gate] Merge authorized.")
+    print("[Canon Gate] RESULT: All configured contract checks passed.")
+    print(
+        "[Canon Gate] Compliance verification only; merge remains subject "
+        "to repository policy and Operator disposition."
+    )
     print("[Canon Gate] " + "=" * 50)
     sys.exit(0)
 
