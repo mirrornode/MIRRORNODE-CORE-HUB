@@ -1,71 +1,89 @@
-# CM-SOURCE-001 — Source Model Candidate
+# CM-SOURCE-001 — Source & Custody Model Candidate
 
 **Status:** Candidate / not canonical  
-**Purpose:** Shared model for reconciliation and review.
+**Vocabulary:** `TERMINOLOGY_STANDARD_CANDIDATE.md`  
+**Purpose:** Make it immediately clear what governs, what is current, what executes, what proves a claim, and what is merely projected for another audience.
 
-## 1. CANON — what governs
+## 1. CANON — ratified governance state
 
-Primary authority surface: `MIRRORNODE-CORE-HUB`.
+Primary governed surface: `MIRRORNODE-CORE-HUB` and its explicit promotion records.
 
-Canon contains ratified governance, authority boundaries, contracts, schemas, promotion records, and supersession relationships. Canon changes require the established promotion gate.
+Canon contains ratified governance, authority boundaries, contracts, schemas, promotion records, and supersession relationships. A canonical statement may become stale relative to implementation; staleness is recorded as a discrepancy until a successor is explicitly promoted.
 
-## 2. OPERATIONAL STATE — what is true now
+## 2. OPERATIONAL STATE — current, provenance-backed state
 
-Operational state is a provenance-preserving synthesis of current records. It MUST identify its owning sources and MUST NOT override canon or implementation truth.
+Operational state answers “what is happening now?” It is assembled from current owning sources and MUST retain provenance. It does not silently override canon and it does not substitute for implementation evidence.
 
-`mirrornode-workspace` is a current operating synthesis surface for business development, continuity, advisor preparation, and working records.
+`mirrornode-workspace` is a current operating synthesis surface for business development, continuity, advisor preparation, and working records. Its role is synthesis/custody, not governance ratification.
 
-## 3. IMPLEMENTATION TRUTH — what exists and executes
+## 3. IMPLEMENTATION STATE — code and services that actually exist or execute
 
-Implementation truth belongs to the owning repository, deployment, or authenticated service surface.
+Implementation state belongs to the repository, deployment, or authenticated service implementing the surface.
 
-Initial ownership map:
-
-| Surface | Owning source |
+| Surface | Current owning source / custody |
 |---|---|
 | Agent runtime | `mirrornode-agent-runtime` |
-| Operator console | `mirrornode-operator-console` |
+| Operator console / MOPCON | `mirrornode-operator-console` |
 | Public/product implementation | `mirrornode-platform` |
-| Governance canon | `MIRRORNODE-CORE-HUB` |
+| Governance canon and promotion records | `MIRRORNODE-CORE-HUB` |
 | Business/continuity operating synthesis | `mirrornode-workspace` |
 
-## 4. EVIDENCE — what proves a claim
+An implementation repository proves what is implemented only to the extent that the relevant branch, commit, deployment, or service state is verified.
+
+## 4. EVIDENCE — attributable support for a claim
 
 Evidence may include:
 
-- Git commits and signed/attributable changes;
-- pull requests and review records;
-- permission grants and authenticated principal records;
+- commits and pull requests;
+- review threads and reviewer verdicts;
+- authenticated permission records;
 - tests and CI results;
-- deployment state;
-- decision records;
-- action receipts;
-- service-generated audit trails;
-- external correspondence when it evidences a real permission or event.
+- deployment/service state;
+- decision and disposition records;
+- action receipts and traces;
+- external correspondence that proves a permission, event, or commitment.
 
-Evidence must retain provenance and should be referenced rather than recopied when possible.
+A green CI result is evidence for the checks that actually ran. It is not evidence that every semantic defect has been excluded. PR #35 and PR #36 are explicit examples: configured checks passed while later Codex review identified verifier bypasses.
 
-## 5. REFERENCE — what another principal receives
+## 5. PROJECTION — derived views for another audience
 
-A reference is a bounded, versioned projection of source material for a specific principal or task. `@mirror` is proposed as the standard handoff envelope for this purpose.
+A projection is a bounded view generated from other source classes. Examples include MOPCON, `@mirror` handoffs, advisor packets, dashboards, and public status pages.
 
-Reference material does not become authoritative merely because it is convenient or current-looking.
+Projection rules:
 
-## 6. PUBLIC — what outsiders may rely upon
+1. retain source/provenance;
+2. state freshness and verification level;
+3. do not invent authority;
+4. do not become a competing manual truth set;
+5. separate verified facts from candidate interpretation.
 
-Public material is a deliberate projection from verified source and approved disclosure rules. It must avoid exposing credentials, private reasoning, security-sensitive implementation detail, or claims that have not cleared the appropriate authority/evidence gate.
+## 6. AUTHORITY — a separate dimension, not a source class
+
+Authority describes who may decide, approve, ratify, veto, or direct within a defined envelope. It is intentionally separated from repository custody and technical capability.
+
+Examples:
+
+- Siseon holds final governance disposition.
+- Ptah has an evaluation/promotion role under current CORE-HUB governance.
+- Thoth security verdicts are a distinct review boundary.
+- `SYSTEM_CONTRACT.md` uses **execution authority** for LUCIAN; in this workstream that is interpreted as contract-scoped **runtime execution authority**, not final governance authority.
 
 ## Conflict rule
 
-When sources conflict:
+When records conflict:
 
-1. Do not silently choose.
-2. Identify the type of each source: canon, state, implementation, evidence, reference, public.
-3. Identify the owning authority.
-4. Mark the discrepancy.
-5. Resolve through the appropriate gate.
-6. Preserve the superseded record and link the successor.
+1. Name each record's class: canon, operational state, implementation state, evidence, or projection.
+2. Name the owning source/custodian.
+3. Name the relevant authority or review lane separately.
+4. Mark the discrepancy and its verification state.
+5. Prefer direct implementation/evidence sources for claims about what currently executes, while preserving canon as the governing record until formally superseded.
+6. Resolve through the appropriate review/promotion path.
+7. Preserve superseded history and link the successor.
 
-## Maintenance rule
+## Current high-value discrepancy
 
-MOPCON should project this model rather than maintain a competing manual truth set. The console should surface source, authority, evidence freshness, discrepancy state, and permitted actions for every material claim or principal.
+The April 28 `SYSTEM_CONTRACT.md` says it is “the operational truth until the runtimes change,” declares LUCIAN on port 7700 and `POST /dispatch`, while later `mirrornode-agent-runtime` history includes an Operator-approval execution change dated July 22. That is sufficient to classify the April contract's implementation-freshness claim as **requiring reconciliation**, not sufficient by itself to rewrite the contract.
+
+## MOPCON rule
+
+MOPCON should project verified canon, operational state, implementation state, evidence freshness, discrepancy state, and permitted actions. It should not maintain a separate manually curated authority model.
