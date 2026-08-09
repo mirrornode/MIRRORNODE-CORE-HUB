@@ -95,12 +95,7 @@ def check_governance_files_present() -> list:
 
 
 def _added_diff_lines(diff: str):
-    """Yield added source lines by parsing unified-diff hunk structure.
-
-    File headers such as ``+++ b/file`` occur outside hunks. Inside a hunk,
-    every line beginning with ``+`` is source content, including source that
-    itself starts with ``++`` and therefore appears as ``+++ ...`` in the diff.
-    """
+    """Yield added source lines by parsing unified-diff hunk structure."""
     in_hunk = False
 
     for line in diff.splitlines():
@@ -116,27 +111,31 @@ def _added_diff_lines(diff: str):
             yield line
 
 
-def _route_is_negated(line: str, route: str) -> bool:
-    """Return True only for explicit negation directly attached to this route."""
-    escaped = re.escape(route)
-    spacer = r"[\s`'\"():=\-]*"
+def _route_occurrence_is_negated(line: str, start: int, end: int) -> bool:
+    """Return True when this exact route occurrence is explicitly documentary.
+
+    The match is occurrence-local: another negated occurrence elsewhere on the
+    same line cannot exempt an active use of the same route.
+    """
+    prefix = line[:start]
+    suffix = line[end:]
 
     before_route = re.compile(
-        rf"\b(?:never\s+reference|do\s+not\s+(?:reference|use|call|expose)|"
-        rf"don't\s+(?:reference|use|call|expose)|"
-        rf"prohibited\s+route|forbidden\s+route|phantom\s+route)"
-        rf"{spacer}{escaped}",
+        r"(?:never\s+reference|do\s+not\s+(?:reference|use|call|expose)|"
+        r"don't\s+(?:reference|use|call|expose)|"
+        r"prohibited\s+route|forbidden\s+route|phantom\s+route)"
+        r"\s+(?:the\s+)?[\s`'\"(:=\-]*$",
         re.IGNORECASE,
     )
     after_route = re.compile(
-        rf"{escaped}{spacer}(?:"
-        rf"is\s+(?:not\s+a\s+real\s+route|non-real|prohibited|forbidden|phantom|non-existent)|"
-        rf"must\s+not\s+be\s+(?:used|referenced|called|exposed)|"
-        rf"should\s+not\s+be\s+(?:used|referenced|called|exposed))\b",
+        r"^[\s`'\")\]:=\-]*(?:route|endpoint)?\s*(?:"
+        r"is\s+(?:not\s+a\s+real\s+route|non-real|prohibited|forbidden|phantom|non-existent)|"
+        r"must\s+not\s+be\s+(?:used|referenced|called|exposed)|"
+        r"should\s+not\s+be\s+(?:used|referenced|called|exposed))\b",
         re.IGNORECASE,
     )
 
-    return bool(before_route.search(line) or after_route.search(line))
+    return bool(before_route.search(prefix) or after_route.search(suffix))
 
 
 def check_phantom_routes(diff: str) -> list:
@@ -144,14 +143,19 @@ def check_phantom_routes(diff: str) -> list:
 
     for line in _added_diff_lines(diff):
         for route in PHANTOM_ROUTES:
-            if route.lower() not in line.lower():
+            occurrences = list(re.finditer(re.escape(route), line, re.IGNORECASE))
+            if not occurrences:
                 continue
-            if _route_is_negated(line, route):
-                continue
-            violations.append(
-                f"PHANTOM ROUTE: '{route}' is declared non-real in "
-                f"{CONTRACT_FILE} but appears as an addition in this PR."
-            )
+
+            if any(
+                not _route_occurrence_is_negated(line, match.start(), match.end())
+                for match in occurrences
+            ):
+                violations.append(
+                    f"PHANTOM ROUTE: '{route}' is declared non-real in "
+                    f"{CONTRACT_FILE} but appears as an active or unqualified "
+                    "addition in this PR."
+                )
 
     return violations
 
