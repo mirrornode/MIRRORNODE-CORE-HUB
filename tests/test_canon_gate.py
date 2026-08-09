@@ -11,46 +11,82 @@ canon_gate = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(canon_gate)
 
 
+def raw_diff(*added_lines: str) -> str:
+    body = "\n".join(f"+{line}" for line in added_lines)
+    return (
+        "diff --git a/example.txt b/example.txt\n"
+        "index 1111111..2222222 100644\n"
+        "--- a/example.txt\n"
+        "+++ b/example.txt\n"
+        "@@ -0,0 +1,1 @@\n"
+        f"{body}\n"
+    )
+
+
 class CanonGatePhantomRouteTests(unittest.TestCase):
     def test_negation_after_route_is_not_flagged(self):
-        diff = "+ - /system/execute is not a real route\n"
+        diff = raw_diff("- /system/execute is not a real route")
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
     def test_negation_before_route_is_not_flagged(self):
-        diff = "+ Never reference /system/replay from runtime code\n"
+        diff = raw_diff("Never reference /system/replay")
         self.assertEqual(canon_gate.check_phantom_routes(diff), [])
 
     def test_unrelated_negation_does_not_exempt_route(self):
         route = "/system/" + "execute"
-        diff = f'+ app.post("{route}", handler)  # do not cache\n'
+        diff = raw_diff(f'app.post("{route}", handler)  # do not cache')
+        violations = canon_gate.check_phantom_routes(diff)
+        self.assertEqual(len(violations), 1)
+        self.assertIn(route, violations[0])
+
+    def test_leading_negation_for_other_object_does_not_exempt_route(self):
+        route = "/system/" + "execute"
+        diff = raw_diff(f'Do not expose metrics, but app.post("{route}", handler)')
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
         self.assertIn(route, violations[0])
 
     def test_unrelated_word_does_not_exempt_route(self):
         route = "/system/" + "replay"
-        diff = f'+ app.post("{route}", donut_handler)\n'
+        diff = raw_diff(f'app.post("{route}", donut_handler)')
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
         self.assertIn(route, violations[0])
 
     def test_bare_phantom_route_is_flagged(self):
         route = "/execute" + "-task"
-        diff = f"+ POST {route}\n"
+        diff = raw_diff(f"POST {route}")
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
         self.assertIn(route, violations[0])
 
-    def test_diff_metadata_is_ignored(self):
-        diff = "+++ b/docs/routes.md\n"
-        self.assertEqual(canon_gate.check_phantom_routes(diff), [])
+    def test_file_header_is_not_treated_as_added_source(self):
+        diff = (
+            "diff --git a/docs/routes.md b/docs/routes.md\n"
+            "--- a/docs/routes.md\n"
+            "+++ b/docs/routes.md\n"
+        )
+        self.assertEqual(list(canon_gate._added_diff_lines(diff)), [])
 
-    def test_added_line_starting_with_two_pluses_is_scanned(self):
+    def test_added_source_starting_with_two_pluses_is_scanned(self):
         route = "/system/" + "execute"
-        diff = f'+++counter; fetch("{route}")\n'
+        diff = raw_diff(f'++ counter; // {route}')
         violations = canon_gate.check_phantom_routes(diff)
         self.assertEqual(len(violations), 1)
         self.assertIn(route, violations[0])
+
+    def test_new_file_header_then_hunk_is_parsed(self):
+        route = "/system/" + "replay"
+        diff = (
+            "diff --git a/new.js b/new.js\n"
+            "new file mode 100644\n"
+            "--- /dev/null\n"
+            "+++ b/new.js\n"
+            "@@ -0,0 +1 @@\n"
+            f'+fetch("{route}")\n'
+        )
+        violations = canon_gate.check_phantom_routes(diff)
+        self.assertEqual(len(violations), 1)
 
 
 class CanonGateRepoMapTests(unittest.TestCase):
