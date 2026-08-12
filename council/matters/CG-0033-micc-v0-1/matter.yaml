@@ -1,0 +1,202 @@
+schemaVersion: "0.1"
+id: CG-0033
+title: MIRRORNODE Integration Capability Contract v0.1 + Integration Manifest v0.1
+matterType: governance-definition
+initiator: operator
+createdAt: 2026-08-12T04:17:00Z
+updatedAt: 2026-08-12T04:17:00Z
+workflowState: intake
+disposition:
+  status: pending
+  authority: null
+  decidedAt: null
+  record: null
+
+decisionQuestion: >-
+  Should MIRRORNODE adopt MICC v0.1 as the normative specification governing
+  what an integration means inside MIRRORNODE—defining capability, authority,
+  principal, scope, approval, execution, evidence, and lifecycle semantics—
+  and MIM v0.1 as the machine-readable adapter declaration schema that
+  implements MICC, while explicitly prohibiting any provider from becoming
+  semantic authority merely by implementing a capability?
+
+scope:
+  includes:
+    - normative-definition-of-eight-primitive-capability-families
+    - universal-adapter-identity-and-version-fields
+    - principal-and-authority-semantics
+    - capability-and-scope-declaration-rules
+    - credential-requirement-declaration-without-credential-contents
+    - approval-classification-rules
+    - health-and-readiness-semantics
+    - execution-and-failure-semantics
+    - canonical-receipt-requirements-additive-to-AUDIT_EMISSION
+    - adapter-lifecycle-state-machine-and-transition-rules
+    - provider-specific-extension-rules
+    - protocol-boundary-rules-including-MCP
+    - conformance-requirements
+    - prohibition-against-provider-semantic-authority
+    - MIM-v0-1-schema-as-first-executable-expression-of-MICC
+  excludes:
+    - any-adapter-implementation
+    - Infisical-adapter-code
+    - Inngest-adapter-code
+    - provider-configuration
+    - runtime-registry-implementation
+    - MOPCON-UI-changes
+    - credential-contents-of-any-kind
+    - executable-changes-to-existing-integrations
+    - changes-to-AUDIT_EMISSION-contract
+    - changes-to-SYSTEM_CONTRACT
+    - changes-to-MCP-surface-contract-CG-0032
+    - canon-promotion
+    - deployment
+    - publication
+    - merge-authority
+
+authorityPath:
+  finalAuthority: operator
+  canonAction: separate-explicit-action
+
+operatorAuthorization:
+  grantedFor:
+    - documentation-only-specification-drafting
+    - council-matter-record
+    - review-request-packets
+    - MICC-v0-1-specification-document-under-docs-integration
+    - MIM-v0-1-schema-document-under-docs-integration
+    - MIM-v0-1-example-under-docs-integration-examples
+    - branch-push-cg-0033-micc-v0-1
+  explicitlyDoesNotAuthorize:
+    - adapter-implementation
+    - provider-code-changes
+    - credential-store-access
+    - runtime-registry-changes
+    - MOPCON-changes
+    - SYSTEM_CONTRACT-changes
+    - AUDIT_EMISSION-changes
+    - MCP-surface-changes-or-CG-0032-changes
+    - canon-promotion-of-MICC-or-MIM
+    - deployment
+    - publication
+    - merge
+    - secret-access
+    - canonical-ledger-mutation
+
+anchors:
+  - id: MCP-SURFACE-CONTRACT
+    kind: council-matter
+    href: ../CG-0032-mcp-surface-contract-v0-1/
+    requiredState: accepted-governing-definition
+    relationship: >-
+      CG-0032 remains the governing definition for MCP as a downstream
+      read-only projection surface. Dependency direction is from canonical
+      MIRRORNODE outward to the external MCP runtime—not inward. MICC
+      governs integration providers and does not classify MCP as an adapter.
+      No adapter or extension created under MICC may invert that dependency
+      direction. Any inbound invocation, write-capable MCP surface, or
+      MCP-mediated execution path requires separate Council authority.
+      Canonical MIRRORNODE mechanisms may not depend on MCP output for
+      authority, approval, truth, integrity, or execution permission.
+
+  - id: AUDIT-EMISSION-CONTRACT
+    kind: document
+    href: ../../../canon/contracts/AUDIT_EMISSION.md
+    requiredState: locked
+    relationship: >-
+      MICC Section 9 (canonical receipt requirements) is strictly additive
+      to the locked AUDIT_EMISSION contract. MICC does not redefine or
+      extend the AUDIT_EMISSION schema fields (timestamp, repo, repo_hash,
+      charter_hash, event_type, actor, verdict, evidence, audit_id).
+      Additional MICC evidence fields—such as execution_nonce, requesting
+      actor, executing actor, approval object, and policy_version—are
+      candidates for adapter-receipt extensions or parallel MICC records
+      referencing audit_id, but their canonical status relative to
+      AUDIT_EMISSION is an open question for Osiris to resolve during review.
+      No field declared in MICC may contradict an AUDIT_EMISSION field
+      with different semantics.
+
+  - id: SYSTEM-CONTRACT
+    kind: document
+    href: ../../../SYSTEM_CONTRACT.md
+    requiredState: reference-only
+    relationship: >-
+      MICC principal semantics must be coherent with the agent registry
+      and execution authority established in SYSTEM_CONTRACT v1.1.
+      Lucian's execution authority (POST /dispatch) is not redefined by
+      MICC. Integration adapter principals are a distinct class from
+      lattice agents; MICC defers to SYSTEM_CONTRACT for all intra-lattice
+      principal identity claims.
+
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+
+reviewRequests:
+  ptah: review-requests/PTAH_IMPLEMENTATION_CONTRACT_REVIEW.md
+  thoth: review-requests/THOTH_SECURITY_BOUNDARY_REVIEW.md
+  osiris: review-requests/OSIRIS_DISCLOSURE_AUTHORITY_REVIEW.md
+  theia: review-requests/THEIA_ARCHITECTURAL_INTEGRATION_REVIEW.md
+
+acceptanceConditions:
+  - eight-primitive-families-are-normatively-defined
+  - adapter-contract-is-derivable-from-MICC-without-ambiguity
+  - MIM-schema-validates-against-MICC-semantics
+  - provider-semantic-authority-prohibition-is-explicit-and-unconditional
+  - lifecycle-states-and-transitions-are-fully-enumerated
+  - AUTHORIZED-is-explicitly-separate-from-VERIFIED
+  - credential-requirements-carry-no-credential-contents
+  - receipt-requirements-are-additive-to-AUDIT_EMISSION-not-contradictory
+  - MICC-evidence-fields-not-presumed-canonical-until-Osiris-resolves-mapping
+  - MCP-downstream-read-only-direction-preserved-from-CG-0032
+  - MCP-protocol-boundary-rule-is-unambiguous-and-inversion-prohibited
+  - approval-classification-is-machine-readable
+  - conformance-requirements-are-testable
+  - no-provider-implementation-introduced-by-this-matter
+  - all-artifacts-remain-under-docs-integration-not-canon
+
+openQuestions:
+  - >-
+      EVIDENCE FIELD MAPPING: MICC introduces execution_nonce, requesting
+      actor, executing actor, approval object, and policy_version as
+      evidence fields. Osiris must determine whether these are: (a)
+      adapter-receipt extensions carried inside the existing AUDIT_EMISSION
+      evidence object; (b) parallel MICC records that reference audit_id;
+      or (c) grounds for a future AUDIT_EMISSION revision matter. MICC v0.1
+      declares requirements only; canonical field placement is unresolved
+      until Osiris issues a determination.
+  - >-
+      LIFECYCLE STATE MACHINE PLACEMENT: Should the adapter lifecycle
+      (DECLARED through RETIRED) live in MICC itself as a normative
+      requirement, or in a separate MIRRORNODE Runtime Registry specification
+      that implements MICC? Ptah and Thoth should advise on whether lifecycle
+      enforcement is a contract concern or a runtime concern.
+  - >-
+      MIM SCHEMA FORMAT: MIM v0.1 is drafted as JSON Schema with a YAML
+      example. Given existing matter.yaml conventions, should MIM also
+      carry a canonical YAML schema alongside the JSON Schema? Ptah to advise
+      on tooling validation requirements.
+
+currentRevision: null
+nextRequiredStep: >-
+  Distribute review-request packets to Ptah, Thoth, Osiris, and Theia.
+  No implementation work proceeds until all four reviews are received
+  and operator issues a disposition on this matter.
+historyPath: history/
+notes:
+  - >-
+      MICC and MIM are specification and schema only. No provider adapter
+      is introduced by this matter. Infisical Adapter 01 is a separate
+      future matter contingent on MICC acceptance and operator authorization.
+  - >-
+      Draft artifacts live under docs/integration/ only. Canon promotion
+      to canon/contracts/ and canon/schemas/ requires a separate explicit
+      canon-promotion action after operator acceptance.
+  - >-
+      The runtime registry (MOPCON present/authorized/healthy/degraded/
+      missing/prohibited view) is an implementation downstream of MICC,
+      not part of this matter's scope.
+  - >-
+      Automation may not move this matter into ratified status.

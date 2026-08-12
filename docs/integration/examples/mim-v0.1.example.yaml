@@ -1,0 +1,74 @@
+# MIM v0.1 Example — Credential Authority / Infisical
+# This is a hypothetical example for schema illustration only.
+# It does not constitute an authorized adapter declaration.
+# Infisical Adapter 01 requires a separate Council matter and
+# operator authorization before any implementation proceeds.
+# Status: Illustrative example only — CG-0033 review artifact
+
+mim_version: "0.1"
+adapter_id: credential-infisical-01
+adapter_name: Infisical Credential Authority Adapter 01
+micc_version: "0.1"
+capability_family: CREDENTIAL
+provider_name: Infisical
+provider_version: "v0.7"
+adapter_version: 0.1.0
+maintained_by: mirrornode-operator
+created_at: "2026-08-12T00:00:00Z"
+updated_at: "2026-08-12T00:00:00Z"
+
+capabilities:
+  - name: get_secret
+    description: Retrieve a named secret for an authorized principal and scope.
+    approval_class: APPROVAL_AUTOMATED
+  - name: list_secrets
+    description: List secret names (not values) available to a principal.
+    approval_class: APPROVAL_AUTOMATED
+  - name: rotate_credential
+    description: Trigger rotation of a rotating credential.
+    approval_class: APPROVAL_OPERATOR
+  - name: revoke_credential
+    description: Revoke an active credential and emit revocation receipt.
+    approval_class: APPROVAL_OPERATOR
+
+scopes_required:
+  - infisical:secrets:read
+  - infisical:machine-identity:authenticate
+
+scopes_granted:
+  - mirrornode:credential:read
+  - mirrornode:credential:rotate
+  - mirrornode:credential:revoke
+
+scope_ceiling: mirrornode:credential:revoke
+
+credential_requirements:
+  - name: infisical-machine-identity-token
+    kind: MACHINE_IDENTITY
+    scope: all capabilities
+    environment: ALL
+    lifetime: SHORT_LIVED
+    revocable: true
+    required: true
+
+health_check:
+  method: HTTP_GET
+  endpoint: /api/v1/auth/universal-auth/login
+  interval_seconds: 60
+  timeout_seconds: 10
+  healthy_criteria: HTTP 200 with valid token response
+  degraded_criteria: HTTP 200 with token but expiry within 5 minutes
+
+lifecycle_state: DECLARED
+
+known_limitations:
+  - Infisical machine identity token rotation is provider-managed;
+    rotation cadence is not fully controlled by this adapter.
+  - Infisical access log is provider-held; MIRRORNODE receipt is the
+    canonical evidence record, not the Infisical audit log.
+
+notes:
+  - This declaration is an illustrative example only.
+  - Infisical Adapter 01 implementation requires separate Council
+    matter and operator authorization.
+  - Credential contents never appear in this declaration.
