@@ -1,8 +1,21 @@
 name: Lucian Release
+
 on:
   push:
     branches: [ main, develop ]
-    paths: [ 'lucian/**', 'canon/**' ]
+    paths:
+      - 'lucian/**'
+      - 'canon/**'
+      - '.github/workflows/lucian-release.yml'
+      - '.github/workflows/reusable-runtime-release.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'lucian/**'
+      - 'canon/**'
+      - '.github/workflows/lucian-release.yml'
+      - '.github/workflows/reusable-runtime-release.yml'
+  workflow_dispatch:
 
 jobs:
   release:
