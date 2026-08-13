@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/mim-v0.1.schema.json",
   "title": "MIRRORNODE Integration Manifest (MIM) v0.1",
-  "description": "Machine-readable adapter declaration schema. Implements MICC v0.1. Status: Pre-canon draft under CG-0033 review. No authority effect until operator disposition.",
+  "description": "Machine-readable adapter declaration schema implementing MICC v0.1. Status: accepted-with-conditions as a reviewed pre-canon artifact under CG-0033; canon promotion, implementation, deployment, publication, and merge remain separately gated.",
   "type": "object",
   "required": [
     "mim_version",
@@ -112,8 +112,32 @@
         "endpoint":{"type":"string"},
         "interval_seconds":{"type":"integer","minimum":1},
         "timeout_seconds":{"type":"integer","minimum":1},
-        "healthy_criteria":{"type":"string","minLength":1},
-        "degraded_criteria":{"type":"string","minLength":1}
+        "healthy_criteria":{
+          "type":"object",
+          "required":["predicate_ref","expected_result"],
+          "additionalProperties":false,
+          "properties":{
+            "predicate_ref":{
+              "type":"string",
+              "pattern":"^[A-Za-z0-9._/-]+\\.(json|yaml|yml)$",
+              "description":"Repository-relative reference to a versioned, machine-evaluable predicate definition."
+            },
+            "expected_result":{"type":"boolean","const":true}
+          }
+        },
+        "degraded_criteria":{
+          "type":"object",
+          "required":["predicate_ref","expected_result"],
+          "additionalProperties":false,
+          "properties":{
+            "predicate_ref":{
+              "type":"string",
+              "pattern":"^[A-Za-z0-9._/-]+\\.(json|yaml|yml)$",
+              "description":"Repository-relative reference to a versioned, machine-evaluable predicate definition."
+            },
+            "expected_result":{"type":"boolean","const":true}
+          }
+        }
       }
     },
     "lifecycle_state": {
