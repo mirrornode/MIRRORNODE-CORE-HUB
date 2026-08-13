@@ -4,13 +4,13 @@ title: MIRRORNODE Integration Capability Contract v0.1 + Integration Manifest v0
 matterType: governance-definition
 initiator: operator
 createdAt: 2026-08-12T04:17:00Z
-updatedAt: 2026-08-13T06:45:00Z
-workflowState: synthesis-ready
+updatedAt: 2026-08-13T07:00:00Z
+workflowState: accepted-with-conditions
 disposition:
-  status: pending
-  authority: null
-  decidedAt: null
-  record: null
+  status: ACCEPT_WITH_CONDITIONS
+  authority: operator
+  decidedAt: 2026-08-13T07:00:00Z
+  record: history/2026-08-13-operator-disposition.md
 decisionQuestion: >-
   Should MIRRORNODE accept MICC v0.1 as the reviewed pre-canon normative
   specification governing what an integration means inside MIRRORNODE and
@@ -62,6 +62,7 @@ operatorAuthorization:
     - review-request-packets-and-role-bound-review-records
     - review-driven-corrections-to-MICC-MIM-and-example
     - synthesis-record
+    - operator-disposition-record
     - branch-push-cg-0033-micc-v0-1
   explicitlyDoesNotAuthorize:
     - adapter-implementation
@@ -106,29 +107,17 @@ anchors:
       Intra-lattice identity and authority are resolved from current applicable
       governance and registry evidence at invocation time. Historical runtime
       contracts remain evidence of their generation only.
-requiredReviews:
-  - ptah
-  - thoth
-  - osiris
-  - theia
+requiredReviews: [ptah, thoth, osiris, theia]
 reviewRequests:
   ptah: review-requests/PTAH_IMPLEMENTATION_CONTRACT_REVIEW.md
   thoth: review-requests/THOTH_SECURITY_BOUNDARY_REVIEW.md
   osiris: review-requests/OSIRIS_DISCLOSURE_AUTHORITY_REVIEW.md
   theia: review-requests/THEIA_ARCHITECTURAL_INTEGRATION_REVIEW.md
 positions:
-  ptah:
-    path: positions/PTAH_POSITION.md
-    state: APPROVED_WITH_CONDITIONS
-  thoth:
-    path: positions/THOTH_POSITION.md
-    state: APPROVED_WITH_CONDITIONS
-  osiris:
-    path: positions/OSIRIS_POSITION.md
-    state: APPROVED_WITH_CONDITIONS
-  theia:
-    path: positions/THEIA_POSITION.md
-    state: APPROVED_WITH_CONDITIONS
+  ptah: {path: positions/PTAH_POSITION.md, state: APPROVED_WITH_CONDITIONS}
+  thoth: {path: positions/THOTH_POSITION.md, state: APPROVED_WITH_CONDITIONS}
+  osiris: {path: positions/OSIRIS_POSITION.md, state: APPROVED_WITH_CONDITIONS}
+  theia: {path: positions/THEIA_POSITION.md, state: APPROVED_WITH_CONDITIONS}
 acceptanceConditions:
   - eight-primitive-families-are-normatively-defined
   - adapter-operation-contract-is-machine-readable-and-bounded
@@ -151,34 +140,24 @@ acceptanceConditions:
   - all-artifacts-remain-under-docs-integration-not-canon
 resolvedQuestions:
   evidenceFieldMapping: >-
-    Resolved by Osiris: option (a). MICC-specific evidence is carried inside
-    the existing locked AUDIT_EMISSION evidence object under evidence.micc.
+    Resolved by Osiris: MICC-specific evidence is carried inside the existing
+    locked AUDIT_EMISSION evidence object under evidence.micc.
   lifecyclePlacement: >-
-    Resolved by Ptah + Thoth and confirmed by Theia: lifecycle semantics and
-    authority remain normative in MICC; a Runtime Registry may implement and
-    persist them only as a subordinate enforcement surface.
+    Lifecycle semantics and authority remain normative in MICC; a Runtime
+    Registry may implement and persist them only as a subordinate enforcement surface.
   mimSchemaFormat: >-
-    Resolved by Ptah: JSON Schema remains the canonical machine-validation
-    schema. YAML may be a serialization/example format; no second canonical
-    YAML schema is required.
+    JSON Schema remains the canonical machine-validation schema. YAML may be
+    a serialization/example format; no second canonical YAML schema is required.
 openQuestions: []
 currentRevision: review-driven-corrections-2026-08-13
 nextRequiredStep: >-
-  Produce cross-position synthesis and present the synthesized decision gate
-  to the Operator. No merge, implementation, canon promotion, deployment, or
-  publication is authorized before explicit Operator disposition and any
-  separate authorization required for those actions.
+  Record the Operator disposition, verify PR #42 head/checks/review state, and
+  only then determine whether a separate merge authorization should be issued.
+  Acceptance does not itself authorize merge, implementation, canon promotion,
+  deployment, or publication.
 historyPath: history/
 notes:
-  - >-
-      MICC and MIM remain specification/schema only. No provider adapter is
-      introduced by this matter.
-  - >-
-      Draft artifacts remain under docs/integration/. Canon promotion requires
-      a separate explicit action after Operator disposition.
-  - >-
-      Future adapter implementation must provide concrete referenced schemas,
-      conformance fixtures, security verification, evidence verification, and
-      separate implementation authorization before activation.
-  - >-
-      Automation may not move this matter into ratified status.
+  - MICC and MIM remain specification/schema only; no provider adapter is introduced.
+  - Draft artifacts remain under docs/integration/; canon promotion requires a separate explicit action.
+  - Future adapter implementation requires concrete schemas, conformance fixtures, security/evidence verification, and separate implementation authorization.
+  - Automation may not move this matter into ratified status.
