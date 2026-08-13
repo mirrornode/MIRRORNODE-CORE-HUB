@@ -1,95 +1,132 @@
 # Theia — Architectural Integration Position
 ## CG-0033: MICC v0.1 + MIM v0.1
 
-**Reviewer:** Theia  
+**Reviewer role:** Theia architectural-integration lane  
+**Procedural provenance:** Initial position preserved from the original CG-0033 review cycle; re-review executed in the current THEIA/ChatGPT integration session after Ptah, Thoth, and Osiris review-driven corrections. This file distinguishes the preserved initial position from the current re-review result.  
 **Matter:** CG-0033  
-**Review class:** Architectural Integration Review  
+**Review class:** Architectural Integration Review / Triggered Re-review  
 **State:** APPROVED_WITH_CONDITIONS  
-**Reviewed against:** `74392f5b3c27b96010b1852413f5f6707277be65`
+**Initial review base:** `74392f5b3c27b96010b1852413f5f6707277be65`  
+**Re-reviewed after corrections through:** `216b05231eab21ee1eb2136aa4acd1b88f2a35dc`
 
 ---
 
-## Determination
+## Re-review determination
 
-MICC v0.1 and MIM v0.1 are architecturally coherent as a contract-first integration boundary. The proposed separation is sound: MICC owns MIRRORNODE integration semantics; MIM declares adapter instances against those semantics; providers implement beneath that boundary and do not acquire semantic authority by implementation.
+The review-driven corrections preserve the original contract-first architecture and improve its coherence.
 
-No provider implementation is authorized by this position. No canon promotion is authorized by this position.
+The most important architectural change is the removal of the stale assumption that the April Lucian `/dispatch` runtime contract remains the current intra-lattice authority source. MICC now treats intra-lattice identity and authority as an external governed dependency resolved from the current applicable governance/registry evidence at invocation time. That is architecturally preferable to freezing a runtime generation inside an integration contract.
 
-Approval is conditioned on the bounded corrections and clarifications below being resolved during the CG-0033 review cycle before final disposition.
+No provider implementation is authorized by this position. No canon promotion, deployment, publication, or merge is authorized.
 
 ---
 
 ## 1. Canon placement
 
-**Determination:** Draft placement under `docs/integration/` is correct for CG-0033.
+**Determination:** unchanged and coherent.
 
-If MICC is later promoted by separate explicit operator action, `canon/contracts/MICC_V0_1.md` is the coherent destination under the repository's present canon taxonomy: `canon/contracts/` is defined as the location for technical specifications. A new `canon/specs/` category is not justified by MICC v0.1 alone and would create a second overlapping classification for normative technical specifications.
+Draft placement under `docs/integration/` remains correct. Any later canon promotion requires a separate explicit Operator action and then-current index/navigation validation.
 
-MIM may be promoted separately under `canon/schemas/` if that path remains the established schema location at promotion time. Canon placement must be revalidated against the then-current index before promotion; this position does not itself promote either artifact.
-
-**Condition A:** Any canon-promotion matter must update the canon index/navigation as required and must not treat acceptance of CG-0033 as implicit promotion authority.
+**Condition A remains:** acceptance of CG-0033 must not be treated as implicit canon-promotion authority.
 
 ---
 
-## 2. SYSTEM_CONTRACT coherence
+## 2. Authority-model coherence after Thoth correction
 
-**Determination:** The principal models are coherent if the distinction in MICC Section 3 remains explicit.
+**Determination:** the stale authority reference has been corrected without weakening role separation.
 
-Integration adapter principals are a distinct class from lattice agents. An adapter does not inherit the identity, role, or authority of the lattice agent that requests or maintains it. MICC correctly defers intra-lattice identity to SYSTEM_CONTRACT and does not redefine Lucian's execution authority.
+Revised MICC Section 3 now distinguishes:
 
-The authority direction `operator → adapter → provider` is architecturally useful as a prohibition against provider-originated MIRRORNODE authority, but it must not be read as collapsing requesting actors, executing actors, maintainers, or delegated authorities into a single chain. Those remain separately attributable in evidence and approval records.
+- requesting principal;
+- maintaining principal;
+- authorizing authority;
+- executing adapter;
+- external provider.
 
-**Condition B:** Final MICC text must preserve distinct identities for requesting actor, executing adapter principal, maintainer, and authorizing authority wherever those roles differ. No adapter may inherit lattice authority merely because a lattice principal invoked, configured, or maintains it.
+It also states that historical runtime contracts do not become current authority merely because an integration references them.
 
----
+This satisfies the architectural intent of the original Condition B more cleanly than the prior SYSTEM_CONTRACT-specific wording.
 
-## 3. CG-0032 MCP boundary coherence
+**Condition B status:** SATISFIED in the revised draft.
 
-**Determination:** Coherent. No architectural conflict is introduced.
-
-CG-0032 remains governing for MCP as a downstream read-only projection surface with dependency direction from canonical MIRRORNODE outward. MICC Section 12 correctly refuses to classify MCP as a provider adapter and explicitly prohibits a MICC adapter from inverting the CG-0032 dependency direction.
-
-MICC Section 12.2 may describe other protocol clients as approaching a governed capability surface from outside, but that general protocol language does not broaden MCP authority. MCP remains subject to the narrower CG-0032 rule unless and until a separate Council matter explicitly changes it.
-
-**Condition C:** The CG-0032-specific MCP rule must continue to take precedence over the generic external-protocol language in MICC. Any inbound, write-capable, or execution-bearing MCP design requires a separate Council matter and may not be inferred from MICC conformance.
+The integration contract does not itself decide the current complete lattice registry; it consumes the applicable authority evidence rather than defining it. That boundary is correct.
 
 ---
 
-## 4. MICC/MIM separation stability
+## 3. MCP boundary coherence
 
-**Determination:** Architecturally stable, with versioning discipline.
+**Determination:** preserved and strengthened.
 
-MICC defines semantics; MIM expresses declarations. MIM schema evolution does not require a MICC semantic revision when the schema change only improves validation, representation, optional metadata, or tooling while preserving MICC meaning.
+CG-0032 remains governing for MCP as downstream read-only projection. Revised MICC additionally makes bypass resistance protocol-neutral: direct reachability of an adapter/provider endpoint does not confer authority, and any invocation must satisfy the governed invocation envelope.
 
-A MICC revision is required when a proposed MIM change would alter normative meaning—for example by adding a capability family, changing approval semantics, changing authority direction, changing lifecycle meaning, expanding outcome vocabulary, weakening scope constraints, or allowing provider extensions to redefine MICC fields.
+This does not broaden MCP authority or authorize inbound/write/execution-bearing MCP.
 
-The current schema's `additionalProperties: false`, bounded enums, and namespaced provider extensions support that separation.
-
-**Condition D:** The final specification must state a compatibility rule: representational MIM changes may version MIM independently, but any MIM change that alters MICC-defined semantics requires a MICC revision matter rather than schema-only evolution.
-
----
-
-## 5. CG-0032 Theia re-review trigger
-
-**Determination:** CG-0033 does **not** trigger a Theia re-review of CG-0032.
-
-CG-0033 does not change MCP's architectural role, authority direction, or separate-authorization gates. It incorporates CG-0032 as the governing MCP boundary and preserves its downstream read-only direction. The new integration contract governs provider adapters beneath MIRRORNODE capability semantics; it does not revise the MCP projection contract.
-
-A CG-0032 re-review would be triggered if a later revision of CG-0033 or another matter attempted to make MCP inbound, write-capable, execution-bearing, authoritative, or otherwise changed the separate-authorization boundary established by CG-0032.
+**Condition C status:** SATISFIED in the revised draft.
 
 **CG-0032 re-review triggered:** NO.
 
 ---
 
-## Cross-review dependencies
+## 4. MICC/MIM separation and implementability
 
-This architectural approval does not pre-empt the bounded determinations assigned to the other reviewers:
+**Determination:** architecturally stable after Ptah corrections.
 
-- **Osiris:** placement and disclosure treatment of MICC evidence candidates relative to `AUDIT_EMISSION`.
-- **Thoth:** security sufficiency of authority boundaries, credential declarations, lifecycle authorization, and bypass resistance.
-- **Ptah:** implementability, lifecycle enforcement placement, schema/tooling sufficiency, and Adapter 01 readiness.
+MICC continues to own semantics. MIM now declares enough operation-contract detail to reduce adapter-author interpretation while remaining a declaration schema rather than provider implementation code.
 
-If any of those determinations requires a change to architectural role, authority direction, or separate-authorization gates, Theia re-review of the resulting revision is required before synthesis.
+The additions—schema references, side-effect class, idempotency, retry policy, timeout, and conformance-test reference—are coherent with the MICC/MIM split.
+
+The revised Appendix compatibility rule correctly distinguishes representational MIM evolution from semantic MICC revision.
+
+**Condition D status:** SATISFIED in the revised draft.
+
+---
+
+## 5. Evidence architecture after Osiris determination
+
+**Determination:** coherent.
+
+The revised model preserves the locked `AUDIT_EMISSION` top-level contract and places MICC-specific precision beneath `evidence.micc`.
+
+This creates a useful architectural pattern:
+
+- locked cross-system audit envelope remains stable;
+- integration-specific evidence remains namespaced and additive;
+- precise MICC outcome/state data does not silently redefine the locked verdict/event vocabularies;
+- external telemetry remains projection/observation, not historical authority.
+
+This is preferable to a parallel MICC evidence record because it preserves one canonical audit chain while allowing bounded specialization.
+
+---
+
+## 6. Lifecycle placement
+
+**Determination:** coherent.
+
+Keeping lifecycle semantics normative in MICC while allowing a subordinate Runtime Registry to persist/enforce them avoids the semantic split identified by Ptah and Thoth.
+
+A runtime registry may implement state mechanics but cannot broaden transition authority. This preserves contract-first inversion.
+
+---
+
+## Remaining architectural condition
+
+Only the original canon-placement condition remains open at this stage:
+
+**Condition A:** Any future promotion of MICC/MIM into canon requires a separate explicit promotion action and then-current canon index/navigation update. Acceptance of CG-0033 alone is not promotion authority.
+
+That condition does not block CG-0033 acceptance as a reviewed pre-canon integration contract.
+
+---
+
+## Cross-review closure assessment
+
+From the architectural lane:
+
+- Ptah's revisions were incorporated without destabilizing the contract boundary.
+- Thoth's authority-reference and bypass-resistance revisions were incorporated and triggered this re-review; the resulting architecture is coherent.
+- Osiris's `evidence.micc` placement was incorporated without creating a second evidence authority.
+
+No new architectural re-review trigger is created by the corrected text.
 
 ---
 
@@ -97,6 +134,6 @@ If any of those determinations requires a change to architectural role, authorit
 
 **APPROVED_WITH_CONDITIONS**
 
-Conditions A–D are bounded architectural clarifications. They do not authorize implementation, canon promotion, deployment, publication, or merge.
+Current condition: separate canon-promotion authority remains required later.
 
-CG-0033 may continue through the parallel review cycle. Final disposition should occur only after Ptah, Thoth, Osiris, and Theia positions are present and synthesized, and after any review-driven revisions have been checked against their respective re-review triggers.
+The revised CG-0033 artifacts are architecturally ready to proceed to cross-position synthesis, subject to confirmation that the Ptah, Thoth, and Osiris revision themes are actually satisfied by the corrected text.
