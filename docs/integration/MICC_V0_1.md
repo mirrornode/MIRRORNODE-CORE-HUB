@@ -1,11 +1,11 @@
 # MIRRORNODE Integration Capability Contract (MICC) v0.1
 
-**Status:** Draft — Under Council Review (CG-0033)  
+**Status:** Accepted with conditions — Operator disposition filed under CG-0033  
 **Version:** 0.1  
 **Created:** 2026-08-12  
 **Revision pass:** 2026-08-13 review-driven corrections  
-**Authority effect:** None until operator disposition on CG-0033  
-**Canon status:** Pre-canon draft; lives under `docs/integration/` until separate explicit promotion action
+**Authority effect:** Reviewed pre-canon governance definition only; no implementation, canon-promotion, deployment, publication, or merge authority  
+**Canon status:** Pre-canon accepted-with-conditions; remains under `docs/integration/` until separate explicit promotion action
 
 ---
 
