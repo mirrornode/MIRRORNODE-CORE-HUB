@@ -41,7 +41,7 @@ The same runtime disables direct `/agent` execution and requires a proposed plan
 | Lucian | `mirrornode-lucian/agent/manifest.yaml` | `memory` | yes | none; implementation facet only |
 | Theia | `mirrornode-theia/agent/manifest.yaml` | `perception` | yes | none; implementation facet only |
 | Merlin | `mirrornode-merlin/agent/manifest.yaml` | `reasoning` | yes | none; planning/sequencing evidence exists elsewhere |
-| Osiris | `mirrornode-osiris/agent/manifest.yaml` | `audit` | yes | none; do not inherit commercial/execution authority by name |
+| Osiris | `mirrornode-osiris/agent/manifest.yaml` | `audit` | yes | none; the name alone does not inherit commercial powers or operational permissions |
 | Ptah | `mirrornode-ptah/agent/manifest.yaml` | `forge` | yes | none; authority must come from stronger governance records |
 | Rotan-Q | `mirrornode-rotan/agent/manifest.yaml` | `signal` | no, not in current generic allowlist | none; dedicated implementation exists |
 
