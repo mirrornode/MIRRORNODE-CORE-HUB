@@ -107,16 +107,16 @@ Each adapter must declare provider and MIRRORNODE scope requirements plus an
 implementable operation contract for every capability.
 
 ```
-capabilities:      list of operation contracts
+capabilities:      name-keyed map of operation contracts; keys are unique
 scopes_required:   list of provider-side access scopes required
 scopes_granted:    list of MIRRORNODE scopes permitted
 scope_ceiling:     explicit maximum MIRRORNODE scope vocabulary entry
 ```
 
-Each capability operation contract must declare:
+Each capability map key is the stable, unique operation identifier. The
+corresponding operation contract must declare:
 
 ```
-name:                    stable operation identifier
 description:             human-readable purpose
 approval_class:          Section 6 approval class
 input_schema_ref:        schema/reference for request shape
