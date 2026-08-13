@@ -3,6 +3,7 @@
 **Status:** Draft — Under Council Review (CG-0033)  
 **Version:** 0.1  
 **Created:** 2026-08-12  
+**Revision pass:** 2026-08-13 review-driven corrections  
 **Authority effect:** None until operator disposition on CG-0033  
 **Canon status:** Pre-canon draft; lives under `docs/integration/` until separate explicit promotion action
 
@@ -70,40 +71,70 @@ Changes require a new adapter_version and re-entry at DECLARED.
 
 ## Section 3 — Principal and Authority Semantics
 
-**3.1 Integration adapter principals are a distinct class** from lattice
-agents defined in SYSTEM_CONTRACT. An adapter does not inherit lattice
-agent authority. An adapter operates under the authority explicitly
-granted to it by operator authorization.
+**3.1 Integration adapter principals are a distinct class** from MIRRORNODE
+lattice identities. An adapter does not inherit lattice authority. An adapter
+operates only under authority explicitly granted through the current applicable
+MIRRORNODE governance and approval boundary.
 
 **3.2 A provider is not a principal.** The external provider system
 (Infisical, Inngest, Stripe, etc.) is not a MIRRORNODE principal. The
 adapter that wraps it is a principal. The provider cannot grant,
 escalate, or revoke MIRRORNODE authority.
 
-**3.3 Principal identity for intra-lattice claims** defers to
-SYSTEM_CONTRACT v1.1. Lucian's execution authority (POST /dispatch)
-is not modified by this contract.
+**3.3 Intra-lattice identity and authority are external dependencies of MICC.**
+MICC does not freeze a historical runtime registry or dispatcher model into
+this integration contract. Requests must resolve requesting identity,
+authorizing basis, executing adapter identity, and applicable authority from
+the current governance/registry evidence in force at invocation time.
 
-**3.4 Authority direction is always operator → adapter → provider.**
-No adapter may receive authority from its provider. No adapter may
-claim authority not explicitly granted by the operator.
+Historical runtime contracts may remain evidence of prior generations but do
+not become current authority merely because an integration references them.
+
+**3.4 Authority direction is MIRRORNODE-governed principal/approval → adapter
+→ provider.** No adapter may receive MIRRORNODE authority from its provider.
+No adapter may claim authority not established by the applicable governance
+or approval record.
+
+**3.5 Role separation is preserved.** Requesting principal, maintaining
+principal, authorizing authority, executing adapter, and provider are distinct
+identities where they differ and must remain separately attributable.
 
 ---
 
 ## Section 4 — Capability and Scope Declaration
 
-Each adapter must declare:
+Each adapter must declare provider and MIRRORNODE scope requirements plus an
+implementable operation contract for every capability.
 
 ```
-capabilities:      list of named operations this adapter exposes
-scopes_required:   list of access scopes the adapter requires from the provider
-scopes_granted:    list of MIRRORNODE scopes this adapter is permitted to exercise
-scope_ceiling:     the maximum scope level this adapter may ever request
+capabilities:      list of operation contracts
+scopes_required:   list of provider-side access scopes required
+scopes_granted:    list of MIRRORNODE scopes permitted
+scope_ceiling:     explicit maximum MIRRORNODE scope vocabulary entry
+```
+
+Each capability operation contract must declare:
+
+```
+name:                    stable operation identifier
+description:             human-readable purpose
+approval_class:          Section 6 approval class
+input_schema_ref:        schema/reference for request shape
+output_schema_ref:       schema/reference for successful result shape
+side_effect_class:       READ_ONLY | STATE_CHANGE | EXTERNAL_EFFECT
+idempotency:             REQUIRED | SUPPORTED | NOT_APPLICABLE
+retry_policy:            NONE | SAFE_RETRY | IDEMPOTENCY_KEY_REQUIRED
+timeout_seconds:         positive integer upper bound
+conformance_test_ref:    test/fixture identifier for operation conformance
 ```
 
 An adapter may not exercise a scope not listed in `scopes_granted`.
 An adapter may not request a provider scope not listed in `scopes_required`.
 Scope escalation requires a new adapter declaration at DECLARED state.
+
+`scope_ceiling` must be an entry from the same governed MIRRORNODE scope
+vocabulary used by `scopes_granted`; implementations may not infer ordering
+from arbitrary free text.
 
 ---
 
@@ -114,18 +145,24 @@ contents. A MIM declaration is not a credential store.
 
 ```
 credential_requirements:
-  - name:          human-readable name for this credential
+  - name:          non-sensitive human-readable requirement label
     kind:          API_KEY | OAUTH_TOKEN | MTLS_CERT | MACHINE_IDENTITY | OTHER
-    scope:         which adapter capabilities require this credential
+    capabilities:  one or more declared capability names requiring it
     environment:   PRODUCTION | STAGING | DEVELOPMENT | ALL
     lifetime:      SHORT_LIVED | LONG_LIVED | ROTATING | STATIC
     revocable:     true | false
     required:      true | false
 ```
 
-The Credential Authority adapter (CREDENTIAL family) is responsible
-for satisfying declared credential requirements at runtime. Credential
-contents never appear in a MIM declaration or in any MICC record.
+Credential declarations MUST NOT contain credential contents, bearer values,
+secret-store paths, raw token identifiers, or provider/internal topology.
+Tenant/account identifiers or other sensitive metadata may appear only when
+required for validation and explicitly allowed by the applicable disclosure
+policy.
+
+The Credential Authority implementation is responsible for satisfying declared
+credential requirements at runtime through a separate credential-resolution
+boundary. Credential contents never appear in MIM or MICC receipts.
 
 ---
 
@@ -134,134 +171,181 @@ contents never appear in a MIM declaration or in any MICC record.
 Each adapter capability must declare its approval class:
 
 ```
-APPROVAL_NONE       — read-only, no state change, no external call
+APPROVAL_NONE       — read-only and no external effect; no state change
 APPROVAL_AUTOMATED  — automated gate; policy evaluation required before execution
 APPROVAL_OPERATOR   — explicit operator approval required before execution
-APPROVAL_COUNCIL    — Council matter required before this capability may be activated
+APPROVAL_COUNCIL    — Council matter/disposition required before activation/use
 ```
 
-Approval class may not be downgraded without a new adapter declaration
-and operator re-authorization. The approval class is machine-readable
-and must be evaluable at the capability level before execution is permitted.
+Approval class may not be downgraded without a new adapter declaration and
+re-authorization. The approval class is machine-readable and must be evaluated
+before execution.
+
+Any approval-bearing invocation must carry a machine-verifiable approval
+reference. VERIFIED state, a successful health check, or provider success may
+never substitute for authorization.
 
 ---
 
 ## Section 7 — Health and Readiness Semantics
 
-Adapters must declare health and readiness endpoints or check contracts:
+Adapters must declare health and readiness checks:
 
 ```
 health_check:
-  method:          the check mechanism (HTTP_GET | RPC | INTERNAL)
-  endpoint:        path or identifier
-  interval_seconds: polling interval
-  timeout_seconds:  maximum check duration
-  healthy_criteria: machine-readable condition for HEALTHY verdict
+  method:            HTTP_GET | RPC | INTERNAL
+  endpoint:          path or identifier where applicable
+  interval_seconds:  polling interval
+  timeout_seconds:   maximum check duration
+  healthy_criteria:  machine-readable condition for HEALTHY verdict
   degraded_criteria: machine-readable condition for DEGRADED verdict
 ```
 
-A passing health check does not imply authorization. An adapter that
-passes health checks while in VERIFIED state has not been authorized
-to operate. See Section 10 (lifecycle).
+A passing health check does not imply authorization. Health automation may
+change state only through transitions expressly allowed by Section 10.
 
 ---
 
-## Section 8 — Execution and Failure Semantics
+## Section 8 — Execution, Invocation Envelope, and Failure Semantics
 
-**8.1 Execution contract.** Every adapter capability invocation must:
-- Verify adapter lifecycle state is ACTIVE before proceeding
-- Emit a canonical receipt (Section 9) at invocation boundary
-- Return a machine-readable outcome from the bounded vocabulary below
-- Never emit a free-text-only failure classification
-
-**8.2 Bounded outcome vocabulary:**
+**8.1 Governed invocation envelope.** Every capability invocation must arrive
+through a governed MIRRORNODE invocation context that resolves at minimum:
 
 ```
-OUTCOME_SUCCESS          — capability executed and completed
-OUTCOME_FAILURE_PROVIDER — provider returned error; adapter intact
-OUTCOME_FAILURE_AUTH     — credential or authorization failure
-OUTCOME_FAILURE_SCOPE    — requested scope not granted
-OUTCOME_FAILURE_CONTRACT — capability invocation violated MICC contract
-OUTCOME_BLOCKED          — approval gate prevented execution
-OUTCOME_DEGRADED         — executed under degraded conditions; result uncertain
-OUTCOME_TIMEOUT          — execution did not complete within contract bounds
+requesting_actor
+executing_actor / adapter_id
+approval_class
+approval_object (when required)
+policy_version
+execution_nonce
+requested_scope
+scope_decision
+adapter_lifecycle_state
 ```
 
-Free-text detail may accompany an outcome code but may not substitute
-for it. Conformance tests must evaluate outcome codes, not free text.
+An adapter must fail closed when required invocation context is absent,
+invalid, replayed, unauthorized, or outside the declared scope ceiling.
+Knowing a provider endpoint or adapter endpoint is insufficient authority to
+invoke a capability.
 
-**8.3 Failure behavior is closed.** An unknown condition maps to
-`OUTCOME_FAILURE_CONTRACT`. Adapters may not introduce new outcome
-codes without a MICC revision.
+This rule is protocol-neutral and applies equally to REST, SDK, event,
+provider callback, or any future authorized protocol surface.
+
+**8.2 Execution contract.** Every adapter capability invocation must:
+- verify lifecycle state is ACTIVE or DEGRADED before proceeding;
+- verify the governed invocation envelope;
+- enforce the declared operation contract and scope decision;
+- emit an `AUDIT_EMISSION`-conformant canonical receipt (Section 9);
+- return a machine-readable outcome from the bounded vocabulary below;
+- never emit a free-text-only failure classification.
+
+**8.3 Bounded outcome vocabulary:**
+
+```
+OUTCOME_SUCCESS
+OUTCOME_FAILURE_PROVIDER
+OUTCOME_FAILURE_AUTH
+OUTCOME_FAILURE_SCOPE
+OUTCOME_FAILURE_CONTRACT
+OUTCOME_BLOCKED
+OUTCOME_DEGRADED
+OUTCOME_TIMEOUT
+```
+
+Free-text detail may accompany an outcome code but may not substitute for it.
+Unknown conditions map to `OUTCOME_FAILURE_CONTRACT`. Providers and adapters
+may not introduce new outcome codes without MICC revision.
+
+**8.4 Provider semantic non-escalation is conformance-tested.** Conformance
+must verify that provider responses cannot alter approval class, lifecycle
+authority, MIRRORNODE outcome vocabulary, canonical evidence ownership, or
+MIRRORNODE principal authority.
 
 ---
 
 ## Section 9 — Canonical Receipt Requirements
 
-Every capability execution must emit a canonical receipt. Receipt
-requirements are additive to the locked AUDIT_EMISSION contract
-(`canon/contracts/AUDIT_EMISSION.md`). MICC does not redefine
-AUDIT_EMISSION fields.
+Every capability execution must emit a canonical receipt conforming to the
+locked `canon/contracts/AUDIT_EMISSION.md` contract. MICC adds nested evidence
+semantics but does not redefine locked top-level audit fields or vocabularies.
 
-**9.1 AUDIT_EMISSION fields that must be present in every receipt:**
+**9.1 Locked top-level audit semantics remain controlling.**
 
+MICC implementations must populate the top-level `AUDIT_EMISSION` record using
+only values permitted by the locked contract in force. MICC-specific precision
+is carried inside the existing `evidence` object.
+
+Until a separate `AUDIT_EMISSION` revision creates adapter-specific top-level
+vocabulary:
+
+- use the nearest existing conformant `event_type` for execution/invocation;
+- use the locked coarse actor class (`human`, `agent`, or `system`) as applicable;
+- map MICC outcomes to locked verdicts (`SUCCESS`, `FAILURE`, `BLOCKED`, or
+  `ESCALATED` where the audit event genuinely represents escalation).
+
+The exact MICC outcome remains recorded under `evidence.micc.outcome_code`.
+
+**9.2 MICC evidence placement.**
+
+The Osiris disclosure/evidence review determines that MICC-specific evidence
+is carried inside the existing audit `evidence` object under a namespaced
+`micc` extension:
+
+```json
+"evidence": {
+  "inputs": {},
+  "outputs": {},
+  "duration_ms": 0,
+  "error": null,
+  "micc": {
+    "execution_nonce": "...",
+    "requesting_actor": "...",
+    "executing_actor": "...",
+    "approval_object": "...",
+    "policy_version": "...",
+    "outcome_code": "..."
+  }
+}
 ```
-timestamp        (ISO8601 UTC)
-repo             (repository name)
-repo_hash        (git commit SHA at time of execution)
-event_type       ("adapter_invocation")
-actor            (adapter_id)
-verdict          (mapped from Section 8.2 outcome vocabulary)
-evidence         (object; see 9.2)
-audit_id         (UUID v4)
-```
 
-**9.2 MICC evidence candidates (placement unresolved — see open question):**
+For lifecycle transitions, `evidence.micc` must additionally record prior
+state, next state, transition reason, and authorization reference where
+required.
 
-The following fields are required by MICC but their placement relative
-to the AUDIT_EMISSION schema is an open question for Osiris to determine
-(see CG-0033 matter.yaml open questions):
+**9.3 Evidence disclosure boundary.** Adapter-specific evidence fields must be
+sanitized and purpose-bounded. They must not emit credential contents, bearer
+references, secret-store paths, unrestricted provider response bodies,
+provider-internal identifiers without explicit necessity/allowance, or
+filesystem/internal topology not approved for evidence disclosure.
 
-```
-execution_nonce      — unique per-invocation identifier preventing replay
-requesting_actor     — principal that initiated the capability request
-executing_actor      — adapter_id executing the capability (may differ from requesting_actor)
-approval_object      — reference to approval record if APPROVAL_OPERATOR or APPROVAL_COUNCIL
-policy_version       — version of the policy evaluated at execution time
-```
+Provider extensions may name evidence fields but cannot make sensitive
+provider state canonical merely by declaring it.
 
-Until Osiris issues a placement determination, these fields must be
-present in the receipt but their canonical location (inside `evidence`,
-as a parallel record, or pending AUDIT_EMISSION revision) is unresolved.
-
-**9.3 Canonical evidence is owned by MIRRORNODE.**  
-External telemetry systems (LangSmith, Axiom, Datadog, etc.) are
-observers only. They consume OTel-formatted emissions and have no
-write authority over the canonical evidence record. No external
-telemetry product becomes the historical authority for a MIRRORNODE
-determination. OTel is the interoperability format; it is not the
-evidence store.
+**9.4 Canonical evidence is owned by MIRRORNODE.** External telemetry systems
+(LangSmith, Axiom, Datadog, etc.) are observers only. OTel may carry
+interoperable projections, but no external telemetry product may write,
+mutate, supersede, approve, become the sole retention point for, or become the
+historical authority over the canonical evidence record.
 
 ---
 
 ## Section 10 — Lifecycle States and Transition Rules
 
-**Note:** Whether this lifecycle state machine is normative in MICC
-or lives in a separate Runtime Registry specification is an open
-question for Ptah and Thoth (see CG-0033 open questions). It is
-included here as a normative candidate.
+Lifecycle semantics and authorization invariants are normative in MICC. A
+separate Runtime Registry may persist and enforce these states but is
+subordinate to MICC semantics and may not broaden transition authority.
 
 ### 10.1 Lifecycle states
 
 ```
-DECLARED     — MIM declaration exists; no implementation verification performed
-IMPLEMENTED  — implementation exists and has been submitted for verification
-VERIFIED     — technical verification passed; adapter is functional
-AUTHORIZED   — operator has explicitly granted authority to operate
-ACTIVE       — adapter is operating within authorized scope
-DEGRADED     — adapter is operating but health checks indicate reduced capability
-SUSPENDED    — adapter is halted; authority temporarily withdrawn
-RETIRED      — adapter is permanently decommissioned; no further operation permitted
+DECLARED
+IMPLEMENTED
+VERIFIED
+AUTHORIZED
+ACTIVE
+DEGRADED
+SUSPENDED
+RETIRED
 ```
 
 ### 10.2 Authorized transitions
@@ -270,64 +354,67 @@ RETIRED      — adapter is permanently decommissioned; no further operation per
 |---|---|---|
 | DECLARED | IMPLEMENTED | Adapter maintainer |
 | IMPLEMENTED | VERIFIED | Automated verification + Ptah confirmation |
-| VERIFIED | AUTHORIZED | Operator only |
-| AUTHORIZED | ACTIVE | Automated (post-authorization health pass) |
-| ACTIVE | DEGRADED | Automated (health check) |
-| DEGRADED | ACTIVE | Automated (health recovery) |
-| ACTIVE | SUSPENDED | Operator or automated policy gate |
-| DEGRADED | SUSPENDED | Operator or automated policy gate |
-| SUSPENDED | AUTHORIZED | Operator only (re-authorization) |
+| VERIFIED | AUTHORIZED | Operator only, with approval reference |
+| AUTHORIZED | ACTIVE | Automated, post-authorization health pass |
+| ACTIVE | DEGRADED | Automated health check |
+| DEGRADED | ACTIVE | Automated health recovery |
+| ACTIVE | SUSPENDED | Operator or authorized automated policy gate |
+| DEGRADED | SUSPENDED | Operator or authorized automated policy gate |
+| SUSPENDED | AUTHORIZED | Operator only, with re-authorization reference |
 | AUTHORIZED | RETIRED | Operator only |
 | ACTIVE | RETIRED | Operator only |
 | SUSPENDED | RETIRED | Operator only |
 
 ### 10.3 Invariants
 
-- VERIFIED → AUTHORIZED requires explicit operator action. A health
-  check pass does not constitute authorization.
-- An adapter in any state other than ACTIVE or DEGRADED may not execute
-  capabilities.
-- RETIRED is terminal. A retired adapter_id may not be reused.
-- Every state transition must emit an AUDIT_EMISSION-conformant record.
+- VERIFIED → AUTHORIZED and SUSPENDED → AUTHORIZED require explicit Operator
+action plus machine-verifiable authorization evidence.
+- A health or conformance pass cannot self-authorize an adapter.
+- An adapter outside ACTIVE or DEGRADED may not execute capabilities.
+- RETIRED is terminal and its adapter_id may not be reused.
+- Every transition emits an `AUDIT_EMISSION`-conformant record with precise
+transition detail under `evidence.micc`.
+- A Runtime Registry must reject transitions not allowed by this table and
+record the authorizing basis for gated transitions.
 
 ---
 
 ## Section 11 — Provider-Specific Extension Rules
 
 Adapters may declare provider-specific extensions in a `provider_extensions`
-block in their MIM declaration. Extension rules:
+block. Extensions:
 
-1. Extensions may add fields; they may not redefine MICC-normative fields.
-2. Extensions may not introduce new capability families.
-3. Extensions may not modify approval classification or lifecycle rules.
-4. Extensions may not introduce outcome codes outside Section 8.2.
-5. Extension fields must be namespaced: `x_<provider_name>_<field>`.
-6. Extensions are not MICC-canonical. They are provider-specific metadata.
+1. may add namespaced metadata but not redefine MICC fields;
+2. may not introduce new capability families;
+3. may not modify approval or lifecycle rules;
+4. may not introduce outcome codes;
+5. must use `x_<provider_name>_<field>` namespacing;
+6. are provider-specific metadata, not MICC semantic authority;
+7. must comply with Section 9.3 disclosure restrictions.
 
 ---
 
 ## Section 12 — Protocol Boundary Rules
 
-**12.1 MCP.**  
-CG-0032 (MCP Surface Contract v0.1) is the governing definition for MCP
-as a downstream read-only projection surface. Dependency direction is
-from canonical MIRRORNODE outward to the external MCP runtime.
+**12.1 MCP.** CG-0032 remains governing for MCP as a downstream read-only
+projection surface. Dependency direction is canonical MIRRORNODE outward to
+external MCP runtime.
 
-MICC does not classify MCP as an integration adapter. MCP is not a
-provider under any MICC capability family. No adapter created under
-MICC may invert the CG-0032 dependency direction.
+MCP is not classified as a MICC integration adapter or provider. No MICC
+adapter may invert CG-0032 dependency direction. Any inbound, write-capable,
+or execution-bearing MCP path requires separate Council authority.
 
-Any inbound invocation path, write-capable MCP surface, or
-MCP-mediated execution path requires separate Council authority.
-Canonical MIRRORNODE mechanisms may not depend on MCP output for
-authority, approval, truth, integrity, or execution permission.
+Canonical MIRRORNODE mechanisms may not depend on MCP output for authority,
+approval, truth, integrity, or execution permission.
 
-**12.2 Other external protocols.**  
-REST, SDK, and other external protocol surfaces that invoke MIRRORNODE
-capabilities approach the governed capability surface from outside.
-They do not become integration providers by invoking capabilities.
-Protocol clients have no authority over adapter lifecycle, approval
-classification, or evidence records.
+**12.2 Bypass resistance.** A client of any protocol, including a malformed or
+unauthorized MCP client, cannot bypass the governed invocation envelope in
+Section 8.1. Direct adapter/provider reachability does not confer invocation
+authority.
+
+**12.3 Other external protocols.** REST, SDK, callbacks, and other protocol
+surfaces approach the governed capability boundary from outside. They do not
+become providers or authorities merely by invoking capabilities.
 
 ---
 
@@ -335,53 +422,58 @@ classification, or evidence records.
 
 An adapter is MICC-conformant if and only if:
 
-1. Its MIM declaration validates against MIM v0.1 schema without errors.
-2. It implements all capabilities declared in its MIM.
-3. Every capability invocation emits a canonical receipt per Section 9.
-4. Every capability outcome is expressed using the Section 8.2 vocabulary.
-5. It does not exercise scopes beyond those declared in `scopes_granted`.
-6. It does not modify its `adapter_id`, `capability_family`, or
-   `micc_version` after reaching AUTHORIZED state.
-7. It does not accept execution requests while outside ACTIVE or DEGRADED state.
-8. It does not emit credential contents in any receipt or log.
-9. Conformance tests must evaluate machine-readable fields; free-text
-   interpretation does not satisfy a conformance requirement.
+1. its MIM validates against the applicable MIM schema;
+2. every declared operation has a complete machine-readable operation contract;
+3. it implements all declared capabilities;
+4. every invocation validates the governed invocation envelope;
+5. every invocation emits a locked-`AUDIT_EMISSION`-conformant receipt with
+   MICC detail under `evidence.micc`;
+6. every outcome uses the MICC bounded vocabulary and maps to a locked audit
+   verdict without redefining that verdict vocabulary;
+7. it does not exercise scopes beyond `scopes_granted` or `scope_ceiling`;
+8. it does not accept execution while outside ACTIVE or DEGRADED;
+9. it does not emit credential contents or prohibited sensitive metadata;
+10. provider responses cannot redefine MIRRORNODE approval, lifecycle,
+    authority, outcomes, or evidence ownership;
+11. conformance tests evaluate machine-readable fields; free-text
+    interpretation alone does not satisfy conformance.
 
 ---
 
 ## Section 14 — Provider Semantic Authority Prohibition
 
-**This prohibition is unconditional.**
+**This prohibition is unconditional and conformance-enforced.**
 
 A provider does not become a semantic authority over MIRRORNODE by
-implementing a MICC capability family. Implementation grants operational
-status under MIRRORNODE authority. It does not grant:
+implementing a MICC capability family. Implementation does not grant authority
+to define capability meaning, approval classification, lifecycle permission,
+canonical evidence, principal identity, or canon.
 
-- Authority to define what a capability means
-- Authority to modify approval classification
-- Authority to determine what constitutes valid execution evidence
-- Authority to alter lifecycle state except as permitted in Section 10.2
-- Authority to define MIRRORNODE principal identity
-- Authority to determine what is canonical
-
-If a provider's native semantics conflict with MICC semantics, MICC
-semantics govern. The adapter is responsible for translation. The
-provider's native model does not propagate upward.
+If provider-native semantics conflict with MICC semantics, MICC governs and
+the adapter must translate or fail closed. Provider-native claims do not
+propagate upward as MIRRORNODE authority.
 
 This prohibition survives adapter retirement, provider contract changes,
-provider API evolution, and any provider-initiated redefinition of its
-own service semantics.
+provider API evolution, and provider-initiated semantic changes.
 
 ---
 
-## Appendix A — Relationship to Existing Canon
+## Appendix A — Relationship to Existing Governance and Contracts
 
-| Document | Relationship |
+| Document / surface | Relationship |
 |---|---|
-| `AUDIT_EMISSION.md` | MICC Section 9 is additive. MICC does not redefine AUDIT_EMISSION fields. |
-| `SYSTEM_CONTRACT.md` | MICC Section 3 defers to SYSTEM_CONTRACT for intra-lattice principal identity. Lucian's authority is unchanged. |
-| CG-0032 MCP Surface Contract | MICC Section 12 preserves CG-0032 governing definition. MCP is not a MICC adapter. |
+| `canon/contracts/AUDIT_EMISSION.md` | Locked top-level audit contract. MICC adds nested `evidence.micc` semantics and does not redefine top-level vocabularies. |
+| Current CORE-HUB governance / registry evidence | Governs intra-lattice identity and authority used by MICC invocations. MICC does not freeze a historical runtime registry. |
+| Historical `SYSTEM_CONTRACT.md` v1.1 runtime generation | Historical operational evidence only where later reconciliation marks it superseded by runtime change. |
+| CG-0032 MCP Surface Contract | Governs MCP downstream read-only projection. MICC preserves the dependency direction and separate-authorization boundary. |
+
+### Compatibility rule
+
+MIM may version independently for representational, validation, tooling, or
+optional-metadata improvements that preserve MICC meaning. Any MIM change that
+alters MICC-defined semantics requires a MICC revision matter rather than
+schema-only evolution.
 
 ---
 
-*This document is a pre-canon draft under Council review. It has no authority effect until operator disposition on CG-0033. Do not implement against this document until disposition is issued.*
+*This document is a pre-canon draft under Council review. It has no authority effect until Operator disposition on CG-0033. Do not implement against this document until disposition is issued.*
