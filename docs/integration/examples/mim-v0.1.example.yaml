@@ -15,7 +15,7 @@ created_at: "2026-08-12T00:00:00Z"
 updated_at: "2026-08-13T00:00:00Z"
 
 capabilities:
-  - name: get_secret
+  get_secret:
     description: Retrieve a named secret for an authorized principal and scope.
     approval_class: APPROVAL_AUTOMATED
     input_schema_ref: schemas/credential/get_secret.request.json
@@ -26,7 +26,7 @@ capabilities:
     timeout_seconds: 10
     conformance_test_ref: tests/micc/credential/get_secret
 
-  - name: list_secrets
+  list_secrets:
     description: List secret names, not values, available to an authorized principal.
     approval_class: APPROVAL_AUTOMATED
     input_schema_ref: schemas/credential/list_secrets.request.json
@@ -37,7 +37,7 @@ capabilities:
     timeout_seconds: 10
     conformance_test_ref: tests/micc/credential/list_secrets
 
-  - name: rotate_credential
+  rotate_credential:
     description: Trigger rotation of a rotating credential.
     approval_class: APPROVAL_OPERATOR
     input_schema_ref: schemas/credential/rotate_credential.request.json
@@ -48,7 +48,7 @@ capabilities:
     timeout_seconds: 30
     conformance_test_ref: tests/micc/credential/rotate_credential
 
-  - name: revoke_credential
+  revoke_credential:
     description: Revoke an active credential and emit revocation evidence.
     approval_class: APPROVAL_OPERATOR
     input_schema_ref: schemas/credential/revoke_credential.request.json
