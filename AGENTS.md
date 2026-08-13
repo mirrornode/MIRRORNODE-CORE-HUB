@@ -1,10 +1,24 @@
 # Agents — MIRRORNODE-CORE-HUB
 
+> **Routing/registry reconciliation notice — 2026-08-13**
+>
+> The registry below reflects the earlier Lucian-centered runtime generation and must not be treated, by itself, as the current complete governance registry or current dispatch mandate.
+>
+> Current repository evidence includes a newer generic agent runtime with an Operator approval boundary and no direct Lucian `/dispatch` execution path. Because the historical registry and newer runtime evidence are not yet fully reconciled into one ratified current registry, **current dispatch/routing authority is UNRESOLVED pending explicit governance reconciliation**.
+>
+> Until that reconciliation is complete:
+> - do not infer new authority from runtime eligibility;
+> - do not bypass an applicable existing approval/governance gate;
+> - do not treat the historical `POST /dispatch` model as automatically current merely because it is listed below;
+> - do not assign a replacement dispatcher by inference.
+>
+> See `docs/continuity/LUCIAN_AND_RUNTIME_RECONCILIATION_2026-08-13.md` and `docs/continuity/AGENT_REGISTRY_EVIDENCE_SNAPSHOT_2026-08-13.md`.
+
 ## Resident Runtime
 
 No agent runtime is hosted in this repository.
 
-## Org-Wide Agent Registry
+## Historical Org-Wide Runtime Registry Snapshot
 
 | Agent | Port | Role | Source |
 |---|---|---|---|
@@ -16,14 +30,17 @@ No agent runtime is hosted in this repository.
 | PTAH | 7705 | Creation & Bridge | Lucian registry |
 | EVE | 7706 | Embodiment & Physical Manifest | Lucian registry |
 
-Canonical port range: 7700–7706. Any agent claiming a port outside this range must be registered in AGENTS_TODO.md first.
+Historical canonical port range for that runtime generation: 7700–7706.
+
+This table is retained as historical runtime evidence. Presence does not prove current activation, current runtime eligibility, or current governance authority. Omission does not prove current exclusion.
 
 ## Governance Rules
 
-- Agent capability changes must be reflected here before release.
+- Agent capability changes must be reflected in current governance/registry evidence before release.
 - Agent namespace assignments must be documented before new writes ship.
 - No agent may expand its own authority without explicit human authorization.
-- Runtime location and conceptual role must not be conflated.
+- Runtime location, runtime eligibility, implementation presence, conceptual role, and governance authority must not be conflated.
+- Where current routing authority is unresolved, preserve the conflict and escalate for explicit disposition rather than choosing a dispatcher by inference.
 
 ## Coding Agent Instructions
 
