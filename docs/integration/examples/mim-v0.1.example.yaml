@@ -68,6 +68,7 @@ scopes_granted:
   - mirrornode:credential:rotate
   - mirrornode:credential:revoke
 
+scope_vocabulary_ref: docs/integration/examples/infisical-scope-vocabulary.v0.1.json
 scope_ceiling: mirrornode:credential:revoke
 
 credential_requirements:
