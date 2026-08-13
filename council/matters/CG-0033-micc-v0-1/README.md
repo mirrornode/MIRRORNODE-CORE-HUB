@@ -20,6 +20,7 @@ deployment, or publication. Each remains separately gated.
 
 - Disposition record: `history/2026-08-13-operator-disposition.md`
 - Review synthesis: `synthesis/REVIEW_SYNTHESIS.md`
+- Post-merge review closure: `history/2026-08-13-post-merge-review-closure.md`
 
 ---
 
@@ -29,6 +30,7 @@ deployment, or publication. Each remains separately gated.
 |---|---|---|
 | MICC v0.1 specification | `docs/integration/MICC_V0_1.md` | `canon/contracts/MICC_V0_1.md` |
 | MIM v0.1 JSON Schema | `docs/integration/MIM_V0_1.schema.json` | `canon/schemas/MIM_V0_1.schema.json` |
+| MIM scope vocabulary v0.1 JSON Schema | `docs/integration/MIM_SCOPE_VOCABULARY_V0_1.schema.json` | `canon/schemas/MIM_SCOPE_VOCABULARY_V0_1.schema.json` |
 | MIM v0.1 example manifest | `docs/integration/examples/mim-v0.1.example.yaml` | reference only |
 
 Canon promotion requires a separate explicit Operator action and then-current
@@ -73,7 +75,8 @@ the triggered Theia re-review are reflected in the synthesis.
 
 ## Remaining gate
 
-Verify the corrected PR head, configured checks, and fresh review state. A
-separate explicit Operator merge authorization is required before merge.
+Verify PR #44's corrected head, configured checks, and fresh Codex review
+state. A separate explicit Operator merge authorization is required before
+merge.
 
 No implementation work is authorized by this matter.
