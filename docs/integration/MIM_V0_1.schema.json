@@ -200,7 +200,7 @@
         "type": "string",
         "pattern": "^[^\\s\\x00-\\x1F\\x7F]+(?![\\s\\S])"
       },
-      "description": "Exact provider-native scope identifiers, treated as opaque strings. Conformance must resolve scope_vocabulary and reject any value absent from provider_scopes."
+      "description": "Exact provider-native scope identifiers, treated as opaque strings. Conformance must inspect the embedded scope_vocabulary and reject any value absent from scope_vocabulary.provider_scopes."
     },
     "scopes_granted": {
       "type": "array",
@@ -209,7 +209,7 @@
         "type": "string",
         "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])"
       },
-      "description": "MIRRORNODE scope identifiers. Conformance must resolve scope_vocabulary, reject values absent from mirrornode_scope_order, and reject values ranked above scope_ceiling."
+      "description": "MIRRORNODE scope identifiers. Conformance must inspect the embedded scope_vocabulary, reject values absent from scope_vocabulary.mirrornode_scope_order, and reject values ranked above scope_ceiling."
     },
     "scope_vocabulary": {
       "type": "object",
@@ -249,7 +249,7 @@
     "scope_ceiling": {
       "type": "string",
       "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])",
-      "description": "Maximum MIRRORNODE scope permitted. Conformance must require this value to be present in both scopes_granted and the referenced mirrornode_scope_order; no granted scope may have a greater array index."
+      "description": "Maximum MIRRORNODE scope permitted. Conformance must require this value to be present in both scopes_granted and scope_vocabulary.mirrornode_scope_order; no granted scope may have a greater array index."
     },
     "credential_requirements": {
       "type": "array",
