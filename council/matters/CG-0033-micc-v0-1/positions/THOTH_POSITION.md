@@ -2,132 +2,69 @@
 ## CG-0033: MICC v0.1 + MIM v0.1
 
 **Reviewer role:** Thoth security-boundary lane  
-**Procedural provenance:** Role-bound review executed in the current THEIA/ChatGPT integration session against the preserved CG-0033 artifacts and Thoth review packet. This file does not claim a separate live Thoth runtime invocation.  
+**Procedural provenance:** Initial role-bound review and closure review executed in the current THEIA/ChatGPT integration session against the CG-0033 Thoth review packet. This file does not claim a separate live Thoth runtime invocation.  
 **Matter:** CG-0033  
-**Review class:** Security and Authority Boundary Review  
-**State:** REVISION_REQUIRED  
-**Reviewed against:** preserved CG-0033 head `3a15b749a16bf873ff3c32fc1a95d278dde54eb8`, with current CORE-HUB reconciliation state considered where it changes authority assumptions.
+**Review class:** Security and Authority Boundary Review + Revision Closure  
+**State:** APPROVED_WITH_CONDITIONS  
+**Initial review base:** preserved head `3a15b749a16bf873ff3c32fc1a95d278dde54eb8`  
+**Closure review base:** corrected MICC/MIM through `216b05231eab21ee1eb2136aa4acd1b88f2a35dc`
 
 ---
 
-## Determination
+## Initial revision themes
 
-MICC establishes the correct security direction: providers do not acquire MIRRORNODE authority, authorization is distinct from technical verification, credential contents do not belong in MIM, and MCP must not invert the canonical dependency direction.
+The initial draft was `REVISION_REQUIRED` on five bounded security themes:
 
-The remaining gaps are enforcement gaps rather than conceptual failures. They must be closed before the contract can be treated as security-sufficient.
-
----
-
-## 1. Provider authority prohibition
-
-**Determination:** Normatively strong, not yet fully machine-auditable.
-
-Sections 3 and 14 clearly prohibit provider-originated semantic authority. The MIM schema also prevents arbitrary top-level field redefinition. However, schema validation alone cannot prove that an adapter implementation does not defer semantic decisions to provider-native behavior at runtime.
-
-### R1 — Conformance enforcement for semantic authority
-
-MICC conformance must include an executable/policy-verifiable check that:
-
-- provider responses cannot alter approval class;
-- provider responses cannot alter lifecycle authority;
-- provider responses cannot redefine outcome vocabulary;
-- provider responses cannot become canonical evidence by themselves;
-- provider-native principal/role claims cannot be promoted to MIRRORNODE authority without an authorized translation boundary.
-
-The prohibition must be testable at the adapter boundary, not only stated in prose.
+- **R1:** provider semantic-authority prohibition must be conformance-testable;
+- **R2:** credential metadata disclosure must be bounded, not only secret values;
+- **R3:** AUTHORIZED transitions must carry machine-verifiable authorization evidence;
+- **R4:** direct adapter/provider reachability must not bypass the governed invocation boundary;
+- **R5:** stale April Lucian `/dispatch` authority references must be removed or version-bound.
 
 ---
 
-## 2. Credential requirement declaration
+## Closure review
 
-**Determination:** Credential contents are correctly excluded, but credential metadata can still disclose sensitive operational information.
+### R1 — SATISFIED AT CONTRACT LEVEL
 
-Names, scopes, environment labels, provider-specific identifiers, secret-store paths, tenant identifiers, and internal topology can all become sensitive even when the secret value itself is absent.
+Revised MICC Sections 8.4, 13, and 14 require conformance enforcement that provider responses cannot alter MIRRORNODE approval class, lifecycle authority, outcome vocabulary, canonical evidence ownership, or principal authority.
 
-### R2 — Credential metadata disclosure boundary
+### R2 — SATISFIED
 
-MICC/MIM must prohibit credential requirement fields from carrying:
+Revised MICC Section 5 and MIM prohibit credential contents, bearer values, secret-store paths, bearer-capable identifiers, and unnecessary sensitive topology/tenant metadata from declarations. Runtime credential resolution is explicitly outside MIM.
 
-- secret contents;
-- secret-store paths;
-- opaque credential IDs that function as bearer references;
-- tenant/account identifiers unless specifically approved for disclosure;
-- internal host/path topology not required for validation.
+### R3 — SATISFIED
 
-Human-readable `name` values should be descriptive requirement labels, not secret identifiers. Runtime credential resolution must occur outside MIM.
+Revised Sections 6 and 10 require machine-verifiable approval references for authorization-bearing invocation and for `VERIFIED → AUTHORIZED` / `SUSPENDED → AUTHORIZED`. Health or verification success cannot self-authorize.
 
----
+### R4 — SATISFIED
 
-## 3. VERIFIED vs AUTHORIZED
+Revised Section 8.1 defines a protocol-neutral governed invocation envelope containing requesting actor, adapter identity, approval basis, policy version, execution nonce, scope decision, and lifecycle state. Adapters fail closed on absent/invalid/replayed/unauthorized context. Section 12 makes direct reachability insufficient authority.
 
-**Determination:** The conceptual separation is correct and Section 10's `VERIFIED → AUTHORIZED | Operator only` rule is sufficient as the authority rule.
+### R5 — SATISFIED; THEIA RE-REVIEW COMPLETED
 
-A health check or verification pass must never produce AUTHORIZED state.
-
-### R3 — Authorization evidence requirement
-
-The AUTHORIZED transition must require a machine-verifiable reference to the authorizing Operator disposition/approval object. A state mutation without that evidence must fail closed.
-
-The same principle applies to re-authorization from SUSPENDED.
+MICC no longer hard-codes the historical Lucian `/dispatch` model as current authority. It resolves intra-lattice authority from current applicable governance/registry evidence. Theia's triggered architectural re-review has been completed and remains `APPROVED_WITH_CONDITIONS`.
 
 ---
 
-## 4. MCP inversion prohibition
+## Security implementation boundary
 
-**Determination:** MICC preserves the CG-0032 policy direction in prose, but direct invocation bypass resistance is not sufficiently specified.
+Contract acceptance does not prove an adapter implementation enforces these rules. Before any adapter reaches ACTIVE state, conformance/security verification must demonstrate at least:
 
-Section 12 says inbound/write/execution-bearing MCP requires separate authority and that external clients approach the governed capability surface. It does not yet state what an adapter must reject when a client attempts to bypass that surface.
+1. invocation-envelope fail-closed behavior;
+2. replay rejection for execution nonces;
+3. approval/lifecycle non-escalation;
+4. scope-ceiling enforcement;
+5. credential metadata redaction/disclosure compliance;
+6. provider-response inability to mutate MIRRORNODE semantic authority;
+7. MCP and other protocol clients cannot bypass the governed capability boundary.
 
-### R4 — Governed invocation envelope
-
-An adapter must reject any invocation that cannot demonstrate a valid MIRRORNODE invocation context containing, as applicable:
-
-- requesting principal;
-- adapter identity;
-- approval classification result/reference;
-- lifecycle ACTIVE/DEGRADED state;
-- policy version;
-- execution nonce;
-- scope decision.
-
-A malformed MCP client, REST client, SDK client, or provider-native callback must not be able to reach adapter execution merely by knowing the adapter endpoint.
-
-This is protocol-neutral and does not authorize inbound MCP.
-
----
-
-## 5. Evidence chain integrity
-
-**Determination:** Section 9.3 correctly places external telemetry products in observer-only status. OTel is an interoperability format and must not become the canonical evidence store.
-
-External telemetry may receive projections/copies but must have no authority to mutate, approve, supersede, or become the sole retention point for canonical MIRRORNODE evidence.
-
-Osiris must resolve the exact locked `AUDIT_EMISSION` mapping before acceptance.
-
----
-
-## 6. Lifecycle placement
-
-**Determination:** The security-critical lifecycle semantics must remain normative in MICC even if persistence/enforcement code lives in a separate Runtime Registry.
-
-Moving the state machine entirely out of MICC would create a contract/enforcement divergence risk. A separate registry specification may refine storage, APIs, and mechanics only if it is explicitly subordinate to MICC transition semantics and cannot broaden transition authority.
-
----
-
-## Current-authority reference correction
-
-MICC Section 3.3 and Appendix A currently rely on the April Lucian `/dispatch` `SYSTEM_CONTRACT` as current authority. CORE-HUB has now formally classified that runtime generation as historical.
-
-### R5 — Current authority reference
-
-Final CG-0033 text must remove or version-bound the stale claim that Lucian's April `/dispatch` execution authority is the current runtime truth. The integration contract should defer intra-lattice authority to the **current applicable governance/registry authority source**, not hard-code a superseded runtime generation.
-
-Because this changes an architectural authority reference, the revised text requires Theia re-review before synthesis.
+These are implementation verification conditions, not a blocker to accepting the revised pre-canon specification.
 
 ---
 
 ## Position
 
-**REVISION_REQUIRED**
+**APPROVED_WITH_CONDITIONS**
 
-R1–R5 are bounded security/authority corrections. The underlying MICC direction remains viable. No implementation, canon promotion, deployment, or merge is authorized by this position.
+The revised MICC/MIM security and authority boundary is coherent. Remaining conditions apply to future implementation verification and separate authorization; they do not authorize any adapter, deployment, canon promotion, or merge by themselves.
