@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/mim-scope-vocabulary-v0.1.schema.json",
+  "title": "MIRRORNODE MIM Scope Vocabulary v0.1",
+  "description": "Versioned provider membership and MIRRORNODE authority ordering used by MIM v0.1 conformance.",
+  "type": "object",
+  "required": [
+    "scope_vocabulary_version",
+    "provider_scopes",
+    "mirrornode_scope_order"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "scope_vocabulary_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "provider_scopes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*(?::[a-z][a-z0-9-]*){2,}(?![\\s\\S])"
+      },
+      "description": "Complete provider-side scope identifiers allowed for manifests referencing this vocabulary."
+    },
+    "mirrornode_scope_order": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])"
+      },
+      "description": "MIRRORNODE scopes ordered from least to greatest authority. Array index is the canonical rank."
+    }
+  }
+}
