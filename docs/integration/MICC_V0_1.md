@@ -353,7 +353,7 @@ RETIRED
 | From | To | Permitted initiator |
 |---|---|---|
 | DECLARED | IMPLEMENTED | Adapter maintainer |
-| IMPLEMENTED | VERIFIED | Automated verification + Ptah confirmation |
+| IMPLEMENTED | VERIFIED | Automated verification + confirmer resolved from current ratified governance evidence |
 | VERIFIED | AUTHORIZED | Operator only, with approval reference |
 | AUTHORIZED | ACTIVE | Automated, post-authorization health pass |
 | ACTIVE | DEGRADED | Automated health check |
@@ -367,6 +367,7 @@ RETIRED
 
 ### 10.3 Invariants
 
+- The IMPLEMENTED → VERIFIED confirmer must be resolved from current ratified governance evidence at transition time; runtime eligibility or historical role naming does not itself grant verification authority.
 - VERIFIED → AUTHORIZED and SUSPENDED → AUTHORIZED require explicit Operator
 action plus machine-verifiable authorization evidence.
 - A health or conformance pass cannot self-authorize an adapter.
