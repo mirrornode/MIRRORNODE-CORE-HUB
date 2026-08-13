@@ -19,6 +19,7 @@
     "capabilities",
     "scopes_required",
     "scopes_granted",
+    "scope_vocabulary_ref",
     "scope_ceiling",
     "credential_requirements",
     "health_check",
@@ -197,21 +198,28 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "minLength": 1
-      }
+        "pattern": "^[a-z][a-z0-9-]*(?::[a-z][a-z0-9-]*){2,}(?![\\s\\S])"
+      },
+      "description": "Provider-side scope identifiers. Conformance must resolve scope_vocabulary_ref and reject any value absent from provider_scopes."
     },
     "scopes_granted": {
       "type": "array",
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "minLength": 1
-      }
+        "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])"
+      },
+      "description": "MIRRORNODE scope identifiers. Conformance must resolve scope_vocabulary_ref, reject values absent from mirrornode_scope_order, and reject values ranked above scope_ceiling."
+    },
+    "scope_vocabulary_ref": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*\\.(?:json|ya?ml)(?![\\s\\S])",
+      "description": "Normalized repository-relative reference to a versioned scope vocabulary conforming to MIM_SCOPE_VOCABULARY_V0_1.schema.json."
     },
     "scope_ceiling": {
       "type": "string",
-      "minLength": 1,
-      "description": "Maximum MIRRORNODE scope from the governed scope vocabulary. Must be comparable under that vocabulary; no free-text ordering inference is permitted."
+      "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])",
+      "description": "Maximum MIRRORNODE scope permitted. Conformance must require this value to be present in both scopes_granted and the referenced mirrornode_scope_order; no granted scope may have a greater array index."
     },
     "credential_requirements": {
       "type": "array",
