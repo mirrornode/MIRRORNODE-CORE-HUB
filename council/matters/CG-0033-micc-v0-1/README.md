@@ -30,7 +30,6 @@ deployment, or publication. Each remains separately gated.
 |---|---|---|
 | MICC v0.1 specification | `docs/integration/MICC_V0_1.md` | `canon/contracts/MICC_V0_1.md` |
 | MIM v0.1 JSON Schema | `docs/integration/MIM_V0_1.schema.json` | `canon/schemas/MIM_V0_1.schema.json` |
-| MIM scope vocabulary v0.1 JSON Schema | `docs/integration/MIM_SCOPE_VOCABULARY_V0_1.schema.json` | `canon/schemas/MIM_SCOPE_VOCABULARY_V0_1.schema.json` |
 | MIM v0.1 example manifest | `docs/integration/examples/mim-v0.1.example.yaml` | reference only |
 
 Canon promotion requires a separate explicit Operator action and then-current
