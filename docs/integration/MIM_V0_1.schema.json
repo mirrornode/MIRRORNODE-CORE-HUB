@@ -120,11 +120,15 @@
           },
           "input_schema_ref": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*(?![\\s\\S])",
+            "description": "Normalized repository-relative reference; absolute paths, traversal, whitespace, and line terminators are forbidden."
           },
           "output_schema_ref": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*(?![\\s\\S])",
+            "description": "Normalized repository-relative reference; absolute paths, traversal, whitespace, and line terminators are forbidden."
           },
           "side_effect_class": {
             "type": "string",
@@ -156,7 +160,9 @@
           },
           "conformance_test_ref": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*(?![\\s\\S])",
+            "description": "Normalized repository-relative reference; absolute paths, traversal, whitespace, and line terminators are forbidden."
           }
         },
         "allOf": [
