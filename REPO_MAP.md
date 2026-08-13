@@ -2,9 +2,11 @@
 
 ## MIRRORNODE Organization Repository Map
 
+> **Historical snapshot notice (2026-08-13):** This file captures the verified organization state as of **April 28, 2026**. The current GitHub organization inventory contains **35 accessible repositories**, so the 27-repository count and several status labels below are stale. Do not use this file alone as a current registry or authority source. See `docs/continuity/NAMING_AND_SOURCE_SCOPE_RECONCILIATION_2026-08-13.md` for the current reconciliation boundary. A replacement live census should preserve this snapshot rather than silently overwrite its historical classifications.
+
 **Source:** https://github.com/mirrornode  
 **Ground Truth Date:** April 28, 2026  
-**Total Repos:** 27 (per verified org state)
+**Total Repos:** 27 (per verified org state at that date)
 
 **Status Legend**  
 - **active/canonical** – primary, live, maintained  
