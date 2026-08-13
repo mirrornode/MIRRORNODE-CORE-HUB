@@ -312,7 +312,7 @@
           "properties": {
             "predicate_ref": {
               "type": "string",
-              "pattern": "^[A-Za-z0-9._/-]+\\.(json|yaml|yml)$",
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*\\.(?:json|ya?ml)$",
               "description": "Repository-relative reference to a versioned, machine-evaluable predicate definition."
             },
             "expected_result": {
@@ -331,7 +331,7 @@
           "properties": {
             "predicate_ref": {
               "type": "string",
-              "pattern": "^[A-Za-z0-9._/-]+\\.(json|yaml|yml)$",
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*\\.(?:json|ya?ml)$",
               "description": "Repository-relative reference to a versioned, machine-evaluable predicate definition."
             },
             "expected_result": {
