@@ -4,7 +4,7 @@ title: MIRRORNODE Integration Capability Contract v0.1 + Integration Manifest v0
 matterType: governance
 initiator: operator
 createdAt: "2026-08-12T04:17:00Z"
-updatedAt: "2026-08-13T20:11:00Z"
+updatedAt: "2026-08-13T20:16:00Z"
 workflowState: closed
 disposition:
   status: ratified
@@ -36,7 +36,6 @@ scope:
     - conformance-requirements
     - prohibition-against-provider-semantic-authority
     - MIM-v0-1-schema-as-machine-readable-expression-of-MICC
-    - versioned-scope-vocabulary-membership-and-ordering
   excludes:
     - any-adapter-implementation
     - provider-configuration
@@ -66,10 +65,6 @@ referenceArtifacts:
   - id: MIM-V0-1-SCHEMA
     kind: document
     href: ../../../docs/integration/MIM_V0_1.schema.json
-    canonical: false
-  - id: MIM-SCOPE-VOCABULARY-V0-1-SCHEMA
-    kind: document
-    href: ../../../docs/integration/MIM_SCOPE_VOCABULARY_V0_1.schema.json
     canonical: false
   - id: MIM-V0-1-EXAMPLE
     kind: document
@@ -124,6 +119,6 @@ historyPath: history/
 notes:
   - Council schema v0.1 serializes the filed ACCEPT_WITH_CONDITIONS disposition as closed and ratified.
   - Ratification here records governance acceptance only; it does not authorize implementation, canon promotion, deployment, publication, or merge.
-  - MICC, MIM, and the MIM scope-vocabulary schema remain pre-canon specification artifacts under docs/integration.
+  - MICC and MIM remain pre-canon specification artifacts under docs/integration; the scope vocabulary is embedded in each MIM declaration.
   - Current identity and authority must be resolved from applicable governance and registry evidence at invocation or transition time.
   - MICC-specific evidence is nested under the locked AUDIT_EMISSION evidence object at evidence.micc.
