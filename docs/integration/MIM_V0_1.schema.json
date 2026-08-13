@@ -290,7 +290,8 @@
           ]
         },
         "endpoint": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "interval_seconds": {
           "type": "integer",
@@ -338,7 +339,29 @@
             }
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "enum": [
+                  "HTTP_GET",
+                  "RPC"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "endpoint"
+            ]
+          }
+        }
+      ]
     },
     "lifecycle_state": {
       "type": "string",
