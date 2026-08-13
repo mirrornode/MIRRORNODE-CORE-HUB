@@ -1,13 +1,37 @@
 name: Lucian Release
+
 on:
   push:
     branches: [ main, develop ]
-    paths: [ 'lucian/**', 'canon/**' ]
+    paths:
+      - 'lucian/**'
+      - 'canon/**'
+      - '.github/workflows/lucian-release.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'lucian/**'
+      - 'canon/**'
+      - '.github/workflows/lucian-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  release:
-    uses: ./.github/workflows/reusable-runtime-release.yml
-    with:
-      runtime: lucian
-      health_port: "8001"
-      image_tag: ${{ github.sha }}
+  validate-release-surface:
+    name: Validate Lucian Release Surface
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify current release boundary
+        run: |
+          set -euo pipefail
+          if [[ -f lucian/Dockerfile ]]; then
+            echo "::error title=Lucian release gate closed::lucian/Dockerfile is present, but the dedicated Lucian release pipeline is intentionally disabled pending an explicit release-surface review."
+            exit 1
+          fi
+
+          echo "::notice title=Lucian release disabled::No lucian/Dockerfile is present. Verification passed; no image build, signing, deployment, promotion, or publication is authorized or attempted."
