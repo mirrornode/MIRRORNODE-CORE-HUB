@@ -99,14 +99,17 @@ anchors:
       namespaced extension under the existing evidence object at evidence.micc.
       No AUDIT_EMISSION contract change is made by CG-0033.
   - id: CURRENT-GOVERNANCE-AND-REGISTRY-EVIDENCE
-    kind: governance-boundary
+    kind: governance-evidence-set
     href: ../../../docs/continuity/LUCIAN_AND_RUNTIME_RECONCILIATION_2026-08-13.md
+    supportingHref: ../../../docs/continuity/AGENT_REGISTRY_EVIDENCE_SNAPSHOT_2026-08-13.md
     requiredState: current-reference
     relationship: >-
-      MICC does not freeze the historical April Lucian /dispatch runtime model.
-      Intra-lattice identity and authority are resolved from current applicable
-      governance and registry evidence at invocation time. Historical runtime
-      contracts remain evidence of their generation only.
+      The reconciliation record and its companion registry evidence snapshot
+      are the existing repository references for current runtime-generation
+      interpretation. MICC does not freeze the historical April Lucian /dispatch
+      runtime model. Intra-lattice identity and authority are resolved from
+      current applicable governance and registry evidence at invocation time.
+      Historical runtime contracts remain evidence of their generation only.
 requiredReviews: [ptah, thoth, osiris, theia]
 reviewRequests:
   ptah: review-requests/PTAH_IMPLEMENTATION_CONTRACT_REVIEW.md
