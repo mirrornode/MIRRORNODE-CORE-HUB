@@ -110,7 +110,7 @@ implementable operation contract for every capability.
 capabilities:         name-keyed map of operation contracts; keys are unique
 scopes_required:      list of provider-side access scopes required
 scopes_granted:       list of MIRRORNODE scopes permitted
-scope_vocabulary_ref: repository-relative versioned scope vocabulary
+scope_vocabulary:     vocabulary embedded in this adapter declaration
 scope_ceiling:        explicit maximum MIRRORNODE scope vocabulary entry
 ```
 
@@ -133,15 +133,18 @@ An adapter may not exercise a scope not listed in `scopes_granted`.
 An adapter may not request a provider scope not listed in `scopes_required`.
 Scope escalation requires a new adapter declaration at DECLARED state.
 
-`scope_vocabulary_ref` must resolve to a repository-relative document that
-validates against `MIM_SCOPE_VOCABULARY_V0_1.schema.json`. The referenced
-document enumerates allowed provider scopes and lists MIRRORNODE scopes from
-least to greatest authority; array index is the canonical rank.
+`scope_vocabulary` is embedded in the MIM declaration. It contains the exact
+opaque provider-native values allowed by `scopes_required` and lists
+MIRRORNODE scopes from least to greatest authority; array index is the
+canonical rank. Because the vocabulary is part of the versioned declaration,
+its membership or ordering cannot change without a new adapter declaration at
+DECLARED state.
 
 Conformance must reject a declaration unless every `scopes_required` value is
-present in `provider_scopes`, every `scopes_granted` value is present in
-`mirrornode_scope_order`, and `scope_ceiling` is present in both
-`scopes_granted` and `mirrornode_scope_order`. No granted scope may have a
+present in `scope_vocabulary.provider_scopes`, every `scopes_granted` value
+is present in `scope_vocabulary.mirrornode_scope_order`, and `scope_ceiling`
+is present in both `scopes_granted` and
+`scope_vocabulary.mirrornode_scope_order`. No granted scope may have a
 greater canonical rank than `scope_ceiling`. Implementations may not infer
 membership or ordering from arbitrary free text.
 
@@ -454,8 +457,8 @@ An adapter is MICC-conformant if and only if:
    MICC detail under `evidence.micc`;
 6. every outcome uses the MICC bounded vocabulary and maps to a locked audit
    verdict without redefining that verdict vocabulary;
-7. it resolves `scope_vocabulary_ref`, verifies scope membership, and does
-   not exercise scopes beyond `scopes_granted` or the canonical rank of
+7. its embedded `scope_vocabulary` verifies exact scope membership and it
+   does not exercise scopes beyond `scopes_granted` or the canonical rank of
    `scope_ceiling`;
 8. it does not accept execution while outside ACTIVE or DEGRADED;
 9. it does not emit credential contents or prohibited sensitive metadata;
