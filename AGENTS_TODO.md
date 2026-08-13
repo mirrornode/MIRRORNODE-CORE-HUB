@@ -53,7 +53,7 @@
 - [ ] Resolve current identity/product-lattice status explicitly rather than inheriting historical presence
 
 ### Cleanup
-- [ ] Remove or clearly classify stale references to `/system/execute`
+- [ ] Remove stale references that conflict with routes explicitly declared non-real by the current governing contract
 - [ ] Remove or clearly classify stale replay/trace requirements not implemented by the active runtime generation
 - [ ] Separate historical/aspirational architecture from active runtime truth
 - [ ] Produce a current registry that separately records identity, implementation, runtime eligibility, governance status, authority boundary, and source evidence
