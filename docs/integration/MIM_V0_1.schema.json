@@ -19,6 +19,7 @@
     "capabilities",
     "scopes_required",
     "scopes_granted",
+    "scope_vocabulary",
     "scope_ceiling",
     "credential_requirements",
     "health_check",
@@ -197,21 +198,58 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "minLength": 1
-      }
+        "pattern": "^[^\\s\\x00-\\x1F\\x7F]+(?![\\s\\S])"
+      },
+      "description": "Exact provider-native scope identifiers, treated as opaque strings. Conformance must inspect the embedded scope_vocabulary and reject any value absent from scope_vocabulary.provider_scopes."
     },
     "scopes_granted": {
       "type": "array",
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "minLength": 1
-      }
+        "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])"
+      },
+      "description": "MIRRORNODE scope identifiers. Conformance must inspect the embedded scope_vocabulary, reject values absent from scope_vocabulary.mirrornode_scope_order, and reject values ranked above scope_ceiling."
+    },
+    "scope_vocabulary": {
+      "type": "object",
+      "required": [
+        "scope_vocabulary_version",
+        "provider_scopes",
+        "mirrornode_scope_order"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scope_vocabulary_version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "provider_scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[^\\s\\x00-\\x1F\\x7F]+(?![\\s\\S])"
+          },
+          "description": "Complete exact provider-native scope identifiers allowed by this declaration. Values are opaque; no namespace shape is inferred."
+        },
+        "mirrornode_scope_order": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])"
+          },
+          "description": "MIRRORNODE scopes ordered from least to greatest authority. Array index is the canonical rank for this immutable declaration."
+        }
+      },
+      "description": "Vocabulary embedded in this MIM declaration so membership and ordering cannot change without a new adapter declaration."
     },
     "scope_ceiling": {
       "type": "string",
-      "minLength": 1,
-      "description": "Maximum MIRRORNODE scope from the governed scope vocabulary. Must be comparable under that vocabulary; no free-text ordering inference is permitted."
+      "pattern": "^mirrornode:(?:identity|credential|state|artifact|execution|transport|evidence|metering):[a-z][a-z0-9-]*(?![\\s\\S])",
+      "description": "Maximum MIRRORNODE scope permitted. Conformance must require this value to be present in both scopes_granted and scope_vocabulary.mirrornode_scope_order; no granted scope may have a greater array index."
     },
     "credential_requirements": {
       "type": "array",

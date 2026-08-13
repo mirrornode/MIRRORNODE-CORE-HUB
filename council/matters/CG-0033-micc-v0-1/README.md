@@ -20,6 +20,7 @@ deployment, or publication. Each remains separately gated.
 
 - Disposition record: `history/2026-08-13-operator-disposition.md`
 - Review synthesis: `synthesis/REVIEW_SYNTHESIS.md`
+- Post-merge review closure: `history/2026-08-13-post-merge-review-closure.md`
 
 ---
 
@@ -73,7 +74,8 @@ the triggered Theia re-review are reflected in the synthesis.
 
 ## Remaining gate
 
-Verify the corrected PR head, configured checks, and fresh review state. A
-separate explicit Operator merge authorization is required before merge.
+Verify PR #44's corrected head, configured checks, and fresh Codex review
+state. A separate explicit Operator merge authorization is required before
+merge.
 
 No implementation work is authorized by this matter.

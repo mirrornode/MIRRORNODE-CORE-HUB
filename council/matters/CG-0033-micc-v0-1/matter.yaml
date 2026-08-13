@@ -4,7 +4,7 @@ title: MIRRORNODE Integration Capability Contract v0.1 + Integration Manifest v0
 matterType: governance
 initiator: operator
 createdAt: "2026-08-12T04:17:00Z"
-updatedAt: "2026-08-13T19:17:08Z"
+updatedAt: "2026-08-13T20:16:00Z"
 workflowState: closed
 disposition:
   status: ratified
@@ -74,6 +74,10 @@ referenceArtifacts:
     kind: document
     href: history/2026-08-13-operator-disposition.md
     canonical: true
+  - id: POST-MERGE-REVIEW-CLOSURE
+    kind: document
+    href: history/2026-08-13-post-merge-review-closure.md
+    canonical: false
   - id: REVIEW-SYNTHESIS
     kind: document
     href: synthesis/REVIEW_SYNTHESIS.md
@@ -107,14 +111,14 @@ referenceArtifacts:
     href: positions/THEIA_POSITION.md
     canonical: false
 openQuestions: []
-currentRevision: review-driven-corrections-2026-08-13
+currentRevision: post-merge-review-closure-2026-08-13
 nextRequiredStep: >-
-  Verify PR #42 correction checks and fresh review state. If clear, the
+  Verify PR #44 correction checks and fresh Codex review state. If clear, the
   Operator may separately determine whether to authorize merge.
 historyPath: history/
 notes:
   - Council schema v0.1 serializes the filed ACCEPT_WITH_CONDITIONS disposition as closed and ratified.
   - Ratification here records governance acceptance only; it does not authorize implementation, canon promotion, deployment, publication, or merge.
-  - MICC and MIM remain pre-canon specification artifacts under docs/integration.
+  - MICC and MIM remain pre-canon specification artifacts under docs/integration; the scope vocabulary is embedded in each MIM declaration.
   - Current identity and authority must be resolved from applicable governance and registry evidence at invocation or transition time.
   - MICC-specific evidence is nested under the locked AUDIT_EMISSION evidence object at evidence.micc.
