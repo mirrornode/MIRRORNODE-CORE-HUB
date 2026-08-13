@@ -1,55 +1,60 @@
 # AGENTS_TODO.md
 
-## MIRRORNODE Agents — Ground Truth Priorities
+> **Reconciliation notice — 2026-08-13**
+>
+> This file contains priorities from the earlier Lucian-centered runtime generation. The historical `POST /dispatch` routing instruction below is retained as evidence of that generation, not as a newly reaffirmed current mandate.
+>
+> Current dispatch/routing authority is **UNRESOLVED pending explicit governance reconciliation**. Do not infer a replacement dispatcher, and do not bypass any applicable approval/governance gate while that question is open.
+
+## MIRRORNODE Agents — Historical Runtime Priorities
 
 ### Shared Base
-- Route command execution through LUCIAN `POST /dispatch`
+- Historical instruction: route command execution through LUCIAN `POST /dispatch`
+- Current action: reconcile that historical routing rule against the current generic agent runtime and present governance/authority records before any new routing mandate is issued
 - Expose health surfaces honestly
-- Audit runtime actions with `emit_audit()`
+- Audit runtime actions with `emit_audit()` where applicable to the active runtime generation
 - Avoid documenting non-existent endpoints
 - Keep repo roles aligned with real runtime boundaries
 
-### LUCIAN (Port 7700)
-**Focus:** Orchestration & Manifest
-- [ ] Keep `POST /dispatch` as the canonical command entry point
-- [ ] Keep `/manifest` current with real lattice state
-- [ ] Keep `/lattice/status` aligned with reachable node health
-- [ ] Ensure dispatch actions emit canon audit records
-- [ ] Tighten command registry visibility from `canon.api.commands`
+### LUCIAN (Historical Port 7700)
+**Historical focus:** Orchestration & Manifest
+- [ ] Reconcile historical `POST /dispatch` role with current runtime/governance evidence before treating it as canonical
+- [ ] Preserve `/manifest` and `/lattice/status` only where the corresponding runtime exists and is current
+- [ ] Ensure any current dispatch/execution mechanism emits required evidence under the governing contract
+- [ ] Do not infer current dispatch authority from historical command-registry code alone
 
-### OSIRIS (Port 7701)
-**Focus:** Payment & Commerce
-- [ ] Keep Stripe routes isolated to commerce concerns
-- [ ] Maintain `/health`, `/heartbeat`, `/identity`, `/stripe/status`
-- [ ] Audit checkout, invoice, refund, subscription, and webhook flows
-- [ ] Keep UI shell concerns out of commerce runtime
+### OSIRIS (Historical Port 7701)
+**Historical focus:** Payment & Commerce
+- [ ] Reconcile historical commerce-runtime description with current Osiris audit/evidence role and implementation surfaces
+- [ ] Preserve only health/routes that correspond to a current implementation
 
-### HERMES (Port 7702)
-**Focus:** Messaging & Protocol
-- [ ] Implement runtime or document registry-only status clearly
-- [ ] Add health endpoint when runtime exists
+### HERMES (Historical Port 7702)
+**Historical focus:** Messaging & Protocol
+- [ ] Map current implementation surface, if any
+- [ ] Reconcile current advisory routing role with historical runtime description
 
-### THOTH (Port 7703)
-**Focus:** Services & Health
-- [ ] Implement runtime or document registry-only status clearly
-- [ ] Add health endpoint when runtime exists
+### THOTH (Historical Port 7703)
+**Historical focus:** Services & Health
+- [ ] Map current implementation surface, if any
+- [ ] Reconcile security-verdict role with historical runtime description
 
-### THEIA (Port 7704)
-**Focus:** Witness & Observation
-- [ ] Implement runtime or document registry-only status clearly
-- [ ] Add health endpoint when runtime exists
+### THEIA (Historical Port 7704)
+**Historical focus:** Witness & Observation
+- [ ] Map current implementation surface and current integration/coherence role
+- [ ] Keep implementation capability distinct from governance/integration authority
 
-### PTAH (Port 7705)
-**Focus:** Creation & Bridge
-- [ ] Implement runtime or document registry-only status clearly
-- [ ] Add health endpoint when runtime exists
+### PTAH (Historical Port 7705)
+**Historical focus:** Creation & Bridge
+- [ ] Map current implementation surface and key/forge authority records
+- [ ] Keep implementation capability distinct from governance/key authority
 
-### EVE (Port 7706)
-**Focus:** Embodiment & Physical Manifest
-- [ ] Implement runtime or document registry-only status clearly
-- [ ] Add health endpoint when runtime exists
+### EVE (Historical Port 7706)
+**Historical focus:** Embodiment & Physical Manifest
+- [ ] Resolve current identity/product-lattice status explicitly rather than inheriting historical presence
 
 ### Cleanup
-- [ ] Remove stale references to `/system/execute`
-- [ ] Remove stale references to replay and trace requirements not yet implemented
-- [ ] Separate aspirational architecture from active runtime truth
+- [ ] Remove or clearly classify stale references to `/system/execute`
+- [ ] Remove or clearly classify stale replay/trace requirements not implemented by the active runtime generation
+- [ ] Separate historical/aspirational architecture from active runtime truth
+- [ ] Produce a current registry that separately records identity, implementation, runtime eligibility, governance status, authority boundary, and source evidence
+- [ ] Obtain explicit disposition on current dispatch/routing authority before declaring a canonical dispatcher
