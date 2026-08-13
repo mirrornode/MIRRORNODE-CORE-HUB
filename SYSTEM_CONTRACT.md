@@ -1,5 +1,7 @@
 # SYSTEM_CONTRACT.md
 
+> **Historical runtime contract notice (2026-08-13):** This document records the verified Lucian-centered runtime generation as of **April 28, 2026**. Its own boundary states that it remains operational truth only until the runtimes change. The runtimes have since changed: current `mirrornode-agent-runtime` uses a generic plan → Operator approval → execute → trace lifecycle and does not expose this document's Lucian `/dispatch` boundary as the current execution path. Preserve this file as historical operational evidence; do not use its embedded agent registry or Lucian execution-authority claim as the current governance registry without reconciliation. See `docs/continuity/LUCIAN_AND_RUNTIME_RECONCILIATION_2026-08-13.md`.
+
 ## MIRRORNODE System Contract
 
 **Ground Truth Version:** 1.1 (April 28, 2026)  
