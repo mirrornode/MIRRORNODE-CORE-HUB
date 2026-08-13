@@ -1,0 +1,12 @@
+{
+  "scope_vocabulary_version": "0.1",
+  "provider_scopes": [
+    "infisical:secrets:read",
+    "infisical:machine-identity:authenticate"
+  ],
+  "mirrornode_scope_order": [
+    "mirrornode:credential:read",
+    "mirrornode:credential:rotate",
+    "mirrornode:credential:revoke"
+  ]
+}
