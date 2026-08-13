@@ -107,10 +107,11 @@ Each adapter must declare provider and MIRRORNODE scope requirements plus an
 implementable operation contract for every capability.
 
 ```
-capabilities:      name-keyed map of operation contracts; keys are unique
-scopes_required:   list of provider-side access scopes required
-scopes_granted:    list of MIRRORNODE scopes permitted
-scope_ceiling:     explicit maximum MIRRORNODE scope vocabulary entry
+capabilities:         name-keyed map of operation contracts; keys are unique
+scopes_required:      list of provider-side access scopes required
+scopes_granted:       list of MIRRORNODE scopes permitted
+scope_vocabulary_ref: repository-relative versioned scope vocabulary
+scope_ceiling:        explicit maximum MIRRORNODE scope vocabulary entry
 ```
 
 Each capability map key is the stable, unique operation identifier. The
@@ -132,9 +133,17 @@ An adapter may not exercise a scope not listed in `scopes_granted`.
 An adapter may not request a provider scope not listed in `scopes_required`.
 Scope escalation requires a new adapter declaration at DECLARED state.
 
-`scope_ceiling` must be an entry from the same governed MIRRORNODE scope
-vocabulary used by `scopes_granted`; implementations may not infer ordering
-from arbitrary free text.
+`scope_vocabulary_ref` must resolve to a repository-relative document that
+validates against `MIM_SCOPE_VOCABULARY_V0_1.schema.json`. The referenced
+document enumerates allowed provider scopes and lists MIRRORNODE scopes from
+least to greatest authority; array index is the canonical rank.
+
+Conformance must reject a declaration unless every `scopes_required` value is
+present in `provider_scopes`, every `scopes_granted` value is present in
+`mirrornode_scope_order`, and `scope_ceiling` is present in both
+`scopes_granted` and `mirrornode_scope_order`. No granted scope may have a
+greater canonical rank than `scope_ceiling`. Implementations may not infer
+membership or ordering from arbitrary free text.
 
 ---
 
@@ -280,10 +289,24 @@ vocabulary:
 
 - use the nearest existing conformant `event_type` for execution/invocation;
 - use the locked coarse actor class (`human`, `agent`, or `system`) as applicable;
-- map MICC outcomes to locked verdicts (`SUCCESS`, `FAILURE`, `BLOCKED`, or
-  `ESCALATED` where the audit event genuinely represents escalation).
+- map MICC outcomes to locked verdicts using the exact table below.
 
-The exact MICC outcome remains recorded under `evidence.micc.outcome_code`.
+| MICC outcome | Locked `AUDIT_EMISSION` verdict |
+|---|---|
+| `OUTCOME_SUCCESS` | `SUCCESS` |
+| `OUTCOME_FAILURE_PROVIDER` | `FAILURE` |
+| `OUTCOME_FAILURE_AUTH` | `BLOCKED` |
+| `OUTCOME_FAILURE_SCOPE` | `BLOCKED` |
+| `OUTCOME_FAILURE_CONTRACT` | `FAILURE` |
+| `OUTCOME_BLOCKED` | `BLOCKED` |
+| `OUTCOME_DEGRADED` | `FAILURE` |
+| `OUTCOME_TIMEOUT` | `FAILURE` |
+
+This mapping is total and deterministic: one MICC outcome permits exactly one
+locked verdict. `ESCALATED` is not a capability-outcome mapping; it is
+reserved for a separately emitted audit event whose event itself represents
+an escalation. The exact MICC outcome remains recorded under
+`evidence.micc.outcome_code`.
 
 **9.2 MICC evidence placement.**
 
@@ -431,7 +454,9 @@ An adapter is MICC-conformant if and only if:
    MICC detail under `evidence.micc`;
 6. every outcome uses the MICC bounded vocabulary and maps to a locked audit
    verdict without redefining that verdict vocabulary;
-7. it does not exercise scopes beyond `scopes_granted` or `scope_ceiling`;
+7. it resolves `scope_vocabulary_ref`, verifies scope membership, and does
+   not exercise scopes beyond `scopes_granted` or the canonical rank of
+   `scope_ceiling`;
 8. it does not accept execution while outside ACTIVE or DEGRADED;
 9. it does not emit credential contents or prohibited sensitive metadata;
 10. provider responses cannot redefine MIRRORNODE approval, lifecycle,
