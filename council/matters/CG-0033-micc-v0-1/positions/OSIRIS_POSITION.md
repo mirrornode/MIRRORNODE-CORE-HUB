@@ -2,165 +2,69 @@
 ## CG-0033: MICC v0.1 + MIM v0.1
 
 **Reviewer role:** Osiris disclosure/evidence lane  
-**Procedural provenance:** Role-bound review executed in the current THEIA/ChatGPT integration session against the preserved CG-0033 artifacts, locked `AUDIT_EMISSION`, and the Osiris review packet. This file does not claim a separate live Osiris runtime invocation.  
+**Procedural provenance:** Initial role-bound review and closure review executed in the current THEIA/ChatGPT integration session against the CG-0033 Osiris review packet and locked `AUDIT_EMISSION`. This file does not claim a separate live Osiris runtime invocation.  
 **Matter:** CG-0033  
-**Review class:** Disclosure Authority Review  
-**State:** REVISION_REQUIRED  
-**Reviewed against:** preserved CG-0033 head `3a15b749a16bf873ff3c32fc1a95d278dde54eb8` plus current locked `canon/contracts/AUDIT_EMISSION.md`.
+**Review class:** Disclosure Authority Review + Revision Closure  
+**State:** APPROVED_WITH_CONDITIONS  
+**Initial review base:** preserved head `3a15b749a16bf873ff3c32fc1a95d278dde54eb8`  
+**Closure review base:** corrected MICC/MIM through `216b05231eab21ee1eb2136aa4acd1b88f2a35dc`
 
 ---
 
-## Determination
+## Initial determination
 
-MICC's evidence model is directionally compatible with the locked audit invariant, and the five additional MICC evidence candidates can be carried without changing the top-level `AUDIT_EMISSION` schema.
+The initial draft was `REVISION_REQUIRED` because MICC Section 9 described itself as additive to locked `AUDIT_EMISSION` while redefining top-level `event_type`, `actor`, and `verdict` semantics.
 
-However, MICC Section 9.1 currently redefines several locked top-level audit semantics while stating that it is additive only. That conflict must be corrected before acceptance.
+The evidence-placement question was resolved in the initial review as **option (a): carry MICC-specific fields inside the existing `evidence` object under a namespaced `evidence.micc` extension.**
 
----
+Initial revision themes:
 
-## 1. Additive coherence with AUDIT_EMISSION
-
-The MICC evidence candidates do not inherently duplicate locked fields:
-
-- `execution_nonce` — new replay/correlation evidence;
-- `requesting_actor` — initiating principal identity distinct from the locked coarse actor classification;
-- `executing_actor` — concrete adapter/principal identity;
-- `approval_object` — reference to the authorizing record;
-- `policy_version` — policy basis at execution time.
-
-These can coexist with the locked schema if carried inside the existing `evidence` object.
-
-### Evidence placement determination
-
-Use option **(a)** for all five fields: carry them inside the existing `evidence` object under a namespaced MICC extension object:
-
-```json
-"evidence": {
-  "inputs": {},
-  "outputs": {},
-  "duration_ms": 0,
-  "error": null,
-  "micc": {
-    "execution_nonce": "...",
-    "requesting_actor": "...",
-    "executing_actor": "...",
-    "approval_object": "...",
-    "policy_version": "...",
-    "outcome_code": "..."
-  }
-}
-```
-
-This preserves the locked top-level contract and avoids parallel-record divergence.
-
-A future `AUDIT_EMISSION` revision may later formalize the nested extension shape, but such a revision is not required to resolve placement for CG-0033.
+- **R1:** preserve locked top-level audit semantics;
+- **R2:** prohibit adapter-specific evidence from expanding the disclosure boundary;
+- **R3:** finalize Section 9 around `evidence.micc`, bounded verdict mapping, and lifecycle-transition evidence.
 
 ---
 
-## 2. Locked top-level field conflicts
+## Closure review
 
-MICC Section 9.1 currently conflicts with the locked contract in three places:
+### R1 — SATISFIED
 
-1. MICC proposes `event_type = "adapter_invocation"`, while locked `AUDIT_EMISSION` bounds event type to its existing vocabulary.
-2. MICC proposes `actor = adapter_id`, while the locked contract describes actor using the coarse human/agent/system classification.
-3. MICC proposes mapping the Section 8.2 outcome vocabulary directly into `verdict`, while locked `AUDIT_EMISSION` bounds verdict to `SUCCESS | FAILURE | BLOCKED | ESCALATED`.
+Revised MICC Section 9 now states that locked `AUDIT_EMISSION` top-level fields and vocabularies remain controlling. MICC-specific precision is nested under `evidence.micc`.
 
-These are not additive changes.
+The draft no longer claims `adapter_invocation` as a new locked event type, no longer places `adapter_id` directly into the locked coarse actor classification, and no longer substitutes MICC outcome codes for the locked audit verdict vocabulary.
 
-### R1 — Preserve locked top-level semantics
+### R2 — SATISFIED
 
-MICC must stop redefining those top-level fields.
+Revised Sections 9.3 and 11 explicitly prohibit credential contents, bearer references, secret-store paths, unrestricted provider response bodies, and unapproved internal/provider-sensitive metadata from becoming adapter evidence merely by declaration.
 
-For adapter execution, use an AUDIT_EMISSION-conformant top-level record and preserve adapter-specific detail inside `evidence.micc`.
+### R3 — SATISFIED
 
-Recommended interim mapping:
+Revised Section 9:
 
-- locked `event_type`: use the nearest existing conformant execution/invocation class until a separate audit-contract revision adds an adapter-specific event type;
-- locked `actor`: `agent` or `system` according to the actual executing class, with the concrete `adapter_id` in `evidence.micc.executing_actor`;
-- locked `verdict`: map MICC outcomes into `SUCCESS`, `FAILURE`, or `BLOCKED`; retain the precise MICC outcome code in `evidence.micc.outcome_code`.
-
-`ESCALATED` remains available only where the audit event actually represents escalation.
+1. places MICC-specific evidence under `evidence.micc`;
+2. preserves locked top-level fields;
+3. maps precise MICC outcomes into the locked verdict vocabulary while retaining `outcome_code` below `evidence.micc`;
+4. records lifecycle transition details under `evidence.micc`;
+5. keeps external telemetry observational only.
 
 ---
 
-## 3. Adapter-declared evidence fields
+## Evidence implementation boundary
 
-**Determination:** Provider-/adapter-specific evidence declarations require an explicit disclosure boundary.
+Before an adapter reaches ACTIVE state, evidence verification must confirm:
 
-### R2 — Evidence declaration safety
+- every execution/transition emits a locked-`AUDIT_EMISSION`-conformant record;
+- `evidence.micc.execution_nonce` and actor/approval/policy references are present where applicable;
+- sensitive fields are sanitized;
+- external telemetry is not the sole canonical evidence surface;
+- exact MICC outcomes remain recoverable without redefining locked verdict semantics.
 
-Adapter-specific evidence must be restricted to sanitized, non-secret, purpose-bounded fields. It must not emit:
-
-- credential contents;
-- bearer references;
-- secret-store paths;
-- raw authorization tokens;
-- provider-internal identifiers unless explicitly allowed and necessary;
-- filesystem paths/internal topology unless specifically required and approved;
-- unrestricted provider response bodies.
-
-Provider extensions may name evidence fields, but they may not make sensitive provider state canonical merely by declaration.
-
----
-
-## 4. Observer vs authority
-
-**Determination:** MICC Section 9.3 is coherent with the Osiris evidence invariant.
-
-OTel is a transport/interoperability representation only. External telemetry products may receive observational projections but must not:
-
-- write or mutate the canonical record;
-- determine historical truth;
-- become the sole evidence-retention surface;
-- overwrite or supersede an Osiris/MIRRORNODE determination.
-
-No revision is required on this point beyond preserving the rule during implementation.
-
----
-
-## 5. Lifecycle transitions as audit records
-
-**Determination:** Every lifecycle transition should emit an `AUDIT_EMISSION`-conformant record, as MICC already requires.
-
-Until a future audit-contract revision creates a dedicated lifecycle event type, use an existing conformant event type and place precise transition semantics in `evidence.micc`, including:
-
-- prior state;
-- next state;
-- transition reason;
-- authorizing/reference object where required;
-- concrete initiating principal;
-- policy version where applicable.
-
-For Operator-initiated transitions:
-
-- top-level `actor`: `human`;
-- concrete Operator identity/reference: inside `evidence.micc.requesting_actor` or a future dedicated identity field.
-
-For automated health/policy transitions:
-
-- top-level `actor`: `system`;
-- concrete registry/policy mechanism: inside `evidence.micc.executing_actor`.
-
-A future `AUDIT_EMISSION` revision to add explicit `adapter_invocation` and `adapter_lifecycle_transition` event types would improve semantic precision, but CG-0033 need not block on that revision if it remains conformant with the locked contract in the interim.
-
----
-
-## R3 — MICC Section 9 finalization
-
-Revise Section 9 to:
-
-1. place the five MICC evidence candidates under `evidence.micc`;
-2. preserve all locked top-level `AUDIT_EMISSION` fields and vocabularies;
-3. define a bounded mapping from MICC outcome codes to locked verdicts;
-4. retain precise MICC outcome/state-transition detail in the nested evidence object;
-5. prohibit adapter-declared evidence from expanding the disclosure boundary.
+A future `AUDIT_EMISSION` revision may add adapter-specific top-level event types, but CG-0033 does not depend on such a revision.
 
 ---
 
 ## Position
 
-**REVISION_REQUIRED**
+**APPROVED_WITH_CONDITIONS**
 
-The primary open placement question is resolved: **option (a), nested inside the existing `evidence` object, preferably under `evidence.micc`.**
-
-Revision is required because current MICC Section 9.1 contradicts locked top-level `AUDIT_EMISSION` semantics while describing itself as additive. This is bounded and repairable without redesigning the evidence architecture.
+The evidence-placement question is closed: MICC-specific evidence belongs inside the existing audit `evidence` object under `evidence.micc`. Remaining conditions belong to future implementation verification, not to acceptance of the revised pre-canon MICC/MIM specification.
