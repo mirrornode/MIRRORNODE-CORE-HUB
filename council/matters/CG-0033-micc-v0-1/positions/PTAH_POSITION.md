@@ -2,124 +2,78 @@
 ## CG-0033: MICC v0.1 + MIM v0.1
 
 **Reviewer role:** Ptah implementation-contract lane  
-**Procedural provenance:** Role-bound review executed in the current THEIA/ChatGPT integration session against the preserved CG-0033 artifacts and Ptah review packet. This file does not claim a separate live Ptah runtime invocation.  
+**Procedural provenance:** Initial role-bound review and closure review executed in the current THEIA/ChatGPT integration session against the CG-0033 Ptah review packet. This file does not claim a separate live Ptah runtime invocation.  
 **Matter:** CG-0033  
-**Review class:** Implementation Contract Review  
-**State:** REVISION_REQUIRED  
-**Reviewed against:** preserved CG-0033 head `3a15b749a16bf873ff3c32fc1a95d278dde54eb8`, with current CORE-HUB reconciliation state considered where it changes implementation assumptions.
+**Review class:** Implementation Contract Review + Revision Closure  
+**State:** APPROVED_WITH_CONDITIONS  
+**Initial review base:** preserved head `3a15b749a16bf873ff3c32fc1a95d278dde54eb8`  
+**Closure review base:** corrected MICC/MIM through `216b05231eab21ee1eb2136aa4acd1b88f2a35dc`
 
 ---
 
-## Determination
+## Initial determination
 
-MICC v0.1 has a coherent contract-first shape and MIM v0.1 is structurally useful, but the present draft is not yet precise enough to accept an Adapter 01 implementation work order without material interpretation at the adapter boundary.
+The initial draft was `REVISION_REQUIRED` because the capability declarations were descriptive rather than sufficiently implementable, several runtime references were free-text, and lifecycle enforcement ownership was not explicit.
 
-The required revisions are bounded. They do not require replacing MICC/MIM or changing the eight-family model.
+Revision themes were:
 
----
-
-## 1. Implementability of the eight primitive families
-
-**Determination:** The eight family boundaries are adequate as taxonomy, but family semantics alone are not an implementable invocation contract.
-
-MIM currently declares each capability using only:
-
-- `name`
-- `description`
-- `approval_class`
-
-There is no machine-readable declaration for request shape, response shape, idempotency/replay behavior, timeout behavior, side-effect class, or family-specific conformance requirements. MICC Section 13 nevertheless requires an implementation to implement all declared capabilities and produce bounded outcomes.
-
-An adapter author would therefore have to invent part of the operational contract.
-
-### R1 — Capability contract surface
-
-Before Adapter 01 implementation, MICC/MIM must either:
-
-1. add a bounded machine-readable operation-contract structure per declared capability; or
-2. explicitly define and reference a separate adapter-interface specification that supplies request/response and execution semantics without allowing providers to redefine MICC meaning.
-
-At minimum the implementable contract must resolve:
-
-- input contract/reference;
-- output contract/reference;
-- side-effect/read-only classification;
-- retry/idempotency expectation where applicable;
-- timeout/termination expectation;
-- capability-specific conformance test reference.
-
-This is an implementation-contract gap, not a request to add provider-specific implementation detail.
+- **R1 — Capability contract surface:** add machine-readable request/response, side-effect, idempotency/retry, timeout, and conformance-test references.
+- **R2 — Referential precision:** make credential-to-capability references and scope-ceiling semantics machine-enforceable and require machine-readable approval references where applicable.
+- **R3 — Runtime enforcement contract:** keep lifecycle semantics normative in MICC and make any Runtime Registry subordinate to the MICC transition table.
 
 ---
 
-## 2. MIM schema structure and format
+## Closure review
 
-**Determination:** JSON Schema is sufficient as the canonical validation schema. A second canonical YAML schema is not required.
+### R1 — SATISFIED
 
-YAML may remain a human-facing serialization/example format as long as YAML instances are normalized and validated against the JSON Schema. Maintaining two normative schemas would create avoidable drift.
+Revised MICC Section 4 and MIM now require per-capability operation contracts containing:
 
-The current schema's use of bounded enums and `additionalProperties: false` is helpful.
+- `input_schema_ref`
+- `output_schema_ref`
+- `side_effect_class`
+- `idempotency`
+- `retry_policy`
+- `timeout_seconds`
+- `conformance_test_ref`
 
-### R2 — Referential precision
+This removes the primary undefined-behavior gap identified in the initial review.
 
-Several MIM fields remain free-text where runtime validation needs stronger references:
+### R2 — SATISFIED FOR CONTRACT REVIEW
 
-- `credential_requirements[].scope` should resolve to one or more declared capability names or a defined scope vocabulary rather than unconstrained prose;
-- `scope_ceiling` needs a governed vocabulary or explicit comparison semantics if runtime code is expected to enforce a ceiling;
-- approval-record reference semantics must be machine-readable if `approval_object` becomes receipt evidence.
+MIM now references credentials to declared capability names rather than unconstrained prose, defines `scope_ceiling` as belonging to the governed MIRRORNODE scope vocabulary, and MICC requires machine-verifiable approval references for approval-bearing execution and authorization transitions.
 
----
+Cross-field validation that a named credential capability actually exists in the same MIM instance may require conformance tooling beyond JSON Schema draft-07. That is an implementation/conformance requirement, not a reason to reject the contract definition.
 
-## 3. Lifecycle state machine placement
+### R3 — SATISFIED
 
-**Determination:** The lifecycle semantics and authorization invariants should remain normative in MICC. A Runtime Registry may implement and persist them, but it must not become free to redefine them.
+Revised MICC Section 10 states that lifecycle semantics and authority are normative in MICC. A Runtime Registry may persist/enforce state but is subordinate to MICC and must reject unauthorized transitions.
 
-The current transition table is implementable in principle.
+### Cross-review dependencies — SATISFIED IN CONTRACT
 
-The following transitions correctly require Operator action:
-
-- VERIFIED → AUTHORIZED
-- SUSPENDED → AUTHORIZED
-- AUTHORIZED → RETIRED
-- ACTIVE → RETIRED
-- SUSPENDED → RETIRED
-
-Automated health transitions are acceptable only after authority is already present and only within the transitions expressly permitted by MICC.
-
-### R3 — Runtime enforcement contract
-
-MICC should state explicitly that a runtime registry is an enforcement/persistence implementation of the MICC lifecycle, not the semantic owner of lifecycle state. Any registry implementation must reject transitions not authorized by the MICC transition table and must record the authorizing basis for gated transitions.
+- Osiris resolved MICC evidence placement under `AUDIT_EMISSION.evidence.micc`.
+- Thoth's governed invocation and credential-disclosure requirements were incorporated.
+- The stale April Lucian `/dispatch` dependency was removed from MICC's current authority model.
 
 ---
 
-## 4. Credential requirement declaration
+## Adapter 01 readiness boundary
 
-**Determination:** Declaring requirements without credential contents is implementable and preferable, but the current declaration still needs referential precision.
+The contract is now precise enough to define an Adapter 01 implementation work order, but this position does **not** authorize or assert readiness of a specific provider adapter.
 
-A credential requirement must never contain provider secret values, secret material, or secret-store paths. Runtime resolution should occur through a credential-authority reference outside the MIM declaration.
+Before any Adapter 01 may move beyond DECLARED/implementation planning, the implementation lane must provide:
 
-No canonical YAML schema is needed for this purpose.
+1. concrete request/response schemas for every capability reference;
+2. concrete conformance tests/fixtures for every `conformance_test_ref`;
+3. a MIM instance that validates and passes required cross-field conformance checks;
+4. separate Operator authorization for the actual provider implementation/work order.
 
----
-
-## 5. Adapter 01 readiness gate
-
-Ptah would accept an Adapter 01 work order only after all of the following are true:
-
-1. R1 capability operation semantics are resolved.
-2. R2 scope/credential/approval references are machine-enforceable.
-3. R3 lifecycle enforcement ownership is explicit.
-4. Osiris resolves MICC Section 9 receipt-field placement and any conflict with locked `AUDIT_EMISSION`.
-5. Thoth closes any authorization, bypass, or credential-disclosure security gaps.
-6. MICC's intra-lattice authority references are updated to current governance/runtime truth rather than relying on the now-historical April Lucian `/dispatch` model.
-7. The resulting MIM validates with a conformance fixture for the proposed Adapter 01 declaration.
-
-No statement here selects Infisical or authorizes implementation.
+The illustrative Infisical references in the example are not evidence that those artifacts already exist.
 
 ---
 
 ## Position
 
-**REVISION_REQUIRED**
+**APPROVED_WITH_CONDITIONS**
 
-Revision themes R1–R3 are bounded to implementation-contract precision. They do not require redesigning the eight primitive families or abandoning MICC/MIM separation.
+MICC/MIM v0.1 is implementation-contract coherent after the bounded revisions. Remaining conditions belong to future adapter implementation/readiness, not to acceptance of CG-0033 as a reviewed pre-canon contract.
