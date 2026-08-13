@@ -476,4 +476,4 @@ schema-only evolution.
 
 ---
 
-*This document is a pre-canon draft under Council review. It has no authority effect until Operator disposition on CG-0033. Do not implement against this document until disposition is issued.*
+*This document is an accepted-with-conditions, pre-canon governance definition under CG-0033. The Operator disposition does not authorize implementation, canon promotion, deployment, publication, or merge. Do not implement against this document without separate explicit implementation authorization.*
