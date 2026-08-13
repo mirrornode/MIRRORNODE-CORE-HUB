@@ -154,8 +154,8 @@ resolvedQuestions:
 openQuestions: []
 currentRevision: review-driven-corrections-2026-08-13
 nextRequiredStep: >-
-  Record the Operator disposition, verify PR #42 head/checks/review state, and
-  only then determine whether a separate merge authorization should be issued.
+  Verify PR #42 correction checks and fresh review state. If the correction pass
+  is clear, the Operator may separately determine whether to authorize merge.
   Acceptance does not itself authorize merge, implementation, canon promotion,
   deployment, or publication.
 historyPath: history/
