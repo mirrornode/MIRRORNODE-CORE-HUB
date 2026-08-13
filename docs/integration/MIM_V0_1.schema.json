@@ -1,0 +1,410 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/mim-v0.1.schema.json",
+  "title": "MIRRORNODE Integration Manifest (MIM) v0.1",
+  "description": "Machine-readable adapter declaration schema implementing MICC v0.1. Status: accepted-with-conditions as a reviewed pre-canon artifact under CG-0033; canon promotion, implementation, deployment, publication, and merge remain separately gated.",
+  "type": "object",
+  "required": [
+    "mim_version",
+    "adapter_id",
+    "adapter_name",
+    "micc_version",
+    "capability_family",
+    "provider_name",
+    "provider_version",
+    "adapter_version",
+    "maintained_by",
+    "created_at",
+    "updated_at",
+    "capabilities",
+    "scopes_required",
+    "scopes_granted",
+    "scope_ceiling",
+    "credential_requirements",
+    "health_check",
+    "lifecycle_state"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "mim_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "adapter_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "adapter_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "micc_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "capability_family": {
+      "type": "string",
+      "enum": [
+        "IDENTITY",
+        "CREDENTIAL",
+        "STATE",
+        "ARTIFACT",
+        "EXECUTION",
+        "TRANSPORT",
+        "EVIDENCE",
+        "METERING"
+      ]
+    },
+    "provider_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapter_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?(?![\\s\\S])",
+      "description": "Semantic Versioning 2.0.0 string."
+    },
+    "maintained_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z(?![\\s\\S])",
+      "description": "ISO 8601 UTC timestamp using the canonical Z suffix."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z(?![\\s\\S])",
+      "description": "ISO 8601 UTC timestamp using the canonical Z suffix."
+    },
+    "capabilities": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "description",
+          "approval_class",
+          "input_schema_ref",
+          "output_schema_ref",
+          "side_effect_class",
+          "idempotency",
+          "retry_policy",
+          "timeout_seconds",
+          "conformance_test_ref"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_class": {
+            "type": "string",
+            "enum": [
+              "APPROVAL_NONE",
+              "APPROVAL_AUTOMATED",
+              "APPROVAL_OPERATOR",
+              "APPROVAL_COUNCIL"
+            ]
+          },
+          "input_schema_ref": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*(?![\\s\\S])",
+            "description": "Normalized repository-relative reference; absolute paths, traversal, whitespace, and line terminators are forbidden."
+          },
+          "output_schema_ref": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*(?![\\s\\S])",
+            "description": "Normalized repository-relative reference; absolute paths, traversal, whitespace, and line terminators are forbidden."
+          },
+          "side_effect_class": {
+            "type": "string",
+            "enum": [
+              "READ_ONLY",
+              "STATE_CHANGE",
+              "EXTERNAL_EFFECT"
+            ]
+          },
+          "idempotency": {
+            "type": "string",
+            "enum": [
+              "REQUIRED",
+              "SUPPORTED",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "retry_policy": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "SAFE_RETRY",
+              "IDEMPOTENCY_KEY_REQUIRED"
+            ]
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "conformance_test_ref": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*(?![\\s\\S])",
+            "description": "Normalized repository-relative reference; absolute paths, traversal, whitespace, and line terminators are forbidden."
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "approval_class": {
+                  "const": "APPROVAL_NONE"
+                }
+              },
+              "required": [
+                "approval_class"
+              ]
+            },
+            "then": {
+              "properties": {
+                "side_effect_class": {
+                  "const": "READ_ONLY"
+                }
+              },
+              "required": [
+                "side_effect_class"
+              ]
+            }
+          }
+        ]
+      },
+      "description": "Name-keyed operation contracts. Object keys are the unique stable capability identifiers."
+    },
+    "scopes_required": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "scopes_granted": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "scope_ceiling": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Maximum MIRRORNODE scope from the governed scope vocabulary. Must be comparable under that vocabulary; no free-text ordering inference is permitted."
+    },
+    "credential_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "kind",
+          "capabilities",
+          "environment",
+          "lifetime",
+          "revocable",
+          "required"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Non-sensitive requirement label only. Must not contain secret contents, bearer values, secret-store paths, or opaque bearer-capable credential identifiers."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "API_KEY",
+              "OAUTH_TOKEN",
+              "MTLS_CERT",
+              "MACHINE_IDENTITY",
+              "OTHER"
+            ]
+          },
+          "capabilities": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            },
+            "description": "Declared capability names requiring this credential. Runtime/conformance validation must verify that every value resolves to a capability in this same MIM instance."
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "PRODUCTION",
+              "STAGING",
+              "DEVELOPMENT",
+              "ALL"
+            ]
+          },
+          "lifetime": {
+            "type": "string",
+            "enum": [
+              "SHORT_LIVED",
+              "LONG_LIVED",
+              "ROTATING",
+              "STATIC"
+            ]
+          },
+          "revocable": {
+            "type": "boolean"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "health_check": {
+      "type": "object",
+      "required": [
+        "method",
+        "interval_seconds",
+        "timeout_seconds",
+        "healthy_criteria",
+        "degraded_criteria"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "HTTP_GET",
+            "RPC",
+            "INTERNAL"
+          ]
+        },
+        "endpoint": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\s\\x00-\\x1F\\x7F]+(?![\\s\\S])"
+        },
+        "interval_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "healthy_criteria": {
+          "type": "object",
+          "required": [
+            "predicate_ref",
+            "expected_result"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "predicate_ref": {
+              "type": "string",
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*\\.(?:json|ya?ml)(?![\\s\\S])",
+              "description": "Repository-relative reference to a versioned, machine-evaluable predicate definition."
+            },
+            "expected_result": {
+              "type": "boolean",
+              "const": true
+            }
+          }
+        },
+        "degraded_criteria": {
+          "type": "object",
+          "required": [
+            "predicate_ref",
+            "expected_result"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "predicate_ref": {
+              "type": "string",
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*\\.(?:json|ya?ml)(?![\\s\\S])",
+              "description": "Repository-relative reference to a versioned, machine-evaluable predicate definition."
+            },
+            "expected_result": {
+              "type": "boolean",
+              "const": true
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "enum": [
+                  "HTTP_GET",
+                  "RPC"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "endpoint"
+            ]
+          }
+        }
+      ]
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "DECLARED",
+        "IMPLEMENTED",
+        "VERIFIED",
+        "AUTHORIZED",
+        "ACTIVE",
+        "DEGRADED",
+        "SUSPENDED",
+        "RETIRED"
+      ]
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provider_extensions": {
+      "type": "object",
+      "description": "Provider-specific metadata only. Must not redefine MICC semantics or contain credential contents, bearer references, secret-store paths, unrestricted provider response bodies, or sensitive internal topology outside an explicitly approved disclosure boundary.",
+      "propertyNames": {
+        "pattern": "^x_[a-z0-9]+_[a-z0-9_]+$"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+# MIM v0.1 Example — Credential Authority / Infisical
+# Hypothetical schema illustration only. Not an authorized adapter declaration.
+# Infisical Adapter 01 requires a separate Council matter and Operator authorization.
+
+mim_version: "0.1"
+adapter_id: credential-infisical-01
+adapter_name: Infisical Credential Authority Adapter 01
+micc_version: "0.1"
+capability_family: CREDENTIAL
+provider_name: Infisical
+provider_version: "v0.7"
+adapter_version: 0.1.0
+maintained_by: mirrornode-operator
+created_at: "2026-08-12T00:00:00Z"
+updated_at: "2026-08-13T00:00:00Z"
+
+capabilities:
+  get_secret:
+    description: Retrieve a named secret for an authorized principal and scope.
+    approval_class: APPROVAL_AUTOMATED
+    input_schema_ref: schemas/credential/get_secret.request.json
+    output_schema_ref: schemas/credential/get_secret.response.json
+    side_effect_class: READ_ONLY
+    idempotency: NOT_APPLICABLE
+    retry_policy: SAFE_RETRY
+    timeout_seconds: 10
+    conformance_test_ref: tests/micc/credential/get_secret
+
+  list_secrets:
+    description: List secret names, not values, available to an authorized principal.
+    approval_class: APPROVAL_AUTOMATED
+    input_schema_ref: schemas/credential/list_secrets.request.json
+    output_schema_ref: schemas/credential/list_secrets.response.json
+    side_effect_class: READ_ONLY
+    idempotency: NOT_APPLICABLE
+    retry_policy: SAFE_RETRY
+    timeout_seconds: 10
+    conformance_test_ref: tests/micc/credential/list_secrets
+
+  rotate_credential:
+    description: Trigger rotation of a rotating credential.
+    approval_class: APPROVAL_OPERATOR
+    input_schema_ref: schemas/credential/rotate_credential.request.json
+    output_schema_ref: schemas/credential/rotate_credential.response.json
+    side_effect_class: EXTERNAL_EFFECT
+    idempotency: REQUIRED
+    retry_policy: IDEMPOTENCY_KEY_REQUIRED
+    timeout_seconds: 30
+    conformance_test_ref: tests/micc/credential/rotate_credential
+
+  revoke_credential:
+    description: Revoke an active credential and emit revocation evidence.
+    approval_class: APPROVAL_OPERATOR
+    input_schema_ref: schemas/credential/revoke_credential.request.json
+    output_schema_ref: schemas/credential/revoke_credential.response.json
+    side_effect_class: EXTERNAL_EFFECT
+    idempotency: REQUIRED
+    retry_policy: IDEMPOTENCY_KEY_REQUIRED
+    timeout_seconds: 30
+    conformance_test_ref: tests/micc/credential/revoke_credential
+
+scopes_required:
+  - infisical:secrets:read
+  - infisical:machine-identity:authenticate
+
+scopes_granted:
+  - mirrornode:credential:read
+  - mirrornode:credential:rotate
+  - mirrornode:credential:revoke
+
+scope_ceiling: mirrornode:credential:revoke
+
+credential_requirements:
+  - name: machine-identity-session
+    kind: MACHINE_IDENTITY
+    capabilities:
+      - get_secret
+      - list_secrets
+      - rotate_credential
+      - revoke_credential
+    environment: ALL
+    lifetime: SHORT_LIVED
+    revocable: true
+    required: true
+
+health_check:
+  method: HTTP_GET
+  endpoint: /api/v1/auth/universal-auth/login
+  interval_seconds: 60
+  timeout_seconds: 10
+  healthy_criteria:
+    predicate_ref: predicates/health/infisical-session-healthy.v1.json
+    expected_result: true
+  degraded_criteria:
+    predicate_ref: predicates/health/infisical-session-degraded.v1.json
+    expected_result: true
+
+lifecycle_state: DECLARED
+
+known_limitations:
+  - Provider-managed session rotation cadence is outside MICC semantic authority.
+  - Provider-held access logs are observational; MIRRORNODE evidence remains canonical.
+
+notes:
+  - Illustrative example only.
+  - Referenced schemas and tests are contract examples, not evidence that Adapter 01 has been implemented.
+  - Credential contents and secret-store paths never appear in this declaration.
