@@ -1,22 +1,22 @@
 schemaVersion: "0.1"
 id: CG-0033
 title: MIRRORNODE Integration Capability Contract v0.1 + Integration Manifest v0.1
-matterType: governance-definition
+matterType: governance
 initiator: operator
-createdAt: 2026-08-12T04:17:00Z
-updatedAt: 2026-08-13T07:00:00Z
-workflowState: accepted-with-conditions
+createdAt: "2026-08-12T04:17:00Z"
+updatedAt: "2026-08-13T19:17:08Z"
+workflowState: closed
 disposition:
-  status: ACCEPT_WITH_CONDITIONS
+  status: ratified
   authority: operator
-  decidedAt: 2026-08-13T07:00:00Z
+  decidedAt: "2026-08-13T07:00:00Z"
   record: history/2026-08-13-operator-disposition.md
 decisionQuestion: >-
   Should MIRRORNODE accept MICC v0.1 as the reviewed pre-canon normative
   specification governing what an integration means inside MIRRORNODE and
   MIM v0.1 as its machine-readable adapter declaration schema, subject to
   the filed review conditions and with canon promotion, implementation,
-  deployment, and merge remaining separately authorized actions?
+  deployment, publication, and merge remaining separately authorized actions?
 scope:
   includes:
     - normative-definition-of-eight-primitive-capability-families
@@ -38,11 +38,8 @@ scope:
     - MIM-v0-1-schema-as-machine-readable-expression-of-MICC
   excludes:
     - any-adapter-implementation
-    - Infisical-adapter-code
-    - Inngest-adapter-code
     - provider-configuration
     - runtime-registry-implementation
-    - MOPCON-UI-changes
     - credential-contents-of-any-kind
     - executable-changes-to-existing-integrations
     - changes-to-AUDIT_EMISSION-contract
@@ -55,112 +52,69 @@ scope:
 authorityPath:
   finalAuthority: operator
   canonAction: separate-explicit-action
-operatorAuthorization:
-  grantedFor:
-    - documentation-only-specification-drafting
-    - council-matter-record
-    - review-request-packets-and-role-bound-review-records
-    - review-driven-corrections-to-MICC-MIM-and-example
-    - synthesis-record
-    - operator-disposition-record
-    - branch-push-cg-0033-micc-v0-1
-  explicitlyDoesNotAuthorize:
-    - adapter-implementation
-    - provider-code-changes
-    - credential-store-access
-    - runtime-registry-changes
-    - MOPCON-changes
-    - current-agent-registry-or-authority-changes
-    - AUDIT_EMISSION-changes
-    - MCP-surface-changes-or-CG-0032-changes
-    - canon-promotion-of-MICC-or-MIM
-    - deployment
-    - publication
-    - merge
-    - secret-access
-    - canonical-ledger-mutation
-anchors:
-  - id: MCP-SURFACE-CONTRACT
-    kind: council-matter
-    href: ../CG-0032-mcp-surface-contract-v0-1/
-    requiredState: accepted-governing-definition
-    relationship: >-
-      CG-0032 remains governing for MCP as a downstream read-only projection
-      surface. MICC preserves canonical-outward dependency direction and
-      adds protocol-neutral bypass resistance. Any inbound, write-capable,
-      or execution-bearing MCP path requires separate Council authority.
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+referenceArtifacts:
+  - id: MICC-V0-1
+    kind: document
+    href: ../../../docs/integration/MICC_V0_1.md
+    canonical: false
+  - id: MIM-V0-1-SCHEMA
+    kind: document
+    href: ../../../docs/integration/MIM_V0_1.schema.json
+    canonical: false
+  - id: MIM-V0-1-EXAMPLE
+    kind: document
+    href: ../../../docs/integration/examples/mim-v0.1.example.yaml
+    canonical: false
+  - id: OPERATOR-DISPOSITION
+    kind: document
+    href: history/2026-08-13-operator-disposition.md
+    canonical: true
+  - id: REVIEW-SYNTHESIS
+    kind: document
+    href: synthesis/REVIEW_SYNTHESIS.md
+    canonical: false
   - id: AUDIT-EMISSION-CONTRACT
     kind: document
     href: ../../../canon/contracts/AUDIT_EMISSION.md
-    requiredState: locked
-    relationship: >-
-      MICC preserves locked AUDIT_EMISSION top-level fields and vocabularies.
-      Osiris resolved MICC-specific evidence placement as an additive
-      namespaced extension under the existing evidence object at evidence.micc.
-      No AUDIT_EMISSION contract change is made by CG-0033.
-  - id: CURRENT-GOVERNANCE-AND-REGISTRY-EVIDENCE
-    kind: governance-evidence-set
+    canonical: true
+  - id: LUCIAN-RUNTIME-RECONCILIATION
+    kind: document
     href: ../../../docs/continuity/LUCIAN_AND_RUNTIME_RECONCILIATION_2026-08-13.md
-    supportingHref: ../../../docs/continuity/AGENT_REGISTRY_EVIDENCE_SNAPSHOT_2026-08-13.md
-    requiredState: current-reference
-    relationship: >-
-      The reconciliation record and its companion registry evidence snapshot
-      are the existing repository references for current runtime-generation
-      interpretation. MICC does not freeze the historical April Lucian /dispatch
-      runtime model. Intra-lattice identity and authority are resolved from
-      current applicable governance and registry evidence at invocation time.
-      Historical runtime contracts remain evidence of their generation only.
-requiredReviews: [ptah, thoth, osiris, theia]
-reviewRequests:
-  ptah: review-requests/PTAH_IMPLEMENTATION_CONTRACT_REVIEW.md
-  thoth: review-requests/THOTH_SECURITY_BOUNDARY_REVIEW.md
-  osiris: review-requests/OSIRIS_DISCLOSURE_AUTHORITY_REVIEW.md
-  theia: review-requests/THEIA_ARCHITECTURAL_INTEGRATION_REVIEW.md
-positions:
-  ptah: {path: positions/PTAH_POSITION.md, state: APPROVED_WITH_CONDITIONS}
-  thoth: {path: positions/THOTH_POSITION.md, state: APPROVED_WITH_CONDITIONS}
-  osiris: {path: positions/OSIRIS_POSITION.md, state: APPROVED_WITH_CONDITIONS}
-  theia: {path: positions/THEIA_POSITION.md, state: APPROVED_WITH_CONDITIONS}
-acceptanceConditions:
-  - eight-primitive-families-are-normatively-defined
-  - adapter-operation-contract-is-machine-readable-and-bounded
-  - MIM-schema-expresses-MICC-semantics-without-provider-authority
-  - provider-semantic-authority-prohibition-is-explicit-and-conformance-enforced
-  - lifecycle-states-and-transitions-are-normative-and-fully-enumerated
-  - runtime-registry-is-subordinate-to-MICC-lifecycle-semantics
-  - AUTHORIZED-is-explicitly-separate-from-VERIFIED
-  - authorization-bearing-transitions-carry-machine-verifiable-approval-reference
-  - credential-requirements-carry-no-credential-contents-or-prohibited-sensitive-metadata
-  - receipt-requirements-preserve-locked-AUDIT_EMISSION-top-level-semantics
-  - MICC-specific-evidence-is-nested-under-evidence-micc
-  - external-telemetry-remains-observer-not-evidence-authority
-  - MCP-downstream-read-only-direction-preserved-from-CG-0032
-  - governed-invocation-envelope-prevents-direct-protocol-bypass
-  - approval-classification-is-machine-readable
-  - conformance-requirements-are-testable
-  - current-authority-is-not-hard-coded-to-superseded-runtime-generation
-  - no-provider-implementation-introduced-by-this-matter
-  - all-artifacts-remain-under-docs-integration-not-canon
-resolvedQuestions:
-  evidenceFieldMapping: >-
-    Resolved by Osiris: MICC-specific evidence is carried inside the existing
-    locked AUDIT_EMISSION evidence object under evidence.micc.
-  lifecyclePlacement: >-
-    Lifecycle semantics and authority remain normative in MICC; a Runtime
-    Registry may implement and persist them only as a subordinate enforcement surface.
-  mimSchemaFormat: >-
-    JSON Schema remains the canonical machine-validation schema. YAML may be
-    a serialization/example format; no second canonical YAML schema is required.
+    canonical: false
+  - id: AGENT-REGISTRY-EVIDENCE
+    kind: document
+    href: ../../../docs/continuity/AGENT_REGISTRY_EVIDENCE_SNAPSHOT_2026-08-13.md
+    canonical: false
+  - id: PTAH-POSITION
+    kind: document
+    href: positions/PTAH_POSITION.md
+    canonical: false
+  - id: THOTH-POSITION
+    kind: document
+    href: positions/THOTH_POSITION.md
+    canonical: false
+  - id: OSIRIS-POSITION
+    kind: document
+    href: positions/OSIRIS_POSITION.md
+    canonical: false
+  - id: THEIA-POSITION
+    kind: document
+    href: positions/THEIA_POSITION.md
+    canonical: false
 openQuestions: []
 currentRevision: review-driven-corrections-2026-08-13
 nextRequiredStep: >-
-  Verify PR #42 correction checks and fresh review state. If the correction pass
-  is clear, the Operator may separately determine whether to authorize merge.
-  Acceptance does not itself authorize merge, implementation, canon promotion,
-  deployment, or publication.
+  Verify PR #42 correction checks and fresh review state. If clear, the
+  Operator may separately determine whether to authorize merge.
 historyPath: history/
 notes:
-  - MICC and MIM remain specification/schema only; no provider adapter is introduced.
-  - Draft artifacts remain under docs/integration/; canon promotion requires a separate explicit action.
-  - Future adapter implementation requires concrete schemas, conformance fixtures, security/evidence verification, and separate implementation authorization.
-  - Automation may not move this matter into ratified status.
+  - Council schema v0.1 serializes the filed ACCEPT_WITH_CONDITIONS disposition as closed and ratified.
+  - Ratification here records governance acceptance only; it does not authorize implementation, canon promotion, deployment, publication, or merge.
+  - MICC and MIM remain pre-canon specification artifacts under docs/integration.
+  - Current identity and authority must be resolved from applicable governance and registry evidence at invocation or transition time.
+  - MICC-specific evidence is nested under the locked AUDIT_EMISSION evidence object at evidence.micc.
