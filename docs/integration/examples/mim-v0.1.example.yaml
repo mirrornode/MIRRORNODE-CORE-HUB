@@ -88,8 +88,12 @@ health_check:
   endpoint: /api/v1/auth/universal-auth/login
   interval_seconds: 60
   timeout_seconds: 10
-  healthy_criteria: HTTP 200 with structurally valid session response
-  degraded_criteria: Successful response with provider health warning or near-expiry session
+  healthy_criteria:
+    predicate_ref: predicates/health/infisical-session-healthy.v1.json
+    expected_result: true
+  degraded_criteria:
+    predicate_ref: predicates/health/infisical-session-degraded.v1.json
+    expected_result: true
 
 lifecycle_state: DECLARED
 
