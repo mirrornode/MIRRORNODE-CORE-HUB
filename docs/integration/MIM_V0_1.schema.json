@@ -198,9 +198,9 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "pattern": "^[a-z][a-z0-9-]*(?::[a-z][a-z0-9-]*){2,}(?![\\s\\S])"
+        "pattern": "^[^\\s\\x00-\\x1F\\x7F]+(?![\\s\\S])"
       },
-      "description": "Provider-side scope identifiers. Conformance must resolve scope_vocabulary_ref and reject any value absent from provider_scopes."
+      "description": "Exact provider-native scope identifiers, treated as opaque strings. Conformance must resolve scope_vocabulary_ref and reject any value absent from provider_scopes."
     },
     "scopes_granted": {
       "type": "array",
