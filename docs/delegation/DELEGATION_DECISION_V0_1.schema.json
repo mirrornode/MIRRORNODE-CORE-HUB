@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/delegation-decision-v0.1.schema.json",
+  "title": "MIRRORNODE Delegation Decision v0.1",
+  "description": "Draft authorization decision record linking PDP evaluation to PEP enforcement under CG-0036.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "decision_nonce",
+    "request_id",
+    "subject",
+    "action",
+    "resource",
+    "context_digest",
+    "delegation_id",
+    "delegation_version",
+    "authority_class",
+    "pdp_identity",
+    "pdp_version",
+    "policy_content_hash",
+    "policy_bundle_hash",
+    "aggregate_authority_snapshot_hash",
+    "state_hash",
+    "decision",
+    "reason_code",
+    "issued_at",
+    "expires_at"
+  ],
+  "properties": {
+    "decision_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "decision_nonce": {"type": "string", "minLength": 16},
+    "request_id": {"type": "string", "minLength": 1},
+    "subject": {"$ref": "#/definitions/typedEntity"},
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "parameters_hash"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z0-9:_-]+$"},
+        "parameters_hash": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "resource": {"$ref": "#/definitions/typedEntity"},
+    "context_digest": {"$ref": "#/definitions/sha256"},
+    "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "authority_class": {"type": "string", "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]},
+    "pdp_identity": {"type": "string", "minLength": 1},
+    "pdp_version": {"type": "string", "minLength": 1},
+    "policy_content_hash": {"$ref": "#/definitions/sha256"},
+    "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
+    "aggregate_authority_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "state_hash": {"$ref": "#/definitions/sha256"},
+    "decision": {"type": "string", "enum": ["ALLOW", "DENY", "ESCALATE"]},
+    "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"},
+    "obligations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "operator_approval_ref": {"type": "string", "minLength": 1},
+    "issued_at": {"$ref": "#/definitions/utcTimestamp"},
+    "expires_at": {"$ref": "#/definitions/utcTimestamp"},
+    "enforcement_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "one_time_use": {"type": "boolean"},
+        "expected_target_version": {"type": "string"},
+        "max_enforcement_delay_ms": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"authority_class": {"const": "OPERATOR_APPROVAL_REQUIRED"}, "decision": {"const": "ALLOW"}}, "required": ["authority_class", "decision"]},
+      "then": {"required": ["operator_approval_ref"]}
+    },
+    {
+      "if": {"properties": {"authority_class": {"enum": ["ADVISORY_ONLY", "NON_DELEGABLE"]}}, "required": ["authority_class"]},
+      "then": {"properties": {"decision": {"enum": ["DENY", "ESCALATE"]}}}
+    }
+  ],
+  "definitions": {
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "typedEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "id": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
