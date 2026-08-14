@@ -4,7 +4,7 @@ title: Delegation Boundary v0.1
 matterType: governance
 initiator: operator
 createdAt: "2026-08-14T22:49:00Z"
-updatedAt: "2026-08-14T23:05:00Z"
+updatedAt: "2026-08-14T23:09:00Z"
 workflowState: open
 decisionQuestion: >-
   How should MIRRORNODE reduce routine Operator intervention through bounded,
@@ -15,12 +15,14 @@ scope:
     - delegation-authority-classes
     - machine-readable-delegation-envelope
     - policy-decision-and-enforcement-boundary
+    - deterministic-authorization-evaluation-profile
     - anti-self-expansion-invariants
     - aggregate-authority-evaluation
     - canonical-resource-identity
     - policy-content-integrity
     - expiry-and-revocation-semantics
     - toctou-and-retry-semantics
+    - delegation-conformance-requirements
     - escalation-thresholds
     - operator-load-boundary
     - attribution-and-decision-receipt-requirements
@@ -60,41 +62,60 @@ referenceArtifacts:
     kind: pull-request
     href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/49
     canonical: false
-  - id: STANDARDS-CROSSWALK
+  - id: DELEGATION-SPEC
     kind: document
-    href: ../../../docs/delegation/STANDARDS_CROSSWALK_V0_1.md
+    href: ../../../docs/delegation/DELEGATION_BOUNDARY_V0_1.md
+    canonical: false
+  - id: DELEGATION-ENVELOPE-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_ENVELOPE_V0_1.schema.json
     canonical: false
   - id: DELEGATION-DECISION-SCHEMA
     kind: document
     href: ../../../docs/delegation/DELEGATION_DECISION_V0_1.schema.json
     canonical: false
+  - id: AUTHORIZATION-EVALUATION-PROFILE
+    kind: document
+    href: ../../../docs/delegation/AUTHORIZATION_EVALUATION_PROFILE_V0_1.md
+    canonical: false
+  - id: RESOURCE-IDENTITY-PROFILE
+    kind: document
+    href: ../../../docs/delegation/RESOURCE_IDENTITY_V0_1.md
+    canonical: false
+  - id: DELEGATION-CONFORMANCE
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_CONFORMANCE_V0_1.md
+    canonical: false
+  - id: STANDARDS-CROSSWALK
+    kind: document
+    href: ../../../docs/delegation/STANDARDS_CROSSWALK_V0_1.md
+    canonical: false
 resolvedDraftQuestions:
   - classification-is-policy-derived-through-bounded-PDP-and-enforced-by-distinct-PEP
   - unmatched-ambiguous-or-error-actions-default-to-NON_DELEGABLE
-  - delegated-authority-must-be-evaluated-in-aggregate-not-envelope-only
+  - delegated-authority-is-evaluated-in-aggregate-against-root-ceilings-and-composition-constraints
   - governing-policy-is-content-hash-and-bundle-hash-bound
-  - resource-identifiers-must-be-canonicalized-before-authorization
+  - resource-identifiers-are-canonicalized-before-authorization
+  - cross-document-conformance-validator-requirements-are-defined
   - revocation-and-expiry-have-separate-behaviors-and-freshness-bounds
   - retries-require-fresh-authorization-and-state-revalidation
   - delegation-PROPOSAL_ONLY-renamed-ADVISORY_ONLY-to-avoid-cognition-collision
   - MICC-and-delegation-classes-compose-with-stricter-gate-wins
 openQuestions:
-  - What exact aggregate-authority algebra/profile should be normative for v0.1?
-  - What canonical resource-identity registry format should be adopted?
-  - What conformance-validator contract will evaluate cross-document subset/rank/expiry constraints?
-  - What revocation-state distribution/freshness mechanism is required for production enforcement?
-  - Should the PDP/PEP protocol profile adopt OpenID AuthZEN directly or a MIRRORNODE-compatible subset/profile?
+  - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
+  - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
+  - What revocation-state distribution mechanism can meet declared freshness bounds under degraded network conditions?
   - What exact receipt mapping should be adopted after AUDIT_EMISSION repair/review closes?
-  - What production commissioning thresholds must be met before AUTONOMOUS_WITHIN_POLICY is enabled?
-currentRevision: draft-2-external-review-and-standards-alignment-2026-08-14
+  - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
+currentRevision: draft-2-complete-architecture-profile-2026-08-14
 nextRequiredStep: >-
-  Obtain bounded Ptah, Thoth, Osiris, and Theia positions against draft.2 and
-  preserve their role-bounded provenance accurately; then synthesize remaining
-  gaps before any Operator disposition or implementation action.
+  Obtain bounded Ptah, Thoth, Osiris, and Theia positions against the complete
+  draft.2 profile set and preserve their role-bounded provenance accurately;
+  then synthesize remaining gaps before any Operator disposition or implementation.
 historyPath: history/
 notes:
   - Internal-first, product-ready by design.
-  - Draft.2 adopts PDP/PEP separation, default deny, content-hash-bound policy, aggregate-authority evaluation, and decision receipts.
-  - Delegated actors may not modify their own delegation scope, ceilings, policy, classification inputs, revocation/expiry rules, or aggregate-authority logic.
+  - Draft.2 aligns conceptually with current AuthZEN, NIST zero-trust/access-control, SPIFFE, AI risk-management, ISO AI-management, and OWASP agentic-security practices without claiming certification.
+  - Delegated actors may not modify their own delegation scope, ceilings, policy, classification inputs, revocation/expiry rules, resource mappings, or aggregate-authority logic.
   - The goal is provable bounded autonomy, not maximal autonomy.
   - AUDIT_EMISSION shell/heredoc corruption is confirmed and isolated to separate draft repair PR #49.
