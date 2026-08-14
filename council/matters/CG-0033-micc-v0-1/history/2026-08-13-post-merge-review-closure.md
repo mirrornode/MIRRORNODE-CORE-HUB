@@ -1,12 +1,20 @@
 # CG-0033 Post-Merge Review Closure
 
 **Date:** 2026-08-13  
-**Status:** Review-driven correction record in PR #44  
-**Authority boundary:** Corrective review work authorized by the Operator; merge, canon promotion, implementation, deployment, and publication remain separately gated
+**Status:** VERIFIED — recovery PR #42 and closure PR #44 merged  
+**Authority boundary:** This record closes review remediation only; canon promotion, adapter implementation, deployment, and publication remain separately gated
+
+## Recovery provenance
+
+PR #42 recovered the prematurely merged and reverted PR #38 artifact set. It
+closed the original receipt-field, locked-vocabulary, DEGRADED-execution, and
+machine-evaluable health-predicate findings, together with the subsequent
+review findings raised during recovery. Configured checks passed, and Codex
+found no major issues on final head `11f0288549`.
 
 ## Trigger
 
-The post-merge Codex review of PR #42 identified two unresolved contract defects:
+The post-merge Codex review of PR #42 identified two remaining contract defects:
 
 1. MIM scope fields referenced a governed vocabulary without a required,
    resolvable vocabulary artifact or deterministic ceiling ordering.
@@ -26,8 +34,13 @@ therefore cannot change without a new adapter declaration at DECLARED state.
 MICC v0.1 now maps each bounded outcome to exactly one locked audit verdict.
 `ESCALATED` remains available only for a separately emitted escalation event.
 
-## Gate
+## Verification and closure
 
-These corrections remain routed through PR #44 checks and fresh Codex review.
-Filing this record does not itself authorize merge or any implementation
-activity.
+PR #44 embedded each immutable scope vocabulary in its versioned MIM
+declaration and made the outcome-to-verdict mapping total and deterministic.
+Configured checks passed. Codex twice found no major issues on final head
+`05bf5ccf81`. PR #44 merged as
+`52d811e577821e1f5f04338d2bada90cce7f3250`.
+
+The corrective review cycle is closed. This closure does not authorize canon
+promotion, adapter implementation, deployment, or publication.

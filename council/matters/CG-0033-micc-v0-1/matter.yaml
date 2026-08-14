@@ -4,7 +4,7 @@ title: MIRRORNODE Integration Capability Contract v0.1 + Integration Manifest v0
 matterType: governance
 initiator: operator
 createdAt: "2026-08-12T04:17:00Z"
-updatedAt: "2026-08-13T20:16:00Z"
+updatedAt: "2026-08-14T05:56:37Z"
 workflowState: closed
 disposition:
   status: ratified
@@ -111,10 +111,10 @@ referenceArtifacts:
     href: positions/THEIA_POSITION.md
     canonical: false
 openQuestions: []
-currentRevision: post-merge-review-closure-2026-08-13
+currentRevision: post-merge-review-verified-2026-08-14
 nextRequiredStep: >-
-  Verify PR #44 correction checks and fresh Codex review state. If clear, the
-  Operator may separately determine whether to authorize merge.
+  Corrective review is closed. Canon promotion or any adapter implementation
+  requires a separate explicit Operator action; neither is implied by CG-0033.
 historyPath: history/
 notes:
   - Council schema v0.1 serializes the filed ACCEPT_WITH_CONDITIONS disposition as closed and ratified.
