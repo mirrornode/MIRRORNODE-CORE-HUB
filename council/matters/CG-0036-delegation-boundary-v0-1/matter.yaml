@@ -1,0 +1,67 @@
+schemaVersion: "0.1"
+id: CG-0036
+title: Delegation Boundary v0.1
+matterType: governance
+initiator: operator
+createdAt: "2026-08-14T22:49:00Z"
+updatedAt: "2026-08-14T22:49:00Z"
+workflowState: open
+decisionQuestion: >-
+  How should MIRRORNODE reduce routine Operator intervention through bounded,
+  inspectable, revocable delegation without transferring Operator sovereignty
+  or allowing delegated authority to expand itself?
+scope:
+  includes:
+    - delegation-authority-classes
+    - machine-readable-delegation-envelope
+    - anti-self-expansion-invariants
+    - expiry-and-revocation-semantics
+    - escalation-thresholds
+    - operator-load-boundary
+    - action-classification-separation
+    - attribution-and-receipt-requirements
+    - internal-first-product-ready-semantics
+  excludes:
+    - runtime-implementation
+    - production-policy-changes
+    - new-agent-permissions
+    - automatic-merges
+    - deployment
+    - credential-access
+    - execution-expansion
+    - canon-promotion
+    - publication
+    - merge-authority
+authorityPath:
+  finalAuthority: operator
+  implementationAction: separate-explicit-action
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+referenceArtifacts:
+  - id: CG-0034-PR
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/46
+    canonical: false
+  - id: CG-0035-PR
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/47
+    canonical: false
+openQuestions:
+  - Which actions are presumptively non-delegable?
+  - Who may classify an action into a delegation class?
+  - What evidence is required to prove an action stayed inside its envelope?
+  - How should revocation race with already-started work?
+  - How should delegation compose across multiple agents without authority multiplication?
+  - What minimum UI/HUD representation lets the Operator inspect delegation without becoming a transit bottleneck?
+currentRevision: initial-filing-2026-08-14
+nextRequiredStep: >-
+  Draft the Delegation Boundary v0.1 specification and machine-readable envelope,
+  then obtain bounded Ptah, Thoth, Osiris, and Theia review before Operator disposition.
+historyPath: history/
+notes:
+  - Internal-first, product-ready by design.
+  - Delegated actors may not modify their own delegation scope, ceiling, expiry, revocation rule, or governing policy.
+  - The goal is provable bounded autonomy, not maximal autonomy.
