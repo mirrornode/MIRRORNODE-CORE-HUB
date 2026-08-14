@@ -3,7 +3,7 @@
 **Status:** Accepted with conditions — Operator disposition filed under CG-0033  
 **Version:** 0.1  
 **Created:** 2026-08-12  
-**Revision pass:** 2026-08-13 review-driven corrections  
+**Revision pass:** 2026-08-14 post-merge review closure  
 **Authority effect:** Reviewed pre-canon governance definition only; no implementation, canon-promotion, deployment, publication, or merge authority  
 **Canon status:** Pre-canon accepted-with-conditions; remains under `docs/integration/` until separate explicit promotion action
 
@@ -284,8 +284,12 @@ semantics but does not redefine locked top-level audit fields or vocabularies.
 **9.1 Locked top-level audit semantics remain controlling.**
 
 MICC implementations must populate the top-level `AUDIT_EMISSION` record using
-only values permitted by the locked contract in force. MICC-specific precision
-is carried inside the existing `evidence` object.
+only values permitted by the locked contract in force. Every MICC receipt
+therefore includes the locked required fields `timestamp`, `repo`, `repo_hash`,
+`charter_hash`, `event_type`, `actor`, `verdict`, `evidence`, and `audit_id`.
+`charter_hash` must contain the charter-file SHA256 or `UNCHARTERED` exactly as
+the locked contract requires. MICC-specific precision is carried inside the
+existing `evidence` object.
 
 Until a separate `AUDIT_EMISSION` revision creates adapter-specific top-level
 vocabulary:
