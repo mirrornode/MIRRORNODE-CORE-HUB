@@ -72,10 +72,15 @@ the triggered Theia re-review are reflected in the synthesis.
 
 ---
 
-## Remaining gate
+## Corrective review closure
 
-Verify PR #44's corrected head, configured checks, and fresh Codex review
-state. A separate explicit Operator merge authorization is required before
-merge.
+Recovery PR #42 merged as `69370e5940d8e3378f1357f084f5260de2b1e91f`
+after configured checks passed and Codex found no major issues on its final
+head. Follow-up PR #44 merged as
+`52d811e577821e1f5f04338d2bada90cce7f3250` after closing the remaining scope
+vocabulary and deterministic verdict-mapping gaps; Codex twice found no major
+issues on its final head `05bf5ccf81`.
 
-No implementation work is authorized by this matter.
+The corrective review cycle is closed. MICC and MIM remain accepted-with-
+conditions, pre-canon artifacts. No implementation, canon promotion,
+deployment, or publication is authorized by this matter.
