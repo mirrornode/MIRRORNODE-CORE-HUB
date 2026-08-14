@@ -1,0 +1,52 @@
+# MIRRORNODE Resource Identity Profile v0.1
+
+**Status:** Draft under CG-0036
+
+## 1. Purpose
+
+Authorization must target a stable resource identity rather than an ambiguous display name, provider label, repository alias, URL shortcut, or UI route.
+
+## 2. Canonical identifier
+
+A protected resource must have one canonical URI-like identifier within its registry namespace, for example:
+
+`mirrornode://github/repository/MIRRORNODE-CORE-HUB`
+
+The exact scheme/registry is not canonized by this draft; the invariant is that policy evaluation resolves to one canonical identifier before authorization.
+
+## 3. Registry record
+
+A resource registry entry should include:
+
+- canonical resource ID;
+- resource type;
+- provider/system binding where applicable;
+- immutable or versioned provider-native identifiers where available;
+- environment/trust domain;
+- permitted aliases;
+- parent/child or namespace relationships;
+- integrity/version metadata;
+- authority required to modify the record.
+
+## 4. Alias handling
+
+Aliases are navigation metadata, not authorization identities.
+
+Before evaluation:
+
+1. alias resolves through the authoritative registry;
+2. resolution must be unique;
+3. resulting canonical ID is placed in the authorization request;
+4. policy evaluates only the canonical ID/type and trusted properties.
+
+Unknown or ambiguous aliases fail closed.
+
+## 5. Audience restriction principle
+
+A grant intended for one resource must not be reusable at another merely because the operation name or provider scope is similar. Target resource identity and action/scope remain separate authorization dimensions.
+
+## 6. Registry integrity
+
+Resource-registry changes capable of broadening an actor's reachable scope are high-impact authority changes. A delegate whose authority depends on a resource mapping may not unilaterally rewrite that mapping to increase its own access.
+
+The registry must emit attributable change history and support integrity/version references usable in authorization receipts.
