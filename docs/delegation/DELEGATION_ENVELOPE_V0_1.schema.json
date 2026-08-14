@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/delegation-envelope-v0.1.schema.json",
+  "title": "MIRRORNODE Delegation Envelope v0.1",
+  "description": "Draft machine-readable delegation envelope under CG-0036. No implementation or canon authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "delegation_id",
+    "delegation_version",
+    "delegator",
+    "delegate_actor",
+    "authority_class",
+    "governing_policy_ref",
+    "policy_version",
+    "allowed_operations",
+    "resource_scope",
+    "environment_scope",
+    "authority_ceiling",
+    "risk_ceiling",
+    "issued_at",
+    "effective_at",
+    "expires_at",
+    "revocation_behavior",
+    "receipt_policy_ref",
+    "subdelegation"
+  ],
+  "properties": {
+    "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "delegator": {"type": "string", "minLength": 1},
+    "delegate_actor": {"type": "string", "minLength": 1},
+    "authority_class": {
+      "type": "string",
+      "enum": ["AUTONOMOUS_WITHIN_POLICY", "PROPOSAL_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]
+    },
+    "governing_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "policy_version": {"type": "string", "minLength": 1},
+    "allowed_operations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}
+    },
+    "resource_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "environment_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}
+    },
+    "authority_ceiling": {"type": "string", "minLength": 1},
+    "risk_ceiling": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+    "decision_preconditions_ref": {"$ref": "#/definitions/repoRef"},
+    "issued_at": {"$ref": "#/definitions/utcTimestamp"},
+    "effective_at": {"$ref": "#/definitions/utcTimestamp"},
+    "expires_at": {"$ref": "#/definitions/utcTimestamp"},
+    "revocation_behavior": {
+      "type": "string",
+      "enum": ["CANCEL_ON_REVOCATION", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"]
+    },
+    "revocation_ref": {"$ref": "#/definitions/repoRef"},
+    "receipt_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "subdelegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed"],
+      "properties": {
+        "allowed": {"type": "boolean"},
+        "max_depth": {"type": "integer", "minimum": 0},
+        "eligible_operations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"allowed": {"const": true}}, "required": ["allowed"]},
+          "then": {"required": ["max_depth", "eligible_operations"]}
+        }
+      ]
+    },
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "definitions": {
+    "repoRef": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"
+    }
+  }
+}
