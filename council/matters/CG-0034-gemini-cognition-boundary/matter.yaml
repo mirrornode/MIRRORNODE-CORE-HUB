@@ -1,0 +1,66 @@
+schemaVersion: "0.1"
+id: CG-0034
+title: Gemini Cognition Capability Boundary
+matterType: governance
+initiator: operator
+createdAt: "2026-08-14T20:39:00Z"
+updatedAt: "2026-08-14T20:39:00Z"
+workflowState: open
+decisionQuestion: >-
+  How should MIRRORNODE represent bounded external AI cognition or inference
+  without granting provider authority, weakening existing approval boundaries,
+  or misclassifying the capability under an unrelated MICC family?
+scope:
+  includes:
+    - classify-bounded-external-model-cognition-under-or-adjacent-to-MICC
+    - compare-new-INFERENCE-or-COGNITION-family-against-separate-contract-class
+    - preserve-provider-versus-presence-separation
+    - define-read-only-Gemini-pilot-constraints
+    - define-required-provenance-and-contestability-properties
+    - identify-conformance-and-receipt-implications
+  excludes:
+    - Gemini-credential-contents-or-access
+    - adapter-implementation
+    - runtime-registry-changes
+    - Room-or-HUD-implementation
+    - MCP-direction-changes
+    - deployment
+    - publication
+    - canon-promotion
+    - merge-authority
+authorityPath:
+  finalAuthority: operator
+  implementationAction: separate-explicit-action
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+referenceArtifacts:
+  - id: MICC-V0-1
+    kind: document
+    href: ../../../docs/integration/MICC_V0_1.md
+    canonical: false
+  - id: MIM-V0-1-SCHEMA
+    kind: document
+    href: ../../../docs/integration/MIM_V0_1.schema.json
+    canonical: false
+  - id: CG-0033
+    kind: matter
+    href: ../CG-0033-micc-v0-1/README.md
+    canonical: false
+openQuestions:
+  - Should bounded model cognition become a ninth MICC primitive family?
+  - Would a separate cognition contract preserve cleaner semantics than MICC expansion?
+  - What is the minimum provenance required to make model output contestable rather than authoritative?
+  - Which receipt fields belong under existing AUDIT_EMISSION evidence without redefining locked semantics?
+  - What separates a provider adapter from an instantiated Room presence in machine-readable terms?
+currentRevision: initial-filing-2026-08-14
+nextRequiredStep: >-
+  Obtain bounded Ptah, Thoth, Osiris, and Theia positions on capability
+  classification before authoring any Gemini MIM declaration or implementation.
+historyPath: history/
+notes:
+  - No preferred classification is established by opening this matter.
+  - EVIDENCE is provisionally rejected as a convenience label because its MICC semantics concern telemetry and receipts rather than inference.
+  - Any later Gemini pilot begins read-only and non-executing unless separately authorized.
