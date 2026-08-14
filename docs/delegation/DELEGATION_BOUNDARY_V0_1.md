@@ -1,57 +1,118 @@
 # MIRRORNODE Delegation Boundary v0.1
 
 **Status:** Draft under CG-0036 — not canon, not implementation authority  
-**Version:** 0.1-draft  
-**Created:** 2026-08-14
+**Version:** 0.1-draft.2  
+**Created:** 2026-08-14  
+**Revision:** 2026-08-14 external-review and standards-alignment pass
 
 ## 1. Purpose
 
 This specification defines how MIRRORNODE may delegate bounded authority without transferring Operator sovereignty or requiring the Operator to become the mandatory transit point for every routine action.
 
-Delegation is a revocable grant to perform a specific class of action under a specific policy, scope, state, time window, and authority ceiling. Delegation is not ownership of the governing authority.
+Delegation is a revocable grant to perform a specific class of action under a specific policy, resource, state, time window, and authority ceiling. Delegation is not ownership of the governing authority.
+
+The architecture separates policy decision from policy enforcement. A **Policy Decision Point (PDP)** evaluates a request against immutable/versioned policy and current state. A distinct **Policy Enforcement Point (PEP)** enforces only a valid decision. Neither component may rewrite the policy that governs the current decision.
 
 ## 2. Delegation classes
 
 ### AUTONOMOUS_WITHIN_POLICY
-The delegated actor may proceed without a new Operator approval only when all declared preconditions are satisfied and the requested effect remains within the pre-authorized envelope.
+The delegated actor may proceed without a new Operator approval only when all declared preconditions are satisfied, the action is explicitly permitted by governing policy, aggregate authority remains below the applicable ceiling, and the requested effect remains inside the pre-authorized envelope.
 
-### PROPOSAL_ONLY
+### ADVISORY_ONLY
 The actor may analyze, draft, recommend, simulate, prepare, or emit a typed action proposal. It may not cause the governed effect.
 
 ### OPERATOR_APPROVAL_REQUIRED
-The actor may prepare the action, but execution requires an explicit Operator decision tied to the current request and state.
+The actor may prepare the action, but execution requires an explicit Operator decision bound to the current request, policy, resource, state, and decision lifetime.
 
 ### NON_DELEGABLE
 The authority cannot be conveyed through this delegation layer. Direct Operator action or a separately governed higher-authority process is required.
 
-## 3. Delegation envelope
+### Default rule
+
+An action that matches no valid delegation or cannot be classified unambiguously defaults to **NON_DELEGABLE**. No-match, policy-error, unknown-resource, unknown-operation, stale-state, unverifiable-policy, or conflicting-authority conditions never imply permission.
+
+## 3. Authorization information model
+
+Each authorization evaluation is normalized into five objects:
+
+- **Subject** — the principal on whose behalf the action would occur;
+- **Action** — the exact requested operation and parameters;
+- **Resource** — a canonical identifier for the target resource;
+- **Context** — environment, current state, risk, time, dependency, and request metadata;
+- **Decision** — allow/deny plus obligations, reason codes, policy references, decision lifetime, and receipt identifiers.
+
+Canonical resource identifiers must be stable and collision-resistant within their namespace. Aliases must resolve to one canonical resource identifier before policy evaluation. Authorization MUST NOT be based on unnormalized free-text resource names.
+
+## 4. Delegation envelope
 
 Every delegation must be attributable and machine-readable. At minimum it identifies:
 
 - `delegation_id`
+- `delegation_version`
 - `delegator`
 - `delegate_actor`
 - `authority_class`
 - `governing_policy_ref`
 - `policy_version`
+- `policy_content_hash`
+- `policy_bundle_hash`
 - `allowed_operations`
 - `resource_scope`
 - `environment_scope`
 - `authority_ceiling`
-- `decision_preconditions`
+- `authority_rank`
 - `risk_ceiling`
+- `decision_preconditions_ref`
 - `issued_at`
 - `effective_at`
 - `expires_at`
-- `revocation_ref`
+- `revocation_behavior`
+- `expiry_behavior`
+- `max_revocation_propagation_seconds`
 - `receipt_policy_ref`
-- `delegation_version`
+- `subdelegation`
 
-A delegation is invalid if its governing policy, authority ceiling, scope, or validity period cannot be verified at decision time.
+A delegation is invalid if its governing policy content hash, policy bundle hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
 
-## 4. Anti-self-expansion rule
+## 5. Authority Classification Boundary
 
-A delegated actor must never be able, through the authority being delegated, to modify or reinterpret any field that increases its own effective authority.
+The classification mechanism is not a sovereign policy author. It performs bounded evaluation only.
+
+The following roles are distinct:
+
+1. **requester/proposer** — asks for an action;
+2. **policy author/governing authority** — establishes the versioned policy and non-delegable guardrails;
+3. **PDP/classifier** — evaluates Subject, Action, Resource, Context against the exact policy bundle;
+4. **authorizing authority** — supplies any approval required by the resulting class;
+5. **PEP/executor** — enforces only a valid allow decision;
+6. **verifier/auditor** — independently checks that decision and resulting effect matched policy and evidence requirements.
+
+The PDP MUST be unable, through the authority used for evaluation, to modify the policy bundle it evaluates. The PEP MUST be unable to synthesize or upgrade an authorization decision. A delegated actor may not be the sole authority for lowering the class or risk of an action it seeks to perform.
+
+Every decision must record at least:
+
+- evaluator identity/version;
+- policy bundle hash;
+- delegation identifier/version;
+- subject/action/resource/context digest;
+- aggregate-authority snapshot digest;
+- state reference/hash;
+- allow/deny result;
+- obligations and reason code;
+- decision nonce;
+- issued time and expiry time.
+
+## 6. Policy semantics
+
+Policy evaluation uses **default deny**. Explicit deny/forbid guardrails override permit rules. Errors or missing required attributes cannot produce `Allow`.
+
+A policy change creates a new content hash and policy bundle hash. Stable path names or human-readable versions are insufficient by themselves. The PDP must evaluate the same immutable policy content whose hashes are emitted in the decision receipt.
+
+Policy authorship is itself governed. A principal whose effective authority is determined by a policy may contribute proposals or review, but may not unilaterally publish a policy change that increases its own authority.
+
+## 7. Anti-self-expansion rule
+
+A delegated actor must never be able, through the authority being delegated, to modify or reinterpret any condition that increases its own effective authority.
 
 This includes:
 
@@ -59,144 +120,182 @@ This includes:
 - broadening resource or environment scope;
 - increasing authority or risk ceilings;
 - extending expiry;
-- disabling or weakening revocation;
-- changing the governing policy or its applicable version;
+- weakening revocation or expiry behavior;
+- changing governing policy or applicable policy bundle;
+- changing canonical resource mappings to reach equivalent protected resources;
 - reclassifying a governed action into a less restrictive delegation class;
 - changing evidence requirements in a way that makes its own actions easier to approve;
-- delegating onward authority that it did not itself receive with explicit subdelegation permission.
+- manipulating risk inputs or classifier inputs it controls without independent validation;
+- delegating onward authority without explicit subdelegation permission;
+- combining multiple grants to exceed the aggregate authority ceiling.
 
-Any such change requires authority from outside the affected delegation envelope.
+Any change that could increase effective authority requires authority from outside the affected envelope and must be evaluated as a new grant.
 
-## 5. Classification separation
+## 8. Aggregate authority
 
-The system must separate:
+Authorization is evaluated against both the current envelope and the **aggregate authority** held by the delegate actor.
 
-1. the actor proposing or requesting an action;
-2. the mechanism classifying the action under policy;
-3. the authority granting or denying permission;
-4. the actor executing the permitted action;
-5. the mechanism verifying the result.
+Before an autonomous allow decision, the PDP must compute or verify an aggregate-authority snapshot covering all active, applicable delegations for that actor, including overlapping resources, operations, environments, parent/child grants, and time windows.
 
-One principal may occupy more than one role only when explicitly allowed by policy. A delegated actor may not be the sole authority for lowering the class or risk of an action it seeks to perform.
+The union of individually valid delegations must not exceed a separately governed root/actor ceiling. Non-conflicting grants can still compose into excessive authority; absence of direct contradiction is not sufficient.
 
-## 6. Decision preconditions
+Workflow or action-chain policy must detect when a sequence of individually allowed low-risk actions can produce an outcome equivalent to a higher-risk or non-delegable action. Where composition cannot be bounded, the chain escalates.
 
-Autonomous delegated execution requires all preconditions to pass at the moment permission is resolved. Preconditions may include:
+## 9. Subdelegation
+
+Subdelegation is prohibited by default.
+
+When explicitly allowed, every child delegation must carry `parent_delegation_ref` and remain traceable to the root. A conformance validator—not JSON Schema alone—must verify:
+
+- child authority rank <= parent authority rank;
+- child risk ceiling <= parent risk ceiling;
+- child operations are a subset of parent-eligible operations;
+- child resource/environment scope is a subset of parent scope;
+- child expiry <= parent expiry;
+- child max depth is below the parent limit;
+- child cannot weaken revocation, expiry, receipt, or decision-precondition requirements.
+
+Authority is monotonically non-increasing across a delegation chain.
+
+## 10. Decision preconditions and TOCTOU
+
+Autonomous delegated execution requires all preconditions to pass immediately before enforcement.
+
+At minimum, the decision request may bind:
 
 - current state hash or equivalent state reference;
 - target version/reference;
-- operation and resource membership in the envelope;
-- environment match;
-- risk threshold;
+- canonical resource identifier;
+- operation and parameter digest;
+- environment;
+- risk inputs and risk-policy version;
 - required deterministic checks;
-- conflict absence;
-- policy/version match;
-- non-expiry;
-- non-revocation;
+- conflict state;
+- policy content/bundle hashes;
+- non-expiry and non-revocation;
+- aggregate-authority snapshot;
 - dependency state;
-- idempotency or replay safeguards where applicable.
+- replay/idempotency safeguards.
 
-A stale approval or stale delegation must not be silently reused against materially changed state.
+The PEP must reject a decision if bound state has materially changed before enforcement. For mutable resources, implementations should use compare-and-swap, version preconditions, transactions, locks, or an equivalent enforcement mechanism appropriate to the resource.
 
-## 7. Revocation and expiry
+Retries of autonomous actions are new authorization events. They MUST re-evaluate current policy, delegation, revocation, expiry, aggregate authority, and state. A previous allow decision is not a reusable capability unless an explicit one-time or bounded reusable token profile is separately defined.
+
+## 11. Revocation and expiry
 
 Delegation is revocable without consent of the delegate actor.
 
-Revocation must be attributable, timestamped, and visible to the authorization boundary. New work must fail closed after effective revocation.
+Each delegation declares a maximum tolerated revocation-propagation latency. If an enforcement point cannot prove its revocation state is fresh enough for that bound, it fails closed for new work.
 
-For already-started work, each delegation must state one of:
+Revocation behavior for already-started work is one of:
 
 - `CANCEL_ON_REVOCATION`
 - `COMPLETE_CURRENT_ATOMIC_STEP`
 - `COMPLETE_CURRENT_TRANSACTION`
 - `NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE`
 
-Expiry prevents new authorization after `expires_at`. Expiry must not silently convert active work into ungoverned work.
+Expiry behavior is separately declared as one of:
 
-## 8. Subdelegation
+- `CANCEL_ON_EXPIRY`
+- `COMPLETE_CURRENT_ATOMIC_STEP`
+- `COMPLETE_CURRENT_TRANSACTION`
+- `ALLOW_COMPLETION_IF_DECISION_WAS_VALID_AND_BOUND`
 
-Subdelegation is prohibited by default.
+Queued work not yet enforced is new work and requires a fresh valid decision. Retries after revocation or expiry require fresh authorization and normally fail because the underlying delegation is no longer valid.
 
-If allowed, the parent delegation must explicitly declare:
+Offline enforcement that cannot meet revocation freshness requirements is not permitted for autonomous effects unless a separate bounded offline-capability profile is explicitly governed.
 
-- `subdelegation_allowed: true`
-- maximum delegation depth;
-- operations eligible for subdelegation;
-- maximum child scope and authority ceiling;
-- child expiry not later than parent expiry;
-- requirement that every child remain traceable to the root delegation.
+## 12. Non-delegable guardrails
 
-Authority must be monotonically non-increasing across the delegation chain. Composition may narrow authority but never multiply or expand it.
+Unless separately authorized by explicit governance, the following are NON_DELEGABLE through v0.1:
 
-## 9. Escalation conditions
-
-The delegated path must escalate rather than act when:
-
-- requested operation is outside scope;
-- evidence/preconditions are incomplete or contradictory;
-- policy classification is ambiguous;
-- risk exceeds the declared ceiling;
-- an exception or override is requested;
-- a non-delegable action is encountered;
-- required checks fail;
-- the governing state materially changed;
-- delegation is expired, revoked, unverifiable, or conflicting;
-- two valid delegations produce incompatible instructions;
-- the actor requests additional authority to complete the task.
-
-Escalation should present the smallest decision that genuinely requires Operator judgment rather than transferring the entire underlying workload.
-
-## 10. Presumptively non-delegable actions
-
-Unless separately authorized by explicit governance, the following are non-delegable through v0.1:
-
-- expansion of an actor's own authority;
-- weakening of security controls or security verdict requirements;
+- expansion of an actor's own authority or root/aggregate ceiling;
+- modification of the policy-authoring or classification rules governing that actor's authority;
+- weakening of security controls, security verdict requirements, identity verification, or enforcement-point controls;
 - exceptions to governing approval policy;
 - canon promotion or modification of final authority rules;
-- creation of new non-delegable authority classes;
+- creation or weakening of non-delegable guardrails;
 - irreversible high-impact external effects outside a pre-established deterministic policy;
-- alteration or destruction of authoritative audit evidence;
-- disabling revocation or evidence emission;
-- self-approval of a previously approval-bearing action.
+- alteration, deletion, suppression, or fabrication of authoritative audit evidence;
+- disabling revocation, expiry enforcement, evidence emission, or required verification;
+- self-approval of a previously approval-bearing action;
+- modifying the canonical resource-identity registry to broaden one's own reachable scope;
+- modifying aggregate-authority computation or risk-classification logic to benefit the affected actor;
+- issuance of root delegations or root policy-signing authority to oneself.
 
-This list is deliberately conservative and may be refined by later governance.
+## 13. MICC approval-class relationship
 
-## 11. Receipts and verification
+Delegation class does not replace MICC approval classification. Both constraints apply, and the stricter requirement wins.
 
-Every delegated effect must be reconstructible from an evidence chain sufficient to establish:
+| Delegation class | MICC relationship |
+|---|---|
+| `AUTONOMOUS_WITHIN_POLICY` | May proceed only when the underlying MICC capability permits `APPROVAL_NONE` or `APPROVAL_AUTOMATED` and all delegation conditions pass. It can never downgrade `APPROVAL_OPERATOR` or `APPROVAL_COUNCIL`. |
+| `ADVISORY_ONLY` | Produces no execution authorization. |
+| `OPERATOR_APPROVAL_REQUIRED` | Requires explicit Operator approval even if MICC would otherwise allow automation. |
+| `NON_DELEGABLE` | Delegation cannot authorize the action; any separately applicable MICC/Council/Operator gate remains controlling. |
 
-- what was requested;
-- who requested it;
-- which delegation was evaluated;
-- which policy/version governed;
-- what state/preconditions were evaluated;
-- what decision was produced;
-- who executed it;
-- what effect occurred;
-- whether the result matched the authorized target;
-- whether revocation, expiry, retry, or exception conditions were involved.
+When taxonomies disagree or cannot be mapped deterministically, deny/escalate.
 
-Execution success must not substitute for proof that execution was authorized.
-
-## 12. Relationship to cognition
+## 14. Relationship to cognition
 
 Generated model output, analysis, confidence, or a tool/function proposal carries no execution authority by itself.
 
-A cognition layer may produce a `PROPOSAL_ONLY` object. A separate delegation/approval boundary resolves whether an action is permitted. Any resulting execution remains attributable to the executing principal and governing delegation rather than to the model's recommendation.
+The Cognition Contract term `PROPOSAL_ONLY` is a cognition side-effect ceiling. CG-0036 uses `ADVISORY_ONLY` for the delegation authority class to avoid semantic collision.
 
-## 13. Operator-load boundary
+A cognition system may emit an action proposal, but the PDP evaluates the resulting action request independently. The proposal source cannot supply trusted authority class, risk score, resource identity, policy version, or approval state merely by asserting them.
 
-The system should minimize unnecessary Operator intervention by resolving actions that are demonstrably inside a valid delegation envelope and escalating only genuine authority, ambiguity, conflict, exception, or non-delegable questions.
+## 15. Evidence, receipts, and verification
 
-Operator attention is not a substitute for missing policy. Conversely, absence of Operator attention is not permission to infer broader authority.
+Every delegated effect must be reconstructible from an evidence chain sufficient to establish four distinct facts:
 
-## 14. Product-readiness
+1. **authorized** — a valid decision permitted the action;
+2. **correctly classified** — the PDP used the correct policy, subject/action/resource/context, and aggregate-authority state;
+3. **policy-compliant** — all decision obligations and preconditions were satisfied at enforcement time;
+4. **successful** — the resulting effect matched the authorized target.
 
-Implementations may later surface this architecture through MOPCON or another product interface, including delegation maps, expiry/revocation controls, pending escalations, authority provenance, and execution receipts.
+Success never substitutes for authorization.
 
-The product layer must visualize the governing authority state; it may not redefine it.
+Decision and execution receipts should include immutable references/hashes rather than mutable path names alone. Authorization receipts are separate from execution receipts but must be linkable by nonce/request/effect identifiers.
 
-## 15. Explicit exclusions
+## 16. Product/HUD requirements
 
-v0.1 does not itself grant new permissions, implement runtime enforcement, change current agent authority, authorize deployment, permit automatic merges, or promote this specification to canon.
+The product layer must visualize governing authority state; it may not redefine it.
+
+A conformant UI must not show only per-envelope status. For every actor capable of delegated effects it must make available:
+
+- aggregate active authority;
+- overlapping grants and parent/child relationships;
+- root ceiling and current utilization;
+- policy bundle/version/hash provenance;
+- delegation expiry/revocation freshness;
+- pending escalations;
+- recent decisions and execution receipts;
+- any action-chain/composition warning;
+- any unresolved classifier/policy error.
+
+A green status on one envelope must not imply the actor's aggregate authority is low-risk.
+
+## 17. Standards-alignment posture
+
+This draft intentionally aligns its architecture with established patterns without claiming certification or conformance:
+
+- NIST SP 800-207 / 800-207A: no implicit trust, identity/resource-focused authorization, discrete decision and enforcement controls;
+- OpenID AuthZEN Authorization API 1.0: PDP/PEP separation and Subject/Action/Resource/Context/Decision information model;
+- RFC 8707: explicit target-resource identity and audience restriction principles;
+- SPIFFE: first-class verifiable workload identity for distributed enforcement components;
+- NIST SP 800-53 Rev.5 Release 5.2.0: access control, least privilege, audit/accountability, authorization, monitoring, and configuration-integrity control families;
+- NIST AI RMF 1.0 and current revision program: explicit governance, risk tolerances, independent review, TEVV, monitoring, and go/no-go decisions;
+- ISO/IEC 42001:2023 and ISO/IEC 23894:2023: management-system governance, traceability, continual improvement, and AI risk-management integration;
+- OWASP LLM06:2025 / Agentic AI guidance: least-privilege agency, downstream user-context enforcement, human approval for high-impact actions, and containment of excessive agency.
+
+Detailed crosswalk: `docs/delegation/STANDARDS_CROSSWALK_V0_1.md`.
+
+## 18. Operator-load boundary
+
+The system minimizes unnecessary Operator intervention by resolving only actions demonstrably inside valid policy and delegation envelopes. It escalates the smallest decision that genuinely requires human authority.
+
+Operator attention is not a substitute for missing policy. Absence of Operator attention is not permission to infer broader authority.
+
+## 19. Explicit exclusions
+
+v0.1 does not itself grant permissions, implement a PDP/PEP, select a policy language, change current agent authority, authorize deployment, permit automatic merges, or promote this specification to canon.
