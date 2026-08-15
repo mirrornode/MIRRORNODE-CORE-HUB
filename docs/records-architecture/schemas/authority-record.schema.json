@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.example/schemas/authority-record.schema.json",
+  "title": "MIRRORNODE Authority Record v0.1",
+  "allOf": [
+    { "$ref": "shared-record.schema.json" },
+    {
+      "type": "object",
+      "required": [
+        "authority_type",
+        "grantor",
+        "grantee",
+        "subject_or_resource",
+        "control_plane",
+        "scope",
+        "allowed_actions",
+        "blocked_actions",
+        "evidence_state",
+        "source_ref",
+        "decision_role",
+        "approval_role",
+        "execution_authorization_role",
+        "execution_role",
+        "verification_role",
+        "separation_required",
+        "conflict_of_interest_status",
+        "delegability",
+        "revocation_method",
+        "verification_method",
+        "effective_at",
+        "last_reviewed"
+      ],
+      "properties": {
+        "authority_id": {
+          "type": "string",
+          "description": "Optional alias for record_id. Implementations MUST verify equality when present."
+        },
+        "authority_type": {
+          "type": "string",
+          "enum": [
+            "GOVERNANCE_AUTHORITY",
+            "LEGAL_COMPANY_AUTHORITY",
+            "PROVIDER_ACCOUNT_PERMISSION",
+            "RUNTIME_CAPABILITY",
+            "CLIENT_DELEGATED_AUTHORITY",
+            "INCIDENT_EMERGENCY_AUTHORITY"
+          ]
+        },
+        "grantor": { "type": "string", "minLength": 1 },
+        "grantee": { "type": "string", "minLength": 1 },
+        "subject_or_resource": { "type": "string", "minLength": 1 },
+        "control_plane": { "type": "string", "minLength": 1 },
+        "scope": { "type": ["string", "array", "object"] },
+        "allowed_actions": { "type": "array", "items": { "type": "string" } },
+        "blocked_actions": { "type": "array", "items": { "type": "string" } },
+        "prerequisites": { "type": "array", "items": { "type": "string" } },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "decision_role": { "type": ["string", "array", "null"] },
+        "approval_role": { "type": ["string", "array", "null"] },
+        "execution_authorization_role": { "type": ["string", "array", "null"] },
+        "execution_role": { "type": ["string", "array", "null"] },
+        "verification_role": { "type": ["string", "array", "null"] },
+        "separation_required": { "type": "boolean" },
+        "conflict_of_interest_status": {
+          "type": "string",
+          "enum": ["CLEAR", "DISCLOSED", "PROHIBITED", "UNKNOWN", "NOT_APPLICABLE"]
+        },
+        "delegability": {
+          "type": "string",
+          "enum": ["NON_DELEGABLE", "BOUNDED", "DELEGABLE", "UNKNOWN"]
+        },
+        "revocation_method": { "type": "string", "minLength": 1 },
+        "verification_method": { "type": "string", "minLength": 1 },
+        "effective_at": { "type": "string", "format": "date-time" },
+        "expires_at": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "string", "enum": ["NOT_APPLICABLE", "UNKNOWN", "NOT_RECORDED"] }
+          ]
+        },
+        "last_reviewed": { "type": "string", "format": "date-time" },
+        "emergency_action_type": { "type": "string" },
+        "emergency_authority_ref": { "type": "string" },
+        "maximum_duration": { "type": "string" },
+        "extension_authority_ref": { "type": "string" },
+        "extension_authority_valid_before_emergency": { "type": "boolean" },
+        "extension_decision_ref": { "type": "string" },
+        "extension_decided_by": { "type": "string" },
+        "extension_starts": { "type": "string", "format": "date-time" },
+        "extension_expires": { "type": "string", "format": "date-time" },
+        "extension_scope_change": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "authority_type": { "const": "INCIDENT_EMERGENCY_AUTHORITY" } },
+            "required": ["authority_type"]
+          },
+          "then": {
+            "required": ["emergency_action_type", "emergency_authority_ref", "maximum_duration"]
+          }
+        },
+        {
+          "if": { "required": ["extension_decision_ref"] },
+          "then": {
+            "required": [
+              "extension_authority_ref",
+              "extension_authority_valid_before_emergency",
+              "extension_decided_by",
+              "extension_starts",
+              "extension_expires",
+              "extension_scope_change"
+            ],
+            "properties": {
+              "extension_authority_valid_before_emergency": { "const": true },
+              "extension_scope_change": { "const": false }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "$comment": "Capability, permission, governance authority, legal/company authority, client-delegated authority, and emergency authority remain distinct. Consuming software must enforce role-separation rules and alias equality."
+}
