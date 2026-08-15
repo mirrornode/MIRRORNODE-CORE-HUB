@@ -15,29 +15,32 @@ The design is internal-first and product-ready by design.
 
 > Operator authority remains maximal while delegated authority remains bounded, inspectable, revocable, expiring where appropriate, and incapable of self-expansion.
 
-## Initial authority classes
+## Draft.2 authority classes
 
-The matter will define four machine-readable classes:
+The matter defines four machine-readable classes:
 
-1. **AUTONOMOUS_WITHIN_POLICY** — may proceed only inside a pre-authorized deterministic envelope.
-2. **PROPOSAL_ONLY** — may analyze, recommend, draft, or prepare but cannot cause the governed effect.
-3. **OPERATOR_APPROVAL_REQUIRED** — action cannot proceed without explicit Operator authorization tied to the current state and requested effect.
+1. **AUTONOMOUS_WITHIN_POLICY** — may proceed only inside a pre-authorized deterministic envelope after current policy/state/aggregate-authority checks pass.
+2. **ADVISORY_ONLY** — may analyze, recommend, draft, simulate, or prepare but cannot cause the governed effect.
+3. **OPERATOR_APPROVAL_REQUIRED** — action cannot proceed without a verifiable Operator approval bound to the current request, subject, action, resource, state, policy, delegation, and lifetime.
 4. **NON_DELEGABLE** — authority cannot be delegated through this layer and requires direct Operator action or an explicitly higher governing process.
+
+Unmatched, ambiguous, stale, unverifiable, conflicting, or policy-error requests default to `NON_DELEGABLE` / deny-or-escalate behavior; they never imply permission.
 
 ## Mandatory invariants
 
-- Delegated authority cannot modify its own scope, class, ceiling, expiry, revocation rule, or governing policy.
-- The actor that classifies an action as routine cannot silently be the sole authority that benefits from that classification.
-- Every delegated action remains attributable to requesting actor, governing delegation, executing actor, policy/version, current-state reference, and result.
-- Revocation must take effect without requiring consent from the delegated actor.
+- Delegated authority cannot modify its own scope, class, ceiling, expiry, revocation rule, governing policy, resource mappings, classifier inputs, or aggregate-authority logic.
+- The actor that requests an action cannot silently become the sole authority lowering the action's class or risk.
+- Every delegated action remains attributable to requesting actor, governing delegation, policy bundle, decision, executing actor, current-state reference, approval object where required, and result.
+- Revocation must take effect without requiring consent from the delegated actor and must satisfy an explicit freshness bound.
 - Expired or unverifiable delegation fails closed.
 - Delegation does not imply identity merger, authority inheritance, or provider authority.
-- Security, canon promotion, irreversible external effects, authority expansion, and exceptions to governing policy are presumptively non-delegable unless a later explicit governance matter establishes otherwise.
+- Security weakening, canon/final-authority changes, authority expansion, audit suppression, and exceptions to governing policy are presumptively non-delegable unless later governance explicitly establishes otherwise.
 - Delegation must not convert advisory model output into execution authority.
+- Multiple individually valid grants must be evaluated in aggregate before autonomous execution.
 
 ## Operator-load objective
 
-The system should escalate only when the action exceeds a verified delegation envelope, encounters material ambiguity, conflicts with policy, crosses a defined risk threshold, requires an exception, or reaches a non-delegable class.
+The system should escalate only when the action exceeds verified policy/delegation bounds, encounters material ambiguity, conflicts with policy, crosses risk or aggregate ceilings, requires an exception, or reaches a non-delegable class.
 
 The goal is not maximal autonomy. The goal is **provable bounded autonomy with minimal necessary escalation**.
 
