@@ -4,7 +4,7 @@
 
 ## 1. Purpose
 
-JSON Schema validates document shape. It does not prove cross-document authority relationships, live revocation state, policy integrity, aggregate authority, or TOCTOU safety. A conformant implementation therefore requires a separate validator/evaluator layer.
+JSON Schema validates document shape. It does not prove cross-document authority relationships, live revocation state, policy integrity, aggregate authority, approval binding, or TOCTOU safety. A conformant implementation therefore requires a separate validator/evaluator layer.
 
 ## 2. Static conformance checks
 
@@ -12,10 +12,12 @@ A validator must reject a delegation when:
 
 - schema validation fails;
 - policy path/version/hash are missing or inconsistent;
+- `decision_preconditions_ref` is missing or unresolved;
 - canonical resource identities are malformed or unresolved;
 - allowed operations are unknown to the applicable operation registry;
 - expiry <= effective time;
 - revocation/expiry behavior is undefined;
+- `NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE` is selected without the required rationale;
 - parent delegation cannot be resolved when a child is declared;
 - parent/child scope, operation, authority rank, risk ceiling, depth, or expiry monotonicity fails;
 - a child weakens required receipt, revocation, expiry, or decision-precondition rules;
@@ -36,7 +38,22 @@ Before an `ALLOW`, the PDP must prove:
 - MICC cross-map result;
 - state/precondition validity;
 - risk/composition constraints;
-- any required Operator/Council approval reference.
+- any required Operator/Council approval object is resolved and valid.
+
+For `OPERATOR_APPROVAL_REQUIRED`, the referenced approval MUST conform to `OPERATOR_APPROVAL_V0_1.schema.json`, its content hash MUST equal `operator_approval_hash`, and the validator MUST prove exact binding between approval and authorization decision for:
+
+- approver authority;
+- `request_id`;
+- subject identity;
+- action name and parameters hash;
+- resource identity;
+- context digest;
+- state hash;
+- policy bundle hash;
+- delegation ID/version;
+- approval lifetime and non-revocation where applicable.
+
+A fabricated, missing, expired, recycled, differently bound, or hash-mismatched approval cannot produce `ALLOW`.
 
 ## 4. PEP enforcement checks
 
@@ -49,6 +66,7 @@ Before causing the effect, the PEP must verify:
 - target state/version still matches;
 - obligations are understood;
 - revocation freshness still satisfies policy;
+- when an Operator approval is required, the decision contains a validated approval reference/hash whose bound lifetime remains valid;
 - the PEP itself is authorized only for the narrow downstream effect.
 
 If state changed, the PEP requests a fresh decision instead of interpreting the stale decision.
@@ -68,7 +86,22 @@ Tests must include at minimum:
 
 All must fail or escalate according to policy.
 
-## 6. Revocation/TOCTOU test suite
+## 6. Approval-binding test suite
+
+Tests must include at minimum:
+
+- fabricated `operator_approval_ref`;
+- valid approval ID with wrong content hash;
+- approval for a different request;
+- approval for a different subject, resource, action, or parameters;
+- approval bound to stale state or different policy bundle;
+- expired approval;
+- approval from an unauthorized approver;
+- replay of a previously consumed one-time approval where one-time semantics apply.
+
+All must fail.
+
+## 7. Revocation/TOCTOU test suite
 
 Tests must include:
 
@@ -83,7 +116,7 @@ Tests must include:
 - resource state mutation after decision;
 - target-version mismatch at enforcement.
 
-## 7. Policy-integrity test suite
+## 8. Policy-integrity test suite
 
 Tests must include:
 
@@ -94,7 +127,7 @@ Tests must include:
 - PDP using a policy hash different from the receipt;
 - PEP receiving a decision whose policy bundle is not recognized.
 
-## 8. UI/product conformance
+## 9. UI/product conformance
 
 A future MOPCON/product implementation must be tested to ensure:
 
@@ -105,11 +138,11 @@ A future MOPCON/product implementation must be tested to ensure:
 - unsafe aggregate state cannot be presented as green merely because each envelope is individually valid;
 - denied/escalated decisions cannot be visually collapsed into generic success.
 
-## 9. Commissioning gate
+## 10. Commissioning gate
 
 `AUTONOMOUS_WITHIN_POLICY` must remain disabled for production effects until:
 
-- static, aggregate, revocation/TOCTOU, policy-integrity, and PEP test suites pass;
+- static, approval-binding, aggregate, revocation/TOCTOU, policy-integrity, and PEP test suites pass;
 - receipt/audit mapping is reviewed;
 - failure/rollback behavior is tested;
 - monitoring and alert thresholds are defined;
