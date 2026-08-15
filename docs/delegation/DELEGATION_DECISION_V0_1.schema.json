@@ -55,7 +55,8 @@
     "decision": {"type": "string", "enum": ["ALLOW", "DENY", "ESCALATE"]},
     "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"},
     "obligations": {"type": "array", "items": {"type": "string", "minLength": 1}},
-    "operator_approval_ref": {"type": "string", "minLength": 1},
+    "operator_approval_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "operator_approval_hash": {"$ref": "#/definitions/sha256"},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
     "expires_at": {"$ref": "#/definitions/utcTimestamp"},
     "enforcement_constraints": {
@@ -71,7 +72,7 @@
   "allOf": [
     {
       "if": {"properties": {"authority_class": {"const": "OPERATOR_APPROVAL_REQUIRED"}, "decision": {"const": "ALLOW"}}, "required": ["authority_class", "decision"]},
-      "then": {"required": ["operator_approval_ref"]}
+      "then": {"required": ["operator_approval_ref", "operator_approval_hash"]}
     },
     {
       "if": {"properties": {"authority_class": {"enum": ["ADVISORY_ONLY", "NON_DELEGABLE"]}}, "required": ["authority_class"]},
