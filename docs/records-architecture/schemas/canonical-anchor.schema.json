@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.example/schemas/canonical-anchor.schema.json",
+  "title": "MIRRORNODE Canonical Anchor v0.1",
+  "allOf": [
+    { "$ref": "shared-record.schema.json" },
+    {
+      "type": "object",
+      "required": [
+        "canonical_status",
+        "canonical_anchor_type",
+        "canonical_basis_ref",
+        "promotion_decision_ref",
+        "canonical_scope",
+        "content_hash_algorithm",
+        "content_hash_basis",
+        "content_hash",
+        "anchored_at"
+      ],
+      "properties": {
+        "canonical_status": { "const": "CANONICAL" },
+        "canonical_anchor_type": {
+          "type": "string",
+          "enum": ["NATIVE_CANONICAL", "EXTERNAL_IMMUTABLE_ANCHOR"]
+        },
+        "canonical_basis_ref": { "type": "string", "minLength": 1 },
+        "promotion_decision_ref": { "type": "string", "minLength": 1 },
+        "canonical_scope": { "type": ["string", "array", "object"] },
+        "target_repository": { "type": "string" },
+        "target_commit_or_version": { "type": "string" },
+        "target_path_or_object": { "type": "string" },
+        "content_hash_algorithm": {
+          "type": "string",
+          "enum": ["SHA-256"]
+        },
+        "content_hash_basis": {
+          "type": "string",
+          "enum": ["RAW_BYTES", "CANONICAL_SERIALIZATION"]
+        },
+        "canonical_serialization_ref": { "type": "string" },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "anchored_at": { "type": "string", "format": "date-time" },
+        "supersedes": { "type": ["string", "null"] }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "canonical_anchor_type": { "const": "EXTERNAL_IMMUTABLE_ANCHOR" } },
+            "required": ["canonical_anchor_type"]
+          },
+          "then": {
+            "required": ["target_repository", "target_commit_or_version", "target_path_or_object"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "content_hash_basis": { "const": "CANONICAL_SERIALIZATION" } },
+            "required": ["content_hash_basis"]
+          },
+          "then": {
+            "required": ["canonical_serialization_ref"]
+          }
+        }
+      ]
+    }
+  ],
+  "$comment": "A mutable branch name, latest alias, moving path, or mutable URL is not a sufficient external canonical anchor. For ordinary repository files, hash exact raw bytes at the immutable target revision. Canonical-governance status is established by a completed promotion decision, not by file location."
+}
