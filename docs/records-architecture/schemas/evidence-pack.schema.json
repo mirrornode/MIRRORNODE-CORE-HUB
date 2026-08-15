@@ -30,7 +30,7 @@
       "properties": {
         "pack_id": {
           "type": "string",
-          "description": "Optional presentation alias for record_id; if present it must equal record_id."
+          "description": "Optional presentation alias for record_id. Implementations MUST verify equality with record_id if this alias is present."
         },
         "title": { "type": "string", "minLength": 1 },
         "event_type": { "type": "string", "minLength": 1 },
@@ -98,18 +98,8 @@
         "hold_release_ref": { "type": ["string", "null"] },
         "deletion_executor": { "type": ["string", "null"] },
         "separation_required": { "type": "boolean" }
-      },
-      "allOf": [
-        {
-          "if": { "required": ["pack_id"] },
-          "then": {
-            "properties": {
-              "pack_id": { "const": { "$data": "1/record_id" } }
-            }
-          }
-        }
-      ]
+      }
     }
   ],
-  "$comment": "integrity_assurance_level and chain_of_custody_status are descriptive, not certifications. Consumers must enforce legal-hold separation and fail-closed deletion behavior. The optional pack_id alias should equal record_id; standard JSON Schema cannot portably enforce cross-field equality without an extension, so implementations must check it."
+  "$comment": "integrity_assurance_level and chain_of_custody_status are descriptive, not certifications. Consumers must enforce alias equality, legal-hold separation, and fail-closed deletion behavior in application logic."
 }
