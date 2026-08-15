@@ -2,13 +2,15 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/operator-approval-v0.1.schema.json",
   "title": "MIRRORNODE Operator Approval v0.1",
-  "description": "Draft machine-readable approval object bound to one authorization request/state/policy context under CG-0036.",
+  "description": "Draft authenticated approval object bound to one authorization request/state/policy context under CG-0036.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "approval_id",
     "approval_nonce",
     "approver",
+    "issuer_proof",
+    "reuse_policy",
     "request_id",
     "subject",
     "action",
@@ -26,6 +28,30 @@
     "approval_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
     "approval_nonce": {"type": "string", "minLength": 16},
     "approver": {"type": "string", "minLength": 1},
+    "issuer_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof_type", "issuer_credential_ref", "proof_value_hash"],
+      "properties": {
+        "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_RESOLVER_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
+        "issuer_credential_ref": {"type": "string", "minLength": 1},
+        "proof_value_hash": {"$ref": "#/definitions/sha256"},
+        "attestation_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "reuse_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["ONE_TIME", "BOUNDED_REUSE"]},
+        "max_uses": {"type": "integer", "minimum": 1}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "BOUNDED_REUSE"}}, "required": ["mode"]}, "then": {"required": ["max_uses"]}},
+        {"if": {"properties": {"mode": {"const": "ONE_TIME"}}, "required": ["mode"]}, "then": {"properties": {"max_uses": {"const": 1}}}}
+      ]
+    },
     "request_id": {"type": "string", "minLength": 1},
     "subject": {"$ref": "#/definitions/typedEntity"},
     "action": {
