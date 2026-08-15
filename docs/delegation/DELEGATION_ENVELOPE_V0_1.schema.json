@@ -21,6 +21,7 @@
     "authority_ceiling",
     "authority_rank",
     "risk_ceiling",
+    "decision_preconditions_ref",
     "issued_at",
     "effective_at",
     "expires_at",
@@ -35,32 +36,14 @@
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "delegator": {"type": "string", "minLength": 1},
     "delegate_actor": {"type": "string", "minLength": 1},
-    "authority_class": {
-      "type": "string",
-      "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]
-    },
+    "authority_class": {"type": "string", "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]},
     "governing_policy_ref": {"$ref": "#/definitions/repoRef"},
     "policy_version": {"type": "string", "minLength": 1},
     "policy_content_hash": {"$ref": "#/definitions/sha256"},
     "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
-    "allowed_operations": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}
-    },
-    "resource_scope": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {"$ref": "#/definitions/canonicalResource"}
-    },
-    "environment_scope": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}
-    },
+    "allowed_operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
+    "resource_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/canonicalResource"}},
+    "environment_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}},
     "authority_ceiling": {"type": "string", "minLength": 1},
     "authority_rank": {"type": "integer", "minimum": 0},
     "risk_ceiling": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
@@ -68,14 +51,9 @@
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
     "effective_at": {"$ref": "#/definitions/utcTimestamp"},
     "expires_at": {"$ref": "#/definitions/utcTimestamp"},
-    "revocation_behavior": {
-      "type": "string",
-      "enum": ["CANCEL_ON_REVOCATION", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"]
-    },
-    "expiry_behavior": {
-      "type": "string",
-      "enum": ["CANCEL_ON_EXPIRY", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "ALLOW_COMPLETION_IF_DECISION_WAS_VALID_AND_BOUND"]
-    },
+    "revocation_behavior": {"type": "string", "enum": ["CANCEL_ON_REVOCATION", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"]},
+    "non_interruptible_rationale": {"type": "string", "minLength": 20},
+    "expiry_behavior": {"type": "string", "enum": ["CANCEL_ON_EXPIRY", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "ALLOW_COMPLETION_IF_DECISION_WAS_VALID_AND_BOUND"]},
     "max_revocation_propagation_seconds": {"type": "integer", "minimum": 0},
     "revocation_ref": {"$ref": "#/definitions/repoRef"},
     "receipt_policy_ref": {"$ref": "#/definitions/repoRef"},
@@ -87,40 +65,25 @@
       "properties": {
         "allowed": {"type": "boolean"},
         "max_depth": {"type": "integer", "minimum": 0},
-        "eligible_operations": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}
-        },
+        "eligible_operations": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
         "parent_delegation_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"}
       },
       "allOf": [
-        {
-          "if": {"properties": {"allowed": {"const": true}}, "required": ["allowed"]},
-          "then": {"required": ["max_depth", "eligible_operations"]}
-        }
+        {"if": {"properties": {"allowed": {"const": true}}, "required": ["allowed"]}, "then": {"required": ["max_depth", "eligible_operations"]}}
       ]
     },
     "notes": {"type": "array", "items": {"type": "string"}}
   },
-  "definitions": {
-    "repoRef": {
-      "type": "string",
-      "minLength": 1,
-      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
-    },
-    "utcTimestamp": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"
-    },
-    "sha256": {
-      "type": "string",
-      "pattern": "^sha256:[a-f0-9]{64}$"
-    },
-    "canonicalResource": {
-      "type": "string",
-      "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"
+  "allOf": [
+    {
+      "if": {"properties": {"revocation_behavior": {"const": "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"}}, "required": ["revocation_behavior"]},
+      "then": {"required": ["non_interruptible_rationale"]}
     }
+  ],
+  "definitions": {
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "canonicalResource": {"type": "string", "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"}
   }
 }
