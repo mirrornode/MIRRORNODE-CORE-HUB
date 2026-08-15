@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.example/schemas/evidence-pack.schema.json",
+  "title": "MIRRORNODE Evidence Pack v0.1",
+  "allOf": [
+    { "$ref": "shared-record.schema.json" },
+    {
+      "type": "object",
+      "required": [
+        "title",
+        "event_type",
+        "subject",
+        "actor",
+        "authority_basis",
+        "action",
+        "target",
+        "execution_state",
+        "source_system",
+        "collection_method",
+        "evidence_integrity_method",
+        "integrity_assurance_level",
+        "chain_of_custody_status",
+        "time_basis",
+        "time_zone",
+        "access_restrictions",
+        "sensitive_fields_redacted",
+        "next_gate",
+        "retention_class"
+      ],
+      "properties": {
+        "pack_id": {
+          "type": "string",
+          "description": "Optional presentation alias for record_id; if present it must equal record_id."
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "event_type": { "type": "string", "minLength": 1 },
+        "subject": { "type": "string", "minLength": 1 },
+        "actor": { "type": "string", "minLength": 1 },
+        "authority_basis": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "inputs": { "type": ["array", "object", "string", "null"] },
+        "decision": { "type": ["object", "string", "null"] },
+        "execution_state": {
+          "type": "string",
+          "enum": ["NOT_STARTED", "PENDING", "EXECUTED", "VERIFIED", "FAILED", "ABORTED", "UNKNOWN"]
+        },
+        "outcome": { "type": ["object", "string", "null"] },
+        "source_system": { "type": "string", "minLength": 1 },
+        "collection_method": { "type": "string", "minLength": 1 },
+        "evidence_integrity_method": { "type": "string", "minLength": 1 },
+        "integrity_assurance_level": {
+          "type": "string",
+          "enum": ["NONE", "BASIC", "HASHED", "SIGNED", "THIRD_PARTY_ATTESTED"]
+        },
+        "chain_of_custody": { "type": ["string", "array", "object", "null"] },
+        "chain_of_custody_status": {
+          "type": "string",
+          "enum": ["NOT_REQUIRED", "PARTIAL", "DOCUMENTED", "UNKNOWN"]
+        },
+        "time_basis": { "type": "string", "minLength": 1 },
+        "time_zone": { "type": "string", "minLength": 1 },
+        "access_restrictions": { "type": ["array", "string"] },
+        "reviewer": { "type": ["string", "null"] },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "screenshots_or_exports": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "external_receipts": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "hashes_or_commit_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "sensitive_fields_redacted": { "type": "boolean" },
+        "next_gate": { "type": "string", "minLength": 1 },
+        "open_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "supersedes_or_related_pack": {
+          "type": ["string", "array", "null"]
+        },
+        "retention_class": { "type": "string", "minLength": 1 },
+        "legal_hold_status": {
+          "type": "string",
+          "enum": ["NONE", "ACTIVE", "RELEASED", "UNKNOWN"]
+        },
+        "hold_basis_ref": { "type": ["string", "null"] },
+        "hold_release_authority_ref": { "type": ["string", "null"] },
+        "hold_release_authorizer": { "type": ["string", "null"] },
+        "hold_release_ref": { "type": ["string", "null"] },
+        "deletion_executor": { "type": ["string", "null"] },
+        "separation_required": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "required": ["pack_id"] },
+          "then": {
+            "properties": {
+              "pack_id": { "const": { "$data": "1/record_id" } }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "$comment": "integrity_assurance_level and chain_of_custody_status are descriptive, not certifications. Consumers must enforce legal-hold separation and fail-closed deletion behavior. The optional pack_id alias should equal record_id; standard JSON Schema cannot portably enforce cross-field equality without an extension, so implementations must check it."
+}
