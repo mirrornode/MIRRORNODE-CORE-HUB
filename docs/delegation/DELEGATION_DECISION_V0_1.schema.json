@@ -20,6 +20,7 @@
     "pdp_version",
     "policy_content_hash",
     "policy_bundle_hash",
+    "decision_preconditions_hash",
     "aggregate_authority_snapshot_hash",
     "state_hash",
     "decision",
@@ -50,6 +51,7 @@
     "pdp_version": {"type": "string", "minLength": 1},
     "policy_content_hash": {"$ref": "#/definitions/sha256"},
     "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
+    "decision_preconditions_hash": {"$ref": "#/definitions/sha256"},
     "aggregate_authority_snapshot_hash": {"$ref": "#/definitions/sha256"},
     "state_hash": {"$ref": "#/definitions/sha256"},
     "decision": {"type": "string", "enum": ["ALLOW", "DENY", "ESCALATE"]},
@@ -57,6 +59,9 @@
     "obligations": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "operator_approval_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"},
     "operator_approval_hash": {"$ref": "#/definitions/sha256"},
+    "council_approval_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "council_approval_hash": {"$ref": "#/definitions/sha256"},
+    "micc_approval_class": {"type": "string", "enum": ["APPROVAL_NONE", "APPROVAL_AUTOMATED", "APPROVAL_OPERATOR", "APPROVAL_COUNCIL"]},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
     "expires_at": {"$ref": "#/definitions/utcTimestamp"},
     "enforcement_constraints": {
@@ -72,6 +77,14 @@
   "allOf": [
     {
       "if": {"properties": {"authority_class": {"const": "OPERATOR_APPROVAL_REQUIRED"}, "decision": {"const": "ALLOW"}}, "required": ["authority_class", "decision"]},
+      "then": {"required": ["operator_approval_ref", "operator_approval_hash"]}
+    },
+    {
+      "if": {"properties": {"micc_approval_class": {"const": "APPROVAL_COUNCIL"}, "decision": {"const": "ALLOW"}}, "required": ["micc_approval_class", "decision"]},
+      "then": {"required": ["council_approval_ref", "council_approval_hash"]}
+    },
+    {
+      "if": {"properties": {"micc_approval_class": {"const": "APPROVAL_OPERATOR"}, "decision": {"const": "ALLOW"}}, "required": ["micc_approval_class", "decision"]},
       "then": {"required": ["operator_approval_ref", "operator_approval_hash"]}
     },
     {
