@@ -1,0 +1,102 @@
+schema_name: source_of_truth_matrix
+schema_version: 0.1.0
+record_id: EVID-2026-0001
+record_status: DRAFT
+created_at: 2026-08-15T04:51:00-07:00
+updated_at: 2026-08-15T04:51:00-07:00
+record_owner: operator
+source_refs:
+  - GOVERNANCE.md
+  - CANONICAL_SOURCES.md
+  - MASTER_INDEX.md
+change_ref: records-architecture-v1-implementation
+classification: INTERNAL
+authority_role: OPERATIONAL
+canonical_status: NON_CANONICAL
+
+rules:
+  - canonical_status_and_authority_are_not_synonyms
+  - file_location_does_not_create_authority
+  - missing_value_is_not_evidence_of_absence
+  - operational_indexes_do_not_supersede_source_records
+
+record_domains:
+  - record_domain: canonical_governance
+    record_type: promoted_governance_artifact
+    authoritative_source: MIRRORNODE-CORE-HUB promotion record plus exact promoted artifact or immutable external anchor
+    authority_role: CANONICAL_SOURCE
+    classification: INTERNAL
+    canonical_possible: true
+    promotion_required: true
+    owner: designated_human_decision_authority
+    backup_location: NOT_RECORDED
+    retention_class: permanent_governance
+    recovery_method: NOT_RECORDED
+    evidence_state: PARTIALLY_VERIFIED
+    note: Current repository governance files establish a promotion-oriented governance lane; implementation must not infer canon solely from path or branch.
+
+  - record_domain: operational_governance_index
+    record_type: source_linked_index
+    authoritative_source: docs/records-architecture and governance-index records
+    authority_role: OPERATIONAL
+    classification: INTERNAL
+    canonical_possible: false
+    promotion_required: false
+    owner: designated_human_record_owner
+    backup_location: repository_history
+    retention_class: operational_history
+    recovery_method: git_history
+    evidence_state: VERIFIED
+
+  - record_domain: legal_issued_records
+    record_type: formation_tax_bank_insurance_issued_record
+    authoritative_source: issuing authority or executed legal instrument
+    authority_role: LEGAL_ISSUED
+    classification: RESTRICTED
+    canonical_possible: false
+    promotion_required: false
+    owner: designated_human_legal_financial_owner
+    backup_location: NOT_RECORDED
+    retention_class: legal_financial
+    recovery_method: NOT_RECORDED
+    evidence_state: NOT_RECORDED
+    note: Storage location is intentionally not assumed until restricted company-record storage is established.
+
+  - record_domain: client_scoped_records
+    record_type: executed_agreement_scope_evidence_delivery
+    authoritative_source: executed client agreement and engagement-specific records
+    authority_role: CLIENT_SCOPED
+    classification: CLIENT_SHARED
+    canonical_possible: false
+    promotion_required: false
+    owner: designated_human_engagement_owner
+    backup_location: NOT_RECORDED
+    retention_class: engagement_specific
+    recovery_method: NOT_RECORDED
+    evidence_state: NOT_RECORDED
+
+  - record_domain: technical_implementation
+    record_type: runtime_schema_code_deployment_documentation
+    authoritative_source: exact repository revision and observed runtime/deployment evidence as applicable
+    authority_role: OPERATIONAL
+    classification: INTERNAL
+    canonical_possible: false
+    promotion_required: false
+    owner: implementation_owner
+    backup_location: repository_history
+    retention_class: technical_history
+    recovery_method: git_history
+    evidence_state: PARTIALLY_VERIFIED
+
+  - record_domain: public_explanatory_material
+    record_type: dossier_site_readme_case_study
+    authoritative_source: approved release artifact plus disclosure review reference
+    authority_role: EXPLANATORY
+    classification: PUBLIC
+    canonical_possible: false
+    promotion_required: false
+    owner: disclosure_owner
+    backup_location: repository_or_release_history
+    retention_class: public_release_history
+    recovery_method: source_revision_and_release_history
+    evidence_state: NOT_RECORDED
