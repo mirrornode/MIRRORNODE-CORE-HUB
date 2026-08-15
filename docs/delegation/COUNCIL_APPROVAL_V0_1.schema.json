@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/council-approval-v0.1.schema.json",
+  "title": "MIRRORNODE Council Approval v0.1",
+  "description": "Draft authenticated Council approval/disposition object for approval-bearing authorization decisions under CG-0036.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approval_id",
+    "approval_nonce",
+    "council_matter_ref",
+    "disposition_ref",
+    "disposition_hash",
+    "issuer_proof",
+    "reuse_policy",
+    "request_id",
+    "subject",
+    "action",
+    "resource",
+    "context_digest",
+    "state_hash",
+    "policy_bundle_hash",
+    "delegation_id",
+    "delegation_version",
+    "decision",
+    "issued_at",
+    "expires_at"
+  ],
+  "properties": {
+    "approval_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "approval_nonce": {"type": "string", "minLength": 16},
+    "council_matter_ref": {"type": "string", "minLength": 1},
+    "disposition_ref": {"type": "string", "minLength": 1},
+    "disposition_hash": {"$ref": "#/definitions/sha256"},
+    "issuer_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof_type", "issuer_credential_ref", "proof_value_hash"],
+      "properties": {
+        "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_RESOLVER_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
+        "issuer_credential_ref": {"type": "string", "minLength": 1},
+        "proof_value_hash": {"$ref": "#/definitions/sha256"},
+        "attestation_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "reuse_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["ONE_TIME", "BOUNDED_REUSE"]},
+        "max_uses": {"type": "integer", "minimum": 1}
+      },
+      "allOf": [
+        {"if": {"properties": {"mode": {"const": "BOUNDED_REUSE"}}, "required": ["mode"]}, "then": {"required": ["max_uses"]}},
+        {"if": {"properties": {"mode": {"const": "ONE_TIME"}}, "required": ["mode"]}, "then": {"properties": {"max_uses": {"const": 1}}}}
+      ]
+    },
+    "request_id": {"type": "string", "minLength": 1},
+    "subject": {"$ref": "#/definitions/typedEntity"},
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "parameters_hash"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z0-9:_-]+$"},
+        "parameters_hash": {"$ref": "#/definitions/sha256"}
+      }
+    },
+    "resource": {"$ref": "#/definitions/typedEntity"},
+    "context_digest": {"$ref": "#/definitions/sha256"},
+    "state_hash": {"$ref": "#/definitions/sha256"},
+    "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
+    "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "decision": {"type": "string", "const": "APPROVE"},
+    "issued_at": {"$ref": "#/definitions/utcTimestamp"},
+    "expires_at": {"$ref": "#/definitions/utcTimestamp"},
+    "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"}
+  },
+  "definitions": {
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "typedEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "id": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
