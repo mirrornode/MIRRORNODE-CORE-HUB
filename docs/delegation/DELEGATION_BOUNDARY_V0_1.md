@@ -22,7 +22,7 @@ The delegated actor may proceed without a new Operator approval only when all de
 The actor may analyze, draft, recommend, simulate, prepare, or emit a typed action proposal. It may not cause the governed effect.
 
 ### OPERATOR_APPROVAL_REQUIRED
-The actor may prepare the action, but execution requires an explicit Operator decision bound to the current request, policy, resource, state, and decision lifetime.
+The actor may prepare the action, but execution requires an authenticated Operator approval bound to the current request, subject, action, resource, policy, state, delegation, and approval lifetime.
 
 ### NON_DELEGABLE
 The authority cannot be conveyed through this delegation layer. Direct Operator action or a separately governed higher-authority process is required.
@@ -63,6 +63,7 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `authority_rank`
 - `risk_ceiling`
 - `decision_preconditions_ref`
+- `decision_preconditions_hash`
 - `issued_at`
 - `effective_at`
 - `expires_at`
@@ -72,7 +73,7 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `receipt_policy_ref`
 - `subdelegation`
 
-A delegation is invalid if its governing policy content hash, policy bundle hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
+A delegation is invalid if its governing policy content hash, policy bundle hash, decision-precondition hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
 
 ## 5. Authority Classification Boundary
 
@@ -93,10 +94,13 @@ Every decision must record at least:
 
 - evaluator identity/version;
 - policy bundle hash;
+- immutable decision-preconditions hash;
 - delegation identifier/version;
 - subject/action/resource/context digest;
 - aggregate-authority snapshot digest;
 - state reference/hash;
+- controlling MICC approval class where applicable;
+- authenticated Operator/Council approval references and hashes where required;
 - allow/deny result;
 - obligations and reason code;
 - decision nonce;
@@ -122,10 +126,12 @@ This includes:
 - extending expiry;
 - weakening revocation or expiry behavior;
 - changing governing policy or applicable policy bundle;
+- changing decision-precondition content without producing and governing a new immutable hash;
 - changing canonical resource mappings to reach equivalent protected resources;
 - reclassifying a governed action into a less restrictive delegation class;
 - changing evidence requirements in a way that makes its own actions easier to approve;
 - manipulating risk inputs or classifier inputs it controls without independent validation;
+- fabricating or self-asserting approval provenance;
 - delegating onward authority without explicit subdelegation permission;
 - combining multiple grants to exceed the aggregate authority ceiling.
 
@@ -161,6 +167,8 @@ Authority is monotonically non-increasing across a delegation chain.
 
 Autonomous delegated execution requires all preconditions to pass immediately before enforcement.
 
+The delegation binds the governing precondition artifact by both reference and content hash. The PDP records the exact `decision_preconditions_hash` it evaluated, and the PEP rejects enforcement if that immutable binding no longer matches.
+
 At minimum, the decision request may bind:
 
 - current state hash or equivalent state reference;
@@ -172,6 +180,7 @@ At minimum, the decision request may bind:
 - required deterministic checks;
 - conflict state;
 - policy content/bundle hashes;
+- decision-precondition hash;
 - non-expiry and non-revocation;
 - aggregate-authority snapshot;
 - dependency state;
@@ -179,7 +188,7 @@ At minimum, the decision request may bind:
 
 The PEP must reject a decision if bound state has materially changed before enforcement. For mutable resources, implementations should use compare-and-swap, version preconditions, transactions, locks, or an equivalent enforcement mechanism appropriate to the resource.
 
-Retries of autonomous actions are new authorization events. They MUST re-evaluate current policy, delegation, revocation, expiry, aggregate authority, and state. A previous allow decision is not a reusable capability unless an explicit one-time or bounded reusable token profile is separately defined.
+Retries of autonomous actions are new authorization events. They MUST re-evaluate current policy, delegation, revocation, expiry, aggregate authority, preconditions, and state. A previous allow decision is not a reusable capability unless an explicit bounded reusable profile is separately defined.
 
 ## 11. Revocation and expiry
 
@@ -194,6 +203,8 @@ Revocation behavior for already-started work is one of:
 - `COMPLETE_CURRENT_TRANSACTION`
 - `NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE`
 
+The non-interruptible mode requires a meaningful, non-whitespace rationale that is retained as part of the delegation evidence.
+
 Expiry behavior is separately declared as one of:
 
 - `CANCEL_ON_EXPIRY`
@@ -205,25 +216,44 @@ Queued work not yet enforced is new work and requires a fresh valid decision. Re
 
 Offline enforcement that cannot meet revocation freshness requirements is not permitted for autonomous effects unless a separate bounded offline-capability profile is explicitly governed.
 
-## 12. Non-delegable guardrails
+## 12. Approval provenance and consumption
+
+Approval is an authenticated authority artifact, not a string assertion.
+
+Operator approvals and Council approvals must:
+
+- conform to their typed approval schema;
+- carry authenticated issuer provenance verifiable against a trusted credential or attestation root outside the requester and affected delegate's authority path;
+- bind the exact request, subject, action/parameters, resource, context, state, policy bundle, delegation, and lifetime;
+- carry a content hash referenced by the authorization decision;
+- declare either `ONE_TIME` or `BOUNDED_REUSE` semantics;
+- participate in authoritative, concurrency-safe consumption accounting.
+
+A hash proves object integrity, not issuer identity. A claimed approver name without authenticated provenance cannot authorize execution.
+
+`ONE_TIME` approvals are atomically consumed by their first authorized enforcement. `BOUNDED_REUSE` approvals declare `max_uses`; remaining uses are tracked in an authoritative consumption state. Unverifiable consumption state fails closed.
+
+Where Council approval is required, the decision must carry a typed Council approval binding whose matter/disposition integrity and exact current-action authorization can be independently verified.
+
+## 13. Non-delegable guardrails
 
 Unless separately authorized by explicit governance, the following are NON_DELEGABLE through v0.1:
 
 - expansion of an actor's own authority or root/aggregate ceiling;
 - modification of the policy-authoring or classification rules governing that actor's authority;
-- weakening of security controls, security verdict requirements, identity verification, or enforcement-point controls;
+- weakening of security controls, security verdict requirements, identity verification, approval-provenance verification, or enforcement-point controls;
 - exceptions to governing approval policy;
 - canon promotion or modification of final authority rules;
 - creation or weakening of non-delegable guardrails;
 - irreversible high-impact external effects outside a pre-established deterministic policy;
 - alteration, deletion, suppression, or fabrication of authoritative audit evidence;
-- disabling revocation, expiry enforcement, evidence emission, or required verification;
+- disabling revocation, expiry enforcement, evidence emission, approval consumption, or required verification;
 - self-approval of a previously approval-bearing action;
 - modifying the canonical resource-identity registry to broaden one's own reachable scope;
 - modifying aggregate-authority computation or risk-classification logic to benefit the affected actor;
 - issuance of root delegations or root policy-signing authority to oneself.
 
-## 13. MICC approval-class relationship
+## 14. MICC approval-class relationship
 
 Delegation class does not replace MICC approval classification. Both constraints apply, and the stricter requirement wins.
 
@@ -231,33 +261,33 @@ Delegation class does not replace MICC approval classification. Both constraints
 |---|---|
 | `AUTONOMOUS_WITHIN_POLICY` | May proceed only when the underlying MICC capability permits `APPROVAL_NONE` or `APPROVAL_AUTOMATED` and all delegation conditions pass. It can never downgrade `APPROVAL_OPERATOR` or `APPROVAL_COUNCIL`. |
 | `ADVISORY_ONLY` | Produces no execution authorization. |
-| `OPERATOR_APPROVAL_REQUIRED` | Requires explicit Operator approval even if MICC would otherwise allow automation. |
+| `OPERATOR_APPROVAL_REQUIRED` | Requires authenticated, bound Operator approval even if MICC would otherwise allow automation. |
 | `NON_DELEGABLE` | Delegation cannot authorize the action; any separately applicable MICC/Council/Operator gate remains controlling. |
 
-When taxonomies disagree or cannot be mapped deterministically, deny/escalate.
+If MICC requires `APPROVAL_OPERATOR`, a conformant `ALLOW` decision carries the validated Operator approval binding. If MICC requires `APPROVAL_COUNCIL`, a conformant `ALLOW` decision carries the validated Council approval binding. When taxonomies disagree or cannot be mapped deterministically, deny/escalate.
 
-## 14. Relationship to cognition
+## 15. Relationship to cognition
 
 Generated model output, analysis, confidence, or a tool/function proposal carries no execution authority by itself.
 
 The Cognition Contract term `PROPOSAL_ONLY` is a cognition side-effect ceiling. CG-0036 uses `ADVISORY_ONLY` for the delegation authority class to avoid semantic collision.
 
-A cognition system may emit an action proposal, but the PDP evaluates the resulting action request independently. The proposal source cannot supply trusted authority class, risk score, resource identity, policy version, or approval state merely by asserting them.
+A cognition system may emit an action proposal, but the PDP evaluates the resulting action request independently. The proposal source cannot supply trusted authority class, risk score, resource identity, policy version, approval state, or approval provenance merely by asserting them.
 
-## 15. Evidence, receipts, and verification
+## 16. Evidence, receipts, and verification
 
 Every delegated effect must be reconstructible from an evidence chain sufficient to establish four distinct facts:
 
-1. **authorized** — a valid decision permitted the action;
-2. **correctly classified** — the PDP used the correct policy, subject/action/resource/context, and aggregate-authority state;
-3. **policy-compliant** — all decision obligations and preconditions were satisfied at enforcement time;
+1. **authorized** — a valid decision plus any required authenticated approval permitted the action;
+2. **correctly classified** — the PDP used the correct policy, immutable preconditions, subject/action/resource/context, MICC gate, and aggregate-authority state;
+3. **policy-compliant** — all decision obligations, approval-consumption constraints, and preconditions were satisfied at enforcement time;
 4. **successful** — the resulting effect matched the authorized target.
 
 Success never substitutes for authorization.
 
-Decision and execution receipts should include immutable references/hashes rather than mutable path names alone. Authorization receipts are separate from execution receipts but must be linkable by nonce/request/effect identifiers.
+Decision and execution receipts should include immutable references/hashes rather than mutable path names alone. Authorization receipts are separate from execution receipts but must be linkable by nonce/request/effect identifiers. Approval provenance and consumption state must be reconstructible without exposing secret credential material.
 
-## 16. Product/HUD requirements
+## 17. Product/HUD requirements
 
 The product layer must visualize governing authority state; it may not redefine it.
 
@@ -267,7 +297,9 @@ A conformant UI must not show only per-envelope status. For every actor capable 
 - overlapping grants and parent/child relationships;
 - root ceiling and current utilization;
 - policy bundle/version/hash provenance;
+- decision-precondition integrity;
 - delegation expiry/revocation freshness;
+- approval provenance/status and bounded-use state where relevant;
 - pending escalations;
 - recent decisions and execution receipts;
 - any action-chain/composition warning;
@@ -275,7 +307,7 @@ A conformant UI must not show only per-envelope status. For every actor capable 
 
 A green status on one envelope must not imply the actor's aggregate authority is low-risk.
 
-## 17. Standards-alignment posture
+## 18. Standards-alignment posture
 
 This draft intentionally aligns its architecture with established patterns without claiming certification or conformance:
 
@@ -290,12 +322,12 @@ This draft intentionally aligns its architecture with established patterns witho
 
 Detailed crosswalk: `docs/delegation/STANDARDS_CROSSWALK_V0_1.md`.
 
-## 18. Operator-load boundary
+## 19. Operator-load boundary
 
 The system minimizes unnecessary Operator intervention by resolving only actions demonstrably inside valid policy and delegation envelopes. It escalates the smallest decision that genuinely requires human authority.
 
 Operator attention is not a substitute for missing policy. Absence of Operator attention is not permission to infer broader authority.
 
-## 19. Explicit exclusions
+## 20. Explicit exclusions
 
-v0.1 does not itself grant permissions, implement a PDP/PEP, select a policy language, change current agent authority, authorize deployment, permit automatic merges, or promote this specification to canon.
+v0.1 does not itself grant permissions, implement a PDP/PEP, select a policy language, select approval-signing or consumption-store technology, change current agent authority, authorize deployment, permit automatic merges, or promote this specification to canon.
