@@ -8,19 +8,6 @@ Every execution event MUST emit an audit record. No exceptions.
 
 ## Audit Record Structure
 ```json
-deactivate
-cd ~/mirrornode
-cat > canon/contracts/AUDIT_EMISSION.md <<'EOCONTRACT'
-# AUDIT EMISSION CONTRACT
-
-## Invariant
-Every execution event MUST emit an audit record. No exceptions.
-
-## Schema Version
-1.0.0
-
-## Audit Record Structure
-```json
 {
   "timestamp": "ISO8601 UTC",
   "repo": "string (repo name)",
