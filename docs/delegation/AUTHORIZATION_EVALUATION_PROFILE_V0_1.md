@@ -27,20 +27,20 @@ A conformant PDP evaluates in this order:
 6. **Load immutable policy bundle** — verify `policy_content_hash` and `policy_bundle_hash`.
 7. **Apply non-delegable/forbid guardrails** — a matching guardrail cannot be overridden by a permit or delegation.
 8. **Load all active applicable delegations** — not only the grant cited by the requester.
-9. **Validate each delegation** — identity, signature/integrity where applicable, scope, dates, revocation freshness, parent-chain monotonicity, policy hashes.
+9. **Authenticate and validate each delegation** — require verifiable issuer proof over the complete canonical envelope payload excluding `issuer_proof`; verify the issuer against a trusted root outside the delegate's authority path, then validate scope, dates, revocation freshness, parent-chain monotonicity, and policy hashes. An unsigned, self-asserted, fabricated, or unverifiable envelope never enters `G(A,t)`.
 10. **Compute aggregate authority snapshot** — evaluate the union of active grants against the separately governed root ceiling and composition constraints.
 11. **Classify the requested action** — derive the delegation class from governing policy, not from requester-supplied labels.
-12. **Cross-check MICC** — both approval systems apply; the stricter gate wins.
+12. **Cross-check MICC** — both approval systems apply; the stricter gate wins, and the controlling MICC class is carried into the decision record.
 13. **Evaluate risk and action-chain composition** — reject/escalate if the requested action or known chain exceeds risk, budget, cardinality, sequence, or blast-radius constraints.
-14. **Evaluate decision preconditions** — current state, target version, deterministic checks, conflicts, dependencies, replay/idempotency controls.
+14. **Evaluate decision preconditions** — current state, target version, deterministic checks, conflicts, dependencies, replay/idempotency controls. Child delegations must carry the exact parent precondition hash until a separately governed typed strengthening relation exists.
 15. **Resolve required human authority** — if Operator/Council/non-delegable authority is required, absence of a valid bound approval prevents `ALLOW`.
-16. **Emit decision** — `ALLOW`, `DENY`, or `ESCALATE` with decision nonce, reason, obligations, state/policy/aggregate digests, and expiry.
+16. **Emit decision** — `ALLOW`, `DENY`, or `ESCALATE` with decision nonce, reason, obligations, state/policy/aggregate digests, MICC approval class, and expiry. Every `ALLOW` is explicitly one-time-use in v0.1.
 
 ## 3. Aggregate authority algebra
 
 For an actor `A` at time `t`:
 
-- `G(A,t)` = all active, valid delegation grants applicable to A;
+- `G(A,t)` = all active, issuer-authenticated, valid delegation grants applicable to A;
 - `Permit(A,t)` = union of explicitly permitted operation/resource/environment tuples in `G(A,t)`;
 - `Root(A,t)` = separately governed maximum authority ceiling for A;
 - `Forbid(t)` = non-delegable and explicit deny guardrails;
@@ -73,13 +73,15 @@ The PDP decision is not itself the effect. A PEP enforces the decision only if:
 
 - decision signature/integrity and issuer are trusted;
 - decision has not expired;
-- one-time-use constraints have not already been consumed;
+- every `ALLOW` declares one-time use and its decision identity/nonce has not already been consumed;
 - resource/action/parameter identities match the pending effect;
 - bound state/target version still matches;
 - revocation freshness is within the required bound;
 - decision obligations are understood and satisfiable.
 
-If any binding fails, the PEP denies and requests a fresh evaluation.
+The PEP MUST atomically consume every `ALLOW` decision identity/nonce before or as part of enforcement. A replayed `ALLOW` fails even if unexpired and even if an associated approval has remaining bounded uses. A new effect requires a fresh PDP decision. Bounded decision reuse is outside v0.1 and requires a separately governed profile.
+
+If any binding or atomic consumption step fails, the PEP denies and requests a fresh evaluation.
 
 ## 6. Policy changes
 
@@ -91,7 +93,7 @@ Any policy change capable of increasing the author's own effective authority mus
 
 No single component is assumed infallible:
 
-- compromised requester: bounded by identity, canonical resource/action, PDP, and PEP;
+- compromised requester: bounded by identity, canonical resource/action, authenticated delegation provenance, PDP, and PEP;
 - compromised PDP: constrained by independently verifiable policy/decision hashes, PEP acceptance rules, and audit/verifier checks;
 - compromised PEP: detectable through execution/effect receipts and downstream resource controls; production design should minimize its credentials and scope;
 - compromised policy publisher: bounded by policy-governance and separation-of-duty requirements;
