@@ -9,6 +9,7 @@
     "delegation_id",
     "delegation_version",
     "delegator",
+    "issuer_proof",
     "delegate_actor",
     "authority_class",
     "governing_policy_ref",
@@ -36,6 +37,22 @@
     "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "delegator": {"type": "string", "minLength": 1},
+    "issuer_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"],
+      "properties": {
+        "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_REGISTRY_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
+        "issuer_credential_ref": {"type": "string", "minLength": 1},
+        "signed_payload_hash": {"$ref": "#/definitions/sha256"},
+        "proof_value": {"type": "string", "minLength": 16},
+        "proof_ref": {"type": "string", "minLength": 1}
+      },
+      "oneOf": [
+        {"required": ["proof_value"], "not": {"required": ["proof_ref"]}},
+        {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}
+      ]
+    },
     "delegate_actor": {"type": "string", "minLength": 1},
     "authority_class": {"type": "string", "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]},
     "governing_policy_ref": {"$ref": "#/definitions/repoRef"},
