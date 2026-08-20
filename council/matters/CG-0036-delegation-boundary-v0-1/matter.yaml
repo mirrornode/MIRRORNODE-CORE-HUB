@@ -4,7 +4,7 @@ title: Delegation Boundary v0.1
 matterType: governance
 initiator: operator
 createdAt: "2026-08-14T22:49:00Z"
-updatedAt: "2026-08-14T23:09:00Z"
+updatedAt: "2026-08-20T20:13:00Z"
 workflowState: open
 decisionQuestion: >-
   How should MIRRORNODE reduce routine Operator intervention through bounded,
@@ -74,6 +74,14 @@ referenceArtifacts:
     kind: document
     href: ../../../docs/delegation/DELEGATION_DECISION_V0_1.schema.json
     canonical: false
+  - id: OPERATOR-APPROVAL-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/OPERATOR_APPROVAL_V0_1.schema.json
+    canonical: false
+  - id: COUNCIL-APPROVAL-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/COUNCIL_APPROVAL_V0_1.schema.json
+    canonical: false
   - id: AUTHORIZATION-EVALUATION-PROFILE
     kind: document
     href: ../../../docs/delegation/AUTHORIZATION_EVALUATION_PROFILE_V0_1.md
@@ -101,17 +109,20 @@ resolvedDraftQuestions:
   - retries-require-fresh-authorization-and-state-revalidation
   - delegation-PROPOSAL_ONLY-renamed-ADVISORY_ONLY-to-avoid-cognition-collision
   - MICC-and-delegation-classes-compose-with-stricter-gate-wins
+  - delegation-issuance-requires-authenticated-provenance
+  - allow-decisions-are-one-time-use-in-v0-1
+  - child-preconditions-inherit-exact-parent-hash-until-typed-strengthening-exists
 openQuestions:
   - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
   - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
   - What revocation-state distribution mechanism can meet declared freshness bounds under degraded network conditions?
   - What exact receipt mapping should be adopted after AUDIT_EMISSION repair/review closes?
   - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
-currentRevision: draft-2-complete-architecture-profile-2026-08-14
+currentRevision: draft-2-hardening-2026-08-20
 nextRequiredStep: >-
-  Obtain bounded Ptah, Thoth, Osiris, and Theia positions against the complete
-  draft.2 profile set and preserve their role-bounded provenance accurately;
-  then synthesize remaining gaps before any Operator disposition or implementation.
+  Re-run automated/Codex review on the hardened draft.2 head; if clean, obtain bounded
+  Ptah, Thoth, Osiris, and Theia positions against the complete profile set and preserve
+  their role-bounded provenance accurately before any Operator disposition or implementation.
 historyPath: history/
 notes:
   - Internal-first, product-ready by design.
