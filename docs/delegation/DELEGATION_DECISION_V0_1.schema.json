@@ -16,6 +16,7 @@
     "delegation_id",
     "delegation_version",
     "authority_class",
+    "micc_approval_class",
     "pdp_identity",
     "pdp_version",
     "policy_content_hash",
@@ -47,6 +48,7 @@
     "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "authority_class": {"type": "string", "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]},
+    "micc_approval_class": {"type": "string", "enum": ["APPROVAL_NONE", "APPROVAL_AUTOMATED", "APPROVAL_OPERATOR", "APPROVAL_COUNCIL"]},
     "pdp_identity": {"type": "string", "minLength": 1},
     "pdp_version": {"type": "string", "minLength": 1},
     "policy_content_hash": {"$ref": "#/definitions/sha256"},
@@ -61,7 +63,6 @@
     "operator_approval_hash": {"$ref": "#/definitions/sha256"},
     "council_approval_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"},
     "council_approval_hash": {"$ref": "#/definitions/sha256"},
-    "micc_approval_class": {"type": "string", "enum": ["APPROVAL_NONE", "APPROVAL_AUTOMATED", "APPROVAL_OPERATOR", "APPROVAL_COUNCIL"]},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
     "expires_at": {"$ref": "#/definitions/utcTimestamp"},
     "enforcement_constraints": {
@@ -90,6 +91,18 @@
     {
       "if": {"properties": {"authority_class": {"enum": ["ADVISORY_ONLY", "NON_DELEGABLE"]}}, "required": ["authority_class"]},
       "then": {"properties": {"decision": {"enum": ["DENY", "ESCALATE"]}}}
+    },
+    {
+      "if": {"properties": {"decision": {"const": "ALLOW"}}, "required": ["decision"]},
+      "then": {
+        "required": ["enforcement_constraints"],
+        "properties": {
+          "enforcement_constraints": {
+            "required": ["one_time_use"],
+            "properties": {"one_time_use": {"const": true}}
+          }
+        }
+      }
     }
   ],
   "definitions": {
