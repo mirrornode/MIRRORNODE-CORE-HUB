@@ -35,13 +35,18 @@
     "issuer_proof": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["proof_type", "issuer_credential_ref", "proof_value_hash"],
+      "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"],
       "properties": {
         "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_RESOLVER_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
         "issuer_credential_ref": {"type": "string", "minLength": 1},
-        "proof_value_hash": {"$ref": "#/definitions/sha256"},
-        "attestation_ref": {"type": "string", "minLength": 1}
-      }
+        "signed_payload_hash": {"$ref": "#/definitions/sha256"},
+        "proof_value": {"type": "string", "minLength": 16},
+        "proof_ref": {"type": "string", "minLength": 1}
+      },
+      "oneOf": [
+        {"required": ["proof_value"], "not": {"required": ["proof_ref"]}},
+        {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}
+      ]
     },
     "reuse_policy": {
       "type": "object",
