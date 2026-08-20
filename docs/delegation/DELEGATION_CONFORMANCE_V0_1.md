@@ -11,6 +11,8 @@ JSON Schema validates document shape. It does not prove cross-document authority
 A validator must reject a delegation when:
 
 - schema validation fails;
+- delegation issuer proof is missing, cannot be resolved/verified, is not anchored to a trusted root outside the delegate's authority path, or does not authenticate the canonical delegation payload excluding `issuer_proof`;
+- `issuer_proof.signed_payload_hash` does not equal the hash of that canonical delegation payload;
 - policy path/version/hash are missing or inconsistent;
 - `decision_preconditions_ref` or `decision_preconditions_hash` is missing;
 - the content resolved at `decision_preconditions_ref` does not hash to `decision_preconditions_hash`;
@@ -21,9 +23,12 @@ A validator must reject a delegation when:
 - `NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE` is selected without a rationale containing meaningful non-whitespace content;
 - parent delegation cannot be resolved when a child is declared;
 - parent/child scope, operation, authority rank, risk ceiling, depth, or expiry monotonicity fails;
-- a child weakens required receipt, revocation, expiry, or decision-precondition rules;
+- a child does not carry the exact parent `decision_preconditions_hash`;
+- a child weakens required receipt, revocation, or expiry rules;
 - authority class conflicts with a non-delegable guardrail;
 - a grant would allow its subject to modify the policy/registry/aggregate logic that determines the same grant's authority.
+
+Until a typed precondition language and deterministic strengthening relation are separately ratified, child delegations MUST inherit the exact parent `decision_preconditions_hash`. A different child precondition artifact is not treated as provably stronger merely because it is validly hashed.
 
 ## 3. Live decision checks
 
@@ -37,7 +42,7 @@ Before an `ALLOW`, the PDP must prove:
 - revocation freshness within bound;
 - non-expiry;
 - aggregate-authority snapshot validity;
-- MICC cross-map result;
+- MICC cross-map result and explicit `micc_approval_class` recording;
 - state/precondition validity;
 - risk/composition constraints;
 - any required Operator/Council approval object is resolved, authenticated, unexpired, unrevoked where applicable, and within its reuse policy.
@@ -59,13 +64,15 @@ When Operator approval is required, the referenced approval MUST conform to `OPE
 - approval lifetime;
 - approval reuse/consumption state.
 
-Issuer provenance MUST validate through the declared proof mechanism against a trusted credential/attestation root outside the requester and affected delegate's authority path. A content hash alone is not issuer authentication.
+`issuer_proof.signed_payload_hash` MUST equal the hash of a deterministic canonical representation of the complete approval object excluding `issuer_proof`. The verifier MUST validate either the embedded `proof_value` or the artifact resolved by `proof_ref` using `issuer_credential_ref` and the declared `proof_type`. A hash string by itself is never evidence of issuance.
+
+Issuer provenance MUST validate through the declared proof mechanism against a trusted credential/attestation root outside the requester and affected delegate's authority path.
 
 ### Council approval
 
 When MICC or another governing surface requires Council approval, the referenced approval MUST conform to `COUNCIL_APPROVAL_V0_1.schema.json`, its content hash MUST equal `council_approval_hash`, and the validator MUST additionally verify:
 
-- authenticated issuer provenance;
+- authenticated issuer provenance using the same canonical-payload proof rule above;
 - referenced matter/disposition integrity;
 - the disposition grants the exact current action/request rather than merely discussing the matter;
 - request/subject/action/resource/context/state/policy/delegation bindings;
@@ -90,7 +97,9 @@ The concrete consumption-store technology is an implementation choice; atomicity
 Before causing the effect, the PEP must verify:
 
 - decision issuer/integrity;
-- nonce/lifetime/one-time-use constraints;
+- decision nonce has not previously been consumed;
+- decision lifetime is valid;
+- every `ALLOW` carries `enforcement_constraints.one_time_use: true`;
 - exact subject/action/resource match;
 - exact parameter digest;
 - target state/version still matches;
@@ -101,7 +110,9 @@ Before causing the effect, the PEP must verify:
 - approval reuse/consumption constraints can be atomically satisfied;
 - the PEP itself is authorized only for the narrow downstream effect.
 
-If state changed, a bound precondition artifact changed, or approval consumption cannot be performed safely, the PEP denies and requests a fresh decision.
+Every `ALLOW` decision MUST be atomically consumed by decision identity/nonce before or as part of enforcement. Re-presenting the same `ALLOW`, even while unexpired and even if its approval still has remaining bounded uses, MUST fail and require a fresh PDP decision. A future bounded decision-reuse profile requires separate governance and is not defined by v0.1.
+
+If state changed, a bound precondition artifact changed, decision consumption cannot be performed safely, or approval consumption cannot be performed safely, the PEP denies and requests a fresh decision.
 
 ## 6. Aggregate-authority test suite
 
@@ -125,6 +136,8 @@ Tests must include at minimum:
 - fabricated Operator or Council approval reference;
 - structurally valid approval with self-asserted but unauthenticated issuer identity;
 - invalid signature/attestation proof;
+- proof whose `signed_payload_hash` does not match the canonical approval payload excluding `issuer_proof`;
+- missing/unresolvable `proof_ref` or invalid embedded `proof_value`;
 - valid approval ID with wrong content hash;
 - approval for a different request;
 - approval for a different subject, resource, action, or parameters;
@@ -145,11 +158,11 @@ Tests must include:
 - correct path with wrong `decision_preconditions_hash`;
 - delegation issued against one precondition hash but decision carrying another;
 - PDP evaluates the correct artifact but PEP sees a changed target/precondition state;
-- child delegation attempts to replace parent preconditions with weaker content.
+- child delegation attempts to replace parent preconditions with any different hash.
 
 All must fail or escalate.
 
-## 9. Revocation/TOCTOU test suite
+## 9. Revocation/TOCTOU and replay test suite
 
 Tests must include:
 
@@ -162,7 +175,9 @@ Tests must include:
 - stale cache beyond freshness bound;
 - offline PEP without sufficient revocation freshness;
 - resource state mutation after decision;
-- target-version mismatch at enforcement.
+- target-version mismatch at enforcement;
+- replay of an already consumed `ALLOW` decision;
+- concurrent enforcement attempts using the same `ALLOW` decision nonce.
 
 ## 10. Policy-integrity test suite
 
@@ -175,7 +190,21 @@ Tests must include:
 - PDP using a policy hash different from the receipt;
 - PEP receiving a decision whose policy bundle is not recognized.
 
-## 11. UI/product conformance
+## 11. Delegation-issuance provenance test suite
+
+Tests must include:
+
+- unsigned delegation envelope;
+- self-asserted `delegator` with fabricated proof metadata;
+- invalid embedded signature/assertion;
+- missing or unresolvable delegation `proof_ref`;
+- delegation proof anchored to a credential controlled by the affected delegate;
+- `signed_payload_hash` mismatch after any envelope field changes;
+- trusted-registry attestation that does not authenticate the complete canonical envelope payload excluding `issuer_proof`.
+
+All must fail.
+
+## 12. UI/product conformance
 
 A future MOPCON/product implementation must be tested to ensure:
 
@@ -187,11 +216,11 @@ A future MOPCON/product implementation must be tested to ensure:
 - unsafe aggregate state cannot be presented as green merely because each envelope is individually valid;
 - denied/escalated decisions cannot be visually collapsed into generic success.
 
-## 12. Commissioning gate
+## 13. Commissioning gate
 
 `AUTONOMOUS_WITHIN_POLICY` must remain disabled for production effects until:
 
-- static, approval-binding/provenance, precondition-integrity, aggregate, revocation/TOCTOU, policy-integrity, and PEP test suites pass;
+- static, delegation-issuance provenance, approval-binding/provenance, precondition-integrity, aggregate, revocation/TOCTOU/replay, policy-integrity, and PEP test suites pass;
 - receipt/audit mapping is reviewed;
 - failure/rollback behavior is tested;
 - monitoring and alert thresholds are defined;
