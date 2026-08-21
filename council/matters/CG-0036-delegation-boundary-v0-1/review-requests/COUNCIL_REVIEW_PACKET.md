@@ -13,6 +13,7 @@ Review the **complete profile set**:
 - `docs/delegation/CANONICALIZATION_V0_1.md`
 - `docs/delegation/CANONICALIZATION_VECTORS_V0_1.json`
 - `docs/delegation/ISSUER_PROOF_V0_1.md`
+- `docs/delegation/ISSUER_AUTHORITY_RECORD_V0_1.schema.json`
 - `docs/delegation/DELEGATION_ENVELOPE_V0_1.schema.json`
 - `docs/delegation/DELEGATION_DECISION_V0_1.schema.json`
 - `docs/delegation/OPERATOR_APPROVAL_V0_1.schema.json`

@@ -4,7 +4,7 @@ title: Delegation Boundary v0.1
 matterType: governance
 initiator: operator
 createdAt: "2026-08-14T22:49:00Z"
-updatedAt: "2026-08-21T18:00:00Z"
+updatedAt: "2026-08-21T20:00:00Z"
 workflowState: open
 decisionQuestion: >-
   How should MIRRORNODE reduce routine Operator intervention through bounded,
@@ -122,6 +122,10 @@ referenceArtifacts:
     kind: document
     href: ../../../docs/delegation/EFFECT_CONSUMPTION_COMMIT_VECTORS_V0_1.json
     canonical: false
+  - id: ISSUER-AUTHORITY-RECORD-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/ISSUER_AUTHORITY_RECORD_V0_1.schema.json
+    canonical: false
 resolvedDraftQuestions:
   - classification-is-policy-derived-through-bounded-PDP-and-enforced-by-distinct-PEP
   - unmatched-ambiguous-or-error-actions-default-to-NON_DELEGABLE
@@ -144,6 +148,12 @@ resolvedDraftQuestions:
   - resource-registry-snapshot-is-decision-bound
   - aggregate-authority-snapshot-has-a-closed-schema
   - nonces-are-csprng-and-consumption-keys-are-issuer-scoped
+  - approval-capacity-reserved-before-dispatch
+  - grant-issuer-authorization-is-separate-from-authentication
+  - approvals-bind-resource-registry-snapshot
+  - dispatch-intent-persisted-before-external-effect
+  - rfc8785-names-ordered-by-utf16-code-units
+  - consumption-keys-use-logical-issuer-id
 openQuestions:
   - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
   - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
@@ -151,7 +161,7 @@ openQuestions:
   - What exact receipt mapping should be adopted after AUDIT_EMISSION repair/review closes?
   - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
   - What separately governed Council disposition validator should prove required composition, provenance, and quorum before Council approval can produce ALLOW? Existing council/schemas/disposition.schema.yaml and CG-0031 verify Operator dispositions, not Council constitution. Blocking implementation dependency; preserve for Osiris/Theia review.
-currentRevision: draft-2-hardening-2026-08-21-pass-2
+currentRevision: draft-2-hardening-2026-08-21-pass-3
 nextRequiredStep: >-
   Re-run automated/Codex review on the current hardened draft.2 head; if clean, obtain bounded
   Ptah, Thoth, Osiris, and Theia positions against the complete profile set and preserve
