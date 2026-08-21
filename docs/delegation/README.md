@@ -5,7 +5,8 @@ Draft artifacts under CG-0036:
 - `DELEGATION_BOUNDARY_V0_1.md` — normative draft semantics.
 - `CANONICALIZATION_V0_1.md` — RFC 8785 hash/authenticated-payload profile.
 - `CANONICALIZATION_VECTORS_V0_1.json` — fixed canonicalization and snapshot-hash vectors.
-- `ISSUER_PROOF_V0_1.md` — protected-header proof metadata; schema hints are untrusted.
+- `ISSUER_PROOF_V0_1.md` — protected-header proof metadata; schema hints are untrusted; credential maps to `logical_issuer_id`.
+- `ISSUER_AUTHORITY_RECORD_V0_1.schema.json` — hash-bound root-issuer delegable scope (authentication ≠ authorization).
 - `DELEGATION_ENVELOPE_V0_1.schema.json` — machine-readable delegation grant shape.
 - `DELEGATION_DECISION_V0_1.schema.json` — PDP decision / PEP enforcement binding shape (authenticated; Council ALLOW unreachable).
 - `OPERATOR_APPROVAL_V0_1.schema.json` — authenticated, request-bound Operator approval object.

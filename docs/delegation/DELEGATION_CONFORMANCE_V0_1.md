@@ -15,6 +15,10 @@ A validator must reject a delegation when:
 - canonicalization is attempted before schema validation, duplicate-key rejection, or I-JSON checks (`CANONICALIZATION_V0_1.md`);
 - `issuer_proof.signed_payload_hash` does not equal the RFC 8785 SHA-256 of that canonical delegation payload;
 - protected proof metadata (`alg`/`kid` or equivalent) disagrees with schema hints, is unsigned, or verifies under a substituted algorithm, credential, or trust root (`ISSUER_PROOF_V0_1.md`);
+- issuer authentication succeeds but issuer **authorization** fails: the hash-bound `issuer_authority_ref`/`issuer_authority_hash` is missing, unauthenticated, expired, self-issued, or does not cover the exact operations, resources, environments, rank/ceiling, risk, subdelegation depth, or validity period;
+- a child grant's issuer-authority hash is not the authenticated parent envelope payload hash;
+- a root grant's issuer-authority record is not a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee's control;
+- an authenticated peer signs a scope it does not possess;
 - policy path/version/hash are missing or inconsistent;
 - `decision_preconditions_ref` or `decision_preconditions_hash` is missing;
 - the content resolved at `decision_preconditions_ref` does not hash to `decision_preconditions_hash`;
@@ -53,6 +57,7 @@ Before an `ALLOW`, the PDP must prove:
 - `resource_registry_snapshot_hash` matches the frozen registry snapshot, including provider/native target;
 - the object hashed as `aggregate_authority_snapshot_hash` validates against `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json` and its RFC 8785 digest matches;
 - `decision_nonce` (and any required approval nonce) has ≥128 bits of CSPRNG entropy in the canonical unpadded-base64url encoding;
+- `logical_issuer_id` is taken from the issuer-registry mapping of the verified credential, not from `kid`;
 - any required Operator approval object is resolved, authenticated, unexpired, unrevoked where applicable, within its reuse policy, and carries a `delegation_payload_hash` equal to the current envelope payload hash;
 - `micc_approval_class: APPROVAL_COUNCIL` never accompanies `decision: ALLOW` (v0.1 schema-unreachable). Council approval objects are evidence only and cannot unlock execution.
 
@@ -104,7 +109,7 @@ A fabricated, missing, expired, unauthenticated, recycled beyond its allowed reu
 Approval reuse is explicit, never inferred.
 
 - `ONE_TIME` approvals MUST be atomically marked consumed before or as part of the first authorized enforcement. A second decision or enforcement attempt using the same approval nonce MUST fail.
-- `BOUNDED_REUSE` approvals MUST declare `max_uses`. Each successful use MUST be recorded in an authoritative consumption store/counter keyed by `(authenticated_issuer, approval_id, approval_nonce)`.
+- `BOUNDED_REUSE` approvals MUST declare `max_uses`. Each successful use MUST be reserved atomically **before dispatch** and finalized as consumed after a successful effect, keyed by `(logical_issuer_id, approval_id, approval_nonce)`. Concurrent actors MUST NOT both reserve the last remaining use.
 - Consumption updates MUST be concurrency-safe. Two enforcement points must not both observe the same remaining use and exceed the bound.
 - An approval cannot be reused across a different request, state, policy bundle, action parameters, subject, resource, or delegation merely because remaining uses exist.
 - If current consumption state cannot be verified, enforcement fails closed.
@@ -116,11 +121,12 @@ The concrete consumption-store technology is an implementation choice; atomicity
 Before causing the effect, the PEP must verify:
 
 - decision `issuer_proof` verifies against a PDP trust root from protected proof metadata; a schema-valid `ALLOW` with only `pdp_identity` fails;
-- `(authenticated_issuer, decision_id, decision_nonce)` has not previously been consumed;
+- `(logical_issuer_id, decision_id, decision_nonce)` has not previously been consumed;
+- required approval-use capacity was reserved atomically with the decision key before dispatch intent;
 - decision lifetime is valid;
 - every `ALLOW` carries `enforcement_constraints.one_time_use: true`;
 - `delegation_payload_hash` still equals the currently resolved envelope's canonical payload hash excluding `issuer_proof` and equals `issuer_proof.signed_payload_hash`;
-- exact subject/action/resource match, including `resource.id` = `resource.canonical_uri` and the bound registry snapshot's provider/native target;
+- exact subject/action/resource match, including `resource.id` = `resource.canonical_uri` and equality of `resource_registry_ref` / `resource_registry_snapshot_hash` / `resource_record_hash` across approval, decision, and live registry;
 - exact parameter digest;
 - target state/version still matches;
 - decision `decision_preconditions_hash` still corresponds to the immutable precondition artifact evaluated by the PDP;
@@ -130,7 +136,7 @@ Before causing the effect, the PEP must verify:
 - approval reuse/consumption constraints can be atomically satisfied;
 - the PEP itself is authorized only for the narrow downstream effect.
 
-Every v0.1 `ALLOW` is one-time-use. Every `ALLOW` MUST be atomically reserved/consumed by `(authenticated_issuer, decision_id, decision_nonce)` before dispatch per `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Re-presenting the same `ALLOW`, even while unexpired and even if its approval still has remaining bounded uses, MUST fail and require a fresh PDP decision. Approval reuse does not imply decision reuse. A mutated envelope with unchanged `delegation_id` and `delegation_version` MUST fail closed. A future bounded decision-reuse profile requires separate governance and is not defined by v0.1.
+Every v0.1 `ALLOW` is one-time-use. Every `ALLOW` MUST atomically reserve `(logical_issuer_id, decision_id, decision_nonce)` **and** required approval capacity before dispatch, then persist dispatch intent before invoking the effect, per `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Re-presenting the same `ALLOW`, even while unexpired and even if its approval still has remaining bounded uses, MUST fail and require a fresh PDP decision. Approval reuse does not imply decision reuse. A mutated envelope with unchanged `delegation_id` and `delegation_version` MUST fail closed. A future bounded decision-reuse profile requires separate governance and is not defined by v0.1.
 
 If state changed, a bound precondition artifact changed, decision consumption cannot be performed safely, or approval consumption cannot be performed safely, the PEP denies and requests a fresh decision.
 
@@ -184,6 +190,8 @@ Tests must include:
 
 - stale `resource_registry_snapshot_hash`;
 - same canonical URI with substituted provider/native target;
+- Operator approval issued before remap, presented after remap;
+- Council approval issued before remap, presented after remap;
 - `resource.id` different from `resource.canonical_uri`;
 - decision URI absent from envelope `resource_scope`;
 - alias resolving to two canonical URIs.

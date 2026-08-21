@@ -3,7 +3,7 @@
 **Status:** Draft under CG-0036 — not canon, not implementation authority  
 **Version:** 0.1-draft.2  
 **Created:** 2026-08-14  
-**Revision:** 2026-08-21 bounded hardening pass 2 (RFC 8785 canonicalization, authenticated decisions, protected proof metadata, Council ALLOW unreachable, resource-registry snapshot, aggregate snapshot schema, nonce/ID semantics, effect/consumption commit)
+**Revision:** 2026-08-21 bounded hardening pass 3 (approval-capacity reservation, issuer-authority vs authentication, approval registry bindings, dispatch-intent, UTF-16 JCS, schema-valid vectors, set-like array order, logical issuer)
 
 ## 1. Purpose
 
@@ -49,7 +49,7 @@ Envelope `resource_scope` entries are canonical URIs. The deterministic mapping 
 - `resource.id` MUST equal `resource.canonical_uri`;
 - `resource.type` MUST equal the resource-registry record's type for that URI.
 
-The decision MUST bind `resource_registry_ref` and `resource_registry_snapshot_hash` identifying the exact immutable registry snapshot used by the PDP. The PEP MUST verify the pending physical/provider target against that same snapshot. The same canonical URI with a changed provider/native target fails closed.
+The decision MUST bind `resource_registry_ref`, `resource_registry_snapshot_hash`, and `resource_record_hash` identifying the exact immutable registry snapshot and record used by the PDP. Operator and Council approvals MUST carry the same three fields. Approval, decision, current envelope/resource identity, and PEP enforcement MUST be equal. A remapped provider/native target under the same URI invalidates the approval and the decision.
 
 ## 4. Delegation envelope
 
@@ -58,6 +58,8 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `delegation_id`
 - `delegation_version`
 - `delegator`
+- `logical_issuer_id`, `issuer_registry_ref`, `issuer_registry_snapshot_hash`
+- `issuer_authority_kind`, `issuer_authority_ref`, `issuer_authority_hash`
 - `issuer_proof`
 - `delegate_actor`
 - `authority_class`
@@ -83,6 +85,8 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `subdelegation`
 
 `issuer_proof` authenticates the RFC 8785 canonical envelope payload excluding `issuer_proof`, hashed per `CANONICALIZATION_V0_1.md`. Content integrity (a digest over payload bytes) proves that those bytes have not changed after hashing; it does not, by itself, prove who issued the envelope. Authenticated issuance requires a verifiable proof over that canonical payload, validated against a trust root outside the affected delegate's authority path. A hash string, a claimed `delegator` name, or an unsigned envelope cannot establish issuance.
+
+A trusted credential proves **identity only**. Before an envelope enters `G(A,t)`, a hash-bound issuer-authority source MUST prove the logical issuer may delegate the exact operations, resources, environments, authority rank and ceiling, risk ceiling, subdelegation depth, and validity period. Child grants verify that source against the authenticated parent envelope. Root grants require a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee’s control. Unknown, unauthenticated, excessive, expired, or self-issued authority fails closed.
 
 `proof_type` and `issuer_credential_ref` are untrusted hints until authenticated. The proof mechanism MUST cryptographically protect the algorithm identifier, credential/key identifier, and signed payload hash using standard JOSE/COSE/WebAuthn protected-header semantics (`ISSUER_PROOF_V0_1.md`). Algorithm substitution, credential redirection, and trust-root substitution fail closed.
 
@@ -119,6 +123,7 @@ Every decision must record at least:
 - authenticated Operator/Council approval references and hashes where required;
 - allow/deny result;
 - obligations and reason code;
+- `logical_issuer_id` plus issuer-registry snapshot (not `kid`);
 - `decision_id` (stable, issuer-scoped) and `decision_nonce` (≥128-bit CSPRNG);
 - issued time and expiry time.
 
@@ -223,7 +228,7 @@ Every v0.1 `ALLOW` decision is one-time-use.
 - Approval reuse does not imply decision reuse. Remaining bounded uses on an associated approval cannot re-authorize a consumed `ALLOW`.
 - Any future bounded decision-reuse profile requires separate governance and is outside v0.1.
 
-Effect dispatch follows `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Reservation of `(authenticated_issuer, decision_id, decision_nonce)` occurs before dispatch. Uncertain non-idempotent outcomes escalate for reconciliation and MUST NOT silently retry. `COMPLETED` requires a durable effect receipt and any required approval-consumption outcome.
+Effect dispatch follows `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Reservation of `(logical_issuer_id, decision_id, decision_nonce)` **and** required approval-use capacity occurs atomically before dispatch. Durable dispatch intent is committed before invoking an external effect. `RESERVED` is not evidence of prior dispatch. Uncertain non-idempotent outcomes escalate. `COMPLETED` requires a durable effect receipt and finalized approval consumption.
 
 ## 11. Revocation and expiry
 

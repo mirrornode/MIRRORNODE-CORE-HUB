@@ -35,6 +35,10 @@ Where the mechanism is a digital signature, use standard **protected-header** se
 
 The verifier MUST derive or confirm algorithm and credential from that protected metadata, then validate the credential against a trust root outside the requester and affected delegate’s authority path.
 
+The verified credential MUST then be mapped through a hash-bound issuer registry (`issuer_registry_ref` + `issuer_registry_snapshot_hash`) to a stable `logical_issuer_id`. `kid` and `issuer_credential_ref` MUST NOT be used as consumption-namespace issuers. Rotation of a credential that remains bound to the same logical issuer preserves the namespace; unrelated or revoked credentials MUST NOT.
+
+Credential authentication is not issuer **authorization**. Grant envelopes additionally require a hash-bound `issuer_authority_ref` / `issuer_authority_hash` proving the logical issuer may delegate the exact operations, resources, environments, rank/ceiling, risk, subdelegation depth, and validity period (`ISSUER_AUTHORITY_RECORD_V0_1.schema.json` for root records; parent envelope payload hash for children).
+
 ## 4. Fail-closed mismatches
 
 The following MUST fail:
