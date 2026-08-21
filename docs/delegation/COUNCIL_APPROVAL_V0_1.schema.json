@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/council-approval-v0.1.schema.json",
   "title": "MIRRORNODE Council Approval v0.1",
-  "description": "Draft authenticated Council approval/disposition object for approval-bearing authorization decisions under CG-0036. delegation_payload_hash binds the approval to the canonical envelope payload excluding issuer_proof. Hash-bound matter/disposition references are not Council-constitution proof.",
+  "description": "Draft authenticated Council approval/disposition evidence object under CG-0036. Presence cannot unlock v0.1 ALLOW: DELEGATION_DECISION_V0_1 forbids micc_approval_class APPROVAL_COUNCIL with decision ALLOW. Hash-bound matter/disposition references are not Council-constitution proof.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -28,8 +28,8 @@
     "expires_at"
   ],
   "properties": {
-    "approval_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-    "approval_nonce": {"type": "string", "minLength": 16},
+    "approval_id": {"$ref": "#/definitions/stableId"},
+    "approval_nonce": {"$ref": "#/definitions/csprngNonce"},
     "council_matter_ref": {"type": "string", "minLength": 1},
     "disposition_ref": {"type": "string", "minLength": 1},
     "disposition_hash": {"$ref": "#/definitions/sha256"},
@@ -77,7 +77,7 @@
     "context_digest": {"$ref": "#/definitions/sha256"},
     "state_hash": {"$ref": "#/definitions/sha256"},
     "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
-    "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "delegation_id": {"$ref": "#/definitions/stableId"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "delegation_payload_hash": {"$ref": "#/definitions/sha256"},
     "decision": {"type": "string", "const": "APPROVE"},
@@ -86,6 +86,8 @@
     "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"}
   },
   "definitions": {
+    "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "csprngNonce": {"type": "string", "minLength": 22, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]{22,64}$"},
     "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
     "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
     "typedEntity": {

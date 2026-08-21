@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/delegation-decision-v0.1.schema.json",
   "title": "MIRRORNODE Delegation Decision v0.1",
-  "description": "Draft authorization decision record linking PDP evaluation to PEP enforcement under CG-0036. delegation_payload_hash binds the decision to the canonical envelope payload excluding issuer_proof.",
+  "description": "Draft authorization decision record linking PDP evaluation to PEP enforcement under CG-0036. issuer_proof authenticates the canonical decision excluding issuer_proof. delegation_payload_hash binds the exact envelope payload. v0.1 forbids ALLOW when micc_approval_class is APPROVAL_COUNCIL.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,6 +12,8 @@
     "subject",
     "action",
     "resource",
+    "resource_registry_ref",
+    "resource_registry_snapshot_hash",
     "context_digest",
     "delegation_id",
     "delegation_version",
@@ -20,6 +22,7 @@
     "micc_approval_class",
     "pdp_identity",
     "pdp_version",
+    "issuer_proof",
     "policy_content_hash",
     "policy_bundle_hash",
     "decision_preconditions_hash",
@@ -31,9 +34,9 @@
     "expires_at"
   ],
   "properties": {
-    "decision_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-    "decision_nonce": {"type": "string", "minLength": 16},
-    "request_id": {"type": "string", "minLength": 1},
+    "decision_id": {"$ref": "#/definitions/stableId"},
+    "decision_nonce": {"$ref": "#/definitions/csprngNonce"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
     "subject": {"$ref": "#/definitions/typedEntity"},
     "action": {
       "type": "object",
@@ -44,15 +47,18 @@
         "parameters_hash": {"$ref": "#/definitions/sha256"}
       }
     },
-    "resource": {"$ref": "#/definitions/typedEntity"},
+    "resource": {"$ref": "#/definitions/decisionResource"},
+    "resource_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "resource_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
     "context_digest": {"$ref": "#/definitions/sha256"},
-    "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "delegation_id": {"$ref": "#/definitions/stableId"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "delegation_payload_hash": {"$ref": "#/definitions/sha256"},
     "authority_class": {"type": "string", "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]},
     "micc_approval_class": {"type": "string", "enum": ["APPROVAL_NONE", "APPROVAL_AUTOMATED", "APPROVAL_OPERATOR", "APPROVAL_COUNCIL"]},
-    "pdp_identity": {"type": "string", "minLength": 1},
-    "pdp_version": {"type": "string", "minLength": 1},
+    "pdp_identity": {"type": "string", "minLength": 1, "maxLength": 256},
+    "pdp_version": {"type": "string", "minLength": 1, "maxLength": 128},
+    "issuer_proof": {"$ref": "#/definitions/issuerProof"},
     "policy_content_hash": {"$ref": "#/definitions/sha256"},
     "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
     "decision_preconditions_hash": {"$ref": "#/definitions/sha256"},
@@ -61,9 +67,9 @@
     "decision": {"type": "string", "enum": ["ALLOW", "DENY", "ESCALATE"]},
     "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"},
     "obligations": {"type": "array", "items": {"type": "string", "minLength": 1}},
-    "operator_approval_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "operator_approval_ref": {"$ref": "#/definitions/stableId"},
     "operator_approval_hash": {"$ref": "#/definitions/sha256"},
-    "council_approval_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "council_approval_ref": {"$ref": "#/definitions/stableId"},
     "council_approval_hash": {"$ref": "#/definitions/sha256"},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
     "expires_at": {"$ref": "#/definitions/utcTimestamp"},
@@ -83,8 +89,8 @@
       "then": {"required": ["operator_approval_ref", "operator_approval_hash"]}
     },
     {
-      "if": {"properties": {"micc_approval_class": {"const": "APPROVAL_COUNCIL"}, "decision": {"const": "ALLOW"}}, "required": ["micc_approval_class", "decision"]},
-      "then": {"required": ["council_approval_ref", "council_approval_hash"]}
+      "if": {"properties": {"micc_approval_class": {"const": "APPROVAL_COUNCIL"}}, "required": ["micc_approval_class"]},
+      "then": {"properties": {"decision": {"enum": ["DENY", "ESCALATE"]}}}
     },
     {
       "if": {"properties": {"micc_approval_class": {"const": "APPROVAL_OPERATOR"}, "decision": {"const": "ALLOW"}}, "required": ["micc_approval_class", "decision"]},
@@ -108,8 +114,12 @@
     }
   ],
   "definitions": {
+    "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "csprngNonce": {"type": "string", "minLength": 22, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]{22,64}$"},
     "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
     "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "canonicalResource": {"type": "string", "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"},
     "typedEntity": {
       "type": "object",
       "additionalProperties": false,
@@ -118,6 +128,32 @@
         "type": {"type": "string", "minLength": 1},
         "id": {"type": "string", "minLength": 1}
       }
+    },
+    "decisionResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id", "canonical_uri"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "id": {"$ref": "#/definitions/canonicalResource"},
+        "canonical_uri": {"$ref": "#/definitions/canonicalResource"}
+      }
+    },
+    "issuerProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"],
+      "properties": {
+        "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_RESOLVER_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
+        "issuer_credential_ref": {"type": "string", "minLength": 1},
+        "signed_payload_hash": {"$ref": "#/definitions/sha256"},
+        "proof_value": {"type": "string", "minLength": 16},
+        "proof_ref": {"type": "string", "minLength": 1}
+      },
+      "oneOf": [
+        {"required": ["proof_value"], "not": {"required": ["proof_ref"]}},
+        {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}
+      ]
     }
   }
 }

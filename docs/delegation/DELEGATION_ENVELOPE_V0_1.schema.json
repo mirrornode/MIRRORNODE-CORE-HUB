@@ -34,7 +34,7 @@
     "subdelegation"
   ],
   "properties": {
-    "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "delegation_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "delegator": {"type": "string", "minLength": 1},
     "issuer_proof": {
@@ -85,7 +85,7 @@
         "allowed": {"type": "boolean"},
         "max_depth": {"type": "integer", "minimum": 0},
         "eligible_operations": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
-        "parent_delegation_ref": {"type": "string", "pattern": "^[a-z0-9-]+$"}
+        "parent_delegation_ref": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"}
       },
       "allOf": [
         {"if": {"properties": {"allowed": {"const": true}}, "required": ["allowed"]}, "then": {"required": ["max_depth", "eligible_operations"]}}
