@@ -19,9 +19,14 @@ This record exists to prevent implementation presence from being mistaken for ra
 
 ## Observed implementation boundary
 
-The INFRA implementation is designed with a GET-only checker and proposal-only administration engine. Its v0.1 write transport is absent. Every future repository mutation is specified to require explicit human Operator authorization; bot-only, service-account-only, coding-agent-only, and advisory-model-only administration are forbidden.
+The INFRA implementation is designed with a GET-only checker and proposal-only administration engine. Its v0.1 write transport is absent.
 
-Approved OpenAI, Perplexity, and Claude advisory lanes may inspect, recommend, prepare, or independently review. Such participation is advisory/evidentiary and does not create repository authority.
+Any future Repo Steward repository mutation is specified to require dual control:
+
+1. explicit human Operator authorization bound to the target/action; and
+2. at least one independent attestation from an approved OpenAI, Perplexity, or Claude advisory lane bound to the same target/action.
+
+Neither side alone is sufficient inside the governed Repo Steward path. The advisory attestation is evidentiary/reviewing and does not create repository authority. Bot-only, service-account-only, coding-agent-only, advisory-model-only, and Operator-only Repo Steward mutation paths are non-conformant.
 
 ## Registry reconciliation rule
 
@@ -30,6 +35,10 @@ Neither implementation in INFRA nor presence in the generic runtime is sufficien
 ## Anti-self-certification rule
 
 No Repo Steward component may certify its own repair as sufficient clearance. A changed head requires the owning repository's checks and applicable independent exact-head review before a merge decision.
+
+## Platform-enforcement residual
+
+The Repo Steward contract can close its own control plane, but GitHub account-level bypass resistance still depends on repository rulesets, branch protection, credentials, and account permissions. Until platform controls enforce the same dual-control rule, that gap must remain explicit rather than being treated as solved by documentation or application code.
 
 ## Current source lanes
 
