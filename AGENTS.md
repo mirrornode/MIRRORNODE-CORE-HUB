@@ -49,7 +49,9 @@ A new repository-integrity control-plane presence is under implementation in `MI
 
 This section records implementation evidence and proposed placement only. It **does not ratify these presences into the unresolved current governance registry**, assign dispatch authority, or authorize repository mutation.
 
-The implementation boundary requires explicit human Operator authorization for every future repository write. No autonomous agent, bot identity, service account, coding agent, or advisory model may independently administer repositories. Approved OpenAI, Perplexity, or Claude advisory lanes may inspect, recommend, prepare, or independently review, but advisory participation does not create authority.
+The proposed Repo Steward write boundary is dual control: every future repository mutation through that control plane requires explicit human Operator authorization plus at least one independent attestation from an approved OpenAI, Perplexity, or Claude advisory lane. Neither side alone is sufficient. The advisory attestation is evidentiary/reviewing and does not create repository authority.
+
+No autonomous agent, bot identity, service account, coding agent, or advisory model may independently administer repositories.
 
 See `docs/continuity/REPO_STEWARD_PRESENCE_RECONCILIATION_2026-08-21.md`.
 
@@ -60,7 +62,7 @@ See `docs/continuity/REPO_STEWARD_PRESENCE_RECONCILIATION_2026-08-21.md`.
 - No agent may expand its own authority without explicit human authorization.
 - Runtime location, runtime eligibility, implementation presence, conceptual role, and governance authority must not be conflated.
 - Where current routing authority is unresolved, preserve the conflict and escalate for explicit disposition rather than choosing a dispatcher by inference.
-- Repository administration remains closed to autonomous agents; any future write path requires explicit human Operator authorization and independent verification.
+- Repository administration remains closed to autonomous agents; any future Repo Steward write path requires dual control and independent verification.
 
 ## Coding Agent Instructions
 
