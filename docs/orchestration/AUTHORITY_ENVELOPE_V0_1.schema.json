@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mirrornode://schemas/authority-envelope/v0.1",
+  "title": "Authority Envelope v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "envelope_id", "work_id", "authorization_type", "scope", "operator_authorization", "required_attestations", "risk_class", "expires_at", "revocation_state"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "envelope_id": {"type": "string", "minLength": 1},
+    "work_id": {"type": "string", "minLength": 1},
+    "authorization_type": {"enum": ["ONE_SHOT", "BOUNDED_BATCH", "STANDING_PREAUTH", "SPECIAL_MATTER"]},
+    "scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "exact_target_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "operator_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "operator_ref", "authorized_at"],
+      "properties": {
+        "status": {"enum": ["AUTHORIZED", "REVOKED", "EXPIRED", "UNVERIFIED"]},
+        "operator_ref": {"type": "string", "minLength": 1},
+        "authorized_at": {"type": "string", "format": "date-time"},
+        "authorization_ref": {"type": ["string", "null"]}
+      }
+    },
+    "required_attestations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lane", "status"],
+        "properties": {
+          "lane": {"enum": ["OPENAI_ASSISTANT", "PERPLEXITY", "CLAUDE", "OTHER_GOVERNED_LANE"]},
+          "status": {"enum": ["REQUIRED", "SATISFIED", "REVOKED", "STALE", "UNVERIFIED"]},
+          "attestation_ref": {"type": ["string", "null"]},
+          "target_ref": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "risk_class": {"type": "string", "minLength": 1},
+    "irreversible_action": {"type": "boolean", "default": false},
+    "execution_constraints": {"type": "array", "items": {"type": "string"}},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "revocation_state": {"enum": ["ACTIVE", "REVOKED", "EXPIRED", "UNVERIFIED"]},
+    "derived_from_intersection": {"const": false},
+    "intersection_may_modify": {"const": false}
+  }
+}
