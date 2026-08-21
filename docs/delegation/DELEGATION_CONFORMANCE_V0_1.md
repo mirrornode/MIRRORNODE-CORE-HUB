@@ -291,7 +291,7 @@ Tests must include:
 - credential rotation that preserves the same `logical_issuer_id` (must pass);
 - unresolved or stale `delegate_identity_registry_snapshot_hash` (must fail closed).
 
-All must fail.
+The correct parent-issued child delegation and stable logical-issuer credential-rotation fixtures must pass. Every other fixture in this suite must fail or fail closed, as individually stated above.
 
 ## 12. UI/product conformance
 
