@@ -9,6 +9,12 @@
     "delegation_id",
     "delegation_version",
     "delegator",
+    "logical_issuer_id",
+    "issuer_registry_ref",
+    "issuer_registry_snapshot_hash",
+    "issuer_authority_kind",
+    "issuer_authority_ref",
+    "issuer_authority_hash",
     "issuer_proof",
     "delegate_actor",
     "authority_class",
@@ -37,6 +43,12 @@
     "delegation_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
     "delegator": {"type": "string", "minLength": 1},
+    "logical_issuer_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "issuer_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "issuer_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "issuer_authority_kind": {"type": "string", "enum": ["ROOT_RECORD", "PARENT_ENVELOPE"]},
+    "issuer_authority_ref": {"type": "string", "minLength": 1},
+    "issuer_authority_hash": {"$ref": "#/definitions/sha256"},
     "issuer_proof": {
       "type": "object",
       "additionalProperties": false,
@@ -97,6 +109,16 @@
     {
       "if": {"properties": {"revocation_behavior": {"const": "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"}}, "required": ["revocation_behavior"]},
       "then": {"required": ["non_interruptible_rationale"]}
+    },
+    {
+      "if": {"properties": {"issuer_authority_kind": {"const": "PARENT_ENVELOPE"}}, "required": ["issuer_authority_kind"]},
+      "then": {
+        "properties": {
+          "subdelegation": {
+            "required": ["parent_delegation_ref"]
+          }
+        }
+      }
     }
   ],
   "definitions": {
