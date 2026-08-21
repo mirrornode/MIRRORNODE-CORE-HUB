@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/decision-preconditions-v0.1.schema.json",
+  "title": "MIRRORNODE Decision Preconditions v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["preconditions_id", "preconditions_version", "combiner", "checks"],
+  "properties": {
+    "preconditions_id": {"$ref": "#/definitions/stableId"},
+    "preconditions_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "combiner": {"const": "ALL_MUST_PASS"},
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "kind", "operator", "target", "expected"],
+        "properties": {
+          "check_id": {"$ref": "#/definitions/stableId"},
+          "kind": {"type": "string", "enum": ["STATE_HASH", "RESOURCE_VERSION", "DEPENDENCY_STATE", "TIME_WINDOW", "IDEMPOTENCY_KEY"]},
+          "operator": {"type": "string", "enum": ["EQUALS", "NOT_EQUALS", "AT_LEAST", "AT_MOST", "UNSEEN"]},
+          "target": {"type": "string", "minLength": 1},
+          "expected": {"type": ["string", "integer", "boolean"], "minimum": -9007199254740991, "maximum": 9007199254740991},
+          "evidence_ref": {"$ref": "#/definitions/repoRef"},
+          "evidence_hash": {"$ref": "#/definitions/sha256"},
+          "max_age_seconds": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+        },
+        "dependencies": {"evidence_ref": ["evidence_hash"], "evidence_hash": ["evidence_ref"]}
+      }
+    }
+  },
+  "definitions": {
+    "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+  }
+}

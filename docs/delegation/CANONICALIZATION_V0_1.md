@@ -36,6 +36,11 @@ When a hash or signature is specified as covering “the canonical payload exclu
 
 `proof_type` and `issuer_credential_ref` therefore do not enter `signed_payload_hash`. They are untrusted hints until authenticated by protected proof metadata. See `ISSUER_PROOF_V0_1.md`.
 
+Authenticated aggregate-authority, revocation-state, resource-registry, and
+execution-receipt payloads follow the same procedure: validate the complete
+object, remove only the top-level `issuer_proof`, then canonicalize and hash the
+remaining payload. The proof's `signed_payload_hash` MUST equal that digest.
+
 ## 3. RFC 8785 procedure
 
 Apply RFC 8785, including §3.2.3 name ordering:

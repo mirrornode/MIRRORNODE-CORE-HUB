@@ -16,7 +16,7 @@ The exact scheme/registry is not canonized by this draft; the invariant is that 
 
 ## 3. Registry record
 
-A resource registry entry should include:
+A schema-valid `RESOURCE_REGISTRY_SNAPSHOT_V0_1` entry includes:
 
 - canonical resource ID;
 - resource type;
@@ -49,7 +49,7 @@ A grant intended for one resource must not be reusable at another merely because
 
 Resource-registry changes capable of broadening an actor's reachable scope are high-impact authority changes. A delegate whose authority depends on a resource mapping may not unilaterally rewrite that mapping to increase its own access.
 
-The registry must emit attributable change history and support integrity/version references usable in authorization receipts.
+The registry snapshot is authenticated by an authorized registry issuer. It must emit attributable change history and support integrity/version references usable in authorization receipts. A PEP verifies the bound native target and any declared identity anchors at dispatch; a post-PDP remap or target-identity mismatch fails closed.
 
 ## 7. Decision binding
 

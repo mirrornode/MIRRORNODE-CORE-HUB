@@ -126,6 +126,46 @@ referenceArtifacts:
     kind: document
     href: ../../../docs/delegation/ISSUER_AUTHORITY_RECORD_V0_1.schema.json
     canonical: false
+  - id: REFERENCE-INTEGRITY-PROFILE
+    kind: document
+    href: ../../../docs/delegation/REFERENCE_INTEGRITY_PROFILE_V0_1.md
+    canonical: false
+  - id: DECISION-PRECONDITIONS-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/DECISION_PRECONDITIONS_V0_1.schema.json
+    canonical: false
+  - id: AGGREGATE-AUTHORITY-POLICY-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/AGGREGATE_AUTHORITY_POLICY_V0_1.schema.json
+    canonical: false
+  - id: MICC-INVOCATION-BINDING-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/MICC_INVOCATION_BINDING_V0_1.schema.json
+    canonical: false
+  - id: REVOCATION-STATE-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/REVOCATION_STATE_V0_1.schema.json
+    canonical: false
+  - id: RESOURCE-REGISTRY-SNAPSHOT-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/RESOURCE_REGISTRY_SNAPSHOT_V0_1.schema.json
+    canonical: false
+  - id: EXECUTION-RECEIPT-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/EXECUTION_RECEIPT_V0_1.schema.json
+    canonical: false
+  - id: DELEGATION-AUDIT-MAPPING
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_AUDIT_MAPPING_V0_1.md
+    canonical: false
+  - id: DELEGATION-VALIDATOR-CONTRACT
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_VALIDATOR_CONTRACT_V0_1.md
+    canonical: false
+  - id: END-TO-END-CONFORMANCE-VECTORS
+    kind: document
+    href: ../../../docs/delegation/END_TO_END_CONFORMANCE_VECTORS_V0_1.json
+    canonical: false
 resolvedDraftQuestions:
   - classification-is-policy-derived-through-bounded-PDP-and-enforced-by-distinct-PEP
   - unmatched-ambiguous-or-error-actions-default-to-NON_DELEGABLE
@@ -156,18 +196,24 @@ resolvedDraftQuestions:
   - consumption-keys-use-logical-issuer-id
   - child-logical-issuer-equals-parent-delegate-logical-issuer
   - ijson-integers-limited-to-binary64-exact-range
+  - all-governed-references-have-authenticated-hash-bindings
+  - typed-preconditions-and-deterministic-aggregate-policy-are-closed-schema
+  - aggregate-authority-is-keyed-to-authority-holder-not-pdp-issuer
+  - exact-micc-invocation-is-hash-bound
+  - authenticated-monotonic-revocation-state-is-decision-bound
+  - successful-effects-require-authenticated-typed-execution-receipts
 openQuestions:
   - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
   - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
   - What revocation-state distribution mechanism can meet declared freshness bounds under degraded network conditions?
-  - What exact receipt mapping should be adopted after AUDIT_EMISSION repair/review closes?
+  - What implementation will be commissioned for the typed delegation receipt mapping to the repaired AUDIT_EMISSION contract?
   - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
   - What separately governed Council disposition validator should prove required composition, provenance, and quorum before Council approval can produce ALLOW? Existing council/schemas/disposition.schema.yaml and CG-0031 verify Operator dispositions, not Council constitution. Blocking implementation dependency; preserve for Osiris/Theia review.
-currentRevision: draft-2-hardening-2026-08-21-pass-4
+currentRevision: draft-2-four-position-correction
 nextRequiredStep: >-
-  Re-run automated/Codex review on the current hardened draft.2 head; if clean, obtain bounded
-  Ptah, Thoth, Osiris, and Theia positions against the complete profile set and preserve
-  their role-bounded provenance accurately before any Operator disposition or implementation.
+  Run automated checks and a fresh Codex review on the combined two-commit correction head,
+  then obtain exact-head revision confirmations from Ptah, Thoth, Osiris, and Theia. Require
+  a full lane re-review where the correction materially changes that lane's analysis.
 historyPath: history/
 notes:
   - Internal-first, product-ready by design.

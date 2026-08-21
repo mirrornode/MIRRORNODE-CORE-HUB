@@ -109,6 +109,29 @@ checks and Codex review are required, followed by exact-head confirmations from
 all four execution provenances. A position requires full re-review only if the
 correction materially changes its analyzed architecture.
 
+## Correction disposition
+
+The combined correction head accepts and addresses the current-specification
+substance of all four positions:
+
+- the reference-integrity commit performs the schema-wide governed-reference
+  sweep and defines preimage retention/retrievability;
+- the semantic-integration commit adds typed preconditions, a deterministic
+  aggregate policy and authenticated holder-keyed snapshot, authenticated
+  monotonic revocation state, an authenticated resource-registry snapshot, an
+  exact MICC invocation binding, a provider-neutral validator contract, a typed
+  authenticated execution receipt, and end-to-end compromise fixtures;
+- successful-effect evidence and approval/decision consumption state are bound
+  in the execution receipt and mapped to the repaired audit identifier;
+- CG-0035 compatibility language is explicitly prospective; and
+- the packet records Osiris packet-v1 metadata drift without rewriting the
+  provenance of that review.
+
+Findings that require runtime selection, deployment, ratification, production
+thresholds, transport, workload identity, or a future Council constitution are
+preserved as commissioning dependencies. They are not represented as
+implemented by this documentation/schema correction.
+
 ## Current disposition
 
 No Operator disposition is made by this synthesis. No merge, implementation,

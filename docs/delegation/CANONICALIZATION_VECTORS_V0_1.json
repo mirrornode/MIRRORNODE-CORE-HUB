@@ -372,7 +372,7 @@
         "context_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "delegation_id": "del-1",
         "delegation_version": "1.0.0",
-        "delegation_payload_hash": "sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032",
+        "delegation_payload_hash": "sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c",
         "authority_class": "AUTONOMOUS_WITHIN_POLICY",
         "micc_approval_class": "APPROVAL_NONE",
         "pdp_identity": "pdp-primary",
@@ -392,12 +392,22 @@
         "issuer_proof": {
           "proof_type": "DIGITAL_SIGNATURE",
           "issuer_credential_ref": "did:example:pdp#key-1",
-          "signed_payload_hash": "sha256:fb96861535b2dd9f571de7461bf50be1712a3fdb054eec28f6704c4d242206f5",
+          "signed_payload_hash": "sha256:cae30bb90028bb95183249d1b3938e019f6a0889c8d4f5d67efedb1b8e924d35",
           "proof_value": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImRpZDpleGFtcGxlOm9wZXJhdG9yI2tleS0xIn0.placeholder.AAAAAAAAAAAAAAAA"
-        }
+        },
+        "authority_holder_logical_issuer_id": "issuer-agent-a",
+        "micc_invocation_binding_ref": "docs/delegation/micc-binding",
+        "micc_invocation_binding_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "decision_preconditions_ref": "docs/delegation/preconditions",
+        "precondition_evaluation_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aggregate_authority_snapshot_ref": "docs/delegation/aggregate-snapshot",
+        "revocation_state_ref": "docs/delegation/revocation-state",
+        "revocation_state_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "revocation_sequence": 1,
+        "revocation_checked_at": "2026-08-21T12:00:00Z"
       },
-      "canonical": "{\"action\":{\"name\":\"op:x\",\"parameters_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"aggregate_authority_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"authority_class\":\"AUTONOMOUS_WITHIN_POLICY\",\"context_digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"decision\":\"DENY\",\"decision_id\":\"dec-1\",\"decision_nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"decision_preconditions_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"delegation_id\":\"del-1\",\"delegation_payload_hash\":\"sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032\",\"delegation_version\":\"1.0.0\",\"expires_at\":\"2026-08-21T13:00:00Z\",\"issued_at\":\"2026-08-21T12:00:00Z\",\"issuer_registry_ref\":\"docs/delegation/issuer-registry\",\"issuer_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"logical_issuer_id\":\"issuer-pdp-primary\",\"micc_approval_class\":\"APPROVAL_NONE\",\"pdp_identity\":\"pdp-primary\",\"pdp_version\":\"0.1.0\",\"policy_bundle_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"policy_content_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"reason_code\":\"DENIED\",\"request_id\":\"req-1\",\"resource\":{\"canonical_uri\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"id\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"type\":\"github.repository\"},\"resource_record_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resource_registry_ref\":\"docs/delegation/resource-registry\",\"resource_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"state_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
-      "sha256": "sha256:fb96861535b2dd9f571de7461bf50be1712a3fdb054eec28f6704c4d242206f5",
+      "canonical": "{\"action\":{\"name\":\"op:x\",\"parameters_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"aggregate_authority_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aggregate_authority_snapshot_ref\":\"docs/delegation/aggregate-snapshot\",\"authority_class\":\"AUTONOMOUS_WITHIN_POLICY\",\"authority_holder_logical_issuer_id\":\"issuer-agent-a\",\"context_digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"decision\":\"DENY\",\"decision_id\":\"dec-1\",\"decision_nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"decision_preconditions_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"decision_preconditions_ref\":\"docs/delegation/preconditions\",\"delegation_id\":\"del-1\",\"delegation_payload_hash\":\"sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c\",\"delegation_version\":\"1.0.0\",\"expires_at\":\"2026-08-21T13:00:00Z\",\"issued_at\":\"2026-08-21T12:00:00Z\",\"issuer_registry_ref\":\"docs/delegation/issuer-registry\",\"issuer_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"logical_issuer_id\":\"issuer-pdp-primary\",\"micc_approval_class\":\"APPROVAL_NONE\",\"micc_invocation_binding_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"micc_invocation_binding_ref\":\"docs/delegation/micc-binding\",\"pdp_identity\":\"pdp-primary\",\"pdp_version\":\"0.1.0\",\"policy_bundle_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"policy_content_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"precondition_evaluation_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"reason_code\":\"DENIED\",\"request_id\":\"req-1\",\"resource\":{\"canonical_uri\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"id\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"type\":\"github.repository\"},\"resource_record_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resource_registry_ref\":\"docs/delegation/resource-registry\",\"resource_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"revocation_checked_at\":\"2026-08-21T12:00:00Z\",\"revocation_sequence\":1,\"revocation_state_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"revocation_state_ref\":\"docs/delegation/revocation-state\",\"state_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
+      "sha256": "sha256:cae30bb90028bb95183249d1b3938e019f6a0889c8d4f5d67efedb1b8e924d35",
       "expected_result": "match"
     },
     {
@@ -438,19 +448,20 @@
         "policy_bundle_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "delegation_id": "del-1",
         "delegation_version": "1.0.0",
-        "delegation_payload_hash": "sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032",
+        "delegation_payload_hash": "sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c",
         "decision": "APPROVE",
         "issued_at": "2026-08-21T12:00:00Z",
         "expires_at": "2026-08-21T13:00:00Z",
         "issuer_proof": {
           "proof_type": "DIGITAL_SIGNATURE",
           "issuer_credential_ref": "did:example:operator#key-1",
-          "signed_payload_hash": "sha256:c3c2268d2e6bd92c45ceb61f305b9d688e7d26ac1eea1bfd98f6d12c79a063df",
+          "signed_payload_hash": "sha256:6d0371c50a22225421f9f963d572b2877dba5029387f48ad0cd1e0fa9fd725af",
           "proof_value": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImRpZDpleGFtcGxlOm9wZXJhdG9yI2tleS0xIn0.placeholder.AAAAAAAAAAAAAAAA"
-        }
+        },
+        "micc_invocation_binding_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
-      "canonical": "{\"action\":{\"name\":\"op:x\",\"parameters_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"approval_id\":\"ap-1\",\"approval_nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"approver\":\"operator\",\"context_digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"decision\":\"APPROVE\",\"delegation_id\":\"del-1\",\"delegation_payload_hash\":\"sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032\",\"delegation_version\":\"1.0.0\",\"expires_at\":\"2026-08-21T13:00:00Z\",\"issued_at\":\"2026-08-21T12:00:00Z\",\"issuer_registry_ref\":\"docs/delegation/issuer-registry\",\"issuer_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"logical_issuer_id\":\"issuer-operator\",\"policy_bundle_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"request_id\":\"req-1\",\"resource\":{\"canonical_uri\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"id\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"type\":\"github.repository\"},\"resource_record_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resource_registry_ref\":\"docs/delegation/resource-registry\",\"resource_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"reuse_policy\":{\"mode\":\"ONE_TIME\"},\"state_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
-      "sha256": "sha256:c3c2268d2e6bd92c45ceb61f305b9d688e7d26ac1eea1bfd98f6d12c79a063df",
+      "canonical": "{\"action\":{\"name\":\"op:x\",\"parameters_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"approval_id\":\"ap-1\",\"approval_nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"approver\":\"operator\",\"context_digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"decision\":\"APPROVE\",\"delegation_id\":\"del-1\",\"delegation_payload_hash\":\"sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c\",\"delegation_version\":\"1.0.0\",\"expires_at\":\"2026-08-21T13:00:00Z\",\"issued_at\":\"2026-08-21T12:00:00Z\",\"issuer_registry_ref\":\"docs/delegation/issuer-registry\",\"issuer_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"logical_issuer_id\":\"issuer-operator\",\"micc_invocation_binding_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"policy_bundle_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"request_id\":\"req-1\",\"resource\":{\"canonical_uri\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"id\":\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"type\":\"github.repository\"},\"resource_record_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"resource_registry_ref\":\"docs/delegation/resource-registry\",\"resource_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"reuse_policy\":{\"mode\":\"ONE_TIME\"},\"state_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
+      "sha256": "sha256:6d0371c50a22225421f9f963d572b2877dba5029387f48ad0cd1e0fa9fd725af",
       "expected_result": "match"
     },
     {
@@ -467,7 +478,7 @@
         },
         "evaluation_time": "2026-08-21T12:00:00Z",
         "applicable_delegation_payload_hashes": [
-          "sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032",
+          "sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c",
           "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         ],
         "root_ceiling_ref": "docs/delegation/root-ceiling",
@@ -487,10 +498,24 @@
         "cumulative_cardinality": 1,
         "effective_authority_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "evaluator_identity": "pdp-primary",
-        "evaluator_version": "0.1.0"
+        "evaluator_version": "0.1.0",
+        "authority_holder_logical_issuer_id": "issuer-agent-a",
+        "authority_holder_registry_ref": "docs/delegation/identity-registry",
+        "authority_holder_registry_snapshot_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aggregate_authority_policy_ref": "docs/delegation/aggregate-authority-policy",
+        "aggregate_authority_policy_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "logical_issuer_id": "issuer-aggregate-evaluator",
+        "issuer_registry_ref": "docs/delegation/issuer-registry",
+        "issuer_registry_snapshot_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "issuer_proof": {
+          "proof_type": "DIGITAL_SIGNATURE",
+          "issuer_credential_ref": "did:example:aggregate#key-1",
+          "signed_payload_hash": "sha256:024f344d59a4e52164a30fed2d638c8dc433e0bb36cc1f3e9957971c2212230c",
+          "proof_value": "eyJhbGciOiJFUzI1NiJ9.placeholder.AAAAAAAAAAAAAAAA"
+        }
       },
-      "canonical": "{\"applicable_delegation_payload_hashes\":[\"sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032\",\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"],\"cumulative_budget\":0,\"cumulative_cardinality\":1,\"cumulative_risk\":\"LOW\",\"effective_authority_digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"environment_scope\":[\"PRODUCTION\",\"STAGING\"],\"evaluation_time\":\"2026-08-21T12:00:00Z\",\"evaluator_identity\":\"pdp-primary\",\"evaluator_version\":\"0.1.0\",\"forbid_policy_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"forbid_policy_ref\":\"docs/delegation/forbid\",\"resource_scope\":[\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"mirrornode://github/repository/MIRRORNODE-INFRA\"],\"root_ceiling_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"root_ceiling_ref\":\"docs/delegation/root-ceiling\",\"snapshot_id\":\"snap-1\",\"snapshot_version\":\"1.0.0\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
-      "sha256": "sha256:c62ca6d57cb71966897a89635b1f9b0d172e32acc297e396e82229d537c14402",
+      "canonical": "{\"aggregate_authority_policy_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aggregate_authority_policy_ref\":\"docs/delegation/aggregate-authority-policy\",\"applicable_delegation_payload_hashes\":[\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c\"],\"authority_holder_logical_issuer_id\":\"issuer-agent-a\",\"authority_holder_registry_ref\":\"docs/delegation/identity-registry\",\"authority_holder_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"cumulative_budget\":0,\"cumulative_cardinality\":1,\"cumulative_risk\":\"LOW\",\"effective_authority_digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"environment_scope\":[\"PRODUCTION\",\"STAGING\"],\"evaluation_time\":\"2026-08-21T12:00:00Z\",\"evaluator_identity\":\"pdp-primary\",\"evaluator_version\":\"0.1.0\",\"forbid_policy_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"forbid_policy_ref\":\"docs/delegation/forbid\",\"issuer_registry_ref\":\"docs/delegation/issuer-registry\",\"issuer_registry_snapshot_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"logical_issuer_id\":\"issuer-aggregate-evaluator\",\"resource_scope\":[\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\",\"mirrornode://github/repository/MIRRORNODE-INFRA\"],\"root_ceiling_hash\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"root_ceiling_ref\":\"docs/delegation/root-ceiling\",\"snapshot_id\":\"snap-1\",\"snapshot_version\":\"1.0.0\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
+      "sha256": "sha256:024f344d59a4e52164a30fed2d638c8dc433e0bb36cc1f3e9957971c2212230c",
       "permutation": {
         "resource_scope": [
           "mirrornode://github/repository/MIRRORNODE-CORE-HUB",
@@ -502,10 +527,11 @@
         ],
         "applicable_delegation_payload_hashes": [
           "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "sha256:2e5fd6b545d7238bdef2d7b736d06616c327ad192e420cc845d49ad85ffc8032"
+          "sha256:cb0619ef5db06a73d838ab7c4019092b80324b1e825e9a4956848fc973dc8f5c"
         ]
       },
-      "expected_result": "match"
+      "expected_result": "match",
+      "exclude_issuer_proof": true
     }
   ]
 }

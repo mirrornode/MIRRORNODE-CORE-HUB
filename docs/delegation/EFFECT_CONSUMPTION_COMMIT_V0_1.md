@@ -56,7 +56,7 @@ If the effect is external, implementations MUST use a transactional outbox/inbox
    Insufficient remaining capacity, or a concurrent actor taking the last use, **prevents dispatch**.
 3. Commit a durable **dispatch-intent / outbox** record for `decision_key`. Only after this commit may the PEP invoke the external effect.
 4. Invoke the effect using `decision_key` as the idempotency key.
-5. Persist an effect receipt bound to the same `decision_key`.
+5. Persist an authenticated `EXECUTION_RECEIPT_V0_1` bound to the same `decision_key`, including the decision and applicable approval consumption states and the typed effect receipt reference/hash.
 6. Finalize the approval reservation as **consumed**. Failure to finalize after a successful effect **MUST NOT restore usable capacity**.
 7. Mark `COMPLETED` only after steps 5–6 reconcile.
 

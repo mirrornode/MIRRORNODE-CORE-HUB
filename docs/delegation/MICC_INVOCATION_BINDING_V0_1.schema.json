@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/micc-invocation-binding-v0.1.schema.json",
+  "title": "MIRRORNODE MICC Invocation Binding v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["binding_id", "mim_ref", "mim_hash", "adapter_id", "adapter_version", "capability_id", "capability_version", "lifecycle_state", "scope_hash", "approval_class", "requester", "executor", "execution_nonce"],
+  "properties": {
+    "binding_id": {"$ref": "#/definitions/stableId"},
+    "mim_ref": {"$ref": "#/definitions/repoRef"},
+    "mim_hash": {"$ref": "#/definitions/sha256"},
+    "adapter_id": {"$ref": "#/definitions/stableId"},
+    "adapter_version": {"type": "string", "minLength": 1},
+    "capability_id": {"$ref": "#/definitions/stableId"},
+    "capability_version": {"type": "string", "minLength": 1},
+    "lifecycle_state": {"type": "string", "enum": ["DECLARED", "VALIDATED", "COMMISSIONED", "SUSPENDED", "REVOKED"]},
+    "scope_hash": {"$ref": "#/definitions/sha256"},
+    "approval_class": {"type": "string", "enum": ["APPROVAL_NONE", "APPROVAL_AUTOMATED", "APPROVAL_OPERATOR", "APPROVAL_COUNCIL"]},
+    "requester": {"$ref": "#/definitions/typedEntity"},
+    "executor": {"$ref": "#/definitions/typedEntity"},
+    "execution_nonce": {"$ref": "#/definitions/csprngNonce"}
+  },
+  "definitions": {
+    "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "csprngNonce": {"type": "string", "minLength": 22, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]{22,64}$"},
+    "typedEntity": {"type": "object", "additionalProperties": false, "required": ["type", "id"], "properties": {"type": {"type": "string", "minLength": 1}, "id": {"type": "string", "minLength": 1}}}
+  }
+}

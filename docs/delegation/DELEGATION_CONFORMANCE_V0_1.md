@@ -4,7 +4,7 @@
 
 ## 1. Purpose
 
-JSON Schema validates document shape. It does not prove cross-document authority relationships, authenticated issuer provenance, live revocation state, approval consumption, policy integrity, aggregate authority, approval binding, or TOCTOU safety. A conformant implementation therefore requires a separate validator/evaluator layer.
+JSON Schema validates document shape. It does not prove cross-document authority relationships, authenticated issuer provenance, live revocation state, approval consumption, policy integrity, aggregate authority, approval binding, or TOCTOU safety. A conformant implementation therefore implements `DELEGATION_VALIDATOR_CONTRACT_V0_1.md`; the contract itself is not commissioned runtime code.
 
 ## 2. Static conformance checks
 
@@ -42,7 +42,7 @@ A validator must reject a delegation when:
 - authority class conflicts with a non-delegable guardrail;
 - a grant would allow its subject to modify the policy/registry/aggregate logic that determines the same grant's authority.
 
-Until a typed precondition language and deterministic strengthening relation are separately ratified, child delegations MUST inherit the exact parent `decision_preconditions_hash`. A different child precondition artifact is not treated as provably stronger merely because it is validly hashed. Children also MUST carry the exact parent revocation-source, receipt-policy, and aggregate-authority-policy hashes unless a separately governed deterministic strengthening relation proves the change non-weakening.
+Preconditions MUST validate against `DECISION_PRECONDITIONS_V0_1.schema.json`. Until a deterministic strengthening relation is separately ratified, child delegations MUST inherit the exact parent `decision_preconditions_hash`; schema validity alone does not prove a different artifact stronger. Children also MUST carry the exact parent revocation-source, receipt-policy, and aggregate-authority-policy hashes unless a separately governed deterministic strengthening relation proves the change non-weakening.
 
 ## 3. Live decision checks
 
@@ -313,6 +313,7 @@ A future MOPCON/product implementation must be tested to ensure:
 
 - static, canonicalization-vector, delegation-issuance provenance, decision-provenance, proof-confusion, approval-binding/provenance, precondition-integrity, aggregate/snapshot-hash, resource-registry, nonce/collision, revocation/TOCTOU/replay, policy-integrity, effect/consumption-commit, and PEP test suites pass;
 - receipt/audit mapping is reviewed;
+- all `END_TO_END_CONFORMANCE_VECTORS_V0_1.json` scenarios and typed execution-receipt negatives pass through a provider-neutral validator implementation;
 - failure/rollback behavior is tested;
 - monitoring and alert thresholds are defined;
 - a separate Operator authorization explicitly commissions the production autonomous class.

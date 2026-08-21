@@ -70,6 +70,7 @@ def decision_base(**overrides):
         "decision_nonce": NONCE,
         "request_id": "req-1",
         "subject": {"type": "actor", "id": "agent-a"},
+        "authority_holder_logical_issuer_id": "issuer-agent-a",
         "action": {"name": "op:x", "parameters_hash": SHA256},
         "resource": {"type": "github.repository", "id": URI, "canonical_uri": URI},
         "resource_registry_ref": "docs/delegation/resource-registry",
@@ -81,6 +82,8 @@ def decision_base(**overrides):
         "delegation_payload_hash": SHA256,
         "authority_class": "AUTONOMOUS_WITHIN_POLICY",
         "micc_approval_class": "APPROVAL_NONE",
+        "micc_invocation_binding_ref": "docs/delegation/micc-binding",
+        "micc_invocation_binding_hash": SHA256,
         "pdp_identity": "pdp-primary",
         "pdp_version": "0.1.0",
         "logical_issuer_id": "issuer-pdp-primary",
@@ -89,8 +92,15 @@ def decision_base(**overrides):
         "issuer_proof": dict(PROOF),
         "policy_content_hash": SHA256,
         "policy_bundle_hash": SHA256,
+        "decision_preconditions_ref": "docs/delegation/preconditions",
         "decision_preconditions_hash": SHA256,
+        "precondition_evaluation_hash": SHA256,
+        "aggregate_authority_snapshot_ref": "docs/delegation/aggregate-snapshot",
         "aggregate_authority_snapshot_hash": SHA256,
+        "revocation_state_ref": "docs/delegation/revocation-state",
+        "revocation_state_hash": SHA256,
+        "revocation_sequence": 1,
+        "revocation_checked_at": "2026-08-21T12:00:00Z",
         "state_hash": SHA256,
         "decision": "DENY",
         "reason_code": "DENIED",
@@ -120,6 +130,7 @@ def operator_base(**overrides):
         "resource_record_hash": SHA256,
         "context_digest": SHA256,
         "state_hash": SHA256,
+        "micc_invocation_binding_hash": SHA256,
         "policy_bundle_hash": SHA256,
         "delegation_id": "del-1",
         "delegation_version": "1.0.0",
@@ -172,7 +183,7 @@ class CanonicalizationVectorTests(unittest.TestCase):
             if vec.get("permutation"):
                 perm = dict(vec["input"])
                 perm.update(vec["permutation"])
-                _, perm_digest = canonical_hash(perm)
+                _, perm_digest = canonical_hash(perm, exclude_issuer_proof=exclude)
                 self.assertEqual(digest, perm_digest, vec["id"])
             if vec["expected_result"] == "fail_proof_verification":
                 self.assertIn("eyJhbGciOiJub25l", vec["input"]["issuer_proof"]["proof_value"])
@@ -188,6 +199,12 @@ class SchemaNegativeTests(unittest.TestCase):
         cls.council = Draft7Validator(load_schema("COUNCIL_APPROVAL_V0_1.schema.json"))
         cls.snapshot = Draft7Validator(load_schema("AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json"))
         cls.issuer_auth = Draft7Validator(load_schema("ISSUER_AUTHORITY_RECORD_V0_1.schema.json"))
+        cls.preconditions = Draft7Validator(load_schema("DECISION_PRECONDITIONS_V0_1.schema.json"))
+        cls.aggregate_policy = Draft7Validator(load_schema("AGGREGATE_AUTHORITY_POLICY_V0_1.schema.json"))
+        cls.micc_binding = Draft7Validator(load_schema("MICC_INVOCATION_BINDING_V0_1.schema.json"))
+        cls.revocation = Draft7Validator(load_schema("REVOCATION_STATE_V0_1.schema.json"))
+        cls.resource_registry = Draft7Validator(load_schema("RESOURCE_REGISTRY_SNAPSHOT_V0_1.schema.json"))
+        cls.receipt = Draft7Validator(load_schema("EXECUTION_RECEIPT_V0_1.schema.json"))
         for name in (
             "DELEGATION_ENVELOPE_V0_1.schema.json",
             "OPERATOR_APPROVAL_V0_1.schema.json",
@@ -195,6 +212,12 @@ class SchemaNegativeTests(unittest.TestCase):
             "AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json",
             "DELEGATION_DECISION_V0_1.schema.json",
             "ISSUER_AUTHORITY_RECORD_V0_1.schema.json",
+            "DECISION_PRECONDITIONS_V0_1.schema.json",
+            "AGGREGATE_AUTHORITY_POLICY_V0_1.schema.json",
+            "MICC_INVOCATION_BINDING_V0_1.schema.json",
+            "REVOCATION_STATE_V0_1.schema.json",
+            "RESOURCE_REGISTRY_SNAPSHOT_V0_1.schema.json",
+            "EXECUTION_RECEIPT_V0_1.schema.json",
         ):
             Draft7Validator.check_schema(load_schema(name))
 
@@ -272,6 +295,55 @@ class SchemaNegativeTests(unittest.TestCase):
     def test_snapshot_vector_schema(self):
         snap = next(v for v in VECTORS["vectors"] if v["id"] == "snapshot-set-permutation")["input"]
         self.assertEqual(list(self.snapshot.iter_errors(snap)), [])
+
+    def test_decision_requires_holder_micc_revocation_and_evaluation_bindings(self):
+        for field in (
+            "authority_holder_logical_issuer_id",
+            "micc_invocation_binding_hash",
+            "precondition_evaluation_hash",
+            "revocation_state_hash",
+            "revocation_sequence",
+            "revocation_checked_at",
+        ):
+            with self.subTest(field=field):
+                bad = decision_base()
+                bad.pop(field)
+                self.assertTrue(list(self.decision.iter_errors(bad)))
+
+    def test_success_receipt_requires_effect_proof_and_persisted_outcome(self):
+        receipt = {
+            "receipt_id": "receipt-1",
+            "receipt_version": "0.1.0",
+            "execution_nonce": NONCE,
+            "decision_ref": "docs/delegation/decisions/dec-1",
+            "decision_hash": SHA256,
+            "decision_logical_issuer_id": "issuer-pdp-primary",
+            "decision_id": "dec-1",
+            "decision_nonce": NONCE,
+            "delegation_payload_hash": SHA256,
+            "authority_holder_logical_issuer_id": "issuer-agent-a",
+            "micc_invocation_binding_hash": SHA256,
+            "resource_registry_snapshot_hash": SHA256,
+            "resource_record_hash": SHA256,
+            "precondition_evaluation_hash": SHA256,
+            "revocation_state_hash": SHA256,
+            "aggregate_authority_snapshot_hash": SHA256,
+            "decision_consumption": "COMMITTED",
+            "approval_consumption": "NOT_APPLICABLE",
+            "dispatch_state": "OUTCOME_PERSISTED",
+            "effect_outcome": "SUCCEEDED",
+            "effect_receipt_ref": "docs/delegation/effects/effect-1",
+            "effect_receipt_hash": SHA256,
+            "audit_id": "audit-1",
+            "issued_at": "2026-08-21T12:00:01Z",
+            "logical_issuer_id": "issuer-pep-primary",
+            "issuer_registry_ref": "docs/delegation/issuer-registry",
+            "issuer_registry_snapshot_hash": SHA256,
+            "issuer_proof": dict(PROOF),
+        }
+        self.assertEqual(list(self.receipt.iter_errors(receipt)), [])
+        receipt.pop("effect_receipt_hash")
+        self.assertTrue(list(self.receipt.iter_errors(receipt)))
 
     def test_issuer_authority_record_schema(self):
         rec = {
@@ -375,6 +447,63 @@ class ChildIssuerBindingTests(unittest.TestCase):
 
 
 class MappingAndCommitTests(unittest.TestCase):
+    def test_every_schema_repo_ref_has_declared_integrity_partner(self):
+        partners = {
+            "authority_holder_registry_ref": "authority_holder_registry_snapshot_hash",
+            "root_ceiling_ref": "root_ceiling_hash",
+            "forbid_policy_ref": "forbid_policy_hash",
+            "aggregate_authority_policy_ref": "aggregate_authority_policy_hash",
+            "issuer_registry_ref": "issuer_registry_snapshot_hash",
+            "resource_registry_ref": "resource_registry_snapshot_hash",
+            "evidence_ref": "evidence_hash",
+            "micc_invocation_binding_ref": "micc_invocation_binding_hash",
+            "decision_preconditions_ref": "decision_preconditions_hash",
+            "aggregate_authority_snapshot_ref": "aggregate_authority_snapshot_hash",
+            "revocation_state_ref": "revocation_state_hash",
+            "delegate_identity_registry_ref": "delegate_identity_registry_snapshot_hash",
+            "governing_policy_ref": "policy_content_hash",
+            "revocation_ref": "revocation_source_hash",
+            "receipt_policy_ref": "receipt_policy_hash",
+            "decision_ref": "decision_hash",
+            "approval_ref": "approval_hash",
+            "effect_receipt_ref": "effect_receipt_hash",
+            "mim_ref": "mim_hash",
+        }
+        observed = set()
+
+        def scan(node):
+            if isinstance(node, dict):
+                props = node.get("properties")
+                if isinstance(props, dict):
+                    for name, schema in props.items():
+                        if isinstance(schema, dict) and schema.get("$ref") == "#/definitions/repoRef":
+                            observed.add(name)
+                            self.assertIn(name, partners)
+                            self.assertIn(partners[name], props)
+                        scan(schema)
+                for key, value in node.items():
+                    if key != "properties":
+                        scan(value)
+            elif isinstance(node, list):
+                for value in node:
+                    scan(value)
+
+        for path in DELEGATION.glob("*.schema.json"):
+            scan(json.loads(path.read_text()))
+        self.assertEqual(observed, set(partners))
+
+    def test_end_to_end_vectors_cover_compromise_paths(self):
+        vectors = json.loads((DELEGATION / "END_TO_END_CONFORMANCE_VECTORS_V0_1.json").read_text())["vectors"]
+        ids = {v["id"] for v in vectors}
+        self.assertTrue({
+            "unbound-governed-reference",
+            "micc-adapter-substitution",
+            "aggregate-holder-substitution",
+            "resource-registry-remap",
+            "revocation-sequence-replay",
+            "receipt-success-without-effect-proof",
+        }.issubset(ids))
+
     def test_resource_remap_invalidates_approval(self):
         approved = SHA256
         remapped = "sha256:" + ("b" * 64)

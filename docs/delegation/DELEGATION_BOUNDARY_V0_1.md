@@ -134,7 +134,7 @@ Every decision must record at least:
 
 A fabricated schema-shaped `ALLOW` without a trusted PDP `issuer_proof` MUST fail. IDs are stable identifiers within an authenticated issuer trust domain. Nonces are unpredictable replay-prevention values. Consumption keys are `(authenticated_issuer, id, nonce)` taken from protected proof metadata.
 
-`micc_approval_class` is recorded on every decision. When no additional MICC approval gate applies, the recorded class is `APPROVAL_NONE`. The field is never omitted to mean “no MICC gate.” Both MICC and delegation constraints apply, and the stricter gate wins.
+`micc_approval_class` is recorded on every decision. The decision also binds the exact schema-valid `MICC_INVOCATION_BINDING_V0_1` object by reference and hash, covering the MIM, adapter and capability versions, lifecycle, scope, requester, executor, approval class, and execution nonce. When no additional MICC approval gate applies, the recorded class is `APPROVAL_NONE`. The field is never omitted to mean “no MICC gate.” Both MICC and delegation constraints apply, and the stricter gate wins.
 
 `delegation_payload_hash` MUST equal the SHA-256 of the deterministic canonical envelope payload excluding `issuer_proof`, and MUST equal `issuer_proof.signed_payload_hash`. The decision is bound to that exact payload, not merely to `delegation_id` and `delegation_version`. A changed envelope with the same delegation ID and version fails closed. Operator and Council approvals MUST carry the same `delegation_payload_hash`; an approval bound only to those mutable coordinates cannot authorize a mutated envelope.
 
@@ -171,13 +171,13 @@ Any change that could increase effective authority requires authority from outsi
 
 ## 8. Aggregate authority
 
-Authorization is evaluated against both the current envelope and the **aggregate authority** held by the delegate actor.
+Authorization is evaluated against both the current envelope and the **aggregate authority** held by `delegate_logical_issuer_id`, the authority holder. Display actor, request subject, PDP issuer, approval issuer, and executor identities remain separately recorded and MUST NOT be substituted for that holder.
 
 Before an autonomous allow decision, the PDP must compute or verify an aggregate-authority snapshot covering all active, applicable delegations for that actor, including overlapping resources, operations, environments, parent/child grants, and time windows.
 
 The union of individually valid delegations must not exceed a separately governed root/actor ceiling. Non-conflicting grants can still compose into excessive authority; absence of direct contradiction is not sufficient.
 
-The snapshot hashed as `aggregate_authority_snapshot_hash` MUST be a schema-valid `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1` object, canonicalized with RFC 8785. The snapshot is not an opaque digest of an undefined document.
+The snapshot hashed as `aggregate_authority_snapshot_hash` MUST be a schema-valid, authenticated `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1` object, canonicalized with RFC 8785 excluding `issuer_proof`. Its computation MUST use the bound `AGGREGATE_AUTHORITY_POLICY_V0_1` and `CG0036_AGGREGATE_V0_1`; the snapshot is not an opaque digest of an undefined document.
 
 Workflow or action-chain policy must detect when a sequence of individually allowed low-risk actions can produce an outcome equivalent to a higher-risk or non-delegable action. Where composition cannot be bounded, the chain escalates.
 
@@ -239,7 +239,7 @@ Effect dispatch follows `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Reservation of `(lo
 
 Delegation is revocable without consent of the delegate actor.
 
-Each delegation declares a maximum tolerated revocation-propagation latency. If an enforcement point cannot prove its revocation state is fresh enough for that bound, it fails closed for new work.
+Each delegation declares a maximum tolerated revocation-propagation latency. The decision binds an authenticated `REVOCATION_STATE_V0_1` preimage, its sequence, and `revocation_checked_at`. PDPs and PEPs persist the highest accepted sequence per revocation issuer and reject replayed or non-increasing sequences. If an enforcement point cannot prove freshness and sequence continuity for the declared bound, it fails closed for new work.
 
 Revocation behavior for already-started work is one of:
 
@@ -323,7 +323,7 @@ If MICC requires `APPROVAL_OPERATOR`, a conformant `ALLOW` decision carries the 
 
 Generated model output, analysis, confidence, or a tool/function proposal carries no execution authority by itself.
 
-The Cognition Contract term `PROPOSAL_ONLY` is a cognition side-effect ceiling. CG-0036 uses `ADVISORY_ONLY` for the delegation authority class to avoid semantic collision.
+The open CG-0035 Cognition Contract draft uses `PROPOSAL_ONLY` as a proposed cognition side-effect ceiling. CG-0036 uses `ADVISORY_ONLY` for the delegation authority class to avoid semantic collision. This is a prospective compatibility constraint, not a claim that CG-0035 is settled or canonical.
 
 A cognition system may emit an action proposal, but the PDP evaluates the resulting action request independently. The proposal source cannot supply trusted authority class, risk score, resource identity, policy version, approval state, or approval provenance merely by asserting them.
 
@@ -338,7 +338,7 @@ Every delegated effect must be reconstructible from an evidence chain sufficient
 
 Success never substitutes for authorization.
 
-Decision and execution receipts should include immutable references/hashes rather than mutable path names alone. Authorization receipts are separate from execution receipts but must be linkable by nonce/request/effect identifiers. Approval provenance and consumption state must be reconstructible without exposing secret credential material.
+Decision evidence and execution evidence are separate but linkable. Every completed or uncertain dispatch MUST produce a schema-valid, authenticated `EXECUTION_RECEIPT_V0_1`. It binds the exact decision and delegation, authority holder, MICC invocation, resource record, precondition evaluation, revocation state, aggregate snapshot, decision consumption, applicable approval consumption, dispatch state, effect outcome, audit identifier, and effect receipt. `SUCCEEDED` is invalid without a durable typed effect-receipt reference and hash. Approval and decision consumption transitions are therefore externally auditable evidence, not merely internal behavior. `DELEGATION_AUDIT_MAPPING_V0_1.md` maps this receipt additively into the repaired locked `AUDIT_EMISSION` record without modifying that contract.
 
 ## 17. Product/HUD requirements
 

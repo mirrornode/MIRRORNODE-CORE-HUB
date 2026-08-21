@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/execution-receipt-v0.1.schema.json",
+  "title": "MIRRORNODE Execution Receipt v0.1",
+  "description": "Authenticated evidence that separates authorization, consumption, dispatch, and effect outcome.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["receipt_id", "receipt_version", "execution_nonce", "decision_ref", "decision_hash", "decision_logical_issuer_id", "decision_id", "decision_nonce", "delegation_payload_hash", "authority_holder_logical_issuer_id", "micc_invocation_binding_hash", "resource_registry_snapshot_hash", "resource_record_hash", "precondition_evaluation_hash", "revocation_state_hash", "aggregate_authority_snapshot_hash", "decision_consumption", "approval_consumption", "dispatch_state", "effect_outcome", "audit_id", "issued_at", "logical_issuer_id", "issuer_registry_ref", "issuer_registry_snapshot_hash", "issuer_proof"],
+  "properties": {
+    "receipt_id": {"$ref": "#/definitions/stableId"},
+    "receipt_version": {"const": "0.1.0"},
+    "execution_nonce": {"$ref": "#/definitions/csprngNonce"},
+    "decision_ref": {"$ref": "#/definitions/repoRef"},
+    "decision_hash": {"$ref": "#/definitions/sha256"},
+    "decision_logical_issuer_id": {"$ref": "#/definitions/stableId"},
+    "decision_id": {"$ref": "#/definitions/stableId"},
+    "decision_nonce": {"$ref": "#/definitions/csprngNonce"},
+    "delegation_payload_hash": {"$ref": "#/definitions/sha256"},
+    "authority_holder_logical_issuer_id": {"$ref": "#/definitions/stableId"},
+    "micc_invocation_binding_hash": {"$ref": "#/definitions/sha256"},
+    "resource_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "resource_record_hash": {"$ref": "#/definitions/sha256"},
+    "precondition_evaluation_hash": {"$ref": "#/definitions/sha256"},
+    "revocation_state_hash": {"$ref": "#/definitions/sha256"},
+    "aggregate_authority_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "decision_consumption": {"const": "COMMITTED"},
+    "approval_ref": {"$ref": "#/definitions/repoRef"},
+    "approval_hash": {"$ref": "#/definitions/sha256"},
+    "approval_consumption": {"type": "string", "enum": ["NOT_APPLICABLE", "COMMITTED"]},
+    "dispatch_state": {"type": "string", "enum": ["NOT_DISPATCHED", "INTENT_COMMITTED", "DISPATCHED", "OUTCOME_PERSISTED"]},
+    "effect_outcome": {"type": "string", "enum": ["SUCCEEDED", "NO_EFFECT", "FAILED", "UNCERTAIN"]},
+    "effect_receipt_ref": {"$ref": "#/definitions/repoRef"},
+    "effect_receipt_hash": {"$ref": "#/definitions/sha256"},
+    "audit_id": {"$ref": "#/definitions/stableId"},
+    "issued_at": {"$ref": "#/definitions/utcTimestamp"},
+    "logical_issuer_id": {"$ref": "#/definitions/stableId"},
+    "issuer_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "issuer_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "issuer_proof": {"$ref": "#/definitions/issuerProof"}
+  },
+  "dependencies": {
+    "approval_ref": ["approval_hash", "approval_consumption"],
+    "approval_hash": ["approval_ref", "approval_consumption"],
+    "effect_receipt_ref": ["effect_receipt_hash"],
+    "effect_receipt_hash": ["effect_receipt_ref"]
+  },
+  "allOf": [
+    {"if": {"properties": {"effect_outcome": {"const": "SUCCEEDED"}}, "required": ["effect_outcome"]}, "then": {"required": ["effect_receipt_ref", "effect_receipt_hash"], "properties": {"dispatch_state": {"const": "OUTCOME_PERSISTED"}}}},
+    {"if": {"required": ["approval_ref"]}, "then": {"properties": {"approval_consumption": {"const": "COMMITTED"}}}, "else": {"properties": {"approval_consumption": {"enum": ["NOT_APPLICABLE"]}}}}
+  ],
+  "definitions": {
+    "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "csprngNonce": {"type": "string", "minLength": 22, "maxLength": 64, "pattern": "^[A-Za-z0-9_-]{22,64}$"},
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "issuerProof": {"type": "object", "additionalProperties": false, "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"], "properties": {"proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_REGISTRY_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]}, "issuer_credential_ref": {"type": "string", "minLength": 1}, "signed_payload_hash": {"$ref": "#/definitions/sha256"}, "proof_value": {"type": "string", "minLength": 16}, "proof_ref": {"type": "string", "minLength": 1}}, "oneOf": [{"required": ["proof_value"], "not": {"required": ["proof_ref"]}}, {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}]}
+  }
+}

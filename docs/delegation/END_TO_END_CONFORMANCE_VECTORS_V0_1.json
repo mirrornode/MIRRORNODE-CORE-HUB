@@ -1,0 +1,18 @@
+{
+  "profile": "CG0036_END_TO_END_V0_1",
+  "status": "draft-fixture-index",
+  "vectors": [
+    {"id": "valid-autonomous-no-approval", "expected": "ALLOW", "reason": "ALL_CHECKS_PASS"},
+    {"id": "unbound-governed-reference", "mutation": "remove receipt_policy_hash", "expected": "DENY", "reason": "SCHEMA_INVALID"},
+    {"id": "precondition-semantic-failure", "mutation": "state hash differs", "expected": "DENY", "reason": "PRECONDITION_FAILED"},
+    {"id": "micc-adapter-substitution", "mutation": "binding hash differs from decision", "expected": "DENY", "reason": "MICC_BINDING_MISMATCH"},
+    {"id": "aggregate-holder-substitution", "mutation": "snapshot holder is PDP issuer", "expected": "DENY", "reason": "IDENTITY_BINDING_MISMATCH"},
+    {"id": "aggregate-ceiling-exceeded", "mutation": "cumulative cardinality exceeds policy", "expected": "DENY", "reason": "AGGREGATE_CEILING_EXCEEDED"},
+    {"id": "resource-registry-remap", "mutation": "native target differs from bound record", "expected": "DENY", "reason": "RESOURCE_TARGET_MISMATCH"},
+    {"id": "revocation-sequence-replay", "mutation": "sequence is not greater than stored high-water mark", "expected": "DENY", "reason": "REVOCATION_SEQUENCE_REPLAY"},
+    {"id": "council-allow-v0-1", "mutation": "ALLOW plus APPROVAL_COUNCIL", "expected": "DENY", "reason": "COUNCIL_ALLOW_FORBIDDEN"},
+    {"id": "receipt-success-without-effect-proof", "mutation": "SUCCEEDED omits effect receipt", "expected": "DENY", "reason": "RECEIPT_INVALID"},
+    {"id": "receipt-consumption-attribution-substitution", "mutation": "authority holder replaced by decision issuer", "expected": "DENY", "reason": "IDENTITY_BINDING_MISMATCH"},
+    {"id": "uncertain-effect-retains-consumption", "expected": "ESCALATE", "reason": "EFFECT_UNCERTAIN"}
+  ]
+}

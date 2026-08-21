@@ -15,6 +15,15 @@ Review the **complete profile set**:
 - `docs/delegation/CANONICALIZATION_VECTORS_V0_1.json`
 - `docs/delegation/ISSUER_PROOF_V0_1.md`
 - `docs/delegation/REFERENCE_INTEGRITY_PROFILE_V0_1.md`
+- `docs/delegation/DECISION_PRECONDITIONS_V0_1.schema.json`
+- `docs/delegation/AGGREGATE_AUTHORITY_POLICY_V0_1.schema.json`
+- `docs/delegation/MICC_INVOCATION_BINDING_V0_1.schema.json`
+- `docs/delegation/REVOCATION_STATE_V0_1.schema.json`
+- `docs/delegation/RESOURCE_REGISTRY_SNAPSHOT_V0_1.schema.json`
+- `docs/delegation/EXECUTION_RECEIPT_V0_1.schema.json`
+- `docs/delegation/DELEGATION_AUDIT_MAPPING_V0_1.md`
+- `docs/delegation/DELEGATION_VALIDATOR_CONTRACT_V0_1.md`
+- `docs/delegation/END_TO_END_CONFORMANCE_VECTORS_V0_1.json`
 - `docs/delegation/ISSUER_AUTHORITY_RECORD_V0_1.schema.json`
 - `docs/delegation/DELEGATION_ENVELOPE_V0_1.schema.json`
 - `docs/delegation/DELEGATION_DECISION_V0_1.schema.json`
