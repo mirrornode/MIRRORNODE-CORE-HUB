@@ -38,14 +38,31 @@ When a hash or signature is specified as covering “the canonical payload exclu
 
 ## 3. RFC 8785 procedure
 
-Apply RFC 8785:
+Apply RFC 8785, including §3.2.3 name ordering:
 
-- object properties are serialized in lexicographic order of Unicode code points of the names;
-- array order is preserved exactly;
+- object properties are serialized in lexicographic order of the **UTF-16 code units** of the names, not Unicode code points;
+- Python `json.dumps(..., sort_keys=True)` is **not** an RFC 8785 implementation;
+- array order is preserved exactly **after** any required set-like preprocessing (below);
 - strings use RFC 8785 JSON string escaping (no extra escaping of solidus or non-ASCII);
 - numbers use RFC 8785 / ES6 / I-JSON number formatting;
 - output is UTF-8 with no insignificant whitespace;
 - the hash is `SHA-256(canonical_utf8_bytes)` rendered as `sha256:` plus 64 lowercase hex characters.
+
+A non-BMP name versus a BMP name MUST distinguish UTF-16 ordering from code-point ordering. Vector: `canon-utf16-name-order`.
+
+## 3a. Set-like array preprocessing
+
+RFC 8785 preserves array order. Semantically set-like arrays MUST therefore be preprocessed **after schema validation and before** hashing the enclosing object:
+
+1. reject duplicate items (fail closed);
+2. sort items by the UTF-8 bytes of each item’s RFC 8785 canonical representation;
+3. then canonicalize the enclosing object.
+
+**Set-like** (must preprocess): `allowed_operations`, `resource_scope`, `environment_scope`, `eligible_operations`, `applicable_delegation_payload_hashes`.
+
+**Sequence-bearing** (must **not** reorder): `obligations`, `notes`.
+
+Permutation of a set-like array MUST NOT change the hash. Vector: `snapshot-set-permutation`.
 
 ## 4. Rejection set
 
@@ -62,7 +79,7 @@ Fail closed on:
 
 Normative fixtures: `CANONICALIZATION_VECTORS_V0_1.json`.
 
-A conformant implementation MUST produce the recorded canonical strings and SHA-256 values, MUST treat key-order variation as equal, MUST treat material string variation as unequal, MUST leave the excluded-proof payload hash unchanged when only `issuer_proof` changes, and MUST fail proof verification when protected proof metadata is substituted.
+A conformant implementation MUST produce the recorded canonical strings and SHA-256 values, MUST treat BMP key-order variation as equal, MUST treat UTF-16 name order as distinct from code-point order, MUST treat material string variation as unequal, MUST schema-validate complete objects before excluding `issuer_proof`, MUST leave the excluded-proof payload hash unchanged when only `issuer_proof` changes, MUST fail proof verification when protected proof metadata is substituted, and MUST hash equal semantic sets identically after set-like preprocessing.
 
 ## 6. Non-authorization
 
