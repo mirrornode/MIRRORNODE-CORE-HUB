@@ -10,10 +10,16 @@ Does draft.2 define a sound, non-self-referential delegation architecture in whi
 Review the **complete profile set**:
 
 - `docs/delegation/DELEGATION_BOUNDARY_V0_1.md`
+- `docs/delegation/CANONICALIZATION_V0_1.md`
+- `docs/delegation/CANONICALIZATION_VECTORS_V0_1.json`
+- `docs/delegation/ISSUER_PROOF_V0_1.md`
 - `docs/delegation/DELEGATION_ENVELOPE_V0_1.schema.json`
 - `docs/delegation/DELEGATION_DECISION_V0_1.schema.json`
 - `docs/delegation/OPERATOR_APPROVAL_V0_1.schema.json`
 - `docs/delegation/COUNCIL_APPROVAL_V0_1.schema.json`
+- `docs/delegation/AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json`
+- `docs/delegation/EFFECT_CONSUMPTION_COMMIT_V0_1.md`
+- `docs/delegation/EFFECT_CONSUMPTION_COMMIT_VECTORS_V0_1.json`
 - `docs/delegation/AUTHORIZATION_EVALUATION_PROFILE_V0_1.md`
 - `docs/delegation/RESOURCE_IDENTITY_V0_1.md`
 - `docs/delegation/DELEGATION_CONFORMANCE_V0_1.md`
@@ -22,7 +28,7 @@ Review the **complete profile set**:
 
 ## Ptah
 
-Attack implementability and conformance. Focus on PDP/PEP contracts, authenticated approval provenance, consumption/reuse accounting, immutable precondition binding, `delegation_payload_hash` binding of decisions and approvals to the exact envelope payload, typed Council approval, aggregate-authority computation, canonical resources, cross-document validation, retry/TOCTOU/one-time-ALLOW enforcement, and whether the schemas contain enough information to implement without hidden semantics.
+Attack implementability and conformance. Focus on RFC 8785 canonicalization, authenticated decision `issuer_proof`, protected proof-header semantics, PDP/PEP contracts, consumption/effect commit protocol, immutable precondition binding, `delegation_payload_hash` binding, structurally unreachable Council `ALLOW`, closed aggregate-authority snapshots, resource-registry snapshot binding, identifier/nonce semantics, and whether the schemas contain enough information to implement without hidden semantics.
 
 ## Thoth
 

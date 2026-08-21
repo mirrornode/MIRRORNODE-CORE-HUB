@@ -4,7 +4,7 @@ title: Delegation Boundary v0.1
 matterType: governance
 initiator: operator
 createdAt: "2026-08-14T22:49:00Z"
-updatedAt: "2026-08-21T12:00:00Z"
+updatedAt: "2026-08-21T18:00:00Z"
 workflowState: open
 decisionQuestion: >-
   How should MIRRORNODE reduce routine Operator intervention through bounded,
@@ -98,6 +98,30 @@ referenceArtifacts:
     kind: document
     href: ../../../docs/delegation/STANDARDS_CROSSWALK_V0_1.md
     canonical: false
+  - id: CANONICALIZATION-PROFILE
+    kind: document
+    href: ../../../docs/delegation/CANONICALIZATION_V0_1.md
+    canonical: false
+  - id: CANONICALIZATION-VECTORS
+    kind: document
+    href: ../../../docs/delegation/CANONICALIZATION_VECTORS_V0_1.json
+    canonical: false
+  - id: ISSUER-PROOF-PROFILE
+    kind: document
+    href: ../../../docs/delegation/ISSUER_PROOF_V0_1.md
+    canonical: false
+  - id: AGGREGATE-AUTHORITY-SNAPSHOT-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json
+    canonical: false
+  - id: EFFECT-CONSUMPTION-COMMIT
+    kind: document
+    href: ../../../docs/delegation/EFFECT_CONSUMPTION_COMMIT_V0_1.md
+    canonical: false
+  - id: EFFECT-CONSUMPTION-COMMIT-VECTORS
+    kind: document
+    href: ../../../docs/delegation/EFFECT_CONSUMPTION_COMMIT_VECTORS_V0_1.json
+    canonical: false
 resolvedDraftQuestions:
   - classification-is-policy-derived-through-bounded-PDP-and-enforced-by-distinct-PEP
   - unmatched-ambiguous-or-error-actions-default-to-NON_DELEGABLE
@@ -114,6 +138,12 @@ resolvedDraftQuestions:
   - child-preconditions-inherit-exact-parent-hash-until-typed-strengthening-exists
   - micc-approval-class-is-recorded-unconditionally
   - decisions-and-approvals-bind-delegation-payload-hash
+  - rfc8785-canonicalization-is-the-hash-profile
+  - decisions-require-authenticated-issuer-proof
+  - v0-1-council-allow-is-schema-unreachable
+  - resource-registry-snapshot-is-decision-bound
+  - aggregate-authority-snapshot-has-a-closed-schema
+  - nonces-are-csprng-and-consumption-keys-are-issuer-scoped
 openQuestions:
   - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
   - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
@@ -121,7 +151,7 @@ openQuestions:
   - What exact receipt mapping should be adopted after AUDIT_EMISSION repair/review closes?
   - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
   - What separately governed Council disposition validator should prove required composition, provenance, and quorum before Council approval can produce ALLOW? Existing council/schemas/disposition.schema.yaml and CG-0031 verify Operator dispositions, not Council constitution. Blocking implementation dependency; preserve for Osiris/Theia review.
-currentRevision: draft-2-hardening-2026-08-21
+currentRevision: draft-2-hardening-2026-08-21-pass-2
 nextRequiredStep: >-
   Re-run automated/Codex review on the current hardened draft.2 head; if clean, obtain bounded
   Ptah, Thoth, Osiris, and Theia positions against the complete profile set and preserve
@@ -133,4 +163,4 @@ notes:
   - Delegated actors may not modify their own delegation scope, ceilings, policy, classification inputs, revocation/expiry rules, resource mappings, or aggregate-authority logic.
   - The goal is provable bounded autonomy, not maximal autonomy.
   - AUDIT_EMISSION shell/heredoc corruption is confirmed and isolated to separate draft repair PR #49.
-  - Council-required ALLOW remains fail-closed until a separately governed disposition validator proves required composition, provenance, and quorum. Existing disposition.schema.yaml and CG-0031 are Operator-disposition records/gates, not Council constitution.
+  - Council-required ALLOW remains fail-closed until a separately governed disposition validator proves required composition, provenance, and quorum. Existing disposition.schema.yaml and CG-0031 are Operator-disposition records/gates, not Council constitution. v0.1 additionally makes APPROVAL_COUNCIL+ALLOW schema-invalid; a future schema revision is required after that validator is ratified.
