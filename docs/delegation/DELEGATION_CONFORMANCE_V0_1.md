@@ -17,6 +17,11 @@ A validator must reject a delegation when:
 - protected proof metadata (`alg`/`kid` or equivalent) disagrees with schema hints, is unsigned, or verifies under a substituted algorithm, credential, or trust root (`ISSUER_PROOF_V0_1.md`);
 - issuer authentication succeeds but issuer **authorization** fails: the hash-bound `issuer_authority_ref`/`issuer_authority_hash` is missing, unauthenticated, expired, self-issued, or does not cover the exact operations, resources, environments, rank/ceiling, risk, subdelegation depth, or validity period;
 - a child grant's issuer-authority hash is not the authenticated parent envelope payload hash;
+- a child grant's authenticated `logical_issuer_id` is not the parent envelope's `delegate_logical_issuer_id`;
+- a child grant relies on `delegate_actor` / display-name equality instead of the identity-registry binding;
+- an authenticated peer cites a victim parent payload hash while presenting a different `logical_issuer_id`;
+- the parent `delegate_identity_registry_ref` / `delegate_identity_registry_snapshot_hash` is missing, unresolvable, or stale relative to the live identity registry;
+- credential rotation is rejected even though the mapped `logical_issuer_id` is unchanged (rotation that preserves the logical issuer MUST pass);
 - a root grant's issuer-authority record is not a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee's control;
 - an authenticated peer signs a scope it does not possess;
 - policy path/version/hash are missing or inconsistent;
@@ -28,6 +33,7 @@ A validator must reject a delegation when:
 - revocation/expiry behavior is undefined;
 - `NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE` is selected without a rationale containing meaningful non-whitespace content;
 - parent delegation cannot be resolved when a child is declared;
+- parent/child issuer-identity binding has not been proven before scope monotonicity is evaluated;
 - parent/child scope, operation, authority rank, risk ceiling, depth, or expiry monotonicity fails;
 - a child does not carry the exact parent `decision_preconditions_hash`;
 - a child weakens required receipt, revocation, or expiry rules;
@@ -278,7 +284,12 @@ Tests must include:
 - delegation proof anchored to a credential controlled by the affected delegate;
 - `signed_payload_hash` mismatch after any envelope field changes;
 - trusted-registry attestation that does not authenticate the complete canonical envelope payload excluding `issuer_proof`;
-- decision or approval `delegation_payload_hash` that does not equal the envelope `issuer_proof.signed_payload_hash`.
+- decision or approval `delegation_payload_hash` that does not equal the envelope `issuer_proof.signed_payload_hash`;
+- correct parent `delegate_logical_issuer_id` issuing an in-scope child (must pass);
+- authenticated peer citing a victim parent payload hash (must fail);
+- matching `delegate_actor` display name with a different `logical_issuer_id` (must fail);
+- credential rotation that preserves the same `logical_issuer_id` (must pass);
+- unresolved or stale `delegate_identity_registry_snapshot_hash` (must fail closed).
 
 All must fail.
 

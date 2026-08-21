@@ -21,7 +21,7 @@ Canonicalization MUST NOT be attempted until:
 
 1. the input is UTF-8 JSON text or an in-memory JSON value produced from such text;
 2. a duplicate-key-rejecting parser has accepted the text (duplicate object keys fail closed);
-3. the value is I-JSON: no `NaN`, `Infinity`, `-Infinity`, non-UTF-8, or out-of-range integers beyond IEEE 754 binary64 exact integers used by RFC 8785/I-JSON;
+3. the value is I-JSON: no `NaN`, `Infinity`, `-Infinity`, non-UTF-8, or integers outside the IEEE-754 binary64 exact range `-(2^53-1) … 2^53-1` inclusive (`-9007199254740991` … `9007199254740991`). Oversized integers MUST be rejected recursively (objects, arrays, nested values). They MUST NOT be rounded, coerced, or converted to strings.
 4. the applicable closed JSON Schema (`additionalProperties: false`) has accepted the object.
 
 Absent members and JSON `null` are not interchangeable. Omitting a field is not equivalent to setting it to `null`. A schema that rejects `null` for a field continues to reject `null` after this profile.
@@ -44,7 +44,7 @@ Apply RFC 8785, including §3.2.3 name ordering:
 - Python `json.dumps(..., sort_keys=True)` is **not** an RFC 8785 implementation;
 - array order is preserved exactly **after** any required set-like preprocessing (below);
 - strings use RFC 8785 JSON string escaping (no extra escaping of solidus or non-ASCII);
-- numbers use RFC 8785 / ES6 / I-JSON number formatting;
+- numbers use RFC 8785 / ES6 / I-JSON number formatting; integers outside `±(2^53-1)` fail before serialization;
 - output is UTF-8 with no insignificant whitespace;
 - the hash is `SHA-256(canonical_utf8_bytes)` rendered as `sha256:` plus 64 lowercase hex characters.
 

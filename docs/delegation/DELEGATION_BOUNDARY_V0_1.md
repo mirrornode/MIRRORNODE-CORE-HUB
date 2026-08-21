@@ -3,7 +3,7 @@
 **Status:** Draft under CG-0036 — not canon, not implementation authority  
 **Version:** 0.1-draft.2  
 **Created:** 2026-08-14  
-**Revision:** 2026-08-21 bounded hardening pass 3 (approval-capacity reservation, issuer-authority vs authentication, approval registry bindings, dispatch-intent, UTF-16 JCS, schema-valid vectors, set-like array order, logical issuer)
+**Revision:** 2026-08-21 bounded hardening pass 4 (child issuer bound to parent delegate_logical_issuer_id; I-JSON safe integers)
 
 ## 1. Purpose
 
@@ -61,7 +61,10 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `logical_issuer_id`, `issuer_registry_ref`, `issuer_registry_snapshot_hash`
 - `issuer_authority_kind`, `issuer_authority_ref`, `issuer_authority_hash`
 - `issuer_proof`
-- `delegate_actor`
+- `delegate_actor` (correlating label only; not identity proof)
+- `delegate_logical_issuer_id`
+- `delegate_identity_registry_ref`
+- `delegate_identity_registry_snapshot_hash`
 - `authority_class`
 - `governing_policy_ref`
 - `policy_version`
@@ -86,7 +89,7 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 
 `issuer_proof` authenticates the RFC 8785 canonical envelope payload excluding `issuer_proof`, hashed per `CANONICALIZATION_V0_1.md`. Content integrity (a digest over payload bytes) proves that those bytes have not changed after hashing; it does not, by itself, prove who issued the envelope. Authenticated issuance requires a verifiable proof over that canonical payload, validated against a trust root outside the affected delegate's authority path. A hash string, a claimed `delegator` name, or an unsigned envelope cannot establish issuance.
 
-A trusted credential proves **identity only**. Before an envelope enters `G(A,t)`, a hash-bound issuer-authority source MUST prove the logical issuer may delegate the exact operations, resources, environments, authority rank and ceiling, risk ceiling, subdelegation depth, and validity period. Child grants verify that source against the authenticated parent envelope. Root grants require a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee’s control. Unknown, unauthenticated, excessive, expired, or self-issued authority fails closed.
+A trusted credential proves **identity only**. Before an envelope enters `G(A,t)`, a hash-bound issuer-authority source MUST prove the logical issuer may delegate the exact operations, resources, environments, authority rank and ceiling, risk ceiling, subdelegation depth, and validity period. Child grants verify that source against the authenticated parent envelope **and** MUST prove `child.logical_issuer_id == parent.delegate_logical_issuer_id` via the parent's hash-bound identity-registry snapshot. `delegate_actor` / display names are not that proof. A peer citing another actor's parent payload hash cannot issue a child grant. Root grants require a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee’s control. Unknown, unauthenticated, excessive, expired, or self-issued authority fails closed.
 
 `proof_type` and `issuer_credential_ref` are untrusted hints until authenticated. The proof mechanism MUST cryptographically protect the algorithm identifier, credential/key identifier, and signed payload hash using standard JOSE/COSE/WebAuthn protected-header semantics (`ISSUER_PROOF_V0_1.md`). Algorithm substitution, credential redirection, and trust-root substitution fail closed.
 

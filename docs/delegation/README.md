@@ -7,7 +7,7 @@ Draft artifacts under CG-0036:
 - `CANONICALIZATION_VECTORS_V0_1.json` — fixed canonicalization and snapshot-hash vectors.
 - `ISSUER_PROOF_V0_1.md` — protected-header proof metadata; schema hints are untrusted; credential maps to `logical_issuer_id`.
 - `ISSUER_AUTHORITY_RECORD_V0_1.schema.json` — hash-bound root-issuer delegable scope (authentication ≠ authorization).
-- `DELEGATION_ENVELOPE_V0_1.schema.json` — machine-readable delegation grant shape.
+- `DELEGATION_ENVELOPE_V0_1.schema.json` — machine-readable delegation grant shape (includes `delegate_logical_issuer_id` identity binding).
 - `DELEGATION_DECISION_V0_1.schema.json` — PDP decision / PEP enforcement binding shape (authenticated; Council ALLOW unreachable).
 - `OPERATOR_APPROVAL_V0_1.schema.json` — authenticated, request-bound Operator approval object.
 - `COUNCIL_APPROVAL_V0_1.schema.json` — authenticated Council evidence object; cannot unlock v0.1 `ALLOW`.
