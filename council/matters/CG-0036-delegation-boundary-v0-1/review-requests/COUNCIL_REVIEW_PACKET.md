@@ -22,7 +22,7 @@ Review the **complete profile set**:
 
 ## Ptah
 
-Attack implementability and conformance. Focus on PDP/PEP contracts, authenticated approval provenance, consumption/reuse accounting, immutable precondition binding, typed Council approval, aggregate-authority computation, canonical resources, cross-document validation, retry/TOCTOU enforcement, and whether the schemas contain enough information to implement without hidden semantics.
+Attack implementability and conformance. Focus on PDP/PEP contracts, authenticated approval provenance, consumption/reuse accounting, immutable precondition binding, `delegation_payload_hash` binding of decisions and approvals to the exact envelope payload, typed Council approval, aggregate-authority computation, canonical resources, cross-document validation, retry/TOCTOU/one-time-ALLOW enforcement, and whether the schemas contain enough information to implement without hidden semantics.
 
 ## Thoth
 
@@ -30,11 +30,11 @@ Attack authority escalation and compromise paths. Focus on malicious/compromised
 
 ## Osiris
 
-Attack receipt/evidence claims. Determine the minimum evidence needed to prove authorization, authenticated approval provenance, approval consumption state, correct classification, policy/precondition integrity, enforcement-time compliance, and successful effect separately. Confirm whether the current locked audit contract can safely receive this mapping only after its separate repair/review.
+Attack receipt/evidence claims. Determine the minimum evidence needed to prove authorization, authenticated approval provenance, approval consumption state, correct classification, policy/precondition integrity, enforcement-time compliance, and successful effect separately. Confirm whether the current locked audit contract can safely receive this mapping only after its separate repair/review. Confirm that `council_matter_ref`, `disposition_ref`, `disposition_hash`, and `issuer_proof` cannot, by themselves, prove that a Council disposition was validly constituted.
 
 ## Theia
 
-Attack integration coherence. Determine whether CG-0036 can coexist cleanly with MICC and the Cognition Contract without taxonomy drift, whether Operator and Council approvals remain bounded to current state and authenticated authority, and whether the future Room/HUD can surface aggregate authority and approval provenance without turning relevance/presentation into an authority layer.
+Attack integration coherence. Determine whether CG-0036 can coexist cleanly with MICC and the Cognition Contract without taxonomy drift, whether Operator and Council approvals remain bounded to current state and authenticated authority, whether Council approval remains fail-closed until a separately governed disposition validator proves composition, provenance, and quorum, and whether the future Room/HUD can surface aggregate authority and approval provenance without turning relevance/presentation into an authority layer.
 
 ## Synthesis constraints
 
@@ -42,3 +42,4 @@ Attack integration coherence. Determine whether CG-0036 can coexist cleanly with
 - Preserve material disagreement.
 - State any invariant that still exists only in prose rather than enforceable/conformance-testable form.
 - No Operator disposition until all four role-bounded positions are filed and synthesized.
+- Preserve the Council-constitution validator as an open, blocking implementation dependency. Do not treat Operator-authority disposition records or CG-0031 as that validator.
