@@ -39,7 +39,12 @@
     "revocation_behavior",
     "expiry_behavior",
     "max_revocation_propagation_seconds",
+    "revocation_ref",
+    "revocation_source_hash",
     "receipt_policy_ref",
+    "receipt_policy_hash",
+    "aggregate_authority_policy_ref",
+    "aggregate_authority_policy_hash",
     "subdelegation"
   ],
   "properties": {
@@ -93,8 +98,11 @@
     "expiry_behavior": {"type": "string", "enum": ["CANCEL_ON_EXPIRY", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "ALLOW_COMPLETION_IF_DECISION_WAS_VALID_AND_BOUND"]},
     "max_revocation_propagation_seconds": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
     "revocation_ref": {"$ref": "#/definitions/repoRef"},
+    "revocation_source_hash": {"$ref": "#/definitions/sha256"},
     "receipt_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "receipt_policy_hash": {"$ref": "#/definitions/sha256"},
     "aggregate_authority_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "aggregate_authority_policy_hash": {"$ref": "#/definitions/sha256"},
     "subdelegation": {
       "type": "object",
       "additionalProperties": false,

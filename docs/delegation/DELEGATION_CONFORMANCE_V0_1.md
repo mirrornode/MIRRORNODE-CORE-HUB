@@ -27,6 +27,8 @@ A validator must reject a delegation when:
 - policy path/version/hash are missing or inconsistent;
 - `decision_preconditions_ref` or `decision_preconditions_hash` is missing;
 - the content resolved at `decision_preconditions_ref` does not hash to `decision_preconditions_hash`;
+- any governed `repoRef` lacks the same-object integrity field required by `REFERENCE_INTEGRITY_PROFILE_V0_1.md`;
+- `revocation_ref`, `receipt_policy_ref`, or `aggregate_authority_policy_ref` cannot be resolved to the preimage matching its authenticated hash;
 - canonical resource identities are malformed or unresolved;
 - allowed operations are unknown to the applicable operation registry;
 - expiry <= effective time;
@@ -40,7 +42,7 @@ A validator must reject a delegation when:
 - authority class conflicts with a non-delegable guardrail;
 - a grant would allow its subject to modify the policy/registry/aggregate logic that determines the same grant's authority.
 
-Until a typed precondition language and deterministic strengthening relation are separately ratified, child delegations MUST inherit the exact parent `decision_preconditions_hash`. A different child precondition artifact is not treated as provably stronger merely because it is validly hashed.
+Until a typed precondition language and deterministic strengthening relation are separately ratified, child delegations MUST inherit the exact parent `decision_preconditions_hash`. A different child precondition artifact is not treated as provably stronger merely because it is validly hashed. Children also MUST carry the exact parent revocation-source, receipt-policy, and aggregate-authority-policy hashes unless a separately governed deterministic strengthening relation proves the change non-weakening.
 
 ## 3. Live decision checks
 

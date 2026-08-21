@@ -246,6 +246,26 @@ class SchemaNegativeTests(unittest.TestCase):
         bad.pop("issuer_authority_hash")
         self.assertTrue(list(self.envelope.iter_errors(bad)))
 
+    def test_every_governed_envelope_reference_is_hash_bound(self):
+        env = next(v for v in VECTORS["vectors"] if v["id"] == "excluded-proof-envelope")["input"]
+        pairs = {
+            "issuer_registry_ref": "issuer_registry_snapshot_hash",
+            "issuer_authority_ref": "issuer_authority_hash",
+            "delegate_identity_registry_ref": "delegate_identity_registry_snapshot_hash",
+            "governing_policy_ref": "policy_content_hash",
+            "decision_preconditions_ref": "decision_preconditions_hash",
+            "revocation_ref": "revocation_source_hash",
+            "receipt_policy_ref": "receipt_policy_hash",
+            "aggregate_authority_policy_ref": "aggregate_authority_policy_hash",
+        }
+        for ref, digest in pairs.items():
+            with self.subTest(ref=ref):
+                self.assertIn(ref, env)
+                self.assertIn(digest, env)
+                bad = dict(env)
+                bad.pop(digest)
+                self.assertTrue(list(self.envelope.iter_errors(bad)))
+
     def test_weak_nonce_rejected(self):
         self.assertTrue(list(self.decision.iter_errors(decision_base(decision_nonce="shortnonce"))))
 

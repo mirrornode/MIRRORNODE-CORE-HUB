@@ -84,7 +84,9 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `revocation_behavior`
 - `expiry_behavior`
 - `max_revocation_propagation_seconds`
-- `receipt_policy_ref`
+- `revocation_ref` plus `revocation_source_hash`
+- `receipt_policy_ref` plus `receipt_policy_hash`
+- `aggregate_authority_policy_ref` plus `aggregate_authority_policy_hash`
 - `subdelegation`
 
 `issuer_proof` authenticates the RFC 8785 canonical envelope payload excluding `issuer_proof`, hashed per `CANONICALIZATION_V0_1.md`. Content integrity (a digest over payload bytes) proves that those bytes have not changed after hashing; it does not, by itself, prove who issued the envelope. Authenticated issuance requires a verifiable proof over that canonical payload, validated against a trust root outside the affected delegate's authority path. A hash string, a claimed `delegator` name, or an unsigned envelope cannot establish issuance.
@@ -93,7 +95,7 @@ A trusted credential proves **identity only**. Before an envelope enters `G(A,t)
 
 `proof_type` and `issuer_credential_ref` are untrusted hints until authenticated. The proof mechanism MUST cryptographically protect the algorithm identifier, credential/key identifier, and signed payload hash using standard JOSE/COSE/WebAuthn protected-header semantics (`ISSUER_PROOF_V0_1.md`). Algorithm substitution, credential redirection, and trust-root substitution fail closed.
 
-A delegation is invalid if its issuer proof, governing policy content hash, policy bundle hash, decision-precondition hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
+A delegation is invalid if its issuer proof, governing policy content hash, policy bundle hash, decision-precondition hash, revocation-source hash, receipt-policy hash, aggregate-authority-policy hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time. All governed references follow `REFERENCE_INTEGRITY_PROFILE_V0_1.md`; path resolution without hash verification is not conformance.
 
 ## 5. Authority Classification Boundary
 
