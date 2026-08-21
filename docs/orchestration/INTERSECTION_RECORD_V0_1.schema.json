@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mirrornode://schemas/intersection-record/v0.1",
+  "title": "Intersection Record v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "intersection_id", "participants", "observations", "authority_effect", "updated_at"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "intersection_id": {"type": "string", "minLength": 1},
+    "participants": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["observation_id", "kind", "statement", "provenance", "confidence"],
+        "properties": {
+          "observation_id": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["BLIND_SPOT_CATCH", "PERSUASIVE_EVIDENCE_MODE", "SEMANTIC_FRICTION", "PRODUCTIVE_PAIRING", "DEFERENCE_PATTERN", "CALIBRATION_DELTA", "UNRESOLVED_DISPUTE", "OPERATOR_PREFERENCE_TRACE", "CONSENSUS_FAILURE_TRACE"]},
+          "statement": {"type": "string", "minLength": 1},
+          "provenance": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "expires_at": {"type": ["string", "null"], "format": "date-time"}
+        }
+      }
+    },
+    "routing_hints": {"type": "array", "items": {"type": "string"}},
+    "scrutiny_hints": {"type": "array", "items": {"type": "string"}},
+    "synthesis_hints": {"type": "array", "items": {"type": "string"}},
+    "authority_effect": {"const": "NONE"},
+    "forbidden_effects": {
+      "type": "array",
+      "items": {"enum": ["MERGE_RIGHTS", "SECRET_ACCESS", "EXECUTION_PRIVILEGE", "IRREVERSIBLE_ACTION_PRIVILEGE", "PERMISSION_EXPANSION", "AUTHORITY_CLASS_REDUCTION"]},
+      "uniqueItems": true
+    },
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}
