@@ -64,7 +64,7 @@
       "required": ["mode"],
       "properties": {
         "mode": {"type": "string", "enum": ["ONE_TIME", "BOUNDED_REUSE"]},
-        "max_uses": {"type": "integer", "minimum": 1}
+        "max_uses": {"type": "integer", "minimum": 1, "maximum": 9007199254740991}
       },
       "allOf": [
         {"if": {"properties": {"mode": {"const": "BOUNDED_REUSE"}}, "required": ["mode"]}, "then": {"required": ["max_uses"]}},

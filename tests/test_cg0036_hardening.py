@@ -12,7 +12,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cg0036_jcs import canonical_hash, jcs, utf16_code_units  # noqa: E402
+from cg0036_jcs import (  # noqa: E402
+    IJSON_INT_MAX,
+    canonical_hash,
+    child_issuer_bound_to_parent_delegate,
+    jcs,
+    utf16_code_units,
+)
 
 DELEGATION = ROOT / "docs" / "delegation"
 VECTORS = json.loads((DELEGATION / "CANONICALIZATION_VECTORS_V0_1.json").read_text())
@@ -146,6 +152,10 @@ class CanonicalizationVectorTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     parse_strict(vec["raw_json"])
                 continue
+            if vec["expected_result"] == "reject_non_ijson_integer":
+                with self.assertRaises(ValueError):
+                    jcs(vec["input"])
+                continue
             exclude = bool(vec.get("exclude_issuer_proof"))
             canonical, digest = canonical_hash(vec["input"], exclude_issuer_proof=exclude)
             if "canonical" in vec:
@@ -218,6 +228,18 @@ class SchemaNegativeTests(unittest.TestCase):
         missing_record.pop("resource_record_hash")
         self.assertTrue(list(self.operator.iter_errors(missing_record)))
 
+    def test_oversized_authority_rank_invalid(self):
+        env = next(v for v in VECTORS["vectors"] if v["id"] == "excluded-proof-envelope")["input"]
+        bad = dict(env)
+        bad["authority_rank"] = 9007199254740992
+        self.assertTrue(list(self.envelope.iter_errors(bad)))
+
+    def test_envelope_missing_delegate_logical_issuer_invalid(self):
+        env = next(v for v in VECTORS["vectors"] if v["id"] == "excluded-proof-envelope")["input"]
+        bad = dict(env)
+        bad.pop("delegate_logical_issuer_id")
+        self.assertTrue(list(self.envelope.iter_errors(bad)))
+
     def test_envelope_missing_issuer_authority_invalid(self):
         env = next(v for v in VECTORS["vectors"] if v["id"] == "excluded-proof-envelope")["input"]
         bad = dict(env)
@@ -247,6 +269,89 @@ class SchemaNegativeTests(unittest.TestCase):
             "expires_at": "2026-08-22T12:00:00Z",
         }
         self.assertEqual(list(self.issuer_auth.iter_errors(rec)), [])
+
+
+class IjsonIntegerTests(unittest.TestCase):
+    def test_bounds(self):
+        self.assertEqual(IJSON_INT_MAX, 9007199254740991)
+        self.assertEqual(jcs(IJSON_INT_MAX), "9007199254740991")
+        self.assertEqual(jcs(-IJSON_INT_MAX), "-9007199254740991")
+        with self.assertRaises(ValueError):
+            jcs(IJSON_INT_MAX + 1)
+        with self.assertRaises(ValueError):
+            jcs(-IJSON_INT_MAX - 1)
+        with self.assertRaises(ValueError):
+            jcs({"n": IJSON_INT_MAX + 1})
+        with self.assertRaises(ValueError):
+            jcs([IJSON_INT_MAX + 1])
+
+
+class ChildIssuerBindingTests(unittest.TestCase):
+    def _parent(self, **overrides):
+        doc = {
+            "delegate_actor": "agent-a",
+            "delegate_logical_issuer_id": "issuer-agent-a",
+            "delegate_identity_registry_ref": "docs/delegation/identity-registry",
+            "delegate_identity_registry_snapshot_hash": SHA256,
+        }
+        doc.update(overrides)
+        return doc
+
+    def _child(self, **overrides):
+        doc = {
+            "issuer_authority_kind": "PARENT_ENVELOPE",
+            "logical_issuer_id": "issuer-agent-a",
+            "delegate_actor": "agent-a",
+        }
+        doc.update(overrides)
+        return doc
+
+    def test_correct_parent_delegate_issuing_child_passes(self):
+        self.assertTrue(
+            child_issuer_bound_to_parent_delegate(
+                self._parent(), self._child(), live_identity_registry_hash=SHA256
+            )
+        )
+
+    def test_authenticated_peer_citing_victim_parent_fails(self):
+        self.assertFalse(
+            child_issuer_bound_to_parent_delegate(
+                self._parent(),
+                self._child(logical_issuer_id="issuer-peer"),
+                live_identity_registry_hash=SHA256,
+            )
+        )
+
+    def test_matching_display_name_different_logical_identity_fails(self):
+        self.assertFalse(
+            child_issuer_bound_to_parent_delegate(
+                self._parent(),
+                self._child(logical_issuer_id="issuer-other", delegate_actor="agent-a"),
+                live_identity_registry_hash=SHA256,
+            )
+        )
+
+    def test_credential_rotation_same_logical_issuer_passes(self):
+        self.assertTrue(
+            child_issuer_bound_to_parent_delegate(
+                self._parent(),
+                self._child(),
+                live_identity_registry_hash=SHA256,
+            )
+        )
+
+    def test_stale_identity_registry_fails_closed(self):
+        stale = "sha256:" + ("b" * 64)
+        self.assertFalse(
+            child_issuer_bound_to_parent_delegate(
+                self._parent(), self._child(), live_identity_registry_hash=stale
+            )
+        )
+        self.assertFalse(
+            child_issuer_bound_to_parent_delegate(
+                self._parent(), self._child(), live_identity_registry_hash=None
+            )
+        )
 
 
 class MappingAndCommitTests(unittest.TestCase):

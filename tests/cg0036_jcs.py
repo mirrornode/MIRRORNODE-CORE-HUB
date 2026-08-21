@@ -24,6 +24,15 @@ SEQUENCE_ARRAYS = {
     "notes",
 }
 
+# IEEE-754 binary64 exact integers (RFC 8785 / I-JSON).
+IJSON_INT_MAX = (2**53) - 1
+IJSON_INT_MIN = -IJSON_INT_MAX
+
+
+def require_ijson_int(value: int) -> None:
+    if value < IJSON_INT_MIN or value > IJSON_INT_MAX:
+        raise ValueError("non-ijson integer")
+
 
 def utf16_code_units(s: str) -> bytes:
     return s.encode("utf-16-be")
@@ -43,6 +52,7 @@ def jcs(value: Any) -> str:
     if isinstance(value, str):
         return json_string(value)
     if isinstance(value, int) and not isinstance(value, bool):
+        require_ijson_int(value)
         return str(value)
     if isinstance(value, float):
         raise ValueError("non-ijson float")
@@ -77,6 +87,24 @@ def preprocess_set_like(value: Any, key: str | None = None) -> Any:
 
 def payload_excluding_issuer_proof(obj: dict) -> dict:
     return {k: v for k, v in obj.items() if k != "issuer_proof"}
+
+
+def child_issuer_bound_to_parent_delegate(parent: dict, child: dict, *, live_identity_registry_hash: str | None) -> bool:
+    """True iff the child's authenticated logical issuer is the parent delegate identity."""
+    if child.get("issuer_authority_kind") != "PARENT_ENVELOPE":
+        return False
+    parent_delegate = parent.get("delegate_logical_issuer_id")
+    child_issuer = child.get("logical_issuer_id")
+    if not parent_delegate or not child_issuer:
+        return False
+    if child_issuer != parent_delegate:
+        return False
+    bound_hash = parent.get("delegate_identity_registry_snapshot_hash")
+    if not bound_hash or not live_identity_registry_hash:
+        return False
+    if bound_hash != live_identity_registry_hash:
+        return False
+    return True
 
 
 def canonical_hash(obj: dict, *, exclude_issuer_proof: bool = False) -> tuple[str, str]:

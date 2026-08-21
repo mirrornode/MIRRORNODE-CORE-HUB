@@ -52,8 +52,8 @@
       "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}
     },
     "cumulative_risk": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
-    "cumulative_budget": {"type": "integer", "minimum": 0},
-    "cumulative_cardinality": {"type": "integer", "minimum": 0},
+    "cumulative_budget": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "cumulative_cardinality": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
     "effective_authority_digest": {"$ref": "#/definitions/sha256"},
     "evaluator_identity": {"type": "string", "minLength": 1, "maxLength": 256},
     "evaluator_version": {"type": "string", "minLength": 1, "maxLength": 128}
