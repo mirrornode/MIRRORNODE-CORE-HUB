@@ -4,14 +4,20 @@
   "title": "Authority Envelope v0.1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "envelope_id", "work_id", "authorization_type", "scope", "operator_authorization", "required_attestations", "risk_class", "expires_at", "revocation_state"],
+  "required": [
+    "schema_version", "envelope_id", "work_id", "authorization_type", "authority_reason_code",
+    "scope", "exact_target_refs", "operator_authorization", "required_attestations", "risk_class",
+    "reversibility", "expires_at", "revocation_state", "derived_from_intersection", "intersection_may_modify"
+  ],
   "properties": {
     "schema_version": {"const": "0.1.0"},
     "envelope_id": {"type": "string", "minLength": 1},
     "work_id": {"type": "string", "minLength": 1},
     "authorization_type": {"enum": ["ONE_SHOT", "BOUNDED_BATCH", "STANDING_PREAUTH", "SPECIAL_MATTER"]},
+    "authority_reason_code": {"enum": ["OPERATOR_DIRECT", "CONTRACTUAL_DELEGATION", "SPECIAL_MATTER", "DEGRADED_MODE_OVERRIDE", "EMERGENCY_BREAK_GLASS"]},
     "scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-    "exact_target_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "exact_target_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "target_state_hash": {"type": "string", "minLength": 1},
     "operator_authorization": {
       "type": "object",
       "additionalProperties": false,
@@ -20,7 +26,8 @@
         "status": {"enum": ["AUTHORIZED", "REVOKED", "EXPIRED", "UNVERIFIED"]},
         "operator_ref": {"type": "string", "minLength": 1},
         "authorized_at": {"type": "string", "format": "date-time"},
-        "authorization_ref": {"type": ["string", "null"]}
+        "authorization_ref": {"type": ["string", "null"]},
+        "comprehension_receipt_ref": {"type": ["string", "null"]}
       }
     },
     "required_attestations": {
@@ -28,17 +35,60 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["lane", "status"],
+        "required": [
+          "attestation_id", "lane", "issuer_identity", "model_runtime_identity", "status",
+          "blocking_effect", "authority_role", "target_ref", "prompt_template_hash", "evidence_input_refs",
+          "issued_at", "expires_at", "independence_from_implementer"
+        ],
         "properties": {
+          "attestation_id": {"type": "string", "minLength": 1},
           "lane": {"enum": ["OPENAI_ASSISTANT", "PERPLEXITY", "CLAUDE", "OTHER_GOVERNED_LANE"]},
-          "status": {"enum": ["REQUIRED", "SATISFIED", "REVOKED", "STALE", "UNVERIFIED"]},
+          "issuer_identity": {"type": "string", "minLength": 1},
+          "model_runtime_identity": {"type": "string", "minLength": 1},
+          "session_or_job_id": {"type": ["string", "null"]},
+          "credential_provenance_ref": {"type": ["string", "null"]},
+          "status": {"enum": ["REQUIRED", "SATISFIED", "REVOKED", "STALE", "UNVERIFIED", "OVERRIDDEN"]},
+          "blocking_effect": {"const": true},
+          "authority_role": {"const": "BOUNDED_NEGATIVE_CONTROL"},
           "attestation_ref": {"type": ["string", "null"]},
-          "target_ref": {"type": ["string", "null"]}
+          "target_ref": {"type": "string", "minLength": 1},
+          "prompt_template_hash": {"type": "string", "minLength": 1},
+          "intersection_context_allowed": {"const": false},
+          "deliberation_graph_allowed_before_attestation": {"const": false},
+          "evidence_input_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "issued_at": {"type": "string", "format": "date-time"},
+          "expires_at": {"type": ["string", "null"], "format": "date-time"},
+          "revocation_ref": {"type": ["string", "null"]},
+          "independence_from_implementer": {"const": true},
+          "independence_basis_ref": {"type": ["string", "null"]}
         }
+      }
+    },
+    "attestation_override": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["mode", "operator_ref", "reason", "expires_at", "requires_retroactive_ratification_by"],
+      "properties": {
+        "mode": {"enum": ["DEGRADED_MODE", "EMERGENCY_BREAK_GLASS"]},
+        "operator_ref": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "requires_retroactive_ratification_by": {"type": "string", "format": "date-time"}
       }
     },
     "risk_class": {"type": "string", "minLength": 1},
     "irreversible_action": {"type": "boolean", "default": false},
+    "reversibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "reversal_path", "estimated_cost", "reversal_window"],
+      "properties": {
+        "class": {"enum": ["FULLY_REVERSIBLE", "REVERSIBLE_WITH_COST", "PARTIALLY_REVERSIBLE", "IRREVERSIBLE", "UNKNOWN"]},
+        "reversal_path": {"type": ["string", "null"]},
+        "estimated_cost": {"type": ["string", "null"]},
+        "reversal_window": {"type": ["string", "null"]}
+      }
+    },
     "execution_constraints": {"type": "array", "items": {"type": "string"}},
     "expires_at": {"type": ["string", "null"], "format": "date-time"},
     "revocation_state": {"enum": ["ACTIVE", "REVOKED", "EXPIRED", "UNVERIFIED"]},
