@@ -3,7 +3,7 @@
 **Status:** Draft under CG-0036 — not canon, not implementation authority  
 **Version:** 0.1-draft.2  
 **Created:** 2026-08-14  
-**Revision:** 2026-08-21 bounded hardening (issuer proof, unconditional MICC recording, one-time ALLOW, payload-hash binding, Council-disposition fail-closed)
+**Revision:** 2026-08-21 bounded hardening pass 2 (RFC 8785 canonicalization, authenticated decisions, protected proof metadata, Council ALLOW unreachable, resource-registry snapshot, aggregate snapshot schema, nonce/ID semantics, effect/consumption commit)
 
 ## 1. Purpose
 
@@ -43,6 +43,14 @@ Each authorization evaluation is normalized into five objects:
 
 Canonical resource identifiers must be stable and collision-resistant within their namespace. Aliases must resolve to one canonical resource identifier before policy evaluation. Authorization MUST NOT be based on unnormalized free-text resource names.
 
+Envelope `resource_scope` entries are canonical URIs. The deterministic mapping onto a decision resource is:
+
+- `resource.canonical_uri` is that URI;
+- `resource.id` MUST equal `resource.canonical_uri`;
+- `resource.type` MUST equal the resource-registry record's type for that URI.
+
+The decision MUST bind `resource_registry_ref` and `resource_registry_snapshot_hash` identifying the exact immutable registry snapshot used by the PDP. The PEP MUST verify the pending physical/provider target against that same snapshot. The same canonical URI with a changed provider/native target fails closed.
+
 ## 4. Delegation envelope
 
 Every delegation must be attributable and machine-readable. At minimum it identifies:
@@ -74,7 +82,9 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `receipt_policy_ref`
 - `subdelegation`
 
-`issuer_proof` authenticates the deterministic canonical envelope payload excluding `issuer_proof`. Content integrity (a digest over payload bytes) proves that those bytes have not changed after hashing; it does not, by itself, prove who issued the envelope. Authenticated issuance requires a verifiable proof over that canonical payload, validated against a trust root outside the affected delegate's authority path. A hash string, a claimed `delegator` name, or an unsigned envelope cannot establish issuance.
+`issuer_proof` authenticates the RFC 8785 canonical envelope payload excluding `issuer_proof`, hashed per `CANONICALIZATION_V0_1.md`. Content integrity (a digest over payload bytes) proves that those bytes have not changed after hashing; it does not, by itself, prove who issued the envelope. Authenticated issuance requires a verifiable proof over that canonical payload, validated against a trust root outside the affected delegate's authority path. A hash string, a claimed `delegator` name, or an unsigned envelope cannot establish issuance.
+
+`proof_type` and `issuer_credential_ref` are untrusted hints until authenticated. The proof mechanism MUST cryptographically protect the algorithm identifier, credential/key identifier, and signed payload hash using standard JOSE/COSE/WebAuthn protected-header semantics (`ISSUER_PROOF_V0_1.md`). Algorithm substitution, credential redirection, and trust-root substitution fail closed.
 
 A delegation is invalid if its issuer proof, governing policy content hash, policy bundle hash, decision-precondition hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
 
@@ -95,20 +105,24 @@ The PDP MUST be unable, through the authority used for evaluation, to modify the
 
 Every decision must record at least:
 
-- evaluator identity/version;
+- evaluator identity/version as correlating labels only (`pdp_identity` / `pdp_version` are not authentication);
+- required decision `issuer_proof` over the RFC 8785 canonical decision excluding `issuer_proof`;
 - policy bundle hash;
 - immutable decision-preconditions hash;
 - delegation identifier/version;
-- `delegation_payload_hash` of the deterministic canonical envelope payload excluding `issuer_proof`;
+- `delegation_payload_hash` of the RFC 8785 canonical envelope payload excluding `issuer_proof`;
 - subject/action/resource/context digest;
-- aggregate-authority snapshot digest;
+- `resource_registry_ref` and `resource_registry_snapshot_hash`;
+- aggregate-authority snapshot digest of a schema-valid `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1` object;
 - state reference/hash;
 - `micc_approval_class` (unconditional);
 - authenticated Operator/Council approval references and hashes where required;
 - allow/deny result;
 - obligations and reason code;
-- decision nonce;
+- `decision_id` (stable, issuer-scoped) and `decision_nonce` (≥128-bit CSPRNG);
 - issued time and expiry time.
+
+A fabricated schema-shaped `ALLOW` without a trusted PDP `issuer_proof` MUST fail. IDs are stable identifiers within an authenticated issuer trust domain. Nonces are unpredictable replay-prevention values. Consumption keys are `(authenticated_issuer, id, nonce)` taken from protected proof metadata.
 
 `micc_approval_class` is recorded on every decision. When no additional MICC approval gate applies, the recorded class is `APPROVAL_NONE`. The field is never omitted to mean “no MICC gate.” Both MICC and delegation constraints apply, and the stricter gate wins.
 
@@ -152,6 +166,8 @@ Authorization is evaluated against both the current envelope and the **aggregate
 Before an autonomous allow decision, the PDP must compute or verify an aggregate-authority snapshot covering all active, applicable delegations for that actor, including overlapping resources, operations, environments, parent/child grants, and time windows.
 
 The union of individually valid delegations must not exceed a separately governed root/actor ceiling. Non-conflicting grants can still compose into excessive authority; absence of direct contradiction is not sufficient.
+
+The snapshot hashed as `aggregate_authority_snapshot_hash` MUST be a schema-valid `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1` object, canonicalized with RFC 8785. The snapshot is not an opaque digest of an undefined document.
 
 Workflow or action-chain policy must detect when a sequence of individually allowed low-risk actions can produce an outcome equivalent to a higher-risk or non-delegable action. Where composition cannot be bounded, the chain escalates.
 
@@ -207,6 +223,8 @@ Every v0.1 `ALLOW` decision is one-time-use.
 - Approval reuse does not imply decision reuse. Remaining bounded uses on an associated approval cannot re-authorize a consumed `ALLOW`.
 - Any future bounded decision-reuse profile requires separate governance and is outside v0.1.
 
+Effect dispatch follows `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Reservation of `(authenticated_issuer, decision_id, decision_nonce)` occurs before dispatch. Uncertain non-idempotent outcomes escalate for reconciliation and MUST NOT silently retry. `COMPLETED` requires a durable effect receipt and any required approval-consumption outcome.
+
 ## 11. Revocation and expiry
 
 Delegation is revocable without consent of the delegate actor.
@@ -258,6 +276,8 @@ This repository's `council/schemas/disposition.schema.yaml` records Operator dis
 
 Until a separately governed disposition validator proves required composition, provenance, and quorum, Council-required approval MUST fail closed. CG-0036 does not invent constitutional quorum rules inside the approval object.
 
+v0.1 makes this structurally unreachable at the decision schema: `micc_approval_class: APPROVAL_COUNCIL` cannot validate with `decision: ALLOW` (only `DENY` or `ESCALATE`). Typed `COUNCIL_APPROVAL_V0_1` objects remain draft evidence structures; their presence cannot unlock v0.1 execution. A future schema revision is required after constitution/quorum validation is ratified.
+
 ## 13. Non-delegable guardrails
 
 Unless separately authorized by explicit governance, the following are NON_DELEGABLE through v0.1:
@@ -287,7 +307,7 @@ Delegation class does not replace MICC approval classification. Both constraints
 | `OPERATOR_APPROVAL_REQUIRED` | Requires authenticated, bound Operator approval even if MICC would otherwise allow automation. |
 | `NON_DELEGABLE` | Delegation cannot authorize the action; any separately applicable MICC/Council/Operator gate remains controlling. |
 
-If MICC requires `APPROVAL_OPERATOR`, a conformant `ALLOW` decision carries the validated Operator approval binding. If MICC requires `APPROVAL_COUNCIL`, a conformant `ALLOW` decision carries the validated Council approval binding. When taxonomies disagree or cannot be mapped deterministically, deny/escalate.
+If MICC requires `APPROVAL_OPERATOR`, a conformant `ALLOW` decision carries the validated Operator approval binding. If MICC requires `APPROVAL_COUNCIL`, v0.1 MUST emit `DENY` or `ESCALATE`; `ALLOW` is schema-invalid. When taxonomies disagree or cannot be mapped deterministically, deny/escalate.
 
 ## 15. Relationship to cognition
 

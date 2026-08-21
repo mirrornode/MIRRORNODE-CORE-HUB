@@ -12,7 +12,9 @@ A validator must reject a delegation when:
 
 - schema validation fails;
 - delegation issuer proof is missing, cannot be resolved/verified, is not anchored to a trusted root outside the delegate's authority path, or does not authenticate the canonical delegation payload excluding `issuer_proof`;
-- `issuer_proof.signed_payload_hash` does not equal the SHA-256 of that canonical delegation payload;
+- canonicalization is attempted before schema validation, duplicate-key rejection, or I-JSON checks (`CANONICALIZATION_V0_1.md`);
+- `issuer_proof.signed_payload_hash` does not equal the RFC 8785 SHA-256 of that canonical delegation payload;
+- protected proof metadata (`alg`/`kid` or equivalent) disagrees with schema hints, is unsigned, or verifies under a substituted algorithm, credential, or trust root (`ISSUER_PROOF_V0_1.md`);
 - policy path/version/hash are missing or inconsistent;
 - `decision_preconditions_ref` or `decision_preconditions_hash` is missing;
 - the content resolved at `decision_preconditions_ref` does not hash to `decision_preconditions_hash`;
@@ -46,7 +48,13 @@ Before an `ALLOW`, the PDP must prove:
 - MICC cross-map result and unconditional `micc_approval_class` recording (`APPROVAL_NONE` when no additional MICC approval gate applies; stricter gate wins);
 - state/precondition validity;
 - risk/composition constraints;
-- any required Operator/Council approval object is resolved, authenticated, unexpired, unrevoked where applicable, within its reuse policy, and carries a `delegation_payload_hash` equal to the current envelope payload hash.
+- the decision `issuer_proof` authenticates the RFC 8785 canonical decision excluding `issuer_proof`; `pdp_identity`/`pdp_version` are not accepted as provenance;
+- `resource.id` equals `resource.canonical_uri` and that URI is in the evaluated grant `resource_scope`;
+- `resource_registry_snapshot_hash` matches the frozen registry snapshot, including provider/native target;
+- the object hashed as `aggregate_authority_snapshot_hash` validates against `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json` and its RFC 8785 digest matches;
+- `decision_nonce` (and any required approval nonce) has ≥128 bits of CSPRNG entropy in the canonical unpadded-base64url encoding;
+- any required Operator approval object is resolved, authenticated, unexpired, unrevoked where applicable, within its reuse policy, and carries a `delegation_payload_hash` equal to the current envelope payload hash;
+- `micc_approval_class: APPROVAL_COUNCIL` never accompanies `decision: ALLOW` (v0.1 schema-unreachable). Council approval objects are evidence only and cannot unlock execution.
 
 ### Operator approval
 
@@ -87,7 +95,7 @@ Content integrity of a disposition artifact and authenticated issuance of the ap
 
 `council/schemas/disposition.schema.yaml` records Operator dispositions of Council matters (`authority: operator`). CG-0031 verifies previously recorded Operator dispositions against an implementation scope. Neither contract defines Council seat composition, quorum, or a matter-validation constitution check.
 
-Until a separately governed Council disposition validator proves required composition, provenance, and quorum, any Council-required approval MUST fail closed. CG-0036 does not invent constitutional quorum rules inside the approval object.
+Until a separately governed Council disposition validator proves required composition, provenance, and quorum, any Council-required approval MUST fail closed. In v0.1 this is also structural: `APPROVAL_COUNCIL` + `ALLOW` MUST fail JSON Schema validation. A future schema revision is required after that validator is ratified. CG-0036 does not invent constitutional quorum rules inside the approval object.
 
 A fabricated, missing, expired, unauthenticated, recycled beyond its allowed reuse policy, differently bound, hash-mismatched, payload-hash-mismatched, unvalidated-as-constituted, or insufficiently authoritative approval cannot produce `ALLOW`.
 
@@ -96,7 +104,7 @@ A fabricated, missing, expired, unauthenticated, recycled beyond its allowed reu
 Approval reuse is explicit, never inferred.
 
 - `ONE_TIME` approvals MUST be atomically marked consumed before or as part of the first authorized enforcement. A second decision or enforcement attempt using the same approval nonce MUST fail.
-- `BOUNDED_REUSE` approvals MUST declare `max_uses`. Each successful use MUST be recorded in an authoritative consumption store/counter keyed by `approval_id` and `approval_nonce`.
+- `BOUNDED_REUSE` approvals MUST declare `max_uses`. Each successful use MUST be recorded in an authoritative consumption store/counter keyed by `(authenticated_issuer, approval_id, approval_nonce)`.
 - Consumption updates MUST be concurrency-safe. Two enforcement points must not both observe the same remaining use and exceed the bound.
 - An approval cannot be reused across a different request, state, policy bundle, action parameters, subject, resource, or delegation merely because remaining uses exist.
 - If current consumption state cannot be verified, enforcement fails closed.
@@ -107,12 +115,12 @@ The concrete consumption-store technology is an implementation choice; atomicity
 
 Before causing the effect, the PEP must verify:
 
-- decision issuer/integrity;
-- `decision_id` and `decision_nonce` have not previously been consumed;
+- decision `issuer_proof` verifies against a PDP trust root from protected proof metadata; a schema-valid `ALLOW` with only `pdp_identity` fails;
+- `(authenticated_issuer, decision_id, decision_nonce)` has not previously been consumed;
 - decision lifetime is valid;
 - every `ALLOW` carries `enforcement_constraints.one_time_use: true`;
 - `delegation_payload_hash` still equals the currently resolved envelope's canonical payload hash excluding `issuer_proof` and equals `issuer_proof.signed_payload_hash`;
-- exact subject/action/resource match;
+- exact subject/action/resource match, including `resource.id` = `resource.canonical_uri` and the bound registry snapshot's provider/native target;
 - exact parameter digest;
 - target state/version still matches;
 - decision `decision_preconditions_hash` still corresponds to the immutable precondition artifact evaluated by the PDP;
@@ -122,7 +130,7 @@ Before causing the effect, the PEP must verify:
 - approval reuse/consumption constraints can be atomically satisfied;
 - the PEP itself is authorized only for the narrow downstream effect.
 
-Every v0.1 `ALLOW` is one-time-use. Every `ALLOW` MUST be atomically consumed by `decision_id` and `decision_nonce` before or as part of enforcement. Re-presenting the same `ALLOW`, even while unexpired and even if its approval still has remaining bounded uses, MUST fail and require a fresh PDP decision. Approval reuse does not imply decision reuse. A mutated envelope with unchanged `delegation_id` and `delegation_version` MUST fail closed. A future bounded decision-reuse profile requires separate governance and is not defined by v0.1.
+Every v0.1 `ALLOW` is one-time-use. Every `ALLOW` MUST be atomically reserved/consumed by `(authenticated_issuer, decision_id, decision_nonce)` before dispatch per `EFFECT_CONSUMPTION_COMMIT_V0_1.md`. Re-presenting the same `ALLOW`, even while unexpired and even if its approval still has remaining bounded uses, MUST fail and require a fresh PDP decision. Approval reuse does not imply decision reuse. A mutated envelope with unchanged `delegation_id` and `delegation_version` MUST fail closed. A future bounded decision-reuse profile requires separate governance and is not defined by v0.1.
 
 If state changed, a bound precondition artifact changed, decision consumption cannot be performed safely, or approval consumption cannot be performed safely, the PEP denies and requests a fresh decision.
 
@@ -162,9 +170,50 @@ Tests must include at minimum:
 - concurrent attempts to exceed `BOUNDED_REUSE.max_uses`;
 - Council approval whose matter is valid but disposition does not authorize the current action;
 - Council approval whose matter/disposition hashes are valid and issuer proof verifies, but no separately governed composition/quorum/provenance validator has accepted the disposition as validly constituted;
-- Council approval that treats an Operator-authority disposition record as if it proved Council constitution.
+- Council approval that treats an Operator-authority disposition record as if it proved Council constitution;
+- `micc_approval_class: APPROVAL_COUNCIL` with `decision: ALLOW` (schema-invalid in v0.1);
+- schema-valid `ALLOW` missing decision `issuer_proof` or with unverifiable PDP proof;
+- algorithm substitution or credential/trust-root redirection in protected proof metadata;
+- `proof_type`/`issuer_credential_ref` hint mismatch with protected header `alg`/`kid`.
 
 All must fail where applicable.
+
+## 7a. Resource-registry and remapping test suite
+
+Tests must include:
+
+- stale `resource_registry_snapshot_hash`;
+- same canonical URI with substituted provider/native target;
+- `resource.id` different from `resource.canonical_uri`;
+- decision URI absent from envelope `resource_scope`;
+- alias resolving to two canonical URIs.
+
+All must fail.
+
+## 7b. Snapshot-hash test suite
+
+Tests must include:
+
+- `aggregate_authority_snapshot_hash` that does not equal the RFC 8785 SHA-256 of a schema-valid snapshot;
+- snapshot missing a required field;
+- snapshot whose applicable delegation payload hashes omit a grant that entered `G(A,t)`;
+- key-order variation of a valid snapshot producing the same hash (`CANONICALIZATION_VECTORS_V0_1.json` `snapshot-basic`).
+
+Invalid snapshots must fail; key-order variation must match.
+
+## 7c. Nonce and identifier test suite
+
+Tests must include:
+
+- nonce shorter than 22 unpadded base64url characters;
+- ID/nonce collision across two authenticated issuers treated as the same consumption slot (must remain distinct);
+- reuse of a consumed `(issuer, id, nonce)` tuple.
+
+Weak nonces and cross-issuer slot sharing must fail.
+
+## 7d. Effect/consumption commit test suite
+
+The fixtures in `EFFECT_CONSUMPTION_COMMIT_VECTORS_V0_1.json` are required. Crash before reservation, after reservation before dispatch, after effect before receipt, after receipt before approval accounting, concurrent duplicate dispatch, uncertain reconciliation, and under-decremented bounded-reuse counters MUST NOT complete a double effect or mark `COMPLETED` unsafely.
 
 ## 8. Precondition-integrity test suite
 
@@ -197,7 +246,7 @@ Tests must include:
 - replay of an already consumed `ALLOW` decision;
 - replay of an unexpired `ALLOW` after atomic consumption;
 - replay of an `ALLOW` when an associated `BOUNDED_REUSE` approval still has remaining uses;
-- concurrent enforcement attempts using the same `ALLOW` `decision_nonce`.
+- concurrent enforcement attempts using the same `ALLOW` `(authenticated_issuer, decision_id, decision_nonce)`.
 
 ## 10. Policy-integrity test suite
 
@@ -241,7 +290,7 @@ A future MOPCON/product implementation must be tested to ensure:
 
 `AUTONOMOUS_WITHIN_POLICY` must remain disabled for production effects until:
 
-- static, delegation-issuance provenance, approval-binding/provenance, precondition-integrity, aggregate, revocation/TOCTOU/replay, policy-integrity, and PEP test suites pass;
+- static, canonicalization-vector, delegation-issuance provenance, decision-provenance, proof-confusion, approval-binding/provenance, precondition-integrity, aggregate/snapshot-hash, resource-registry, nonce/collision, revocation/TOCTOU/replay, policy-integrity, effect/consumption-commit, and PEP test suites pass;
 - receipt/audit mapping is reviewed;
 - failure/rollback behavior is tested;
 - monitoring and alert thresholds are defined;

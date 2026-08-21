@@ -50,3 +50,27 @@ A grant intended for one resource must not be reusable at another merely because
 Resource-registry changes capable of broadening an actor's reachable scope are high-impact authority changes. A delegate whose authority depends on a resource mapping may not unilaterally rewrite that mapping to increase its own access.
 
 The registry must emit attributable change history and support integrity/version references usable in authorization receipts.
+
+## 7. Decision binding
+
+Every authorization decision MUST carry:
+
+- `resource.canonical_uri` — the canonical URI after alias resolution;
+- `resource.id` — MUST equal `resource.canonical_uri`;
+- `resource.type` — MUST equal the registry record type for that URI;
+- `resource_registry_ref` — the registry/version reference used by the PDP;
+- `resource_registry_snapshot_hash` — SHA-256 (RFC 8785) of the immutable registry record or snapshot covering that mapping, including provider/native target.
+
+Envelope `resource_scope` is an array of those canonical URIs. A decision resource is in-scope iff `resource.canonical_uri` is a member of the evaluated grant's `resource_scope` after alias resolution.
+
+The PEP MUST verify the pending physical/provider target against the bound snapshot. Same canonical URI with a substituted provider/native identifier fails closed.
+
+## 8. Tests
+
+Required negative tests:
+
+- stale `resource_registry_snapshot_hash`;
+- substituted provider/native target under the same canonical URI;
+- `resource.id` ≠ `resource.canonical_uri`;
+- decision URI not in envelope `resource_scope`;
+- alias that resolves to two canonical URIs.
