@@ -1,0 +1,74 @@
+{
+  "$comment": "Normative crash-boundary and identifier fixtures for EFFECT_CONSUMPTION_COMMIT_V0_1. These are expected-outcome tables, not a runtime.",
+  "profile": "EFFECT_CONSUMPTION_COMMIT_V0_1",
+  "vectors": [
+    {
+      "id": "crash-before-reservation",
+      "from_state": "IDLE",
+      "event": "crash",
+      "expected_state": "IDLE",
+      "expected_result": "no_effect_safe_restart",
+      "silent_retry_allowed": true
+    },
+    {
+      "id": "crash-after-reservation-before-dispatch",
+      "from_state": "RESERVED",
+      "event": "crash",
+      "expected_state": "RESERVED",
+      "expected_result": "resume_same_key_or_fail_closed",
+      "silent_new_effect_forbidden": true
+    },
+    {
+      "id": "crash-after-effect-before-receipt",
+      "from_state": "DISPATCHED",
+      "event": "crash_after_unknown_effect",
+      "expected_state": "UNCERTAIN",
+      "expected_result": "escalate_reconcile_by_decision_key",
+      "silent_non_idempotent_retry_forbidden": true
+    },
+    {
+      "id": "crash-after-receipt-before-approval-accounting",
+      "from_state": "RECEIPTED",
+      "event": "crash",
+      "expected_state": "RECEIPTED",
+      "expected_result": "replay_approval_accounting_idempotent",
+      "redispatch_forbidden": true
+    },
+    {
+      "id": "concurrent-duplicate-dispatch",
+      "from_state": "RESERVED",
+      "event": "second_actor_dispatch_same_decision_key",
+      "expected_result": "fail_or_attach_existing_key",
+      "double_effect_forbidden": true
+    },
+    {
+      "id": "uncertain-reconciliation",
+      "from_state": "UNCERTAIN",
+      "event": "reconcile_by_decision_key",
+      "expected_result": "escalate_if_still_unknown_else_receipt_and_account",
+      "silent_non_idempotent_retry_forbidden": true
+    },
+    {
+      "id": "bounded-reuse-under-decrement",
+      "from_state": "RECEIPTED",
+      "event": "successful_effect_without_approval_decrement",
+      "expected_result": "must_not_complete",
+      "complete_forbidden": true
+    },
+    {
+      "id": "weak-nonce",
+      "nonce": "shortnonce",
+      "expected_result": "schema_reject",
+      "reason": "fewer than 22 unpadded base64url characters / 128 bits"
+    },
+    {
+      "id": "cross-issuer-collision",
+      "decision_id": "dec-1",
+      "decision_nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+      "issuer_a": "pdp-root-a",
+      "issuer_b": "pdp-root-b",
+      "expected_result": "distinct_consumption_keys",
+      "shared_slot_forbidden": true
+    }
+  ]
+}

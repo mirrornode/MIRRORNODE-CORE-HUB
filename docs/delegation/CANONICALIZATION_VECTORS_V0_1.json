@@ -1,0 +1,153 @@
+{
+  "$comment": "Normative RFC 8785 / SHA-256 fixtures for CG-0036. Do not reformat this file as pretty-print of nested canonical strings.",
+  "profile": "CANONICALIZATION_V0_1",
+  "algorithm": "RFC8785",
+  "hash": "SHA-256",
+  "hash_prefix": "sha256:",
+  "vectors": [
+    {
+      "id": "canon-basic",
+      "description": "Canonical input with nested object and preserved array order.",
+      "input": {
+        "b": 2,
+        "a": "alpha",
+        "arr": ["x", "y"],
+        "nested": {"z": true, "m": false}
+      },
+      "canonical": "{\"a\":\"alpha\",\"arr\":[\"x\",\"y\"],\"b\":2,\"nested\":{\"m\":false,\"z\":true}}",
+      "sha256": "sha256:82409b46fb0375fe1fcb07f116e4ab1f57939650441cad995913527b8184b0f1",
+      "expected_result": "match"
+    },
+    {
+      "id": "canon-key-order",
+      "description": "Key-order variation of canon-basic MUST produce the same canonical bytes and SHA-256.",
+      "input": {
+        "arr": ["x", "y"],
+        "nested": {"m": false, "z": true},
+        "a": "alpha",
+        "b": 2
+      },
+      "canonical": "{\"a\":\"alpha\",\"arr\":[\"x\",\"y\"],\"b\":2,\"nested\":{\"m\":false,\"z\":true}}",
+      "sha256": "sha256:82409b46fb0375fe1fcb07f116e4ab1f57939650441cad995913527b8184b0f1",
+      "expected_result": "match"
+    },
+    {
+      "id": "canon-string-variation",
+      "description": "Material string variation MUST produce a different SHA-256.",
+      "input": {
+        "b": 2,
+        "a": "Alpha",
+        "arr": ["x", "y"],
+        "nested": {"z": true, "m": false}
+      },
+      "canonical": "{\"a\":\"Alpha\",\"arr\":[\"x\",\"y\"],\"b\":2,\"nested\":{\"m\":false,\"z\":true}}",
+      "sha256": "sha256:e044bbcc47759e44337b3c801ee04ee6b31036dea82476bb431d3f2553cbaf89",
+      "differs_from": "canon-basic",
+      "expected_result": "different_hash"
+    },
+    {
+      "id": "canon-duplicate-key",
+      "description": "Duplicate object keys MUST be rejected before canonicalization.",
+      "raw_json": "{\"a\":1,\"a\":2}",
+      "expected_result": "reject_duplicate_keys"
+    },
+    {
+      "id": "canon-non-ijson-nan",
+      "description": "Non-I-JSON NaN MUST be rejected.",
+      "raw_json": "{\"n\":NaN}",
+      "expected_result": "reject_non_ijson"
+    },
+    {
+      "id": "excluded-proof-base",
+      "description": "Payload hash excludes issuer_proof.",
+      "exclude_issuer_proof": true,
+      "input": {
+        "delegation_id": "del-1",
+        "delegation_version": "1.0.0",
+        "delegator": "operator",
+        "delegate_actor": "agent-a",
+        "authority_class": "AUTONOMOUS_WITHIN_POLICY",
+        "issuer_proof": {
+          "proof_type": "DIGITAL_SIGNATURE",
+          "issuer_credential_ref": "did:example:operator#key-1",
+          "signed_payload_hash": "sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4",
+          "proof_value": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImRpZDpleGFtcGxlOm9wZXJhdG9yI2tleS0xIn0.placeholder.AAAAAAAAAAAAAAAA"
+        }
+      },
+      "canonical": "{\"authority_class\":\"AUTONOMOUS_WITHIN_POLICY\",\"delegate_actor\":\"agent-a\",\"delegation_id\":\"del-1\",\"delegation_version\":\"1.0.0\",\"delegator\":\"operator\"}",
+      "sha256": "sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4",
+      "expected_result": "match"
+    },
+    {
+      "id": "excluded-proof-variation",
+      "description": "Changing untrusted issuer_proof hints MUST leave the payload hash unchanged.",
+      "exclude_issuer_proof": true,
+      "input": {
+        "delegation_id": "del-1",
+        "delegation_version": "1.0.0",
+        "delegator": "operator",
+        "delegate_actor": "agent-a",
+        "authority_class": "AUTONOMOUS_WITHIN_POLICY",
+        "issuer_proof": {
+          "proof_type": "HARDWARE_BACKED_ASSERTION",
+          "issuer_credential_ref": "did:example:other#key-9",
+          "signed_payload_hash": "sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4",
+          "proof_value": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImRpZDpleGFtcGxlOm9wZXJhdG9yI2tleS0xIn0.placeholder.AAAAAAAAAAAAAAAA"
+        }
+      },
+      "canonical": "{\"authority_class\":\"AUTONOMOUS_WITHIN_POLICY\",\"delegate_actor\":\"agent-a\",\"delegation_id\":\"del-1\",\"delegation_version\":\"1.0.0\",\"delegator\":\"operator\"}",
+      "sha256": "sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4",
+      "same_payload_hash_as": "excluded-proof-base",
+      "expected_result": "match"
+    },
+    {
+      "id": "protected-proof-metadata-substitution",
+      "description": "Substituting protected JWS header alg/kid MUST fail proof verification even if schema hints and payload hash are unchanged.",
+      "exclude_issuer_proof": true,
+      "input": {
+        "delegation_id": "del-1",
+        "delegation_version": "1.0.0",
+        "delegator": "operator",
+        "delegate_actor": "agent-a",
+        "authority_class": "AUTONOMOUS_WITHIN_POLICY",
+        "issuer_proof": {
+          "proof_type": "DIGITAL_SIGNATURE",
+          "issuer_credential_ref": "did:example:operator#key-1",
+          "signed_payload_hash": "sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4",
+          "proof_value": "eyJhbGciOiJub25lIiwia2lkIjoiZGlkOmV4YW1wbGU6YXR0YWNrZXIja2V5LXgifQ.placeholder.BBBBBBBBBBBBBBBB"
+        }
+      },
+      "canonical": "{\"authority_class\":\"AUTONOMOUS_WITHIN_POLICY\",\"delegate_actor\":\"agent-a\",\"delegation_id\":\"del-1\",\"delegation_version\":\"1.0.0\",\"delegator\":\"operator\"}",
+      "sha256": "sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4",
+      "same_payload_hash_as": "excluded-proof-base",
+      "expected_result": "fail_proof_verification",
+      "reason": "protected header alg=none and redirected kid; schema hints remain DIGITAL_SIGNATURE / operator key-1"
+    },
+    {
+      "id": "snapshot-basic",
+      "description": "RFC 8785 hash of a closed aggregate-authority snapshot.",
+      "input": {
+        "snapshot_id": "snap-1",
+        "snapshot_version": "1.0.0",
+        "subject": {"type": "actor", "id": "agent-a"},
+        "evaluation_time": "2026-08-21T12:00:00Z",
+        "applicable_delegation_payload_hashes": ["sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4"],
+        "root_ceiling_ref": "docs/delegation/root-ceiling",
+        "root_ceiling_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "forbid_policy_ref": "docs/delegation/forbid",
+        "forbid_policy_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "resource_scope": ["mirrornode://github/repository/MIRRORNODE-CORE-HUB"],
+        "environment_scope": ["PRODUCTION"],
+        "cumulative_risk": "LOW",
+        "cumulative_budget": 0,
+        "cumulative_cardinality": 1,
+        "effective_authority_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "evaluator_identity": "pdp-primary",
+        "evaluator_version": "0.1.0"
+      },
+      "canonical": "{\"applicable_delegation_payload_hashes\":[\"sha256:908fb42215be43651a80dc02bf7976213588474c9deab73d35eb3fbee7b2d0a4\"],\"cumulative_budget\":0,\"cumulative_cardinality\":1,\"cumulative_risk\":\"LOW\",\"effective_authority_digest\":\"sha256:3333333333333333333333333333333333333333333333333333333333333333\",\"environment_scope\":[\"PRODUCTION\"],\"evaluation_time\":\"2026-08-21T12:00:00Z\",\"evaluator_identity\":\"pdp-primary\",\"evaluator_version\":\"0.1.0\",\"forbid_policy_hash\":\"sha256:2222222222222222222222222222222222222222222222222222222222222222\",\"forbid_policy_ref\":\"docs/delegation/forbid\",\"resource_scope\":[\"mirrornode://github/repository/MIRRORNODE-CORE-HUB\"],\"root_ceiling_hash\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\",\"root_ceiling_ref\":\"docs/delegation/root-ceiling\",\"snapshot_id\":\"snap-1\",\"snapshot_version\":\"1.0.0\",\"subject\":{\"id\":\"agent-a\",\"type\":\"actor\"}}",
+      "sha256": "sha256:eb1709503a1fd727950b103fadf96994480d904eed357380fe13f6da9966c014",
+      "expected_result": "match"
+    }
+  ]
+}
