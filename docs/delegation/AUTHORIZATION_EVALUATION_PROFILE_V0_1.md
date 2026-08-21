@@ -27,14 +27,14 @@ A conformant PDP evaluates in this order:
 6. **Load immutable policy bundle** — verify `policy_content_hash` and `policy_bundle_hash`.
 7. **Apply non-delegable/forbid guardrails** — a matching guardrail cannot be overridden by a permit or delegation.
 8. **Load all active applicable delegations** — not only the grant cited by the requester.
-9. **Authenticate and validate each delegation** — require verifiable issuer proof over the complete canonical envelope payload excluding `issuer_proof`; verify the issuer against a trusted root outside the delegate's authority path, then validate scope, dates, revocation freshness, parent-chain monotonicity, and policy hashes. An unsigned, self-asserted, fabricated, or unverifiable envelope never enters `G(A,t)`.
+9. **Authenticate and validate each delegation** — require verifiable issuer proof over the complete canonical envelope payload excluding `issuer_proof`; verify the issuer against a trusted root outside the delegate's authority path, then validate scope, dates, revocation freshness, parent-chain monotonicity, and policy hashes. Compute `delegation_payload_hash` as the SHA-256 of that same canonical payload; it MUST equal `issuer_proof.signed_payload_hash`. An unsigned, self-asserted, fabricated, unverifiable, or payload-hash-mismatched envelope never enters `G(A,t)`.
 10. **Compute aggregate authority snapshot** — evaluate the union of active grants against the separately governed root ceiling and composition constraints.
 11. **Classify the requested action** — derive the delegation class from governing policy, not from requester-supplied labels.
-12. **Cross-check MICC** — both approval systems apply; the stricter gate wins, and the controlling MICC class is carried into the decision record.
+12. **Cross-check MICC** — both approval systems apply; the stricter gate wins. Every decision records `micc_approval_class`. When no additional MICC approval gate applies, record `APPROVAL_NONE`; do not omit the field.
 13. **Evaluate risk and action-chain composition** — reject/escalate if the requested action or known chain exceeds risk, budget, cardinality, sequence, or blast-radius constraints.
 14. **Evaluate decision preconditions** — current state, target version, deterministic checks, conflicts, dependencies, replay/idempotency controls. Child delegations must carry the exact parent precondition hash until a separately governed typed strengthening relation exists.
-15. **Resolve required human authority** — if Operator/Council/non-delegable authority is required, absence of a valid bound approval prevents `ALLOW`.
-16. **Emit decision** — `ALLOW`, `DENY`, or `ESCALATE` with decision nonce, reason, obligations, state/policy/aggregate digests, MICC approval class, and expiry. Every `ALLOW` is explicitly one-time-use in v0.1.
+15. **Resolve required human authority** — if Operator/Council/non-delegable authority is required, absence of a valid bound approval prevents `ALLOW`. Any required Operator or Council approval MUST carry a `delegation_payload_hash` equal to the current envelope payload hash. Council-required approval additionally fails closed unless a separately governed disposition validator has proven required composition, provenance, and quorum; hash-bound matter/disposition references and approval `issuer_proof` are not that proof.
+16. **Emit decision** — `ALLOW`, `DENY`, or `ESCALATE` with decision nonce, `delegation_payload_hash`, reason, obligations, state/policy/aggregate digests, unconditional `micc_approval_class` (`APPROVAL_NONE` when no additional MICC gate applies), and expiry. Every v0.1 `ALLOW` is one-time-use.
 
 ## 3. Aggregate authority algebra
 
@@ -73,13 +73,14 @@ The PDP decision is not itself the effect. A PEP enforces the decision only if:
 
 - decision signature/integrity and issuer are trusted;
 - decision has not expired;
-- every `ALLOW` declares one-time use and its decision identity/nonce has not already been consumed;
+- every `ALLOW` declares one-time use and its `decision_id` and `decision_nonce` have not already been consumed;
+- `delegation_payload_hash` still equals the currently resolved envelope's canonical payload hash excluding `issuer_proof` and equals that envelope's `issuer_proof.signed_payload_hash`;
 - resource/action/parameter identities match the pending effect;
 - bound state/target version still matches;
 - revocation freshness is within the required bound;
 - decision obligations are understood and satisfiable.
 
-The PEP MUST atomically consume every `ALLOW` decision identity/nonce before or as part of enforcement. A replayed `ALLOW` fails even if unexpired and even if an associated approval has remaining bounded uses. A new effect requires a fresh PDP decision. Bounded decision reuse is outside v0.1 and requires a separately governed profile.
+The PEP MUST atomically consume every `ALLOW` `decision_id` and `decision_nonce` before or as part of enforcement. Every v0.1 `ALLOW` is one-time-use. A replayed `ALLOW` fails even if unexpired and even if an associated approval has remaining bounded uses. Approval reuse does not imply decision reuse. A new effect requires a fresh PDP decision. Bounded decision reuse is outside v0.1 and requires a separately governed profile. A mutated envelope with unchanged `delegation_id` and `delegation_version` fails closed.
 
 If any binding or atomic consumption step fails, the PEP denies and requests a fresh evaluation.
 

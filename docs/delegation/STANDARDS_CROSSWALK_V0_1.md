@@ -94,7 +94,8 @@ Standards alignment does not make the draft executable. Before production autono
 7. execution and authorization receipt mapping to a repaired and reviewed audit contract;
 8. threat-model fixtures for policy manipulation, grant composition, stale state, retry, aliasing, and compromised PDP/PEP;
 9. a product/HUD test proving aggregate authority cannot be hidden by per-envelope presentation;
-10. explicit commissioning/go-no-go criteria and monitoring thresholds.
+10. explicit commissioning/go-no-go criteria and monitoring thresholds;
+11. a separately governed Council disposition validator that proves required composition, provenance, and quorum before Council-required `ALLOW` (existing `disposition.schema.yaml` and CG-0031 verify Operator dispositions, not Council constitution).
 
 ## Primary references
 

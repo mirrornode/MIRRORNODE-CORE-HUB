@@ -3,7 +3,7 @@
 **Status:** Draft under CG-0036 — not canon, not implementation authority  
 **Version:** 0.1-draft.2  
 **Created:** 2026-08-14  
-**Revision:** 2026-08-14 external-review and standards-alignment pass
+**Revision:** 2026-08-21 bounded hardening (issuer proof, unconditional MICC recording, one-time ALLOW, payload-hash binding, Council-disposition fail-closed)
 
 ## 1. Purpose
 
@@ -50,6 +50,7 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `delegation_id`
 - `delegation_version`
 - `delegator`
+- `issuer_proof`
 - `delegate_actor`
 - `authority_class`
 - `governing_policy_ref`
@@ -73,7 +74,9 @@ Every delegation must be attributable and machine-readable. At minimum it identi
 - `receipt_policy_ref`
 - `subdelegation`
 
-A delegation is invalid if its governing policy content hash, policy bundle hash, decision-precondition hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
+`issuer_proof` authenticates the deterministic canonical envelope payload excluding `issuer_proof`. Content integrity (a digest over payload bytes) proves that those bytes have not changed after hashing; it does not, by itself, prove who issued the envelope. Authenticated issuance requires a verifiable proof over that canonical payload, validated against a trust root outside the affected delegate's authority path. A hash string, a claimed `delegator` name, or an unsigned envelope cannot establish issuance.
+
+A delegation is invalid if its issuer proof, governing policy content hash, policy bundle hash, decision-precondition hash, authority ceiling, resource scope, validity period, or revocation state cannot be verified at decision time.
 
 ## 5. Authority Classification Boundary
 
@@ -96,15 +99,20 @@ Every decision must record at least:
 - policy bundle hash;
 - immutable decision-preconditions hash;
 - delegation identifier/version;
+- `delegation_payload_hash` of the deterministic canonical envelope payload excluding `issuer_proof`;
 - subject/action/resource/context digest;
 - aggregate-authority snapshot digest;
 - state reference/hash;
-- controlling MICC approval class where applicable;
+- `micc_approval_class` (unconditional);
 - authenticated Operator/Council approval references and hashes where required;
 - allow/deny result;
 - obligations and reason code;
 - decision nonce;
 - issued time and expiry time.
+
+`micc_approval_class` is recorded on every decision. When no additional MICC approval gate applies, the recorded class is `APPROVAL_NONE`. The field is never omitted to mean “no MICC gate.” Both MICC and delegation constraints apply, and the stricter gate wins.
+
+`delegation_payload_hash` MUST equal the SHA-256 of the deterministic canonical envelope payload excluding `issuer_proof`, and MUST equal `issuer_proof.signed_payload_hash`. The decision is bound to that exact payload, not merely to `delegation_id` and `delegation_version`. A changed envelope with the same delegation ID and version fails closed. Operator and Council approvals MUST carry the same `delegation_payload_hash`; an approval bound only to those mutable coordinates cannot authorize a mutated envelope.
 
 ## 6. Policy semantics
 
@@ -188,7 +196,16 @@ At minimum, the decision request may bind:
 
 The PEP must reject a decision if bound state has materially changed before enforcement. For mutable resources, implementations should use compare-and-swap, version preconditions, transactions, locks, or an equivalent enforcement mechanism appropriate to the resource.
 
-Retries of autonomous actions are new authorization events. They MUST re-evaluate current policy, delegation, revocation, expiry, aggregate authority, preconditions, and state. A previous allow decision is not a reusable capability unless an explicit bounded reusable profile is separately defined.
+Retries of autonomous actions are new authorization events. They MUST re-evaluate current policy, delegation, revocation, expiry, aggregate authority, preconditions, and state.
+
+### One-time ALLOW invariant (v0.1)
+
+Every v0.1 `ALLOW` decision is one-time-use.
+
+- Every `ALLOW` `decision_id` and `decision_nonce` MUST be atomically consumed before or as part of enforcement.
+- Replay of an `ALLOW` fails even when the decision is unexpired.
+- Approval reuse does not imply decision reuse. Remaining bounded uses on an associated approval cannot re-authorize a consumed `ALLOW`.
+- Any future bounded decision-reuse profile requires separate governance and is outside v0.1.
 
 ## 11. Revocation and expiry
 
@@ -224,16 +241,22 @@ Operator approvals and Council approvals must:
 
 - conform to their typed approval schema;
 - carry authenticated issuer provenance verifiable against a trusted credential or attestation root outside the requester and affected delegate's authority path;
-- bind the exact request, subject, action/parameters, resource, context, state, policy bundle, delegation, and lifetime;
+- bind the exact request, subject, action/parameters, resource, context, state, policy bundle, delegation identifier/version, `delegation_payload_hash`, and lifetime;
 - carry a content hash referenced by the authorization decision;
 - declare either `ONE_TIME` or `BOUNDED_REUSE` semantics;
 - participate in authoritative, concurrency-safe consumption accounting.
 
 A hash proves object integrity, not issuer identity. A claimed approver name without authenticated provenance cannot authorize execution.
 
-`ONE_TIME` approvals are atomically consumed by their first authorized enforcement. `BOUNDED_REUSE` approvals declare `max_uses`; remaining uses are tracked in an authoritative consumption state. Unverifiable consumption state fails closed.
+`ONE_TIME` approvals are atomically consumed by their first authorized enforcement. `BOUNDED_REUSE` approvals declare `max_uses`; remaining uses are tracked in an authoritative consumption state. Unverifiable consumption state fails closed. Remaining approval uses never convert a consumed `ALLOW` into a reusable decision.
 
-Where Council approval is required, the decision must carry a typed Council approval binding whose matter/disposition integrity and exact current-action authorization can be independently verified.
+Where Council approval is required, the decision must carry a typed Council approval binding whose matter/disposition content integrity and exact current-action authorization can be independently verified.
+
+`council_matter_ref`, `disposition_ref`, `disposition_hash`, and `issuer_proof` prove that a referenced artifact exists, is hash-bound, and that the approval object was authenticated. They do not prove that the referenced Council disposition was validly constituted.
+
+This repository's `council/schemas/disposition.schema.yaml` records Operator dispositions of Council matters (`authority: operator`). CG-0031 verifies that a previously recorded Operator disposition authorizes an exact implementation scope. Neither contract defines Council seat composition, quorum, or a disposition-constitution validator.
+
+Until a separately governed disposition validator proves required composition, provenance, and quorum, Council-required approval MUST fail closed. CG-0036 does not invent constitutional quorum rules inside the approval object.
 
 ## 13. Non-delegable guardrails
 
