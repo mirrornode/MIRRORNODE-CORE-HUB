@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/council-approval-v0.1.schema.json",
   "title": "MIRRORNODE Council Approval v0.1",
-  "description": "Draft authenticated Council approval/disposition object for approval-bearing authorization decisions under CG-0036.",
+  "description": "Draft authenticated Council approval/disposition object for approval-bearing authorization decisions under CG-0036. delegation_payload_hash binds the approval to the canonical envelope payload excluding issuer_proof. Hash-bound matter/disposition references are not Council-constitution proof.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -22,6 +22,7 @@
     "policy_bundle_hash",
     "delegation_id",
     "delegation_version",
+    "delegation_payload_hash",
     "decision",
     "issued_at",
     "expires_at"
@@ -78,6 +79,7 @@
     "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
     "delegation_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
     "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "delegation_payload_hash": {"$ref": "#/definitions/sha256"},
     "decision": {"type": "string", "const": "APPROVE"},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
     "expires_at": {"$ref": "#/definitions/utcTimestamp"},
