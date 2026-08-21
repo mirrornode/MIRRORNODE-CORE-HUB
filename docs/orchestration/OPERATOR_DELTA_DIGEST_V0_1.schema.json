@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mirrornode://schemas/operator-delta-digest/v0.1",
+  "title": "Operator Delta Digest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "digest_id", "work_id", "target_state_hash", "mechanical_diff",
+    "dissent_lines", "worst_credible_outcome", "risk_assumed", "reversibility", "friction_class",
+    "generated_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "digest_id": {"type": "string", "minLength": 1},
+    "work_id": {"type": "string", "minLength": 1},
+    "target_state_hash": {"type": "string", "minLength": 1},
+    "mechanical_diff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "summary", "source_refs"],
+      "properties": {
+        "producer": {"const": "DETERMINISTIC_DIFF_ENGINE"},
+        "summary": {"type": "string", "minLength": 1},
+        "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "dissent_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["dissent_id", "author", "verbatim_line", "status"],
+        "properties": {
+          "dissent_id": {"type": "string", "minLength": 1},
+          "author": {"type": "string", "minLength": 1},
+          "verbatim_line": {"type": "string", "minLength": 1},
+          "status": {"enum": ["LIVE", "RESOLVED", "DISPOSITIONED", "SUPERSEDED"]},
+          "disposition_ref": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "deference_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defer_count", "substantive_non_deferred_position_count", "defer_ratio", "escalation_triggered"],
+      "properties": {
+        "defer_count": {"type": "integer", "minimum": 0},
+        "substantive_non_deferred_position_count": {"type": "integer", "minimum": 0},
+        "defer_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "escalation_triggered": {"type": "boolean"}
+      }
+    },
+    "worst_credible_outcome": {"type": "string", "minLength": 1},
+    "risk_voice_ref": {"type": "string", "minLength": 1},
+    "risk_assumed": {"type": "string", "minLength": 1},
+    "reversibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "reversal_path", "estimated_cost", "reversal_window"],
+      "properties": {
+        "class": {"enum": ["FULLY_REVERSIBLE", "REVERSIBLE_WITH_COST", "PARTIALLY_REVERSIBLE", "IRREVERSIBLE", "UNKNOWN"]},
+        "reversal_path": {"type": ["string", "null"]},
+        "estimated_cost": {"type": ["string", "null"]},
+        "reversal_window": {"type": ["string", "null"]}
+      }
+    },
+    "friction_class": {"enum": ["LOW", "MODERATE", "HIGH", "MAXIMUM"]},
+    "operator_comprehension_required": {"type": "boolean"},
+    "operator_risk_statement": {"type": ["string", "null"]},
+    "synthesis_banner": {"const": "SYNTHESIS: NOT PERMISSION. NOT AUTHORITY."},
+    "generated_at": {"type": "string", "format": "date-time"}
+  }
+}
