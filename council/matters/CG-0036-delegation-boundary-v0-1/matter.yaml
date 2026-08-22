@@ -4,7 +4,7 @@ title: Delegation Boundary v0.1
 matterType: governance
 initiator: operator
 createdAt: "2026-08-14T22:49:00Z"
-updatedAt: "2026-08-21T21:00:00Z"
+updatedAt: "2026-08-22T06:34:00Z"
 workflowState: open
 decisionQuestion: >-
   How should MIRRORNODE reduce routine Operator intervention through bounded,
@@ -110,6 +110,10 @@ referenceArtifacts:
     kind: document
     href: ../../../docs/delegation/ISSUER_PROOF_V0_1.md
     canonical: false
+  - id: ACTIVE-GRANT-INVENTORY-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/ACTIVE_GRANT_INVENTORY_V0_1.schema.json
+    canonical: false
   - id: AGGREGATE-AUTHORITY-SNAPSHOT-SCHEMA
     kind: document
     href: ../../../docs/delegation/AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json
@@ -202,6 +206,8 @@ resolvedDraftQuestions:
   - exact-micc-invocation-is-hash-bound
   - authenticated-monotonic-revocation-state-is-decision-bound
   - successful-effects-require-authenticated-typed-execution-receipts
+  - complete-active-grant-inventory-is-independently-authenticated-and-bound
+  - aggregate-metrics-have-deterministic-formulas-and-authenticated-budget-inputs
 openQuestions:
   - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
   - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
@@ -209,10 +215,10 @@ openQuestions:
   - What implementation will be commissioned for the typed delegation receipt mapping to the repaired AUDIT_EMISSION contract?
   - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
   - What separately governed Council disposition validator should prove required composition, provenance, and quorum before Council approval can produce ALLOW? Existing council/schemas/disposition.schema.yaml and CG-0031 verify Operator dispositions, not Council constitution. Blocking implementation dependency; preserve for Osiris/Theia review.
-currentRevision: draft-2-four-position-correction
+currentRevision: draft-2-exact-head-codex-correction
 nextRequiredStep: >-
-  Run automated checks and a fresh Codex review on the combined two-commit correction head,
-  then obtain exact-head revision confirmations from Ptah, Thoth, Osiris, and Theia. Require
+  Run focused schema/conformance checks and a fresh Codex review on the exact correction head,
+  then obtain exact-target revision confirmations from Ptah, Thoth, Osiris, and Theia. Require
   a full lane re-review where the correction materially changes that lane's analysis.
 historyPath: history/
 notes:
