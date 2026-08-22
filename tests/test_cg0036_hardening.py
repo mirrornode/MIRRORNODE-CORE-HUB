@@ -280,6 +280,7 @@ class SchemaNegativeTests(unittest.TestCase):
             "revocation_ref": "revocation_source_hash",
             "receipt_policy_ref": "receipt_policy_hash",
             "aggregate_authority_policy_ref": "aggregate_authority_policy_hash",
+            "active_grant_inventory_ref": "active_grant_inventory_hash",
         }
         for ref, digest in pairs.items():
             with self.subTest(ref=ref):
@@ -356,11 +357,31 @@ class SchemaNegativeTests(unittest.TestCase):
             "authority_rank": 1,
             "authority_ceiling": "bounded-ops",
             "risk_ceiling": "LOW",
+            "budget_unit": "credits",
+            "budget_ceiling": 10,
             "subdelegation_max_depth": 0,
             "effective_at": "2026-08-21T12:00:00Z",
             "expires_at": "2026-08-22T12:00:00Z",
         }
         self.assertEqual(list(self.issuer_auth.iter_errors(rec)), [])
+        missing_budget = dict(rec)
+        missing_budget.pop("budget_ceiling")
+        self.assertTrue(list(self.issuer_auth.iter_errors(missing_budget)))
+
+    def test_resource_version_boolean_rejected(self):
+        doc = {
+            "preconditions_id": "pre-1",
+            "preconditions_version": "1.0.0",
+            "combiner": "ALL_MUST_PASS",
+            "checks": [{
+                "check_id": "resource-version",
+                "kind": "RESOURCE_VERSION",
+                "operator": "AT_LEAST",
+                "target": "mirrornode://github/repository/MIRRORNODE-CORE-HUB",
+                "expected": True,
+            }],
+        }
+        self.assertTrue(list(self.preconditions.iter_errors(doc)))
 
 
 class IjsonIntegerTests(unittest.TestCase):
