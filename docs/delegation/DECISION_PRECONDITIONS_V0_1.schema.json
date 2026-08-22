@@ -286,23 +286,46 @@
               "properties": {
                 "kind": {
                   "const": "DEPENDENCY_STATE"
+                },
+                "operator": {
+                  "const": "UNSEEN"
                 }
               },
               "required": [
-                "kind"
+                "kind",
+                "operator"
               ]
             },
             "then": {
               "properties": {
                 "expected": {
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "boolean"
-                    }
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "DEPENDENCY_STATE"
+                },
+                "operator": {
+                  "enum": [
+                    "EQUALS",
+                    "NOT_EQUALS"
                   ]
+                }
+              },
+              "required": [
+                "kind",
+                "operator"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected": {
+                  "type": "string"
                 }
               }
             }
