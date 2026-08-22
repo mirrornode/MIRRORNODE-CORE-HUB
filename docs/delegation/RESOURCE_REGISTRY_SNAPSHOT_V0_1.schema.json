@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/resource-registry-snapshot-v0.1.schema.json",
   "title": "MIRRORNODE Resource Registry Snapshot v0.1",
+  "description": "Authenticated resource registry snapshot. record_hash is non-self-referential: resource_record_hash = SHA-256( RFC 8785 JCS of the record object excluding the record_hash member itself ). PDP and PEP MUST independently recompute and match the same digest using the CG-0036 canonicalization profile.",
   "type": "object",
   "additionalProperties": false,
   "required": ["snapshot_id", "snapshot_version", "logical_issuer_id", "issuer_registry_ref", "issuer_registry_snapshot_hash", "issuer_proof", "issued_at", "records"],
@@ -13,7 +14,27 @@
     "issuer_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
     "issuer_proof": {"$ref": "#/definitions/issuerProof"},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
-    "records": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["canonical_uri", "resource_type", "provider", "native_target_id", "environment", "record_hash"], "properties": {"canonical_uri": {"$ref": "#/definitions/canonicalResource"}, "resource_type": {"type": "string", "minLength": 1}, "provider": {"type": "string", "minLength": 1}, "native_target_id": {"type": "string", "minLength": 1}, "environment": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}, "identity_anchors": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}, "record_hash": {"$ref": "#/definitions/sha256"}}}}
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["canonical_uri", "resource_type", "provider", "native_target_id", "environment", "record_hash"],
+        "properties": {
+          "canonical_uri": {"$ref": "#/definitions/canonicalResource"},
+          "resource_type": {"type": "string", "minLength": 1},
+          "provider": {"type": "string", "minLength": 1},
+          "native_target_id": {"type": "string", "minLength": 1},
+          "environment": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]},
+          "identity_anchors": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "record_hash": {
+            "$ref": "#/definitions/sha256",
+            "description": "SHA-256 of the RFC 8785 JCS of this record object excluding the record_hash field itself. Must be independently reproducible by PDP and PEP."
+          }
+        }
+      }
+    }
   },
   "definitions": {
     "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},

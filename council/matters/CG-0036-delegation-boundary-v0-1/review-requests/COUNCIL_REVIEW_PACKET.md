@@ -1,8 +1,11 @@
-# CG-0036 — Draft.2 Review Packet
+# CG-0036 — Correction-Head Review Packet
 
 **Scope:** Delegation Boundary v0.1 draft.2 only.  
-**Reviewed target:** `1a3d92ea9f69e5ea0d631b0d19a9a9b5ee942312`  
+**Correction head (immutable target of this packet):** `e4ab25a128eb5b76312765eb9ba2d29a2e7ad796`  
+**Historical packet target (preserved, not rewritten):** `1a3d92ea9f69e5ea0d631b0d19a9a9b5ee942312`  
 **No implementation, deployment, canon promotion, credential access, or merge authority is requested.**
+
+This packet is the distinct correction-head review packet. Council positions filed against the prior historical head remain positions against that earlier immutable object and are not re-attributed to the correction head.
 
 ## Shared question
 
@@ -61,4 +64,4 @@ Attack integration coherence. Determine whether CG-0036 can coexist cleanly with
 - State any invariant that still exists only in prose rather than enforceable/conformance-testable form.
 - No Operator disposition until all four role-bounded positions are filed and synthesized.
 - Preserve the Council-constitution validator as an open, blocking implementation dependency. Do not treat Operator-authority disposition records or CG-0031 as that validator.
-- Treat this packet as the corrected successor to packet v1 reviewed by Osiris; packet v1 carried a superseded embedded target citation. The Osiris position remains filed against the exact target shown above.
+- Treat this packet as the corrected successor to packet v1 reviewed by Osiris; packet v1 carried a superseded embedded target citation. The Osiris position remains filed against the exact historical target shown above.

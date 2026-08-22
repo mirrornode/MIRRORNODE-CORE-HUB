@@ -13,7 +13,11 @@
     "adapter_version": {"type": "string", "minLength": 1},
     "capability_id": {"$ref": "#/definitions/stableId"},
     "capability_version": {"type": "string", "minLength": 1},
-    "lifecycle_state": {"type": "string", "enum": ["DECLARED", "VALIDATED", "COMMISSIONED", "SUSPENDED", "REVOKED"]},
+    "lifecycle_state": {
+      "type": "string",
+      "enum": ["DECLARED", "IMPLEMENTED", "VERIFIED", "AUTHORIZED", "ACTIVE", "DEGRADED", "SUSPENDED", "RETIRED"],
+      "description": "Must use the authoritative MIM lifecycle vocabulary from MIM_V0_1 / MICC_V0_1. Only ACTIVE and DEGRADED are executable under MICC; any other state fails closed for invocation. No parallel lifecycle vocabulary is permitted."
+    },
     "scope_hash": {"$ref": "#/definitions/sha256"},
     "approval_class": {"type": "string", "enum": ["APPROVAL_NONE", "APPROVAL_AUTOMATED", "APPROVAL_OPERATOR", "APPROVAL_COUNCIL"]},
     "requester": {"$ref": "#/definitions/typedEntity"},

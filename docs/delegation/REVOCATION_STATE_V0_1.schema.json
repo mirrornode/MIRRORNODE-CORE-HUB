@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/revocation-state-v0.1.schema.json",
   "title": "MIRRORNODE Revocation State v0.1",
+  "description": "Authenticated revocation state. Evaluation semantics (normative, fail-closed): For a given evaluation time T and delegation_payload_hash H there MUST exist exactly one currently-effective entry. An entry is currently effective if its effective_at <= T and no later entry for the same H exists with effective_at <= T. Missing entry, zero matching entries, more than one entry for the same H, co-existing ACTIVE and REVOKED for the same H at T, future-only entries (all effective_at > T), or any contradictory status set fails closed. A REVOKED currently-effective entry yields a deterministic deny. Implementations MUST reject non-unique hashes and non-monotonic sequences.",
   "type": "object",
   "additionalProperties": false,
   "required": ["state_id", "state_version", "logical_issuer_id", "issuer_registry_ref", "issuer_registry_snapshot_hash", "issuer_proof", "sequence", "issued_at", "entries"],
@@ -14,7 +15,20 @@
     "issuer_proof": {"$ref": "#/definitions/issuerProof"},
     "sequence": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
     "issued_at": {"$ref": "#/definitions/utcTimestamp"},
-    "entries": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["delegation_payload_hash", "status", "effective_at"], "properties": {"delegation_payload_hash": {"$ref": "#/definitions/sha256"}, "status": {"type": "string", "enum": ["ACTIVE", "REVOKED"]}, "effective_at": {"$ref": "#/definitions/utcTimestamp"}, "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"}}}}
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["delegation_payload_hash", "status", "effective_at"],
+        "properties": {
+          "delegation_payload_hash": {"$ref": "#/definitions/sha256"},
+          "status": {"type": "string", "enum": ["ACTIVE", "REVOKED"]},
+          "effective_at": {"$ref": "#/definitions/utcTimestamp"},
+          "reason_code": {"type": "string", "pattern": "^[A-Z0-9_:-]+$"}
+        }
+      }
+    }
   },
   "definitions": {
     "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
