@@ -1,8 +1,8 @@
 # CG-0036 — Exact-Target Successor Review Packet
 
 **Scope:** Delegation Boundary v0.1 draft.2 only.  
-**Normative correction target (immutable):** `299c24a70dda0e2f21c00b23be3bf52a60376435`  
-**Packet publication note:** this packet is published in the immediately following administrative commit and does not alter the normative target above. Reviewers MUST attest to `299c24a70dda0e2f21c00b23be3bf52a60376435`, not to an ancestor and not to the packet-publication commit.  
+**Normative correction target (immutable):** `cea6ff922ddc3abd3ce3a9b4242ac7a824445360`  
+**Packet publication note:** this packet is published in the immediately following administrative commit and does not alter the normative target above. Reviewers MUST attest to `cea6ff922ddc3abd3ce3a9b4242ac7a824445360`, not to an ancestor and not to the packet-publication commit.  
 **Historical correction target (preserved, superseded):** `e4ab25a128eb5b76312765eb9ba2d29a2e7ad796`  
 **Original historical packet target (preserved, not rewritten):** `1a3d92ea9f69e5ea0d631b0d19a9a9b5ee942312`  
 **No implementation, deployment, canon promotion, credential access, or merge authority is requested.**
@@ -11,7 +11,7 @@ This is the successor exact-target packet after the bounded Codex correction pas
 
 ## Shared question
 
-Does draft.2 at `299c24a70dda0e2f21c00b23be3bf52a60376435` define a sound, non-self-referential delegation architecture in which routine actions can proceed under bounded policy without allowing delegates, classifiers, policy authors, approval references, approval issuers, aggregate evaluators, registries, or enforcement points to manufacture authority?
+Does draft.2 at `cea6ff922ddc3abd3ce3a9b4242ac7a824445360` define a sound, non-self-referential delegation architecture in which routine actions can proceed under bounded policy without allowing delegates, classifiers, policy authors, approval references, approval issuers, aggregate evaluators, registries, or enforcement points to manufacture authority?
 
 Review the **complete profile set at the immutable normative target**:
 
@@ -87,7 +87,7 @@ Attack integration coherence. Verify that the new grant-inventory and aggregate-
 
 ## Synthesis constraints
 
-- Every position MUST name the immutable normative target `384ff115f21497c096d09051cbc0d63155c76e7b`.
+- Every position MUST name the immutable normative target `cea6ff922ddc3abd3ce3a9b4242ac7a824445360`.
 - Do not call the four files "independent reviews" unless independent execution provenance is separately evidenced.
 - Preserve material disagreement.
 - State any invariant that still exists only in prose rather than enforceable/conformance-testable form.
