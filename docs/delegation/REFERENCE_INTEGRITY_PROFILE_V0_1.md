@@ -12,7 +12,7 @@ an effect. Every governed reference MUST be paired in the same authenticated
 object with the RFC 8785 SHA-256 digest of the exact resolved artifact.
 
 This rule includes policy, preconditions, issuer authority, identity and resource
-registry snapshots, revocation sources, receipt policies, and aggregate-authority
+registry snapshots, active-grant inventories, revocation sources, receipt policies, and aggregate-authority
 policies. A reference is not exempt merely because it governs enforcement or
 evidence after a PDP decision. Navigation-only links that cannot affect an
 authorization result MUST be explicitly labelled informative and MUST NOT be
@@ -63,6 +63,7 @@ The envelope schema requires these pairs:
 | `revocation_ref` | `revocation_source_hash` |
 | `receipt_policy_ref` | `receipt_policy_hash` |
 | `aggregate_authority_policy_ref` | `aggregate_authority_policy_hash` |
+| `active_grant_inventory_ref` | `active_grant_inventory_hash` |
 
 Static conformance MUST enumerate every `repoRef`-typed field in every CG-0036
 schema and fail if an authority-relevant reference lacks a same-object integrity
