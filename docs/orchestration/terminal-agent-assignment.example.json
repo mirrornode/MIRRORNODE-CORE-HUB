@@ -38,7 +38,18 @@
     "stop_conditions": [
       "Any required file falls outside the authorized allowlist.",
       "Any implementation path introduces durable authority or external mutation."
-    ]
+    ],
+    "proposed_files": [
+      "src/lib/theia-session-state.ts",
+      "src/app/theia/page.tsx"
+    ],
+    "proposed_commands": [
+      "npm run typecheck",
+      "npm test -- theia"
+    ],
+    "proposed_external_effects": [],
+    "dependencies_migrations_credentials": [],
+    "decision_required": "Authorize or amend the proposed files and commands after reviewing this report."
   },
   "authorization": null,
   "authorized_files": [],
@@ -47,3 +58,4 @@
   "premature_mutation": null,
   "authority_claim": "NONE"
 }
+

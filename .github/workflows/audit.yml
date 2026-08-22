@@ -70,7 +70,11 @@ jobs:
           python-version: '3.12'
 
       - name: Install linters
-        run: pip install --quiet ruff
+        run: pip install --quiet ruff jsonschema
 
       - name: Ruff lint
         run: ruff check . --ignore E501 || true
+
+      - name: Terminal assignment gate tests
+        run: python -m unittest tests.test_terminal_agent_assignment
+

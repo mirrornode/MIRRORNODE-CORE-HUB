@@ -118,7 +118,7 @@ Earlier blanket permission, repository write access, task assignment, role ident
 
 The agent records an authorization reference and transitions to `IMPLEMENTATION_AUTHORIZED`. If the response changes scope, the amended scope becomes controlling.
 
-Automated orchestration must record the transition as an ordered two-event sequence: `INSPECTION_REPORT_RECORDED`, followed by `IMPLEMENTATION_AUTHORIZED`. The authorization event must bind the inspection-report digest and authorized-scope digest. A semantic validator must additionally reject an authorization timestamp that is not later than the recorded inspection report; JSON Schema validation alone is not sufficient evidence of temporal ordering.
+Automated orchestration must record the transition as an ordered two-event sequence: `INSPECTION_REPORT_RECORDED`, followed by `IMPLEMENTATION_AUTHORIZED`. Both events must bind the same inspection-report digest. The authorization event reference and scope digest must match the authorization object, and the scope digest must cover the exact authorized file, command, and external-effect arrays. Before accepting either implementation or verification state, the orchestrator must successfully run `python scripts/validate_terminal_agent_assignment.py <record>`. That validator recomputes the digests and rejects authorization that is not strictly later than the recorded inspection report; JSON Schema validation alone is not sufficient evidence.
 
 ## 8. Phase 3 — Bounded Implementation
 
@@ -189,7 +189,7 @@ Repositories may project this protocol through `AGENTS.md`, specialized prompt f
 
 ## 13. Required Machine Record
 
-Where automated orchestration is used, each assignment should validate against `terminal-agent-assignment.schema.json`. A schema-valid record is necessary evidence, not authority and not proof that declared facts are true.
+Where automated orchestration is used, each assignment should validate against `terminal-agent-assignment.schema.json`. A schema-valid record is necessary evidence, not authority and not proof that declared facts are true. Automated consumers must additionally run the semantic validator. Digests use SHA-256 over UTF-8 JSON serialized with sorted keys, no insignificant whitespace, and literal Unicode (`ensure_ascii=false`); content-capture digests use the captured UTF-8 bytes. A non-null `premature_mutation` forces `BLOCKED_PREMATURE_MUTATION`. Recovery requires a separate subsequent disposition record and may never reclassify the original mutation as authorized.
 
 ## 14. Compact Prompt Preamble
 
@@ -200,3 +200,4 @@ Every specialized terminal-agent assignment should begin with:
 ---
 
 This proposal does not itself authorize implementation, repository projection, canon promotion, or runtime enforcement.
+

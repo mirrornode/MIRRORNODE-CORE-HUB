@@ -39,7 +39,10 @@
       "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
     },
     "working_directory": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "branch": {
       "type": "string",
@@ -50,7 +53,10 @@
       "pattern": "^[0-9a-f]{40}$"
     },
     "base_ref": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "phase": {
       "enum": [
@@ -65,7 +71,11 @@
       ]
     },
     "mutation_posture": {
-      "enum": ["READ_ONLY", "SCOPED_WRITE", "NO_FURTHER_MUTATION"]
+      "enum": [
+        "READ_ONLY",
+        "SCOPED_WRITE",
+        "NO_FURTHER_MUTATION"
+      ]
     },
     "requested_deliverable": {
       "type": "string",
@@ -73,58 +83,140 @@
     },
     "non_scope": {
       "type": "array",
-      "items": {"type": "string", "minLength": 1},
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true
     },
     "inspection_before_write": {
       "type": "boolean"
     },
     "inspection_report": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "required": [
         "reported_at",
         "inspected_surfaces",
         "findings",
         "unknowns",
         "proposed_plan",
-        "stop_conditions"
+        "stop_conditions",
+        "proposed_files",
+        "proposed_commands",
+        "proposed_external_effects",
+        "dependencies_migrations_credentials",
+        "decision_required"
       ],
       "properties": {
-        "reported_at": {"type": "string", "format": "date-time"},
+        "reported_at": {
+          "type": "string",
+          "format": "date-time"
+        },
         "inspected_surfaces": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "minItems": 1,
           "uniqueItems": true
         },
         "findings": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1}
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "unknowns": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1}
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "proposed_plan": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "minItems": 1
         },
         "stop_conditions": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "minItems": 1
+        },
+        "proposed_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "proposed_commands": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "proposed_external_effects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "dependencies_migrations_credentials": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "decision_required": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false
     },
     "authorization": {
-      "type": ["object", "null"],
-      "required": ["reference", "authorized_at", "authorized_by", "scope_digest"],
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "reference",
+        "authorized_at",
+        "authorized_by",
+        "scope_digest"
+      ],
       "properties": {
-        "reference": {"type": "string", "minLength": 1},
-        "authorized_at": {"type": "string", "format": "date-time"},
-        "authorized_by": {"type": "string", "minLength": 1},
+        "reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorized_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorized_by": {
+          "type": "string",
+          "minLength": 1
+        },
         "scope_digest": {
           "type": "string",
           "pattern": "^sha256:[0-9a-f]{64}$"
@@ -133,8 +225,13 @@
       "additionalProperties": false
     },
     "phase_transition": {
-      "type": ["object", "null"],
-      "required": ["events"],
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "events"
+      ],
       "properties": {
         "events": {
           "type": "array",
@@ -143,10 +240,19 @@
           "prefixItems": [
             {
               "type": "object",
-              "required": ["event", "recorded_at", "inspection_report_digest"],
+              "required": [
+                "event",
+                "recorded_at",
+                "inspection_report_digest"
+              ],
               "properties": {
-                "event": {"const": "INSPECTION_REPORT_RECORDED"},
-                "recorded_at": {"type": "string", "format": "date-time"},
+                "event": {
+                  "const": "INSPECTION_REPORT_RECORDED"
+                },
+                "recorded_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
                 "inspection_report_digest": {
                   "type": "string",
                   "pattern": "^sha256:[0-9a-f]{64}$"
@@ -156,12 +262,30 @@
             },
             {
               "type": "object",
-              "required": ["event", "recorded_at", "authorization_reference", "scope_digest"],
+              "required": [
+                "event",
+                "recorded_at",
+                "inspection_report_digest",
+                "authorization_reference",
+                "scope_digest"
+              ],
               "properties": {
-                "event": {"const": "IMPLEMENTATION_AUTHORIZED"},
-                "recorded_at": {"type": "string", "format": "date-time"},
-                "authorization_reference": {"type": "string", "minLength": 1},
+                "event": {
+                  "const": "IMPLEMENTATION_AUTHORIZED"
+                },
+                "recorded_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "authorization_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
                 "scope_digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                },
+                "inspection_report_digest": {
                   "type": "string",
                   "pattern": "^sha256:[0-9a-f]{64}$"
                 }
@@ -176,21 +300,33 @@
     },
     "authorized_files": {
       "type": "array",
-      "items": {"type": "string", "minLength": 1},
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true
     },
     "authorized_commands": {
       "type": "array",
-      "items": {"type": "string", "minLength": 1},
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true
     },
     "external_effects": {
       "type": "array",
-      "items": {"type": "string", "minLength": 1},
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true
     },
     "premature_mutation": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "required": [
         "detected_at",
         "changed_paths",
@@ -201,15 +337,27 @@
         "preserved_in_place"
       ],
       "properties": {
-        "detected_at": {"type": "string", "format": "date-time"},
+        "detected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
         "changed_paths": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "minItems": 1,
           "uniqueItems": true
         },
-        "mutation_source": {"type": "string", "minLength": 1},
-        "worktree_status": {"type": "string", "minLength": 1},
+        "mutation_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "worktree_status": {
+          "type": "string",
+          "minLength": 1
+        },
         "worktree_status_sha256": {
           "type": "string",
           "pattern": "^sha256:[0-9a-f]{64}$"
@@ -219,19 +367,32 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["path", "capture", "capture_sha256"],
+            "required": [
+              "path",
+              "capture",
+              "capture_sha256"
+            ],
             "properties": {
-              "path": {"type": "string", "minLength": 1},
-              "capture": {"type": "string"},
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "capture": {
+                "type": "string",
+                "minLength": 1
+              },
               "capture_sha256": {
                 "type": "string",
                 "pattern": "^sha256:[0-9a-f]{64}$"
               }
             },
             "additionalProperties": false
-          }
+          },
+          "uniqueItems": true
         },
-        "preserved_in_place": {"const": true}
+        "preserved_in_place": {
+          "const": true
+        }
       },
       "additionalProperties": false
     },
@@ -244,19 +405,37 @@
       "if": {
         "properties": {
           "phase": {
-            "enum": ["BOOTSTRAP", "INSPECTION", "REPORT_PENDING_AUTHORIZATION"]
+            "enum": [
+              "BOOTSTRAP",
+              "INSPECTION",
+              "REPORT_PENDING_AUTHORIZATION"
+            ]
           }
         },
-        "required": ["phase"]
+        "required": [
+          "phase"
+        ]
       },
       "then": {
         "properties": {
-          "mutation_posture": {"const": "READ_ONLY"},
-          "authorization": {"type": "null"},
-          "phase_transition": {"type": "null"},
-          "authorized_files": {"maxItems": 0},
-          "authorized_commands": {"maxItems": 0},
-          "external_effects": {"maxItems": 0}
+          "mutation_posture": {
+            "const": "READ_ONLY"
+          },
+          "authorization": {
+            "type": "null"
+          },
+          "phase_transition": {
+            "type": "null"
+          },
+          "authorized_files": {
+            "maxItems": 0
+          },
+          "authorized_commands": {
+            "maxItems": 0
+          },
+          "external_effects": {
+            "maxItems": 0
+          }
         }
       }
     },
@@ -264,19 +443,38 @@
       "if": {
         "properties": {
           "phase": {
-            "enum": ["IMPLEMENTATION_AUTHORIZED", "VERIFICATION"]
+            "enum": [
+              "IMPLEMENTATION_AUTHORIZED",
+              "VERIFICATION"
+            ]
           }
         },
-        "required": ["phase"]
+        "required": [
+          "phase"
+        ]
       },
       "then": {
-        "required": ["inspection_report", "authorization", "phase_transition"],
+        "required": [
+          "inspection_report",
+          "authorization",
+          "phase_transition"
+        ],
         "properties": {
-          "inspection_report": {"type": "object"},
-          "authorization": {"type": "object"},
-          "phase_transition": {"type": "object"},
-          "mutation_posture": {"const": "SCOPED_WRITE"},
-          "authorized_files": {"minItems": 1}
+          "inspection_report": {
+            "type": "object"
+          },
+          "authorization": {
+            "type": "object"
+          },
+          "phase_transition": {
+            "type": "object"
+          },
+          "mutation_posture": {
+            "const": "SCOPED_WRITE"
+          },
+          "authorized_files": {
+            "minItems": 1
+          }
         }
       }
     },
@@ -284,52 +482,122 @@
       "if": {
         "properties": {
           "phase": {
-            "enum": ["HANDOFF_PENDING_DISPOSITION", "BLOCKED", "BLOCKED_PREMATURE_MUTATION"]
+            "enum": [
+              "HANDOFF_PENDING_DISPOSITION",
+              "BLOCKED",
+              "BLOCKED_PREMATURE_MUTATION"
+            ]
           }
         },
-        "required": ["phase"]
+        "required": [
+          "phase"
+        ]
       },
       "then": {
         "properties": {
-          "mutation_posture": {"const": "NO_FURTHER_MUTATION"},
-          "authorized_files": {"maxItems": 0},
-          "authorized_commands": {"maxItems": 0},
-          "external_effects": {"maxItems": 0}
+          "mutation_posture": {
+            "const": "NO_FURTHER_MUTATION"
+          },
+          "authorized_files": {
+            "maxItems": 0
+          },
+          "authorized_commands": {
+            "maxItems": 0
+          },
+          "external_effects": {
+            "maxItems": 0
+          }
         }
       }
     },
     {
       "if": {
         "properties": {
-          "phase": {"const": "BLOCKED_PREMATURE_MUTATION"}
-        },
-        "required": ["phase"]
-      },
-      "then": {
-        "required": ["premature_mutation"],
-        "properties": {
-          "mutation_posture": {"const": "NO_FURTHER_MUTATION"},
-          "premature_mutation": {"type": "object"}
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "inspection_before_write": {"const": true},
           "phase": {
-            "enum": ["REPORT_PENDING_AUTHORIZATION", "IMPLEMENTATION_AUTHORIZED", "VERIFICATION", "HANDOFF_PENDING_DISPOSITION"]
+            "const": "BLOCKED_PREMATURE_MUTATION"
           }
         },
-        "required": ["inspection_before_write", "phase"]
+        "required": [
+          "phase"
+        ]
       },
       "then": {
-        "required": ["inspection_report"],
+        "required": [
+          "premature_mutation"
+        ],
         "properties": {
-          "inspection_report": {"type": "object"}
+          "mutation_posture": {
+            "const": "NO_FURTHER_MUTATION"
+          },
+          "premature_mutation": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "inspection_before_write": {
+            "const": true
+          },
+          "phase": {
+            "enum": [
+              "REPORT_PENDING_AUTHORIZATION",
+              "IMPLEMENTATION_AUTHORIZED",
+              "VERIFICATION",
+              "HANDOFF_PENDING_DISPOSITION"
+            ]
+          }
+        },
+        "required": [
+          "inspection_before_write",
+          "phase"
+        ]
+      },
+      "then": {
+        "required": [
+          "inspection_report"
+        ],
+        "properties": {
+          "inspection_report": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "premature_mutation": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "premature_mutation"
+        ]
+      },
+      "then": {
+        "properties": {
+          "phase": {
+            "const": "BLOCKED_PREMATURE_MUTATION"
+          },
+          "mutation_posture": {
+            "const": "NO_FURTHER_MUTATION"
+          },
+          "authorized_files": {
+            "maxItems": 0
+          },
+          "authorized_commands": {
+            "maxItems": 0
+          },
+          "external_effects": {
+            "maxItems": 0
+          }
         }
       }
     }
   ],
   "additionalProperties": false
 }
+
