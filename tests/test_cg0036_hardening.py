@@ -346,6 +346,41 @@ class SchemaNegativeTests(unittest.TestCase):
         receipt.pop("effect_receipt_hash")
         self.assertTrue(list(self.receipt.iter_errors(receipt)))
 
+    def test_released_approval_requires_confirmed_no_effect(self):
+        receipt = {
+            "receipt_id": "receipt-1",
+            "receipt_version": "0.1.0",
+            "execution_nonce": NONCE,
+            "decision_ref": "docs/delegation/decisions/dec-1",
+            "decision_hash": SHA256,
+            "decision_logical_issuer_id": "issuer-pdp-primary",
+            "decision_id": "dec-1",
+            "decision_nonce": NONCE,
+            "delegation_payload_hash": SHA256,
+            "authority_holder_logical_issuer_id": "issuer-agent-a",
+            "micc_invocation_binding_hash": SHA256,
+            "resource_registry_snapshot_hash": SHA256,
+            "resource_record_hash": SHA256,
+            "precondition_evaluation_hash": SHA256,
+            "revocation_state_hash": SHA256,
+            "aggregate_authority_snapshot_hash": SHA256,
+            "decision_consumption": "COMMITTED",
+            "approval_ref": "docs/delegation/approvals/ap-1",
+            "approval_hash": SHA256,
+            "approval_consumption": "RELEASED",
+            "dispatch_state": "INTENT_COMMITTED",
+            "effect_outcome": "NO_EFFECT",
+            "audit_id": "audit-1",
+            "issued_at": "2026-08-21T12:00:01Z",
+            "logical_issuer_id": "issuer-pep-primary",
+            "issuer_registry_ref": "docs/delegation/issuer-registry",
+            "issuer_registry_snapshot_hash": SHA256,
+            "issuer_proof": dict(PROOF),
+        }
+        self.assertEqual(list(self.receipt.iter_errors(receipt)), [])
+        receipt["effect_outcome"] = "UNCERTAIN"
+        self.assertTrue(list(self.receipt.iter_errors(receipt)))
+
     def test_issuer_authority_record_schema(self):
         rec = {
             "record_id": "iar-1",
@@ -367,6 +402,21 @@ class SchemaNegativeTests(unittest.TestCase):
         missing_budget = dict(rec)
         missing_budget.pop("budget_ceiling")
         self.assertTrue(list(self.issuer_auth.iter_errors(missing_budget)))
+
+    def test_dependency_state_integer_rejected(self):
+        doc = {
+            "preconditions_id": "pre-1",
+            "preconditions_version": "1.0.0",
+            "combiner": "ALL_MUST_PASS",
+            "checks": [{
+                "check_id": "dependency-state",
+                "kind": "DEPENDENCY_STATE",
+                "operator": "EQUALS",
+                "target": "dependency-a",
+                "expected": 1,
+            }],
+        }
+        self.assertTrue(list(self.preconditions.iter_errors(doc)))
 
     def test_resource_version_boolean_rejected(self):
         doc = {
