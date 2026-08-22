@@ -26,9 +26,9 @@ A conformant PDP evaluates in this order:
 5. **Freeze evaluation context** — obtain current state/version and context digest used by the decision.
 6. **Load immutable policy bundle** — verify `policy_content_hash` and `policy_bundle_hash`.
 7. **Apply non-delegable/forbid guardrails** — a matching guardrail cannot be overridden by a permit or delegation.
-8. **Load all active applicable delegations** — not only the grant cited by the requester.
-9. **Authenticate then authorize each delegation** — (a) verify issuer proof over the RFC 8785 canonical envelope payload excluding `issuer_proof`; derive algorithm and credential from protected proof metadata; map the credential to `logical_issuer_id` via the bound issuer registry. A trusted credential proves identity only. (b) **Authorize the issuer’s delegable scope** against a hash-bound authority source (`issuer_authority_kind` / `issuer_authority_ref` / `issuer_authority_hash`) covering the exact operations, resources, environments, authority rank and ceiling, risk ceiling, subdelegation depth, and validity period. (c) **For child grants (`PARENT_ENVELOPE`), bind child issuer identity to the parent delegate before any scope monotonicity check.** The child's authenticated `logical_issuer_id` MUST equal the parent envelope's `delegate_logical_issuer_id`. That equality is a trust-rooted identity-registry mapping (`delegate_identity_registry_ref` / `delegate_identity_registry_snapshot_hash`), not a comparison of `delegator` / `delegate_actor` display strings. The child's verified credential MUST map to that same `logical_issuer_id`. A peer that can read or resolve another actor's parent envelope MUST NOT cite its payload hash and issue a child grant. Matching display names with a different logical identity fail. Unresolved or stale identity-registry snapshots fail closed. Root grants MUST cite a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee’s control. Unknown, unauthenticated, excessive, expired, or self-issued authority fails closed. An authenticated peer that does not possess the signed scope never enters `G(A,t)`. Then validate dates, revocation freshness, parent-chain monotonicity, and policy hashes. Compute `delegation_payload_hash` as that SHA-256; it MUST equal `issuer_proof.signed_payload_hash`.
-10. **Compute aggregate authority snapshot** — resolve the schema-valid `AGGREGATE_AUTHORITY_POLICY_V0_1`; use `CG0036_AGGREGATE_V0_1`, intersection-only scope, and the most-restrictive grant combiner; key the computation to `delegate_logical_issuer_id`; then authenticate and hash a schema-valid `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1` excluding `issuer_proof`.
+8. **Load the complete active-grant inventory** — resolve a schema-valid `ACTIVE_GRANT_INVENTORY_V0_1` for the subject and exact `evaluation_time`. Verify its issuer proof against an independently trusted grant-registry authority, verify its RFC 8785 payload hash excluding `issuer_proof`, require a fresh monotonic `registry_sequence`, and require `query_semantics = ALL_ACTIVE_DELEGATIONS_FOR_AUTHORITY_HOLDER_AT_EVALUATION_TIME`. `active_delegation_payload_hashes` MUST be sorted ascending by lowercase hexadecimal digest bytes and MUST contain every active candidate grant returned by the authoritative registry query. The aggregate evaluator is not allowed to self-attest completeness. Missing, stale, duplicated, unverifiable, or selectively omitted inventory fails closed.
+9. **Authenticate then authorize each delegation** — resolve every payload hash from the bound active-grant inventory, then: (a) verify issuer proof over the RFC 8785 canonical envelope payload excluding `issuer_proof`; derive algorithm and credential from protected proof metadata; map the credential to `logical_issuer_id` via the bound issuer registry. A trusted credential proves identity only. (b) **Authorize the issuer’s delegable scope** against a hash-bound authority source (`issuer_authority_kind` / `issuer_authority_ref` / `issuer_authority_hash`) covering the exact operations, resources, environments, authority rank and ceiling, risk ceiling, authenticated `budget_ceiling`, subdelegation depth, and validity period. (c) **For child grants (`PARENT_ENVELOPE`), bind child issuer identity to the parent delegate before any scope monotonicity check.** The child's authenticated `logical_issuer_id` MUST equal the parent envelope's `delegate_logical_issuer_id`. That equality is a trust-rooted identity-registry mapping (`delegate_identity_registry_ref` / `delegate_identity_registry_snapshot_hash`), not a comparison of `delegator` / `delegate_actor` display strings. The child's verified credential MUST map to that same `logical_issuer_id`. A peer that can read or resolve another actor's parent envelope MUST NOT cite its payload hash and issue a child grant. Matching display names with a different logical identity fail. Unresolved or stale identity-registry snapshots fail closed. Root grants MUST cite a separately governed `ISSUER_AUTHORITY_RECORD_V0_1` outside the grantee’s control. Unknown, unauthenticated, excessive, expired, or self-issued authority fails closed. An authenticated peer that does not possess the signed scope never enters `G(A,t)`. Then validate dates, revocation freshness, parent-chain monotonicity, and policy hashes. Compute `delegation_payload_hash` as that SHA-256; it MUST equal `issuer_proof.signed_payload_hash`.
+10. **Compute aggregate authority snapshot** — derive `G(A,t)` only from the complete bound inventory after step 9 validation; resolve the schema-valid `AGGREGATE_AUTHORITY_POLICY_V0_1`; execute the deterministic `CG0036_AGGREGATE_V0_1` algorithm in §3; bind `active_grant_inventory_ref` and `active_grant_inventory_hash`; require `applicable_delegation_payload_hashes` to equal the sorted hashes of every member of `G(A,t)`; then authenticate and hash a schema-valid `AGGREGATE_AUTHORITY_SNAPSHOT_V0_1` excluding `issuer_proof`.
 11. **Classify the requested action** — derive the delegation class from governing policy, not from requester-supplied labels.
 12. **Cross-check MICC** — resolve and hash-verify `MICC_INVOCATION_BINDING_V0_1`; compare its exact MIM, adapter, capability, lifecycle, scope, requester, executor, approval class, and execution nonce to the request and decision. Both approval systems apply; the stricter gate wins. Every decision records `micc_approval_class`. When no additional MICC approval gate applies, record `APPROVAL_NONE`; do not omit the field.
 13. **Evaluate risk and action-chain composition** — reject/escalate if the requested action or known chain exceeds risk, budget, cardinality, sequence, or blast-radius constraints.
@@ -40,26 +40,27 @@ A conformant PDP evaluates in this order:
 
 For an actor `A` at time `t`:
 
-- `G(A,t)` = all active, issuer-authenticated, valid delegation grants applicable to A;
+- `Inventory(A,t)` = the independently authenticated `ACTIVE_GRANT_INVENTORY_V0_1` result for A at t;
+- `G(A,t)` = every inventory member that passes step 9 issuer, authority, scope, lifetime, revocation, parent-chain, and policy validation;
 - `Permit(A,t)` = union of explicitly permitted operation/resource/environment tuples in `G(A,t)`;
 - `Root(A,t)` = separately governed maximum authority ceiling for A;
 - `Forbid(t)` = non-delegable and explicit deny guardrails;
-- `Effective(A,t)` = `(Permit(A,t) ∩ Root(A,t)) - Forbid(t)` subject to aggregate constraints.
+- `Effective(A,t)` = `(Permit(A,t) ∩ Root(A,t)) - Forbid(t)` subject to the deterministic aggregate constraints below.
 
-An individual request may be allowed only if its tuple is in `Effective(A,t)` **and** aggregate constraints pass.
+`CG0036_AGGREGATE_V0_1` is defined as follows. There is no implementation-defined freedom in these metrics:
 
-Aggregate constraints are first-class and may include:
+1. Sort `G(A,t)` by lowercase hexadecimal `delegation_payload_hash` bytes. This ordered hash array is `applicable_delegation_payload_hashes`.
+2. `distinct_delegations = len(G(A,t))`. If it exceeds `max_distinct_delegations`, aggregate evaluation fails.
+3. `effective_authority_rank = max(grant.authority_rank for grant in G(A,t))`. If greater than `max_authority_rank`, aggregate evaluation fails. The maximum is used because a single higher-rank grant is sufficient to expose that authority surface.
+4. Map each `risk_ceiling` through the fixed order `LOW < MODERATE < HIGH < CRITICAL`. `cumulative_risk` is the highest risk token present in `G(A,t)`. If its ordinal exceeds `max_cumulative_risk`, aggregate evaluation fails.
+5. Every grant MUST carry authenticated `budget_ceiling` in the single `budget_unit` named by the bound aggregate policy. Mixed or unresolved units fail closed. `cumulative_budget = sum(grant.budget_ceiling for grant in G(A,t))` using checked safe-integer arithmetic; overflow or a value greater than `9007199254740991` fails closed. If `cumulative_budget > max_cumulative_budget`, aggregate evaluation fails.
+6. Let `R` be the set union of all canonical `resource_scope` URIs in `G(A,t)`. `cumulative_cardinality = len(R)`. If it exceeds `max_cumulative_cardinality`, aggregate evaluation fails. `resource_scope` in the snapshot is the sorted ascending UTF-8 byte sequence of the request-relevant intersection of `R` with `Root(A,t)` after `Forbid(t)` removal; an empty request-relevant intersection cannot authorize.
+7. Let `E` be the set union of all environment tokens in `G(A,t)`. Snapshot `environment_scope` is the request-relevant intersection of `E` with root/forbid constraints, sorted ascending by ASCII bytes; an empty intersection cannot authorize.
+8. Let `O` be the set union of every `allowed_operations` token in `G(A,t)`. For each `forbidden_operation_sets` entry, if all members of that entry are present in `O`, aggregate evaluation fails. No subset, ordering, or pairwise shortcut is permitted.
+9. `effective_authority_digest` is `sha256:` plus SHA-256 over the RFC 8785 canonical object `{authority_holder_logical_issuer_id, applicable_delegation_payload_hashes, resource_scope, environment_scope, effective_authority_rank, cumulative_risk, cumulative_budget, cumulative_cardinality, budget_unit}` after the ordering rules above. Any implementation producing different bytes fails conformance.
+10. The snapshot MUST bind the exact `ACTIVE_GRANT_INVENTORY_V0_1` reference/hash used. A verifier independently resolves that inventory, verifies its trusted-registry proof and completeness semantics, resolves every inventory member, recomputes `G(A,t)` and all metrics, and requires exact equality with the snapshot. A stale or compromised aggregate evaluator cannot make an omitted grant disappear by signing an incomplete snapshot.
 
-- maximum authority rank;
-- maximum risk ceiling;
-- maximum number of concurrent active grants;
-- maximum resource cardinality or namespace breadth;
-- forbidden operation combinations;
-- forbidden resource/operation combinations;
-- time/budget/tool-call limits;
-- sequence rules that classify a chain by its cumulative effect rather than each step independently;
-- blast-radius ceilings;
-- separation-of-duty requirements.
+An individual request may be allowed only if its tuple is in `Effective(A,t)` **and** every aggregate constraint passes. Any unknown metric, missing grant, unresolved inventory member, arithmetic overflow, mixed budget unit, unsupported combination, or recomputation mismatch fails closed.
 
 Thus multiple harmless grants cannot become authorized merely because no pair directly conflicts.
 
@@ -79,6 +80,7 @@ The PDP decision is not itself the effect. A PEP enforces the decision only if:
 - `resource.canonical_uri` equals `resource.id` and remains in the evaluated grant scope;
 - `resource_registry_snapshot_hash` still identifies the same registry mapping; a changed provider/native target for the same canonical URI fails;
 - `aggregate_authority_snapshot_hash` still matches the schema-valid snapshot the PDP hashed;
+- the aggregate snapshot's `active_grant_inventory_hash` resolves to the independently authenticated complete inventory for the authority holder and evaluation time, and independent recomputation of `G(A,t)` and §3 metrics exactly matches the snapshot;
 - resource/action/parameter identities match the pending effect;
 - bound state/target version still matches;
 - revocation freshness is within the required bound;
@@ -100,8 +102,9 @@ No single component is assumed infallible:
 
 - compromised requester: bounded by identity, canonical resource/action, authenticated delegation provenance, PDP, and PEP;
 - compromised PDP: constrained by independently verifiable policy/decision hashes, PEP acceptance rules, and audit/verifier checks;
+- compromised aggregate evaluator: cannot establish completeness itself; the PEP/verifier resolves the independently authenticated active-grant inventory and recomputes the aggregate metrics;
 - compromised PEP: detectable through execution/effect receipts and downstream resource controls; production design should minimize its credentials and scope;
 - compromised policy publisher: bounded by policy-governance and separation-of-duty requirements;
-- compromised registry: treated as a high-impact integrity event; resource-registry writes are non-delegable by default where they can expand writer authority.
+- compromised registry: treated as a high-impact integrity event; resource-registry and active-grant-registry writes are non-delegable by default where they can expand writer authority.
 
 Runtime implementation must add cryptographic authentication/attestation and tamper-resistant logging appropriate to deployment.
