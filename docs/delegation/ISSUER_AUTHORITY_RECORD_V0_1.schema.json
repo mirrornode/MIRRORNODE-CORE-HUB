@@ -15,22 +15,106 @@
     "authority_rank",
     "authority_ceiling",
     "risk_ceiling",
+    "budget_unit",
+    "budget_ceiling",
     "subdelegation_max_depth",
     "effective_at",
     "expires_at"
   ],
   "properties": {
-    "record_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
-    "record_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
-    "logical_issuer_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
-    "allowed_operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
-    "resource_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"}},
-    "environment_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}},
-    "authority_rank": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-    "authority_ceiling": {"type": "string", "minLength": 1},
-    "risk_ceiling": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
-    "subdelegation_max_depth": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-    "effective_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
-    "expires_at": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"}
+    "record_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"
+    },
+    "record_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "logical_issuer_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"
+    },
+    "allowed_operations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9:_-]+$"
+      }
+    },
+    "resource_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"
+      }
+    },
+    "environment_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "DEVELOPMENT",
+          "STAGING",
+          "PRODUCTION",
+          "LOCAL"
+        ]
+      }
+    },
+    "authority_rank": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "authority_ceiling": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk_ceiling": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MODERATE",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "subdelegation_max_depth": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "effective_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"
+    },
+    "budget_unit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9:_-]+$",
+      "description": "Unit for the independently governed root budget bound; MUST match the bound aggregate authority policy."
+    },
+    "budget_ceiling": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Maximum per-grant budget contribution this root record authorizes in budget_unit."
+    }
   }
 }
