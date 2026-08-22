@@ -1,8 +1,8 @@
 # CG-0036 — Exact-Target Successor Review Packet
 
 **Scope:** Delegation Boundary v0.1 draft.2 only.  
-**Normative correction target (immutable):** `946319bb4bffceb27528a877733a1bb05ed45229`  
-**Packet publication note:** this packet is published in the immediately following administrative commit and does not alter the normative target above. Reviewers MUST attest to `946319bb4bffceb27528a877733a1bb05ed45229`, not to an ancestor and not to the packet-publication commit.  
+**Normative correction target (immutable):** `384ff115f21497c096d09051cbc0d63155c76e7b`  
+**Packet publication note:** this packet is published in the immediately following administrative commit and does not alter the normative target above. Reviewers MUST attest to `384ff115f21497c096d09051cbc0d63155c76e7b`, not to an ancestor and not to the packet-publication commit.  
 **Historical correction target (preserved, superseded):** `e4ab25a128eb5b76312765eb9ba2d29a2e7ad796`  
 **Original historical packet target (preserved, not rewritten):** `1a3d92ea9f69e5ea0d631b0d19a9a9b5ee942312`  
 **No implementation, deployment, canon promotion, credential access, or merge authority is requested.**
@@ -11,7 +11,7 @@ This is the successor exact-target packet after the bounded Codex correction pas
 
 ## Shared question
 
-Does draft.2 at `946319bb4bffceb27528a877733a1bb05ed45229` define a sound, non-self-referential delegation architecture in which routine actions can proceed under bounded policy without allowing delegates, classifiers, policy authors, approval references, approval issuers, aggregate evaluators, registries, or enforcement points to manufacture authority?
+Does draft.2 at `384ff115f21497c096d09051cbc0d63155c76e7b` define a sound, non-self-referential delegation architecture in which routine actions can proceed under bounded policy without allowing delegates, classifiers, policy authors, approval references, approval issuers, aggregate evaluators, registries, or enforcement points to manufacture authority?
 
 Review the **complete profile set at the immutable normative target**:
 
@@ -55,6 +55,16 @@ The bounded correction pass after `397e0f51bd224ae0cc19c7baf2c51212669d79c9` add
 4. `UNCERTAIN` execution receipts require at least durable dispatch intent and may not claim finalized approval consumption.
 5. This successor packet is bound to the immutable normative correction target above.
 
+## Final bounded conformance follow-up
+
+The follow-up pass after `d46ff9844a84e19b8c6d756262046d065807f3d1` closes the five findings from review `4999368577`:
+
+1. Root issuer-authority records now bind unit-aware budget ceilings independently of the envelope.
+2. v0.1 requires every active grant to bind one identical aggregate-policy reference and hash; mismatches fail closed.
+3. `RESOURCE_VERSION.expected` rejects booleans and permits only strings or safe integers under the defined operator matrix.
+4. All envelope, decision, approval, and aggregate-snapshot canonicalization fixtures carry the required fields and recomputed hashes.
+5. Active-grant inventory reference/hash integrity is registered in both the normative profile and the conformance sweep.
+
 ## Ptah
 
 Attack implementability and conformance. In addition to existing surfaces, verify that active-grant inventory completeness, aggregate formulas, safe-integer arithmetic, budget-unit handling, ordering rules, and independent recomputation are implementable without hidden semantics.
@@ -73,7 +83,7 @@ Attack integration coherence. Verify that the new grant-inventory and aggregate-
 
 ## Synthesis constraints
 
-- Every position MUST name the immutable normative target `946319bb4bffceb27528a877733a1bb05ed45229`.
+- Every position MUST name the immutable normative target `384ff115f21497c096d09051cbc0d63155c76e7b`.
 - Do not call the four files "independent reviews" unless independent execution provenance is separately evidenced.
 - Preserve material disagreement.
 - State any invariant that still exists only in prose rather than enforceable/conformance-testable form.
