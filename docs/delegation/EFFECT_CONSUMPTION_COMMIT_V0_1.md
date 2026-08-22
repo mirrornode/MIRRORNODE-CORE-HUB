@@ -38,7 +38,7 @@ If the effect is external, implementations MUST use a transactional outbox/inbox
 | `DISPATCHED` | External invocation attempted after `DISPATCH_INTENT`. |
 | `EFFECT_RECORDED` | Downstream reports completion; receipt not yet durable. |
 | `RECEIPTED` | Effect receipt durable, keyed by `decision_key`. |
-| `APPROVAL_FINALIZED` | Reserved approval use finalized as consumed. |
+| `APPROVAL_FINALIZED` | Reserved approval use finalized as consumed, or durably marked `RELEASED` after confirmed `NO_EFFECT`. |
 | `COMPLETED` | Receipt and approval-consumption outcome durably reconciled. |
 | `UNCERTAIN` | Crash or missing receipt **after** `DISPATCH_INTENT` (including the send-to-persist window). |
 | `FAILED` | Denied or rolled back. Reservations may be released **only** if a confirmed no-effect is proven. |
@@ -60,7 +60,7 @@ If the effect is external, implementations MUST use a transactional outbox/inbox
 6. Finalize the approval reservation as **consumed**. Failure to finalize after a successful effect **MUST NOT restore usable capacity**.
 7. Mark `COMPLETED` only after steps 5–6 reconcile.
 
-Confirmed no-effect (never left `RESERVED`, or `DISPATCH_INTENT` never sent and downstream proves no accept) MAY release both reservations. An **uncertain** effect **retains** both reservations until reconciliation.
+Confirmed no-effect (never left `RESERVED`, or `DISPATCH_INTENT` never sent and downstream proves no accept) MAY release both reservations. The authenticated execution receipt MUST record `effect_outcome: NO_EFFECT` and, when an approval reservation existed, `approval_consumption: RELEASED`; `RELEASED` is invalid for every other outcome. An **uncertain** effect **retains** both reservations until reconciliation.
 
 ## 5. Crash recovery and the send-to-persist window
 
