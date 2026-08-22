@@ -1,0 +1,49 @@
+{
+  "schema_version": "v0.1.0",
+  "assignment_id": "THEIA-PHASE1-2026-08-22",
+  "agent_role": "Theia specialized terminal agent",
+  "repository": "mirrornode/mirrornode-operator-console",
+  "working_directory": "/Users/platform/mirrornode-operator-console",
+  "branch": "feature/theia-phase-1",
+  "head_sha": "0123456789abcdef0123456789abcdef01234567",
+  "base_ref": "main",
+  "phase": "REPORT_PENDING_AUTHORIZATION",
+  "mutation_posture": "READ_ONLY",
+  "requested_deliverable": "Inspect the existing Theia surface and report a bounded Phase 1 implementation plan.",
+  "non_scope": [
+    "runtime execution",
+    "authority creation",
+    "deployment",
+    "pull-request mutation"
+  ],
+  "inspection_before_write": true,
+  "inspection_report": {
+    "reported_at": "2026-08-22T12:00:00Z",
+    "inspected_surfaces": [
+      "src/lib",
+      "src/app",
+      "package.json"
+    ],
+    "findings": [
+      "The proposed state is browser-session-local and carries no authority."
+    ],
+    "unknowns": [
+      "The final file allowlist remains subject to Operator disposition."
+    ],
+    "proposed_plan": [
+      "Define session-state types after authorization.",
+      "Add fixed discussion-only posture after authorization.",
+      "Run only the declared type-check and targeted tests."
+    ],
+    "stop_conditions": [
+      "Any required file falls outside the authorized allowlist.",
+      "Any implementation path introduces durable authority or external mutation."
+    ]
+  },
+  "authorization": null,
+  "authorized_files": [],
+  "authorized_commands": [],
+  "external_effects": [],
+  "premature_mutation": null,
+  "authority_claim": "NONE"
+}
