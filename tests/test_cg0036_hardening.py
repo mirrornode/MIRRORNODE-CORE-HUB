@@ -280,7 +280,6 @@ class SchemaNegativeTests(unittest.TestCase):
             "revocation_ref": "revocation_source_hash",
             "receipt_policy_ref": "receipt_policy_hash",
             "aggregate_authority_policy_ref": "aggregate_authority_policy_hash",
-            "active_grant_inventory_ref": "active_grant_inventory_hash",
         }
         for ref, digest in pairs.items():
             with self.subTest(ref=ref):
@@ -524,6 +523,7 @@ class MappingAndCommitTests(unittest.TestCase):
             "root_ceiling_ref": "root_ceiling_hash",
             "forbid_policy_ref": "forbid_policy_hash",
             "aggregate_authority_policy_ref": "aggregate_authority_policy_hash",
+            "active_grant_inventory_ref": "active_grant_inventory_hash",
             "issuer_registry_ref": "issuer_registry_snapshot_hash",
             "resource_registry_ref": "resource_registry_snapshot_hash",
             "evidence_ref": "evidence_hash",
