@@ -45,3 +45,13 @@ This table is retained as historical runtime evidence. Presence does not prove c
 ## Coding Agent Instructions
 
 See `.github/copilot-instructions.md`.
+
+## Specialized Terminal-Agent Phase Gate
+
+Specialized coding and terminal agents must follow `docs/orchestration/TERMINAL_AGENT_EXECUTION_PROTOCOL_V0_1.md`.
+
+- When an assignment requires inspection and a report before implementation, all work remains read-only until the report is delivered and a subsequent scoped authorization is recorded.
+- Phase descriptions must match actual tool use; an agent may not claim inspection while creating or editing files.
+- Premature mutations must be preserved in place, reported with exact paths and diffs, and placed in `BLOCKED_PREMATURE_MUTATION`; they must not be hidden through restore, deletion, formatting, stash, commit, or push.
+- Authorization for implementation does not imply authorization to commit, push, mutate a pull request, merge, deploy, approve, or execute.
+- Runtime eligibility, role identity, credentials, write access, and green checks do not create authority.
