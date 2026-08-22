@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/aggregate-authority-snapshot-v0.1.schema.json",
   "title": "MIRRORNODE Aggregate Authority Snapshot v0.1",
-  "description": "Closed, authenticated snapshot hashed into DELEGATION_DECISION_V0_1.aggregate_authority_snapshot_hash using RFC 8785 over the payload excluding issuer_proof, per CANONICALIZATION_V0_1.",
+  "description": "Closed, authenticated snapshot hashed into DELEGATION_DECISION_V0_1.aggregate_authority_snapshot_hash using RFC 8785 over the payload excluding issuer_proof, per CANONICALIZATION_V0_1. Completeness is bound to an independently authenticated ACTIVE_GRANT_INVENTORY_V0_1 artifact.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -13,6 +13,8 @@
     "authority_holder_registry_ref",
     "authority_holder_registry_snapshot_hash",
     "evaluation_time",
+    "active_grant_inventory_ref",
+    "active_grant_inventory_hash",
     "applicable_delegation_payload_hashes",
     "root_ceiling_ref",
     "root_ceiling_hash",
@@ -41,11 +43,14 @@
     "authority_holder_registry_ref": {"$ref": "#/definitions/repoRef"},
     "authority_holder_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
     "evaluation_time": {"$ref": "#/definitions/utcTimestamp"},
+    "active_grant_inventory_ref": {"$ref": "#/definitions/repoRef"},
+    "active_grant_inventory_hash": {"$ref": "#/definitions/sha256"},
     "applicable_delegation_payload_hashes": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": {"$ref": "#/definitions/sha256"}
+      "items": {"$ref": "#/definitions/sha256"},
+      "description": "Exact sorted subset of the bound active grant inventory that remains applicable after issuer, scope, lifetime, revocation, and parent-chain validation. Sort ascending by lowercase hexadecimal digest bytes before hashing."
     },
     "root_ceiling_ref": {"$ref": "#/definitions/repoRef"},
     "root_ceiling_hash": {"$ref": "#/definitions/sha256"},
@@ -57,13 +62,15 @@
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": {"$ref": "#/definitions/canonicalResource"}
+      "items": {"$ref": "#/definitions/canonicalResource"},
+      "description": "Canonical resources sorted ascending by UTF-8 byte sequence before hashing."
     },
     "environment_scope": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}
+      "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]},
+      "description": "Environment tokens sorted ascending by ASCII byte sequence before hashing."
     },
     "cumulative_risk": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
     "cumulative_budget": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
