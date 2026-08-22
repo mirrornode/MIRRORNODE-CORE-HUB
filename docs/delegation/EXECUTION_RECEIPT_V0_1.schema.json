@@ -47,7 +47,7 @@
   "allOf": [
     {"if": {"properties": {"effect_outcome": {"const": "SUCCEEDED"}}, "required": ["effect_outcome"]}, "then": {"required": ["effect_receipt_ref", "effect_receipt_hash"], "properties": {"dispatch_state": {"const": "OUTCOME_PERSISTED"}}}},
     {"if": {"required": ["approval_ref"]}, "then": {"properties": {"approval_consumption": {"enum": ["RESERVED", "COMMITTED"]}}}, "else": {"properties": {"approval_consumption": {"enum": ["NOT_APPLICABLE"]}}}},
-    {"if": {"properties": {"effect_outcome": {"const": "UNCERTAIN"}}, "required": ["effect_outcome"]}, "then": {"properties": {"approval_consumption": {"not": {"const": "COMMITTED"}}}}}
+    {"if": {"properties": {"effect_outcome": {"const": "UNCERTAIN"}}, "required": ["effect_outcome"]}, "then": {"properties": {"approval_consumption": {"not": {"const": "COMMITTED"}}, "dispatch_state": {"enum": ["INTENT_COMMITTED", "DISPATCHED", "OUTCOME_PERSISTED"]}}}}
   ],
   "definitions": {
     "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
