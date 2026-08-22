@@ -417,6 +417,36 @@ class SchemaNegativeTests(unittest.TestCase):
         }
         self.assertTrue(list(self.preconditions.iter_errors(doc)))
 
+    def test_dependency_state_operator_type_pairing(self):
+        base = {
+            "preconditions_id": "pre-1",
+            "preconditions_version": "1.0.0",
+            "combiner": "ALL_MUST_PASS",
+        }
+        unseen = dict(base)
+        unseen["checks"] = [{
+            "check_id": "dependency-state",
+            "kind": "DEPENDENCY_STATE",
+            "operator": "UNSEEN",
+            "target": "dependency-a",
+            "expected": True,
+        }]
+        self.assertEqual(list(self.preconditions.iter_errors(unseen)), [])
+        unseen["checks"][0]["expected"] = "never"
+        self.assertTrue(list(self.preconditions.iter_errors(unseen)))
+
+        equals = dict(base)
+        equals["checks"] = [{
+            "check_id": "dependency-state",
+            "kind": "DEPENDENCY_STATE",
+            "operator": "EQUALS",
+            "target": "dependency-a",
+            "expected": "READY",
+        }]
+        self.assertEqual(list(self.preconditions.iter_errors(equals)), [])
+        equals["checks"][0]["expected"] = True
+        self.assertTrue(list(self.preconditions.iter_errors(equals)))
+
     def test_resource_version_boolean_rejected(self):
         doc = {
             "preconditions_id": "pre-1",
