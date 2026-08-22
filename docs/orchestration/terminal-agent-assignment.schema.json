@@ -4,6 +4,153 @@
   "title": "MIRRORNODE Terminal Agent Assignment Record",
   "description": "Proposal schema for recording phase-gated specialized terminal-agent work. Validation is evidence only and grants no authority.",
   "type": "object",
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[^/\\\\][^\\\\]*$"
+    },
+    "file_operation": {
+      "enum": [
+        "CREATE",
+        "MODIFY",
+        "DELETE",
+        "MOVE",
+        "RENAME",
+        "RESTORE"
+      ]
+    },
+    "file_scope_entry": {
+      "type": "object",
+      "required": [
+        "path",
+        "operation"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "operation": {
+          "$ref": "#/$defs/file_operation"
+        },
+        "destination_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "MOVE",
+                  "RENAME"
+                ]
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "required": [
+              "destination_path"
+            ],
+            "properties": {
+              "destination_path": {
+                "$ref": "#/$defs/repo_path"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "destination_path": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "file_scope_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/file_scope_entry"
+      },
+      "uniqueItems": true
+    },
+    "status_record_entry": {
+      "type": "object",
+      "description": "One structurally parsed entry of a `git status --porcelain=v1 -z` capture.",
+      "required": [
+        "xy",
+        "path",
+        "original_path"
+      ],
+      "properties": {
+        "xy": {
+          "type": "string",
+          "pattern": "^[ MADRCU?!]{2}$"
+        },
+        "path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "original_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "xy": {
+                "pattern": "[RC]"
+              }
+            },
+            "required": [
+              "xy"
+            ]
+          },
+          "then": {
+            "required": [
+              "original_path"
+            ],
+            "properties": {
+              "original_path": {
+                "$ref": "#/$defs/repo_path"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "original_path": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
   "required": [
     "schema_version",
     "assignment_id",
@@ -16,6 +163,7 @@
     "requested_deliverable",
     "non_scope",
     "inspection_before_write",
+    "bootstrap_provenance",
     "authorized_files",
     "authorized_commands",
     "external_effects",
@@ -23,7 +171,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "v0.1.0"
+      "const": "v0.2.0"
     },
     "assignment_id": {
       "type": "string",
@@ -74,6 +222,7 @@
       "enum": [
         "READ_ONLY",
         "SCOPED_WRITE",
+        "VERIFICATION_ARTIFACTS_ONLY",
         "NO_FURTHER_MUTATION"
       ]
     },
@@ -91,6 +240,40 @@
     },
     "inspection_before_write": {
       "type": "boolean"
+    },
+    "bootstrap_provenance": {
+      "type": "object",
+      "description": "Phase 0 record of the checkout and instruction surface the assignment was bootstrapped from.",
+      "required": [
+        "recorded_at",
+        "instruction_files",
+        "worktree_clean",
+        "preexisting_changes"
+      ],
+      "properties": {
+        "recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "instruction_files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repo_path"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "worktree_clean": {
+          "type": "boolean"
+        },
+        "preexisting_changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/status_record_entry"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
     },
     "inspection_report": {
       "type": [
@@ -112,8 +295,7 @@
       ],
       "properties": {
         "reported_at": {
-          "type": "string",
-          "format": "date-time"
+          "$ref": "#/$defs/timestamp"
         },
         "inspected_surfaces": {
           "type": "array",
@@ -155,12 +337,7 @@
           "minItems": 1
         },
         "proposed_files": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "uniqueItems": true
+          "$ref": "#/$defs/file_scope_array"
         },
         "proposed_commands": {
           "type": "array",
@@ -202,7 +379,11 @@
         "reference",
         "authorized_at",
         "authorized_by",
-        "scope_digest"
+        "status",
+        "valid_until",
+        "superseded_by",
+        "scope_digest",
+        "report_binding_digest"
       ],
       "properties": {
         "reference": {
@@ -210,19 +391,65 @@
           "minLength": 1
         },
         "authorized_at": {
-          "type": "string",
-          "format": "date-time"
+          "$ref": "#/$defs/timestamp"
         },
         "authorized_by": {
           "type": "string",
           "minLength": 1
         },
+        "status": {
+          "enum": [
+            "ACTIVE",
+            "REVOKED",
+            "SUPERSEDED"
+          ]
+        },
+        "valid_until": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "superseded_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
         "scope_digest": {
-          "type": "string",
-          "pattern": "^sha256:[0-9a-f]{64}$"
+          "$ref": "#/$defs/digest"
+        },
+        "report_binding_digest": {
+          "$ref": "#/$defs/digest"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "SUPERSEDED"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "superseded_by": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "superseded_by": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "phase_transition": {
       "type": [
@@ -243,19 +470,17 @@
               "required": [
                 "event",
                 "recorded_at",
-                "inspection_report_digest"
+                "report_binding_digest"
               ],
               "properties": {
                 "event": {
                   "const": "INSPECTION_REPORT_RECORDED"
                 },
                 "recorded_at": {
-                  "type": "string",
-                  "format": "date-time"
+                  "$ref": "#/$defs/timestamp"
                 },
-                "inspection_report_digest": {
-                  "type": "string",
-                  "pattern": "^sha256:[0-9a-f]{64}$"
+                "report_binding_digest": {
+                  "$ref": "#/$defs/digest"
                 }
               },
               "additionalProperties": false
@@ -265,7 +490,7 @@
               "required": [
                 "event",
                 "recorded_at",
-                "inspection_report_digest",
+                "report_binding_digest",
                 "authorization_reference",
                 "scope_digest"
               ],
@@ -274,20 +499,17 @@
                   "const": "IMPLEMENTATION_AUTHORIZED"
                 },
                 "recorded_at": {
-                  "type": "string",
-                  "format": "date-time"
+                  "$ref": "#/$defs/timestamp"
                 },
                 "authorization_reference": {
                   "type": "string",
                   "minLength": 1
                 },
                 "scope_digest": {
-                  "type": "string",
-                  "pattern": "^sha256:[0-9a-f]{64}$"
+                  "$ref": "#/$defs/digest"
                 },
-                "inspection_report_digest": {
-                  "type": "string",
-                  "pattern": "^sha256:[0-9a-f]{64}$"
+                "report_binding_digest": {
+                  "$ref": "#/$defs/digest"
                 }
               },
               "additionalProperties": false
@@ -299,12 +521,7 @@
       "additionalProperties": false
     },
     "authorized_files": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "uniqueItems": true
+      "$ref": "#/$defs/file_scope_array"
     },
     "authorized_commands": {
       "type": "array",
@@ -322,6 +539,121 @@
       },
       "uniqueItems": true
     },
+    "verification_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Verification authority is limited to declared checks and explicitly bounded artifact paths. It never carries the implementation source allowlist.",
+      "required": [
+        "verified_at",
+        "declared_checks",
+        "artifact_paths"
+      ],
+      "properties": {
+        "verified_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "declared_checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "artifact_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repo_path"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "handoff_report": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "reported_at",
+        "final_head_sha",
+        "worktree_state",
+        "changed_paths",
+        "checks_run",
+        "unresolved_findings",
+        "external_mutations_performed",
+        "next_disposition_required"
+      ],
+      "properties": {
+        "reported_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "final_head_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "worktree_state": {
+          "enum": [
+            "CLEAN",
+            "UNCOMMITTED_CHANGES_PRESERVED"
+          ]
+        },
+        "changed_paths": {
+          "$ref": "#/$defs/file_scope_array"
+        },
+        "checks_run": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "command",
+              "result"
+            ],
+            "properties": {
+              "command": {
+                "type": "string",
+                "minLength": 1
+              },
+              "result": {
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "SKIPPED"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "unresolved_findings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "external_mutations_performed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "next_disposition_required": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
     "premature_mutation": {
       "type": [
         "object",
@@ -332,20 +664,19 @@
         "changed_paths",
         "mutation_source",
         "worktree_status",
-        "worktree_status_sha256",
+        "worktree_status_record",
+        "status_capture_digest",
         "diff_evidence",
         "preserved_in_place"
       ],
       "properties": {
         "detected_at": {
-          "type": "string",
-          "format": "date-time"
+          "$ref": "#/$defs/timestamp"
         },
         "changed_paths": {
           "type": "array",
           "items": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "#/$defs/repo_path"
           },
           "minItems": 1,
           "uniqueItems": true
@@ -358,9 +689,16 @@
           "type": "string",
           "minLength": 1
         },
-        "worktree_status_sha256": {
-          "type": "string",
-          "pattern": "^sha256:[0-9a-f]{64}$"
+        "worktree_status_record": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/status_record_entry"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "status_capture_digest": {
+          "$ref": "#/$defs/digest"
         },
         "diff_evidence": {
           "type": "array",
@@ -374,16 +712,14 @@
             ],
             "properties": {
               "path": {
-                "type": "string",
-                "minLength": 1
+                "$ref": "#/$defs/repo_path"
               },
               "capture": {
                 "type": "string",
                 "minLength": 1
               },
               "capture_sha256": {
-                "type": "string",
-                "pattern": "^sha256:[0-9a-f]{64}$"
+                "$ref": "#/$defs/digest"
               }
             },
             "additionalProperties": false
@@ -425,6 +761,12 @@
             "type": "null"
           },
           "phase_transition": {
+            "type": "null"
+          },
+          "verification_scope": {
+            "type": "null"
+          },
+          "handoff_report": {
             "type": "null"
           },
           "authorized_files": {
@@ -469,11 +811,55 @@
           "phase_transition": {
             "type": "object"
           },
+          "authorized_files": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "IMPLEMENTATION_AUTHORIZED"
+          }
+        },
+        "required": [
+          "phase"
+        ]
+      },
+      "then": {
+        "properties": {
           "mutation_posture": {
             "const": "SCOPED_WRITE"
           },
-          "authorized_files": {
-            "minItems": 1
+          "verification_scope": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "VERIFICATION"
+          }
+        },
+        "required": [
+          "phase"
+        ]
+      },
+      "then": {
+        "required": [
+          "verification_scope"
+        ],
+        "properties": {
+          "mutation_posture": {
+            "const": "VERIFICATION_ARTIFACTS_ONLY"
+          },
+          "verification_scope": {
+            "type": "object"
           }
         }
       }
@@ -506,6 +892,31 @@
           },
           "external_effects": {
             "maxItems": 0
+          },
+          "verification_scope": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "HANDOFF_PENDING_DISPOSITION"
+          }
+        },
+        "required": [
+          "phase"
+        ]
+      },
+      "then": {
+        "required": [
+          "handoff_report"
+        ],
+        "properties": {
+          "handoff_report": {
+            "type": "object"
           }
         }
       }
@@ -600,4 +1011,3 @@
   ],
   "additionalProperties": false
 }
-

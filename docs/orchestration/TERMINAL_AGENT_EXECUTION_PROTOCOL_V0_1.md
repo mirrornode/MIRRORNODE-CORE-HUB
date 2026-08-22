@@ -37,7 +37,7 @@ Only these phases are valid:
 | 1 | `INSPECTION` | Strictly read-only |
 | 2 | `REPORT_PENDING_AUTHORIZATION` | Hard stop; no source mutation |
 | 3 | `IMPLEMENTATION_AUTHORIZED` | Writes limited to authorized allowlist |
-| 4 | `VERIFICATION` | No new source scope; declared test artifacts only |
+| 4 | `VERIFICATION` | `VERIFICATION_ARTIFACTS_ONLY`; declared checks and declared artifact paths only |
 | 5 | `HANDOFF_PENDING_DISPOSITION` | No further mutation |
 | X | `BLOCKED` | No mutation except explicitly authorized recovery |
 
@@ -45,7 +45,7 @@ An agent may not skip a required phase. A brief may terminate after any phase.
 
 ## 4. Phase 0 — Bootstrap
 
-Before substantive work, record:
+Before substantive work, record bootstrap provenance explicitly:
 
 - assignment identifier and specialized role;
 - repository identity and working directory;
@@ -55,6 +55,8 @@ Before substantive work, record:
 - applicable instruction files (`AGENTS.md`, repository instructions, assignment brief);
 - requested deliverable and explicit non-scope;
 - whether inspection-before-write is required.
+
+Bootstrap provenance is mandatory, not advisory. The machine record must carry a `bootstrap_provenance` object naming the applicable instruction files, an explicit `worktree_clean` claim, and a structurally parsed record of every pre-existing change. A clean-worktree claim accompanied by recorded changes — or an unclean claim with no recorded change — is rejected, so the starting state cannot be left ambiguous or asserted without evidence.
 
 If repository identity, branch, head, instructions, or pre-existing changes are ambiguous, enter `BLOCKED`.
 
@@ -92,7 +94,7 @@ The Phase 1 report must contain:
 2. files and surfaces inspected;
 3. grounded findings and unknowns;
 4. proposed implementation plan;
-5. exact file allowlist for creation, modification, deletion, or movement;
+5. exact file allowlist, where every entry binds a path to one explicit operation class (`CREATE`, `MODIFY`, `DELETE`, `MOVE`, `RENAME`, `RESTORE`), and `MOVE`/`RENAME` entries also name their destination;
 6. commands and tests proposed;
 7. dependencies, migrations, external effects, and credentials implicated;
 8. risks, authority boundaries, and stop conditions;
@@ -112,13 +114,19 @@ Implementation authorization is valid only when it:
 - identifies the assignment or clearly responds to that report;
 - accepts or amends the file/command scope;
 - is attributable to the applicable approving authority;
-- has not expired, been revoked, or been superseded.
+- has not expired, been revoked, or been superseded, where validity is represented explicitly rather than assumed.
+
+Authorization validity fails closed. The machine record must carry an explicit `status` (`ACTIVE`, `REVOKED`, `SUPERSEDED`), a bounded `valid_until`, and a `superseded_by` reference. Only `ACTIVE` authorization supports implementation or verification; a validity window that does not extend past the authorization moment is invalid; and recorded implementation or verification evidence dated after `valid_until` is rejected. Absence of an expiry is not treated as indefinite permission.
 
 Earlier blanket permission, repository write access, task assignment, role identity, or the phrase “go ahead” issued before a required report does not satisfy a post-report gate.
 
 The agent records an authorization reference and transitions to `IMPLEMENTATION_AUTHORIZED`. If the response changes scope, the amended scope becomes controlling.
 
-Automated orchestration must record the transition as an ordered two-event sequence: `INSPECTION_REPORT_RECORDED`, followed by `IMPLEMENTATION_AUTHORIZED`. Both events must bind the same inspection-report digest. The authorization event reference and scope digest must match the authorization object, and the scope digest must cover the exact authorized file, command, and external-effect arrays. Before accepting either implementation or verification state, the orchestrator must successfully run `python scripts/validate_terminal_agent_assignment.py <record>`. That validator recomputes the digests and rejects authorization that is not strictly later than the recorded inspection report; JSON Schema validation alone is not sufficient evidence.
+Automated orchestration must record the transition as an ordered two-event sequence: `INSPECTION_REPORT_RECORDED`, followed by `IMPLEMENTATION_AUTHORIZED`. Both events, and the authorization object itself, must bind the same recomputed **report-binding digest**.
+
+The report-binding digest covers a canonical object containing the schema version, assignment identifier, repository, branch, inspected head SHA, base reference when present, the inspection-before-write flag, and the complete inspection report. Hashing the report alone would let authorization evidence be replayed against a different assignment, repository, branch, or head; binding checkout identity into the digest makes such a replay fail validation.
+
+The authorization event reference and scope digest must match the authorization object, and the scope digest must cover the exact authorized file, command, and external-effect arrays — including each file entry's operation class, so authorization to `MODIFY` a path never validates a `DELETE`, `MOVE`, `RENAME`, `CREATE`, or `RESTORE` of that path. Before accepting either implementation or verification state, the orchestrator must successfully run `python scripts/validate_terminal_agent_assignment.py <record>`. That validator recomputes the digests and rejects authorization that is not strictly later than the recorded inspection report; JSON Schema validation alone is not sufficient evidence.
 
 ## 8. Phase 3 — Bounded Implementation
 
@@ -135,9 +143,9 @@ Discovering a better design does not authorize implementing it. Report the scope
 
 ## 9. Verification and Handoff
 
-Verification may run only declared checks. Build artifacts, caches, and generated files must be identified; unexpected tracked changes stop the run.
+Verification is not a continuation of implementation authority. It carries the `VERIFICATION_ARTIFACTS_ONLY` posture and never inherits the implementation source allowlist. The machine record must declare a `verification_scope` whose checks are all drawn from the authorized commands and whose artifact paths are disjoint from the authorized implementation source paths. Build artifacts, caches, and generated files must be identified; unexpected tracked changes stop the run.
 
-The handoff must report:
+The handoff report is mandatory in `HANDOFF_PENDING_DISPOSITION` and must be represented in the machine record, not merely narrated. It must report:
 
 - final branch and exact head or uncommitted worktree state;
 - files changed and diff summary;
@@ -146,7 +154,7 @@ The handoff must report:
 - whether any commit, push, PR action, deployment, runtime execution, or external mutation occurred;
 - the smallest next disposition required.
 
-The terminal state is `IMPLEMENTATION_COMPLETE_AWAITING_DISPOSITION` or `BLOCKED`.
+A handoff that claims a clean worktree while reporting changed paths is rejected. The terminal state is `IMPLEMENTATION_COMPLETE_AWAITING_DISPOSITION` or `BLOCKED`.
 
 Commit, push, PR mutation, approval, merge, deployment, runtime-plan submission, execution, or any other external mutation are separate operations. Each requires a subsequent action-specific authorization issued after the preceding phase completes. Earlier blanket permission, task-level instructions, or implementation authorization cannot satisfy those later gates.
 
@@ -156,10 +164,12 @@ If any mutation occurs before its phase and scope are authorized, the agent must
 
 1. stop all further mutation;
 2. state exactly what changed and which tool or command changed it;
-3. capture `git status --short` and relevant diffs without altering the worktree, and record content digests for those captures;
+3. capture worktree status and relevant diffs without altering the worktree, and record digests for those captures;
 4. preserve pre-existing and premature changes in place;
 5. avoid deleting, restoring, formatting, stashing, committing, or pushing unless recovery is explicitly authorized;
 6. enter `BLOCKED_PREMATURE_MUTATION` and request disposition.
+
+Comparing two caller-supplied path lists proves nothing on its own, so the incident record must carry a **structurally parsed status record** generated from `git status --porcelain=v1 -z`. Each entry names its two-character status code, its path, and — for rename or copy entries — its original path, so both source and destination identities are preserved explicitly. The status-capture digest covers the raw capture together with those parsed entries, and validation requires exact, duplicate-free set equality among the status-record path identities, `changed_paths`, and `diff_evidence[].path`. A status capture naming a different, extra, omitted, or duplicated path therefore cannot validate.
 
 The agent must not retroactively reinterpret the original assignment as authorization for the premature write.
 
@@ -189,7 +199,7 @@ Repositories may project this protocol through `AGENTS.md`, specialized prompt f
 
 ## 13. Required Machine Record
 
-Where automated orchestration is used, each assignment should validate against `terminal-agent-assignment.schema.json`. A schema-valid record is necessary evidence, not authority and not proof that declared facts are true. Automated consumers must additionally run the semantic validator. Digests use SHA-256 over UTF-8 JSON serialized with sorted keys, no insignificant whitespace, and literal Unicode (`ensure_ascii=false`); content-capture digests use the captured UTF-8 bytes. A non-null `premature_mutation` forces `BLOCKED_PREMATURE_MUTATION`. Recovery requires a separate subsequent disposition record and may never reclassify the original mutation as authorized.
+Where automated orchestration is used, each assignment should validate against `terminal-agent-assignment.schema.json`. The record schema is `v0.2.0` and supersedes the earlier `v0.1.0` record shape within this same protocol proposal: bare-path file scopes, report-only digests, and raw-string incident status are no longer accepted. A schema-valid record is necessary evidence, not authority and not proof that declared facts are true. Automated consumers must additionally run the semantic validator. Digests use SHA-256 over UTF-8 JSON serialized with sorted keys, no insignificant whitespace, and literal Unicode (`ensure_ascii=false`); per-file diff-capture digests use the captured UTF-8 bytes. A non-null `premature_mutation` forces `BLOCKED_PREMATURE_MUTATION`. Recovery requires a separate subsequent disposition record and may never reclassify the original mutation as authorized.
 
 ## 14. Compact Prompt Preamble
 

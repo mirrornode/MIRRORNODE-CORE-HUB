@@ -1,5 +1,5 @@
 {
-  "schema_version": "v0.1.0",
+  "schema_version": "v0.2.0",
   "assignment_id": "THEIA-PHASE1-2026-08-22",
   "agent_role": "Theia specialized terminal agent",
   "repository": "mirrornode/mirrornode-operator-console",
@@ -17,6 +17,15 @@
     "pull-request mutation"
   ],
   "inspection_before_write": true,
+  "bootstrap_provenance": {
+    "recorded_at": "2026-08-22T11:55:00Z",
+    "instruction_files": [
+      "AGENTS.md",
+      "docs/orchestration/TERMINAL_AGENT_EXECUTION_PROTOCOL_V0_1.md"
+    ],
+    "worktree_clean": true,
+    "preexisting_changes": []
+  },
   "inspection_report": {
     "reported_at": "2026-08-22T12:00:00Z",
     "inspected_surfaces": [
@@ -40,8 +49,16 @@
       "Any implementation path introduces durable authority or external mutation."
     ],
     "proposed_files": [
-      "src/lib/theia-session-state.ts",
-      "src/app/theia/page.tsx"
+      {
+        "path": "src/lib/theia-session-state.ts",
+        "operation": "CREATE",
+        "destination_path": null
+      },
+      {
+        "path": "src/app/theia/page.tsx",
+        "operation": "MODIFY",
+        "destination_path": null
+      }
     ],
     "proposed_commands": [
       "npm run typecheck",
@@ -49,13 +66,14 @@
     ],
     "proposed_external_effects": [],
     "dependencies_migrations_credentials": [],
-    "decision_required": "Authorize or amend the proposed files and commands after reviewing this report."
+    "decision_required": "Authorize or amend the proposed files, operation classes, and commands after reviewing this report."
   },
   "authorization": null,
   "authorized_files": [],
   "authorized_commands": [],
   "external_effects": [],
+  "verification_scope": null,
+  "handoff_report": null,
   "premature_mutation": null,
   "authority_claim": "NONE"
 }
-

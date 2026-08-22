@@ -52,6 +52,11 @@ Specialized coding and terminal agents must follow `docs/orchestration/TERMINAL_
 
 - When an assignment requires inspection and a report before implementation, all work remains read-only until the report is delivered and a subsequent scoped authorization is recorded.
 - Phase descriptions must match actual tool use; an agent may not claim inspection while creating or editing files.
+- An authorized file scope binds each path to one explicit operation class (`CREATE`, `MODIFY`, `DELETE`, `MOVE`, `RENAME`, `RESTORE`); permission to modify a file is not permission to delete, move, rename, create, or restore it.
+- Authorization must carry an explicit status and bounded validity. Revoked, superseded, or expired authorization supports no further work, and a missing expiry is never read as indefinite permission.
+- Verification is not continued implementation authority. It runs only declared checks and may touch only declared artifact paths, never the implementation source allowlist.
 - Premature mutations must be preserved in place, reported with exact paths and diffs, and placed in `BLOCKED_PREMATURE_MUTATION`; they must not be hidden through restore, deletion, formatting, stash, commit, or push.
+- A premature-mutation report must include a structurally parsed worktree status whose path identities exactly match the declared changed paths and per-path diff evidence.
+- Handing off requires a recorded completion report stating final head, changed paths, checks run, unresolved findings, whether any external mutation occurred, and the next disposition required.
 - Authorization for implementation does not imply authorization to commit, push, mutate a pull request, merge, deploy, approve, or execute.
 - Runtime eligibility, role identity, credentials, write access, and green checks do not create authority.
