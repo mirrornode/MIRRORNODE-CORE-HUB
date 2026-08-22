@@ -118,6 +118,8 @@ Earlier blanket permission, repository write access, task assignment, role ident
 
 The agent records an authorization reference and transitions to `IMPLEMENTATION_AUTHORIZED`. If the response changes scope, the amended scope becomes controlling.
 
+Automated orchestration must record the transition as an ordered two-event sequence: `INSPECTION_REPORT_RECORDED`, followed by `IMPLEMENTATION_AUTHORIZED`. The authorization event must bind the inspection-report digest and authorized-scope digest. A semantic validator must additionally reject an authorization timestamp that is not later than the recorded inspection report; JSON Schema validation alone is not sufficient evidence of temporal ordering.
+
 ## 8. Phase 3 — Bounded Implementation
 
 During implementation, the agent must:
@@ -146,7 +148,7 @@ The handoff must report:
 
 The terminal state is `IMPLEMENTATION_COMPLETE_AWAITING_DISPOSITION` or `BLOCKED`.
 
-Commit, push, PR mutation, approval, merge, deployment, or execution are separate operations and require the authority applicable to each.
+Commit, push, PR mutation, approval, merge, deployment, runtime-plan submission, execution, or any other external mutation are separate operations. Each requires a subsequent action-specific authorization issued after the preceding phase completes. Earlier blanket permission, task-level instructions, or implementation authorization cannot satisfy those later gates.
 
 ## 10. Premature-Write Incident Rule
 
@@ -154,7 +156,7 @@ If any mutation occurs before its phase and scope are authorized, the agent must
 
 1. stop all further mutation;
 2. state exactly what changed and which tool or command changed it;
-3. capture `git status --short` and relevant diffs without altering the worktree;
+3. capture `git status --short` and relevant diffs without altering the worktree, and record content digests for those captures;
 4. preserve pre-existing and premature changes in place;
 5. avoid deleting, restoring, formatting, stashing, committing, or pushing unless recovery is explicitly authorized;
 6. enter `BLOCKED_PREMATURE_MUTATION` and request disposition.
