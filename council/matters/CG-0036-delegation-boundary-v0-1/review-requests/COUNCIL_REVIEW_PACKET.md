@@ -1,8 +1,8 @@
 # CG-0036 — Exact-Target Successor Review Packet
 
 **Scope:** Delegation Boundary v0.1 draft.2 only.  
-**Normative correction target (immutable):** `1e5eb8d46b08056fe378cd08d7cec2e3f073e4e1`  
-**Packet publication note:** this packet is published in the immediately following administrative commit and does not alter the normative target above. Reviewers MUST attest to `1e5eb8d46b08056fe378cd08d7cec2e3f073e4e1`, not to an ancestor and not to the packet-publication commit.  
+**Normative correction target (immutable):** `299c24a70dda0e2f21c00b23be3bf52a60376435`  
+**Packet publication note:** this packet is published in the immediately following administrative commit and does not alter the normative target above. Reviewers MUST attest to `299c24a70dda0e2f21c00b23be3bf52a60376435`, not to an ancestor and not to the packet-publication commit.  
 **Historical correction target (preserved, superseded):** `e4ab25a128eb5b76312765eb9ba2d29a2e7ad796`  
 **Original historical packet target (preserved, not rewritten):** `1a3d92ea9f69e5ea0d631b0d19a9a9b5ee942312`  
 **No implementation, deployment, canon promotion, credential access, or merge authority is requested.**
@@ -11,7 +11,7 @@ This is the successor exact-target packet after the bounded Codex correction pas
 
 ## Shared question
 
-Does draft.2 at `1e5eb8d46b08056fe378cd08d7cec2e3f073e4e1` define a sound, non-self-referential delegation architecture in which routine actions can proceed under bounded policy without allowing delegates, classifiers, policy authors, approval references, approval issuers, aggregate evaluators, registries, or enforcement points to manufacture authority?
+Does draft.2 at `299c24a70dda0e2f21c00b23be3bf52a60376435` define a sound, non-self-referential delegation architecture in which routine actions can proceed under bounded policy without allowing delegates, classifiers, policy authors, approval references, approval issuers, aggregate evaluators, registries, or enforcement points to manufacture authority?
 
 Review the **complete profile set at the immutable normative target**:
 
@@ -64,6 +64,10 @@ The follow-up pass after `d46ff9844a84e19b8c6d756262046d065807f3d1` closes the f
 3. `RESOURCE_VERSION.expected` rejects booleans and permits only strings or safe integers under the defined operator matrix.
 4. All envelope, decision, approval, and aggregate-snapshot canonicalization fixtures carry the required fields and independently recomputed RFC 8785/SHA-256 hashes.
 5. Active-grant inventory reference/hash integrity is registered in both the normative profile and the conformance sweep.
+
+## Final semantic closure addendum
+
+The final bounded pass also rejects undocumented numeric `DEPENDENCY_STATE` expectations and records released approval reservations only as `approval_consumption: RELEASED` with a confirmed `effect_outcome: NO_EFFECT`. These changes close the two P2 findings from review `4999786411` without altering the authority model.
 
 ## Ptah
 
