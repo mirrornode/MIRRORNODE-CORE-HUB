@@ -1,6 +1,6 @@
 # Capability Continuity Invariant v0.1
 
-**Status:** PROPOSAL — architecture and positioning source; not canon, not deployment authority  
+**Status:** PROPOSAL — architecture source; not canon, not deployment authority  
 **Date:** 2026-08-22  
 **Authority effect:** NONE
 
@@ -11,6 +11,21 @@ Define the stronger MIRRORNODE continuity requirement that emerged from the owne
 > Loss of an external provider token, model session, context window, or single compute host must not be treated as an acceptable loss of a critical MIRRORNODE capability.
 
 This proposal distinguishes continuity of **capability** from continuity of a particular model, vendor, credential, device, or conversation.
+
+## Terminology and novelty boundary
+
+`Capability Continuity` is used here as a descriptive name for this MIRRORNODE invariant. It is **not** a claim that MIRRORNODE coined the phrase or uniquely identified the wider enterprise continuity problem.
+
+Current market research shows overlapping public language around capability continuity, AI continuity, model-change management, portable governance, model-agnostic control planes, and behavioral continuity. MIRRORNODE's proposition must therefore be evaluated on its mechanism and evidence, not terminology ownership.
+
+The mechanism this proposal intends to make testable is the combination of:
+
+- function identity outside the model;
+- replacement-substrate eligibility against the same acceptance contract;
+- authority ceilings external to model capability;
+- durable evidence outside model memory;
+- retained failure lineage for future verification;
+- fail-closed refusal to call an ineligible substrate a valid fallback.
 
 ## Core invariant
 
@@ -125,11 +140,15 @@ The audit remains a bounded structural review and does not certify portability, 
 
 ## Public positioning implication
 
-A truthful public positioning may describe MIRRORNODE as **building provider-independent AI control infrastructure** around three durable concerns:
+A truthful public positioning may say that MIRRORNODE is **building control infrastructure for AI systems that must remain governable through model and provider change**.
+
+A concise external formulation may center three durable concerns:
 
 1. **Control** — explicit bounded consequential authority.
 2. **Continuity** — preservation of required capability across model/provider/compute changes.
 3. **Evidence** — durable reconstructable observations, decisions, reviews, and receipts.
+
+Public language must not imply that MIRRORNODE uniquely owns the general continuity/control problem or that `Capability Continuity` is an uncontested category term.
 
 Until an owned cloud-GPU inference path is actually deployed and verified, public language must describe it as architecture direction rather than current production fact.
 
@@ -157,6 +176,7 @@ This proposal does not claim:
 - provider-independent operation eliminates infrastructure-provider risk;
 - an eligible model gains governance or execution authority;
 - the protected-laptop control design is complete;
+- MIRRORNODE originated the general capability-continuity concept or phrase;
 - publication, deployment, procurement, credential issuance, or expenditure is authorized.
 
 ## Next proposed slices
