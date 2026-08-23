@@ -114,6 +114,8 @@ Model quality cannot raise this ceiling.
 
 A more capable model does not become more authorized.
 
+The machine-readable function contract binds the authority ceiling to an external source reference and SHA-256 digest. A substrate eligibility record separately binds the exact same authority-ceiling digest. A deterministic verifier must establish that equality from immutable evidence rather than trusting a model or caller assertion.
+
 ## Evidence contract
 
 State what must be durable after the function completes.
@@ -179,6 +181,8 @@ Proposed dispositions:
 
 `ELIGIBLE_WITH_LIMITS` cannot be silently routed into cases exceeding the recorded limits.
 
+An eligibility record also carries `ACTIVE`, `REVOKED`, or `SUPERSEDED` status. A technically qualifying historical evaluation is not current eligibility when its record is revoked, superseded, expired, outside its recorded limits, or subject to a fired re-evaluation trigger.
+
 ## Re-evaluation triggers
 
 Eligibility should be reconsidered when materially relevant conditions change, including:
@@ -192,6 +196,32 @@ Eligibility should be reconsidered when materially relevant conditions change, i
 - function contract;
 - material observed regression;
 - expiry of the eligibility window.
+
+## Machine-readable proof chain
+
+This proposal now includes a bounded machine-contract package:
+
+- `schemas/critical-function-contract.schema.json`
+- `schemas/substrate-eligibility-record.schema.json`
+- `schemas/capability-continuity-assessment.schema.json`
+- synthetic conformance fixtures under `examples/`
+- `CAPABILITY_CONTINUITY_MACHINE_CONTRACT_V0_1.md`, which defines the mandatory semantic verification obligations.
+
+The proof chain is:
+
+```text
+Critical Function Contract
+        ↓
+Substrate Eligibility Record
+        ↓
+Capability Continuity Assessment
+```
+
+For a critical function, the assessment schema allows `CAPABILITY_AVAILABLE` / `capability_loss: NONE` only when at least one path is recorded as active, eligible, within limits, function-bound, authority-ceiling-bound, within its validity window, clear of re-evaluation triggers, tool-available, substrate-available, and evidence-complete.
+
+It allows `CAPABILITY_UNAVAILABLE` only when no path satisfies all of those conditions.
+
+The schema does not make caller-supplied verification booleans trustworthy. A deterministic verifier must compute them from immutable referenced evidence. Failure to prove any required condition makes that path non-qualifying.
 
 ## Example — adversarial exact-target review
 
@@ -221,8 +251,12 @@ The model alone is not the capability.
 
 The governed function stack is the capability.
 
+Technical eligibility does not establish independent-review provenance, approval, execution authority, deployment authority, or constitutional clearance.
+
 ## Non-claims
 
-This proposal does not define final schemas, benchmark weights, qualifying models, or production routing policy.
+This proposal now defines **proposal-stage machine schemas and conformance fixtures**. It does not claim those schemas are ratified canon, that a production semantic verifier exists in CORE-HUB, that any real model/substrate has qualified, or that any current production continuity assessment has been emitted.
 
-It does not authorize model procurement, cloud GPU spend, deployment, or automated failover.
+It does not define final benchmark weights, qualifying models, production routing policy, or automatic failover behavior.
+
+It does not authorize model procurement, cloud GPU spend, deployment, runtime implementation, publication, or automated failover.
