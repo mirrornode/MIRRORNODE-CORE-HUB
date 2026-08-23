@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "eligibility_record_id": "example.eligibility.controlled-inference.001",
+  "record_status": "ACTIVE",
+  "function_id": "mirrornode.review.adversarial_exact_target",
+  "function_version": "0.1.0",
+  "function_contract_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "authority_ceiling_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "substrate": {
+    "substrate_id": "example.controlled.inference.a",
+    "substrate_class": "MIRRORNODE_CONTROLLED_INFERENCE",
+    "provider_or_owner": "MIRRORNODE-controlled example",
+    "model_or_runtime": "example-model",
+    "revision": "example-revision-001",
+    "inference_configuration_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "evaluation": {
+    "suite_ref": "example://acceptance/adversarial-exact-target-v0.1",
+    "suite_version": "0.1.0",
+    "suite_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+    "started_at": "2026-08-23T14:00:00Z",
+    "completed_at": "2026-08-23T14:15:00Z",
+    "trusted_time_ref": "example://trusted-time/2026-08-23T14:15:00Z",
+    "evaluator_id": "example.thea",
+    "evaluator_provenance_ref": "example://provenance/thea-evaluator-v0.1",
+    "result_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "threshold_met": true,
+    "known_failures": []
+  },
+  "tool_environment_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "evidence_pack_ref": "example://evidence/eligibility/controlled-inference-001",
+  "evidence_pack_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "eligibility_disposition": "ELIGIBLE_WITH_LIMITS",
+  "limits": [
+    "Example fixture only; not a production eligibility claim."
+  ],
+  "effective_at": "2026-08-23T14:15:00Z",
+  "valid_until": "2026-09-23T14:15:00Z",
+  "reevaluation_triggers": [
+    "model-or-weight revision changes",
+    "inference configuration changes",
+    "tool environment changes",
+    "acceptance suite changes",
+    "function contract changes",
+    "material observed regression",
+    "eligibility validity window expires"
+  ]
+}
