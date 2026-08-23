@@ -37,6 +37,8 @@ The loss of any single external provider, API token, model session, context wind
 
 A replacement substrate is not considered equivalent merely because it runs. Eligibility is demonstrated against the role/function acceptance suite.
 
+For a claim of present continuity, “can meet” is not satisfied by historical benchmark success alone. At least one path must be currently eligible: active, within its recorded limits and validity window, clear of re-evaluation triggers, bound to the exact function and authority ceiling, supported by the required tools/evidence mechanisms, and presently available.
+
 ## Three-layer execution model
 
 ### 1. Optional frontier cognition
@@ -107,6 +109,8 @@ Capability loss ......... none
 
 If no eligible substrate remains, MIRRORNODE must report the function unavailable rather than silently lowering its acceptance contract.
 
+The companion machine contract makes that fail-closed distinction explicit: `CAPABILITY_AVAILABLE` is conformant only when at least one candidate path satisfies every required current-eligibility condition, while `CAPABILITY_UNAVAILABLE` is conformant only when no candidate path does.
+
 ## Deterministic layer
 
 Thea remains below model interpretation where possible.
@@ -114,6 +118,8 @@ Thea remains below model interpretation where possible.
 The model may generate hypotheses, attacks, classifications, or proposed findings. Deterministic machinery should establish machine-checkable facts and refuse known-invalid states.
 
 No model substrate gains authority merely by satisfying a capability benchmark.
+
+The companion machine contract is intentionally split between JSON Schema constraints and mandatory semantic verification. Schema validity alone is never continuity proof. A deterministic verifier must recompute function, authority-ceiling, validity-window, limit, reevaluation, tool, substrate-availability, and evidence bindings from immutable referenced evidence.
 
 ## Oracle implication
 
@@ -152,6 +158,16 @@ Public language must not imply that MIRRORNODE uniquely owns the general continu
 
 Until an owned cloud-GPU inference path is actually deployed and verified, public language must describe it as architecture direction rather than current production fact.
 
+## Machine-contract companion
+
+The proposal now includes `CAPABILITY_CONTINUITY_MACHINE_CONTRACT_V0_1.md` plus three Draft 2020-12 schemas and synthetic conformance fixtures for:
+
+1. durable critical-function identity;
+2. substrate eligibility records;
+3. present capability-continuity assessment.
+
+The machine package does not claim that a production semantic verifier exists or that any real model/substrate has qualified. It defines the proof shape the later verifier/runtime must satisfy.
+
 ## Infrastructure portability target
 
 A mature MIRRORNODE inference deployment should be reproducibly provisionable from controlled deployment specifications on more than one acceptable GPU infrastructure provider.
@@ -171,18 +187,21 @@ Credential custody, device identity, remote-inference authentication, local serv
 This proposal does not claim:
 
 - a production MIRRORNODE cloud-GPU inference fabric currently exists;
+- a production semantic continuity verifier currently exists;
+- any real substrate is presently eligible merely because the proposal schemas exist;
 - local/open models presently match every hosted frontier model;
 - model substitution establishes independent review provenance;
 - provider-independent operation eliminates infrastructure-provider risk;
 - an eligible model gains governance or execution authority;
 - the protected-laptop control design is complete;
 - MIRRORNODE originated the general capability-continuity concept or phrase;
-- publication, deployment, procurement, credential issuance, or expenditure is authorized.
+- publication, deployment, procurement, credential issuance, expenditure, routing, or automatic failover is authorized.
 
 ## Next proposed slices
 
-1. Define the critical-function inventory and acceptance suites.
-2. Benchmark candidate owned inference substrates against the adversarial corpus and function-specific tests.
-3. Define a portable inference deployment specification and two-provider recovery test.
-4. Define the protected-laptop control/security/evidence architecture separately.
-5. Reconcile MIRRORNODE-00 and public positioning after Operator disposition on this proposal.
+1. Define the first real critical-function inventory and acceptance suite using the machine contract.
+2. Implement deterministic semantic verification in the owning verifier/runtime repository, not CORE-HUB.
+3. Benchmark candidate owned inference substrates against the adversarial corpus and function-specific tests.
+4. Define a portable inference deployment specification and two-provider recovery test.
+5. Define the protected-laptop control/security/evidence architecture separately.
+6. Reconcile MIRRORNODE-00 and public positioning after Operator disposition on this proposal.
