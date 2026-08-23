@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.1.0",
+  "assessment_id": "example.available.001",
+  "function_id": "mirrornode.review.adversarial_exact_target",
+  "function_version": "0.1.0",
+  "function_contract_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "criticality": "CRITICAL",
+  "evaluated_at": "2026-08-23T15:00:00Z",
+  "trusted_time_ref": "example://trusted-time/2026-08-23T15:00:00Z",
+  "verifier": {
+    "verifier_id": "example.thea",
+    "verifier_version": "0.1.0",
+    "policy_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "paths": [
+    {
+      "path_id": "hosted.frontier.example",
+      "eligibility_record_id": "elig.example.hosted.001",
+      "eligibility_record_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "record_status": "ACTIVE",
+      "eligibility_disposition": "ELIGIBLE",
+      "within_recorded_limits": true,
+      "function_binding_verified": true,
+      "authority_ceiling_verified": true,
+      "validity_window_verified": true,
+      "reevaluation_clear": true,
+      "tool_environment_available": true,
+      "substrate_available": false,
+      "evidence_complete": true
+    },
+    {
+      "path_id": "controlled.inference.example",
+      "eligibility_record_id": "elig.example.controlled.001",
+      "eligibility_record_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "record_status": "ACTIVE",
+      "eligibility_disposition": "ELIGIBLE_WITH_LIMITS",
+      "within_recorded_limits": true,
+      "function_binding_verified": true,
+      "authority_ceiling_verified": true,
+      "validity_window_verified": true,
+      "reevaluation_clear": true,
+      "tool_environment_available": true,
+      "substrate_available": true,
+      "evidence_complete": true
+    }
+  ],
+  "system_disposition": "CAPABILITY_AVAILABLE",
+  "capability_loss": "NONE",
+  "evidence_pack_ref": "example://evidence/continuity/available-001",
+  "evidence_pack_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+}
