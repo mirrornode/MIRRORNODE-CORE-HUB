@@ -62,7 +62,7 @@ referenceArtifacts:
   - id: OPERATOR-DISPOSITION
     kind: document
     href: history/2026-08-14-operator-disposition.md
-    canonical: true
+    canonical: false
 openQuestions:
   - Exact name and schema shape of the sibling cognition contract.
   - Exact model-version pinning behavior when providers expose mutable aliases.
@@ -75,5 +75,6 @@ nextRequiredStep: >-
 historyPath: history/
 notes:
   - Operator selected Option B: provider-neutral sibling cognition contract interoperating with MICC.
+  - The Operator disposition is authoritative for this matter but is not a canon-promotion record.
   - EVIDENCE and EXECUTION are rejected as convenience classifications for model cognition.
   - Any later Gemini pilot begins non-executing with side-effect ceiling NONE unless separately authorized.

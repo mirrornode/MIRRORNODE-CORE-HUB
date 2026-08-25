@@ -1,6 +1,6 @@
 # CG-0034 — Review Synthesis
 
-**Status:** synthesis filed; Operator disposition required  
+**Status:** synthesis filed; superseded by Operator disposition on 2026-08-14  
 **Scope:** cognition capability classification only
 
 ## Position summary
@@ -12,7 +12,7 @@
 | Osiris | Option B — sibling cognition contract | Generated output must remain distinct from verified evidence; provenance and disclosure require separate semantics. |
 | Theia | Option B — sibling cognition contract | Provider invocation and Room presence are different architectural identities; separation preserves contestability and Operator access. |
 
-All four positions independently reject convenience-classification of Gemini under `EVIDENCE` or `EXECUTION`.
+All four filed positions reject convenience-classification of Gemini under `EVIDENCE` or `EXECUTION`. They are governance inputs; this synthesis does not claim that they constitute independent exact-head reviews of this pull request.
 
 ## Shared invariants
 
@@ -77,6 +77,6 @@ These are not blockers to the classification decision, but they are blockers to 
 
 ## Gate
 
-**Next required action: Operator disposition on Option B.**
+**Historical gate satisfied:** The Operator selected Option B on 2026-08-14.
 
-This synthesis grants no implementation, credential access, runtime change, Room/HUD implementation, deployment, publication, canon promotion, or merge authority.
+This synthesis remains a pre-disposition review artifact. The disposition grants no implementation, credential access, runtime change, Room/HUD implementation, deployment, publication, canon promotion, or merge authority.

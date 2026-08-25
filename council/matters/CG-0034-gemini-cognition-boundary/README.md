@@ -33,7 +33,7 @@ MICC also prohibits provider extensions from creating a ninth primitive family. 
 
 ## Final classification
 
-The filed Ptah, Thoth, Osiris, and Theia positions independently support a sibling cognition contract for distinct reasons:
+The filed Ptah, Thoth, Osiris, and Theia positions support a sibling cognition contract for distinct reasons:
 
 - Ptah: implementation semantics and avoidance of schema overloading;
 - Thoth: security separation between generated proposals and executable authority;
@@ -41,6 +41,8 @@ The filed Ptah, Thoth, Osiris, and Theia positions independently support a sibli
 - Theia: provider invocation and Room presence are separate architectural identities.
 
 The synthesis preserves the shared invariants and unresolved implementation details.
+
+These filed positions are preserved as governance inputs. This matter does not claim that they constitute independent exact-head reviews of this pull request.
 
 ---
 
