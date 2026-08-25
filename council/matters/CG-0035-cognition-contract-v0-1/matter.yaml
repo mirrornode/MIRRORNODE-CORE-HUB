@@ -1,0 +1,80 @@
+schemaVersion: "0.1"
+id: CG-0035
+title: Cognition Contract v0.1
+matterType: governance
+initiator: operator
+createdAt: "2026-08-14T20:46:00Z"
+updatedAt: "2026-08-14T20:46:00Z"
+workflowState: open
+decisionQuestion: >-
+  Should MIRRORNODE adopt a provider-neutral Cognition Contract v0.1 and
+  machine-readable declaration/envelope schemas that govern bounded external
+  model cognition while preserving CG-0034 invariants and MICC boundaries?
+scope:
+  includes:
+    - cognition-contract-v0-1-draft
+    - cognition-declaration-schema-v0-1
+    - context-input-envelope
+    - generated-position-output-envelope
+    - failure-state-vocabulary
+    - cognition-receipt-mapping
+    - tool-proposal-boundary-semantics
+    - provider-adapter-reference-semantics
+    - model-version-attribution
+    - conformance-fixture-epistemic-capture
+  excludes:
+    - Gemini-credential-access
+    - Gemini-API-invocation
+    - adapter-or-runtime-implementation
+    - runtime-registry-changes
+    - Room-or-HUD-implementation
+    - remote-MCP-or-tool-execution
+    - deployment
+    - publication
+    - canon-promotion
+    - merge-authority
+authorityPath:
+  finalAuthority: operator
+  implementationAction: separate-explicit-action
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+referenceArtifacts:
+  - id: CG-0034-DISPOSITION
+    kind: document
+    href: ../CG-0034-gemini-cognition-boundary/history/2026-08-14-operator-disposition.md
+    canonical: true
+  - id: CG-0034-SYNTHESIS
+    kind: document
+    href: ../CG-0034-gemini-cognition-boundary/synthesis/REVIEW_SYNTHESIS.md
+    canonical: false
+  - id: MICC-V0-1
+    kind: document
+    href: ../../../docs/integration/MICC_V0_1.md
+    canonical: false
+  - id: MIM-V0-1-SCHEMA
+    kind: document
+    href: ../../../docs/integration/MIM_V0_1.schema.json
+    canonical: false
+  - id: AUDIT-EMISSION
+    kind: document
+    href: ../../../canon/contracts/AUDIT_EMISSION.md
+    canonical: true
+openQuestions:
+  - Final contract naming and terminology.
+  - Exact declaration fields and schema constraints.
+  - Model alias versus immutable revision policy.
+  - Exact additive AUDIT_EMISSION mapping.
+  - Protected-context reference semantics.
+  - Generated-position versus Room-presence machine boundary.
+  - Replay/reproducibility semantics for stochastic generation.
+currentRevision: initial-filing-2026-08-14
+nextRequiredStep: >-
+  Draft contract and machine-readable artifacts, then obtain bounded Ptah,
+  Thoth, Osiris, and Theia review before Operator disposition.
+historyPath: history/
+notes:
+  - This matter is stacked on CG-0034 and inherits its ratified invariants.
+  - The first implementation target may be Gemini, but contract semantics must remain provider-neutral.

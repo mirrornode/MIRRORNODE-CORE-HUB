@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/cognition-declaration-v0.1.schema.json",
+  "title": "MIRRORNODE Cognition Declaration v0.1",
+  "description": "Draft machine-readable declaration for bounded provider-neutral model cognition under CG-0035. No implementation or canon authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "declaration_version",
+    "cognition_id",
+    "cognition_name",
+    "provider_adapter_ref",
+    "provider_name",
+    "model_id",
+    "model_version_policy",
+    "maintained_by",
+    "input_contract_ref",
+    "output_contract_ref",
+    "context_policy_ref",
+    "tool_policy_ref",
+    "side_effect_ceiling",
+    "structured_output_required",
+    "timeout_seconds",
+    "retry_policy",
+    "conformance_test_ref",
+    "created_at",
+    "updated_at",
+    "lifecycle_state"
+  ],
+  "properties": {
+    "contract_version": {"type": "string", "const": "0.1"},
+    "declaration_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"},
+    "cognition_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "cognition_name": {"type": "string", "minLength": 1},
+    "provider_adapter_ref": {"$ref": "#/definitions/repoRef"},
+    "provider_name": {"type": "string", "minLength": 1},
+    "model_id": {"type": "string", "minLength": 1},
+    "model_version_policy": {
+      "type": "string",
+      "enum": ["EXACT_REVISION_REQUIRED", "STABLE_MODEL_ID_ALLOWED", "ALIAS_ALLOWED_WITH_RUNTIME_CAPTURE"]
+    },
+    "maintained_by": {"type": "string", "minLength": 1},
+    "input_contract_ref": {"$ref": "#/definitions/repoRef"},
+    "output_contract_ref": {"$ref": "#/definitions/repoRef"},
+    "context_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "tool_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "side_effect_ceiling": {"type": "string", "enum": ["NONE", "PROPOSAL_ONLY"]},
+    "structured_output_required": {"type": "boolean"},
+    "timeout_seconds": {"type": "integer", "minimum": 1},
+    "retry_policy": {"type": "string", "enum": ["NONE", "NEW_INVOCATION_ON_RETRY"]},
+    "conformance_test_ref": {"$ref": "#/definitions/repoRef"},
+    "created_at": {"$ref": "#/definitions/utcTimestamp"},
+    "updated_at": {"$ref": "#/definitions/utcTimestamp"},
+    "lifecycle_state": {
+      "type": "string",
+      "enum": ["DECLARED", "IMPLEMENTED", "VERIFIED", "AUTHORIZED", "ACTIVE", "DEGRADED", "SUSPENDED", "RETIRED"]
+    },
+    "known_limitations": {"type": "array", "items": {"type": "string"}},
+    "provider_extensions": {
+      "type": "object",
+      "description": "Provider-specific non-authority metadata only; must not contain credentials, bearer material, unrestricted protected context, or semantics that weaken contract boundaries.",
+      "propertyNames": {"pattern": "^x_[a-z0-9]+_[a-z0-9_]+$"}
+    }
+  },
+  "definitions": {
+    "repoRef": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"
+    }
+  }
+}
