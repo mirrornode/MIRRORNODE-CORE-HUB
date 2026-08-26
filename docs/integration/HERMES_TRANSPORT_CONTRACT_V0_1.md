@@ -15,7 +15,7 @@ This contract is provider-neutral. It does not select Redis, Inngest, QStash, Su
 
 A Hermes event may occupy only the following transport states:
 
-- `ACCEPTED` — request shape and invocation context passed ingress validation.
+- `ACCEPTED` — request shape and governed invocation context passed ingress validation.
 - `PERSISTED` — event has been durably recorded in the authorized transport substrate.
 - `CLAIMED` — an authorized consumer has acquired a bounded delivery lease or equivalent claim.
 - `DELIVERED` — the intended consumer has positively acknowledged the event under the governed delivery contract.
@@ -90,12 +90,14 @@ Hermes transport responses must distinguish acceptance from delivery.
 
 Examples:
 
-- `ACCEPTED` means ingress accepted the request for further processing.
+- `ACCEPTED` means governed ingress accepted the request for further processing.
 - `PERSISTED` means durable storage is proven.
 - `DELIVERED` means governed consumer acknowledgement is proven.
 - `REJECTED` and `FAILED_CLOSED` are non-success outcomes.
 
 The terms `routed`, `sent`, `delivered`, `completed`, or equivalent may not be returned unless their contractually defined condition has actually been satisfied.
+
+A development-only volatile buffer that has not resolved the governed invocation context is outside this canonical state machine. It must not reuse `ACCEPTED` or any other canonical transport state merely because an object was placed in process memory.
 
 ## 6. Provider boundary
 
@@ -124,6 +126,8 @@ An implementation is not production-ready until automated tests prove at least:
 
 ## 9. Current implementation disposition
 
-The legacy `hermes/runtime.py` in-memory queue does not satisfy this contract. It may remain a development prototype only if its API responses and evidence claims are narrowed so they do not imply durable routing or delivery.
+The legacy `hermes/runtime.py` in-memory queue does not satisfy this contract. It may remain a development prototype only if its API responses and evidence claims are narrowed so they do not imply durable routing, governed acceptance, or delivery.
+
+Until governed invocation context is resolved and this contract is implemented, the legacy prototype must expose its state only as a non-canonical volatile-buffer condition and must leave canonical `transport_state` unset.
 
 Promotion of a durable Hermes implementation requires a separate implementation change and provider/adaptor authorization under the applicable MIRRORNODE integration governance.
