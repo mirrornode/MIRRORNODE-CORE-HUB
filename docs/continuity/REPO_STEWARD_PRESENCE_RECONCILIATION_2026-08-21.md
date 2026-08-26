@@ -42,8 +42,8 @@ The Repo Steward contract can close its own control plane, but GitHub account-le
 
 ## Current source lanes
 
-- Implementation and policy: `MIRRORNODE-INFRA` branch/PR for Repo Steward v0.1.
-- Proposed runtime prompt placement: `mirrornode-agent-runtime` branch/PR for Repo Steward stack v0.1.
-- Governance/canonical interpretation: this CORE-HUB record and subsequent explicit disposition.
+- Implementation and policy: `mirrornode/MIRRORNODE-INFRA` PR #4, branch `feat/repo-steward-v0-1`, exact head `9725cae50078d4af5a39c5ea4ea2831c6b12d77f`.
+- Proposed runtime prompt placement: `mirrornode/mirrornode-agent-runtime` PR #3, branch `feat/repo-steward-agent-stack-v0-1`, exact head `2eb446ab84e6e9f5ecc819f08fcee07326074f15`.
+- Governance/canonical interpretation: this CORE-HUB record on PR #51 and subsequent explicit disposition; references to implementation claims must be revalidated if either external exact head changes.
 
-No source lane may silently substitute for another.
+The external heads above are immutable evidence targets, not authority grants. No source lane may silently substitute for another, and evidence from an ancestor or successor head must not be carried forward without a new exact-target check.
