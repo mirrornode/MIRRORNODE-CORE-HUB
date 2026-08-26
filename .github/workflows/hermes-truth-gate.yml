@@ -1,0 +1,36 @@
+name: Hermes Truth Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'hermes/**'
+      - 'canon/api/invoke.py'
+      - 'tests/test_hermes_truth_semantics.py'
+      - 'tests/test_invoke_truth_semantics.py'
+      - 'docs/integration/HERMES_TRANSPORT_CONTRACT_V0_1.md'
+      - 'docs/integration/HERMES_TRANSPORT_CONTRACT_V0_1_ACCEPTANCE.md'
+      - '.github/workflows/hermes-truth-gate.yml'
+
+jobs:
+  truth-semantics:
+    name: Hermes Truth Semantics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install focused test dependencies
+        run: pip install --quiet pytest fastapi httpx pydantic requests
+
+      - name: Run Hermes truth tests
+        run: |
+          pytest -q \
+            tests/test_invoke_truth_semantics.py \
+            tests/test_hermes_truth_semantics.py
