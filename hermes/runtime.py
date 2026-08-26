@@ -14,6 +14,7 @@ CHARTER_PATH = Path(os.environ["CANON_ROOT"]) / "charters" / "HERMES.md"
 VERSION = "1.0.0"
 BOOT_TIME = datetime.now(timezone.utc).isoformat()
 TRANSPORT_MODE = "volatile_memory"
+PROTOTYPE_STATE = "VOLATILE_BUFFERED"
 
 # Development prototype only. This list is process-local and non-durable.
 # It must never be reported as persistent transport or confirmed delivery.
@@ -92,7 +93,7 @@ def identity():
 
 @app.post("/ingest", status_code=202)
 async def ingest_webhook(request: Request):
-    """Accept an inbound webhook into the volatile development queue."""
+    """Buffer an inbound webhook in volatile process memory; no canonical transport state is claimed."""
     body = await request.json()
     source = request.headers.get("x-source", "unknown")
     message = {
@@ -100,7 +101,8 @@ async def ingest_webhook(request: Request):
         "received_at": datetime.now(timezone.utc).isoformat(),
         "source": source,
         "payload": body,
-        "transport_state": "ACCEPTED",
+        "prototype_state": PROTOTYPE_STATE,
+        "transport_state": None,
         "durable": False,
         "delivered": False,
     }
@@ -111,10 +113,11 @@ async def ingest_webhook(request: Request):
         actor="system",
         verdict="SUCCESS",
         evidence={
-            "event": "webhook_accepted_volatile",
+            "event": "webhook_buffered_volatile",
             "source": source,
             "message_id": message["id"],
-            "transport_state": "ACCEPTED",
+            "prototype_state": PROTOTYPE_STATE,
+            "transport_state": None,
             "transport_mode": TRANSPORT_MODE,
             "durable": False,
             "delivered": False,
@@ -122,9 +125,10 @@ async def ingest_webhook(request: Request):
         },
     )
     return {
-        "accepted": True,
+        "buffered": True,
         "message_id": message["id"],
-        "transport_state": "ACCEPTED",
+        "prototype_state": PROTOTYPE_STATE,
+        "transport_state": None,
         "transport_mode": TRANSPORT_MODE,
         "durable": False,
         "delivered": False,
@@ -134,32 +138,34 @@ async def ingest_webhook(request: Request):
 
 @app.post("/route", status_code=202)
 def route_message(msg: RouteMessage):
-    """Accept a message into the volatile development queue; no delivery occurs."""
-    accepted = {
+    """Buffer a message in volatile process memory; no routing or delivery occurs."""
+    buffered = {
         "id": _new_message_id(),
         "from": msg.from_agent,
         "to": msg.to_agent,
         "type": msg.message_type,
         "payload": msg.payload,
         "priority": msg.priority,
-        "accepted_at": datetime.now(timezone.utc).isoformat(),
-        "transport_state": "ACCEPTED",
+        "buffered_at": datetime.now(timezone.utc).isoformat(),
+        "prototype_state": PROTOTYPE_STATE,
+        "transport_state": None,
         "durable": False,
         "delivered": False,
     }
-    message_queue.append(accepted)
+    message_queue.append(buffered)
     emit_audit(
         repo="hermes",
         event_type="agent_invocation",
         actor="system",
         verdict="SUCCESS",
         evidence={
-            "event": "message_accepted_volatile",
+            "event": "message_buffered_volatile",
             "from": msg.from_agent,
             "to": msg.to_agent,
             "type": msg.message_type,
-            "message_id": accepted["id"],
-            "transport_state": "ACCEPTED",
+            "message_id": buffered["id"],
+            "prototype_state": PROTOTYPE_STATE,
+            "transport_state": None,
             "transport_mode": TRANSPORT_MODE,
             "durable": False,
             "delivered": False,
@@ -167,9 +173,10 @@ def route_message(msg: RouteMessage):
         },
     )
     return {
-        "accepted": True,
-        "message_id": accepted["id"],
-        "transport_state": "ACCEPTED",
+        "buffered": True,
+        "message_id": buffered["id"],
+        "prototype_state": PROTOTYPE_STATE,
+        "transport_state": None,
         "transport_mode": TRANSPORT_MODE,
         "durable": False,
         "delivered": False,
@@ -179,7 +186,7 @@ def route_message(msg: RouteMessage):
 
 @app.get("/queue")
 def get_queue():
-    """Inspect the current volatile development queue."""
+    """Inspect the current volatile development buffer."""
     return {
         "depth": len(message_queue),
         "transport_mode": TRANSPORT_MODE,
