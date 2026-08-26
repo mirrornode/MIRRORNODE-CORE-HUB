@@ -10,7 +10,9 @@ def setup_function():
     runtime.message_queue.clear()
 
 
-def test_route_reports_volatile_queue_not_delivery():
+def test_route_reports_volatile_queue_not_delivery(monkeypatch):
+    monkeypatch.setattr(runtime, "emit_audit", lambda **kwargs: "test-audit")
+
     response = client.post(
         "/route",
         json={
