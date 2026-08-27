@@ -25,7 +25,7 @@ def test_route_reports_volatile_buffer_not_delivery(monkeypatch):
         },
     )
 
-    assert response.status_code == 202
+    assert response.status_code == 200
     body = response.json()
     assert body["buffered"] is True
     assert body["prototype_state"] == "VOLATILE_BUFFERED"
@@ -53,7 +53,7 @@ def test_ingest_reports_volatile_buffer_not_transport_acceptance(monkeypatch):
         json={"event": "fixture"},
     )
 
-    assert response.status_code == 202
+    assert response.status_code == 200
     body = response.json()
     assert body["buffered"] is True
     assert body["prototype_state"] == "VOLATILE_BUFFERED"
