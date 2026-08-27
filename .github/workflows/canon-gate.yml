@@ -20,8 +20,16 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install contract-test dependencies
+        run: python -m pip install --disable-pip-version-check "jsonschema>=4.23.0" "pytest>=8,<9"
+
       - name: Run Canon Gate regression tests
         run: python -m unittest tests/test_canon_gate.py
+
+      - name: Run CG-0036 schema and hardening tests
+        run: |
+          python -m unittest tests/test_cg0036_hardening.py
+          python -m pytest -q tests/test_cg0036_exact_head_closure.py
 
       - name: Run Canon Gate
         env:
