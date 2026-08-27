@@ -91,7 +91,7 @@ def identity():
     return {"agent": "hermes", "charter": charter_text}
 
 
-@app.post("/ingest", status_code=202)
+@app.post("/ingest", status_code=200)
 async def ingest_webhook(request: Request):
     """Buffer an inbound webhook in volatile process memory; no canonical transport state is claimed."""
     body = await request.json()
@@ -136,7 +136,7 @@ async def ingest_webhook(request: Request):
     }
 
 
-@app.post("/route", status_code=202)
+@app.post("/route", status_code=200)
 def route_message(msg: RouteMessage):
     """Buffer a message in volatile process memory; no routing or delivery occurs."""
     buffered = {
