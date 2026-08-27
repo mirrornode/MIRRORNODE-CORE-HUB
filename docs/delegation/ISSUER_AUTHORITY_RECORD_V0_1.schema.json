@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mirrornode.github.io/schemas/issuer-authority-record-v0.1.schema.json",
   "title": "MIRRORNODE Delegation Issuer Authority Record v0.1",
-  "description": "Hash-bound root-authority record proving a logical issuer may delegate a stated scope. Authentication of a credential is not this authorization. The record MUST be governed outside the grantee's control.",
+  "description": "Hash-bound root-authority record describing a logical issuer's delegable scope. Schema validity and possession of a matching content hash do not establish root authority. Before a ROOT_RECORD can authorize a grant, the evaluation profile requires an independently trusted governance attestation or authoritative-registry membership outside the grant issuer's and grantee's authority path.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -77,7 +77,8 @@
     },
     "authority_ceiling": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "Opaque v0.1 ceiling token. A ROOT_RECORD-backed envelope must inherit this exact token. v0.1 defines no local ordering or widening/narrowing interpretation for different ceiling strings."
     },
     "risk_ceiling": {
       "type": "string",
@@ -115,6 +116,53 @@
       "minimum": 0,
       "maximum": 9007199254740991,
       "description": "Maximum per-grant budget contribution this root record authorizes in budget_unit."
+    },
+    "governance_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Evidence that this exact root-authority record is admitted by governance outside the grant issuer's and grantee's authority path. The evaluation profile requires this object before a ROOT_RECORD may enter G(A,t); omission remains schema-representable but is not authorization-valid.",
+      "required": [
+        "governance_authority_logical_issuer_id",
+        "governance_registry_ref",
+        "governance_registry_snapshot_hash",
+        "issuer_proof"
+      ],
+      "properties": {
+        "governance_authority_logical_issuer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"
+        },
+        "governance_registry_ref": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+        },
+        "governance_registry_snapshot_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "issuer_proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"],
+          "properties": {
+            "proof_type": {
+              "type": "string",
+              "enum": ["DIGITAL_SIGNATURE", "TRUSTED_REGISTRY_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]
+            },
+            "issuer_credential_ref": {"type": "string", "minLength": 1},
+            "signed_payload_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+            "proof_value": {"type": "string", "minLength": 16},
+            "proof_ref": {"type": "string", "minLength": 1}
+          },
+          "oneOf": [
+            {"required": ["proof_value"], "not": {"required": ["proof_ref"]}},
+            {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}
+          ]
+        }
+      }
     }
   }
 }
