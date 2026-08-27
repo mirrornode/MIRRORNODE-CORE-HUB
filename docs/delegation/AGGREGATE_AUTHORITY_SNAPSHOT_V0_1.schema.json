@@ -50,7 +50,7 @@
       "minItems": 1,
       "uniqueItems": true,
       "items": {"$ref": "#/definitions/sha256"},
-      "description": "Exact sorted subset of the bound active grant inventory that remains applicable after issuer, scope, lifetime, revocation, and parent-chain validation. Sort ascending by lowercase hexadecimal digest bytes before hashing."
+      "description": "Exact sorted subset of the bound active grant inventory that remains applicable after issuer, scope, lifetime, revocation, and parent-chain validation. As a set-like array, sort by the UTF-8 bytes of each item's RFC 8785 canonical representation before hashing, exactly as required by CANONICALIZATION_V0_1."
     },
     "root_ceiling_ref": {"$ref": "#/definitions/repoRef"},
     "root_ceiling_hash": {"$ref": "#/definitions/sha256"},
@@ -63,14 +63,14 @@
       "minItems": 1,
       "uniqueItems": true,
       "items": {"$ref": "#/definitions/canonicalResource"},
-      "description": "Canonical resources sorted ascending by UTF-8 byte sequence before hashing."
+      "description": "Canonical resources form a set-like array. After schema validation and duplicate rejection, sort by the UTF-8 bytes of each item's RFC 8785 canonical representation before hashing, exactly as required by CANONICALIZATION_V0_1. Raw string-byte ordering is not a separate rule."
     },
     "environment_scope": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
       "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]},
-      "description": "Environment tokens sorted ascending by ASCII byte sequence before hashing."
+      "description": "Environment tokens form a set-like array and are sorted by the UTF-8 bytes of each item's RFC 8785 canonical representation before hashing, exactly as required by CANONICALIZATION_V0_1."
     },
     "cumulative_risk": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
     "cumulative_budget": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
