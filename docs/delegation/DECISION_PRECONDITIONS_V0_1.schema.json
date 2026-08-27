@@ -48,7 +48,7 @@
               "TIME_WINDOW",
               "IDEMPOTENCY_KEY"
             ],
-            "description": "Supported kinds with closed deterministic semantics:\n- STATE_HASH: target is a stable path or the literal 'state_hash'; observed value is the current authenticated state hash (sha256:...); operators EQUALS | NOT_EQUALS; expected is string matching sha256 pattern; comparison is exact string equality after normalization of the observed hash; failure or unresolvable observed value fails closed.\n- RESOURCE_VERSION: target is a canonical resource URI or registry path; observed value is the version/identity string or integer from the bound resource-registry record. String values support EQUALS | NOT_EQUALS only and compare by exact code-point sequence. Integer values support EQUALS | NOT_EQUALS | AT_LEAST | AT_MOST and compare numerically. Ordered comparison of string versions is unsupported and fails schema validation.\n- DEPENDENCY_STATE: target is a dependency identifier; observed value is the current state token of that dependency; operators EQUALS | NOT_EQUALS | UNSEEN; expected is string or boolean (for UNSEEN); UNSEEN succeeds only when no prior observation of the key exists; any other case fails closed.\n- TIME_WINDOW: target is a clock identifier (usually 'evaluation_time' or 'wall_clock'); observed value is ISO-8601 UTC timestamp; operators AT_LEAST | AT_MOST; expected is ISO-8601 UTC string; comparison is chronological; out-of-window or unparseable fails closed.\n- IDEMPOTENCY_KEY: target is an idempotency namespace or key path; observed value is presence/absence of the key in the authoritative store; operators EQUALS | UNSEEN; expected is string key or boolean; UNSEEN succeeds only if the key has never been recorded; reuse fails closed."
+            "description": "Supported kinds with closed deterministic semantics:\n- STATE_HASH: target is a stable path or the literal 'state_hash'; observed value is the current authenticated state hash (sha256:...); operators EQUALS | NOT_EQUALS; expected is string matching sha256 pattern; comparison is exact string equality after normalization of the observed hash; failure or unresolvable observed value fails closed.\n- RESOURCE_VERSION: target is a canonical resource URI or registry path; observed value is the version/identity string or integer from the bound resource-registry record. String values support EQUALS | NOT_EQUALS only and compare by exact code-point sequence. Integer values support EQUALS | NOT_EQUALS | AT_LEAST | AT_MOST and compare numerically. Ordered comparison of string versions is unsupported and fails schema validation.\n- DEPENDENCY_STATE: target is a dependency identifier; observed value is the current state token of that dependency; operators EQUALS | NOT_EQUALS | UNSEEN. EQUALS/NOT_EQUALS require a string expected token. UNSEEN requires expected=true and succeeds only when no prior observation of the target exists. Any unresolvable observation fails closed.\n- TIME_WINDOW: target is a clock identifier (usually 'evaluation_time' or 'wall_clock'); observed value is ISO-8601 UTC timestamp; operators AT_LEAST | AT_MOST; expected is ISO-8601 UTC string; comparison is chronological; out-of-window or unparseable fails closed.\n- IDEMPOTENCY_KEY: target is an authoritative idempotency namespace/key path. EQUALS requires a string expected key and succeeds only when the authoritative store records exactly that key for the target. UNSEEN requires expected=true and succeeds only when the authoritative store has no record for the target. Integers, false for UNSEEN, coercion, and all other operator/value combinations are schema-invalid and fail closed."
           },
           "operator": {
             "type": "string",
@@ -299,7 +299,7 @@
             "then": {
               "properties": {
                 "expected": {
-                  "type": "boolean"
+                  "const": true
                 }
               }
             }
@@ -326,6 +326,53 @@
               "properties": {
                 "expected": {
                   "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "IDEMPOTENCY_KEY"
+                },
+                "operator": {
+                  "const": "EQUALS"
+                }
+              },
+              "required": [
+                "kind",
+                "operator"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "IDEMPOTENCY_KEY"
+                },
+                "operator": {
+                  "const": "UNSEEN"
+                }
+              },
+              "required": [
+                "kind",
+                "operator"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected": {
+                  "const": true
                 }
               }
             }
