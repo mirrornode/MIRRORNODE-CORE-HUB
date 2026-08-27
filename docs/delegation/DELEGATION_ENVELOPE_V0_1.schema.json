@@ -86,7 +86,7 @@
     "allowed_operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
     "resource_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/canonicalResource"}},
     "environment_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}},
-    "authority_ceiling": {"type": "string", "minLength": 1},
+    "authority_ceiling": {"type": "string", "minLength": 1, "description": "Opaque v0.1 ceiling token. ROOT_RECORD envelopes MUST exactly equal the bound root record's authority_ceiling; PARENT_ENVELOPE children MUST exactly equal the parent envelope's authority_ceiling. v0.1 defines no ordering or local taxonomy for differing strings; a mismatch or unknown token fails closed until a separately governed typed strengthening relation exists."},
     "authority_rank": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
     "risk_ceiling": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
     "budget_ceiling": {"type": "integer", "minimum": 0, "maximum": 9007199254740991, "description": "Authenticated per-grant budget contribution used by CG0036_AGGREGATE_V0_1. Units are defined by the bound aggregate authority policy and MUST be identical across combined grants."},
