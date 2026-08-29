@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.example/schemas/shared-record.schema.json",
+  "title": "MIRRORNODE Shared Record Envelope",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "record_id",
+    "record_status",
+    "created_at",
+    "updated_at",
+    "record_owner",
+    "source_refs",
+    "change_ref"
+  ],
+  "properties": {
+    "schema_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^(AUTH|DEC|RISK|EVID|INC|ENG|CHG|EXC|REL|ACC|DEP|DATA)-[0-9]{4}-[0-9]{4,}$"
+    },
+    "record_status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "UNDER_REVIEW",
+        "OPERATOR_APPROVED",
+        "SUPERSEDED",
+        "HISTORICAL",
+        "RETIRED"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "record_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "change_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_state": {
+      "type": "string",
+      "enum": [
+        "VERIFIED",
+        "PARTIALLY_VERIFIED",
+        "CLAIMED",
+        "UNKNOWN",
+        "NOT_RECORDED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "classification": {
+      "type": "string",
+      "enum": ["PUBLIC", "CLIENT_SHARED", "INTERNAL", "RESTRICTED"]
+    },
+    "authority_role": {
+      "type": "string",
+      "enum": [
+        "EXPLANATORY",
+        "OPERATIONAL",
+        "EVIDENTIARY",
+        "LEGAL_ISSUED",
+        "CANONICAL_POINTER",
+        "CANONICAL_SOURCE",
+        "CLIENT_SCOPED",
+        "UNRESOLVED"
+      ]
+    },
+    "review_required": {
+      "type": "boolean"
+    },
+    "next_required_review": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "string", "enum": ["UNKNOWN", "NOT_RECORDED", "NOT_APPLICABLE"] }
+      ]
+    },
+    "time_source": {
+      "type": "string"
+    },
+    "trusted_time_status": {
+      "type": "string",
+      "enum": ["VERIFIED", "UNAVAILABLE", "UNTRUSTED", "UNKNOWN"]
+    },
+    "effective_review_status": {
+      "type": "string",
+      "enum": ["CURRENT", "STALE", "STALE_FOR_USE", "NOT_APPLICABLE", "UNKNOWN"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "review_required": { "const": true } },
+        "required": ["review_required"]
+      },
+      "then": {
+        "required": ["next_required_review", "time_source", "trusted_time_status", "effective_review_status"]
+      }
+    }
+  ],
+  "$comment": "record_id is the sole durable primary identifier. Domain-specific IDs are aliases only. Fail-closed review semantics are evaluated by consuming software; this schema requires the control fields but does not itself compute time."
+}
