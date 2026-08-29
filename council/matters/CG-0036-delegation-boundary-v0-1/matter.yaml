@@ -1,0 +1,230 @@
+schemaVersion: "0.1"
+id: CG-0036
+title: Delegation Boundary v0.1
+matterType: governance
+initiator: operator
+createdAt: "2026-08-14T22:49:00Z"
+updatedAt: "2026-08-22T06:34:00Z"
+workflowState: open
+decisionQuestion: >-
+  How should MIRRORNODE reduce routine Operator intervention through bounded,
+  inspectable, revocable delegation without transferring Operator sovereignty
+  or allowing delegated authority to expand itself?
+scope:
+  includes:
+    - delegation-authority-classes
+    - machine-readable-delegation-envelope
+    - policy-decision-and-enforcement-boundary
+    - deterministic-authorization-evaluation-profile
+    - anti-self-expansion-invariants
+    - aggregate-authority-evaluation
+    - canonical-resource-identity
+    - policy-content-integrity
+    - expiry-and-revocation-semantics
+    - toctou-and-retry-semantics
+    - delegation-conformance-requirements
+    - escalation-thresholds
+    - operator-load-boundary
+    - attribution-and-decision-receipt-requirements
+    - micc-approval-cross-map
+    - internal-first-product-ready-semantics
+    - standards-and-practice-crosswalk
+  excludes:
+    - runtime-implementation
+    - policy-engine-selection
+    - production-policy-changes
+    - new-agent-permissions
+    - automatic-merges
+    - deployment
+    - credential-access
+    - execution-expansion
+    - canon-promotion
+    - publication
+    - merge-authority
+authorityPath:
+  finalAuthority: operator
+  implementationAction: separate-explicit-action
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+referenceArtifacts:
+  - id: CG-0034-PR
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/46
+    canonical: false
+  - id: CG-0035-PR
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/47
+    canonical: false
+  - id: AUDIT-EMISSION-REPAIR-PR
+    kind: pull-request
+    href: https://github.com/mirrornode/MIRRORNODE-CORE-HUB/pull/49
+    canonical: false
+  - id: DELEGATION-SPEC
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_BOUNDARY_V0_1.md
+    canonical: false
+  - id: DELEGATION-ENVELOPE-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_ENVELOPE_V0_1.schema.json
+    canonical: false
+  - id: DELEGATION-DECISION-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_DECISION_V0_1.schema.json
+    canonical: false
+  - id: OPERATOR-APPROVAL-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/OPERATOR_APPROVAL_V0_1.schema.json
+    canonical: false
+  - id: COUNCIL-APPROVAL-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/COUNCIL_APPROVAL_V0_1.schema.json
+    canonical: false
+  - id: AUTHORIZATION-EVALUATION-PROFILE
+    kind: document
+    href: ../../../docs/delegation/AUTHORIZATION_EVALUATION_PROFILE_V0_1.md
+    canonical: false
+  - id: RESOURCE-IDENTITY-PROFILE
+    kind: document
+    href: ../../../docs/delegation/RESOURCE_IDENTITY_V0_1.md
+    canonical: false
+  - id: DELEGATION-CONFORMANCE
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_CONFORMANCE_V0_1.md
+    canonical: false
+  - id: STANDARDS-CROSSWALK
+    kind: document
+    href: ../../../docs/delegation/STANDARDS_CROSSWALK_V0_1.md
+    canonical: false
+  - id: CANONICALIZATION-PROFILE
+    kind: document
+    href: ../../../docs/delegation/CANONICALIZATION_V0_1.md
+    canonical: false
+  - id: CANONICALIZATION-VECTORS
+    kind: document
+    href: ../../../docs/delegation/CANONICALIZATION_VECTORS_V0_1.json
+    canonical: false
+  - id: ISSUER-PROOF-PROFILE
+    kind: document
+    href: ../../../docs/delegation/ISSUER_PROOF_V0_1.md
+    canonical: false
+  - id: ACTIVE-GRANT-INVENTORY-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/ACTIVE_GRANT_INVENTORY_V0_1.schema.json
+    canonical: false
+  - id: AGGREGATE-AUTHORITY-SNAPSHOT-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/AGGREGATE_AUTHORITY_SNAPSHOT_V0_1.schema.json
+    canonical: false
+  - id: EFFECT-CONSUMPTION-COMMIT
+    kind: document
+    href: ../../../docs/delegation/EFFECT_CONSUMPTION_COMMIT_V0_1.md
+    canonical: false
+  - id: EFFECT-CONSUMPTION-COMMIT-VECTORS
+    kind: document
+    href: ../../../docs/delegation/EFFECT_CONSUMPTION_COMMIT_VECTORS_V0_1.json
+    canonical: false
+  - id: ISSUER-AUTHORITY-RECORD-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/ISSUER_AUTHORITY_RECORD_V0_1.schema.json
+    canonical: false
+  - id: REFERENCE-INTEGRITY-PROFILE
+    kind: document
+    href: ../../../docs/delegation/REFERENCE_INTEGRITY_PROFILE_V0_1.md
+    canonical: false
+  - id: DECISION-PRECONDITIONS-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/DECISION_PRECONDITIONS_V0_1.schema.json
+    canonical: false
+  - id: AGGREGATE-AUTHORITY-POLICY-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/AGGREGATE_AUTHORITY_POLICY_V0_1.schema.json
+    canonical: false
+  - id: MICC-INVOCATION-BINDING-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/MICC_INVOCATION_BINDING_V0_1.schema.json
+    canonical: false
+  - id: REVOCATION-STATE-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/REVOCATION_STATE_V0_1.schema.json
+    canonical: false
+  - id: RESOURCE-REGISTRY-SNAPSHOT-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/RESOURCE_REGISTRY_SNAPSHOT_V0_1.schema.json
+    canonical: false
+  - id: EXECUTION-RECEIPT-SCHEMA
+    kind: document
+    href: ../../../docs/delegation/EXECUTION_RECEIPT_V0_1.schema.json
+    canonical: false
+  - id: DELEGATION-AUDIT-MAPPING
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_AUDIT_MAPPING_V0_1.md
+    canonical: false
+  - id: DELEGATION-VALIDATOR-CONTRACT
+    kind: document
+    href: ../../../docs/delegation/DELEGATION_VALIDATOR_CONTRACT_V0_1.md
+    canonical: false
+  - id: END-TO-END-CONFORMANCE-VECTORS
+    kind: document
+    href: ../../../docs/delegation/END_TO_END_CONFORMANCE_VECTORS_V0_1.json
+    canonical: false
+resolvedDraftQuestions:
+  - classification-is-policy-derived-through-bounded-PDP-and-enforced-by-distinct-PEP
+  - unmatched-ambiguous-or-error-actions-default-to-NON_DELEGABLE
+  - delegated-authority-is-evaluated-in-aggregate-against-root-ceilings-and-composition-constraints
+  - governing-policy-is-content-hash-and-bundle-hash-bound
+  - resource-identifiers-are-canonicalized-before-authorization
+  - cross-document-conformance-validator-requirements-are-defined
+  - revocation-and-expiry-have-separate-behaviors-and-freshness-bounds
+  - retries-require-fresh-authorization-and-state-revalidation
+  - delegation-PROPOSAL_ONLY-renamed-ADVISORY_ONLY-to-avoid-cognition-collision
+  - MICC-and-delegation-classes-compose-with-stricter-gate-wins
+  - delegation-issuance-requires-authenticated-provenance
+  - allow-decisions-are-one-time-use-in-v0-1
+  - child-preconditions-inherit-exact-parent-hash-until-typed-strengthening-exists
+  - micc-approval-class-is-recorded-unconditionally
+  - decisions-and-approvals-bind-delegation-payload-hash
+  - rfc8785-canonicalization-is-the-hash-profile
+  - decisions-require-authenticated-issuer-proof
+  - v0-1-council-allow-is-schema-unreachable
+  - resource-registry-snapshot-is-decision-bound
+  - aggregate-authority-snapshot-has-a-closed-schema
+  - nonces-are-csprng-and-consumption-keys-are-issuer-scoped
+  - approval-capacity-reserved-before-dispatch
+  - grant-issuer-authorization-is-separate-from-authentication
+  - approvals-bind-resource-registry-snapshot
+  - dispatch-intent-persisted-before-external-effect
+  - rfc8785-names-ordered-by-utf16-code-units
+  - consumption-keys-use-logical-issuer-id
+  - child-logical-issuer-equals-parent-delegate-logical-issuer
+  - ijson-integers-limited-to-binary64-exact-range
+  - all-governed-references-have-authenticated-hash-bindings
+  - typed-preconditions-and-deterministic-aggregate-policy-are-closed-schema
+  - aggregate-authority-is-keyed-to-authority-holder-not-pdp-issuer
+  - exact-micc-invocation-is-hash-bound
+  - authenticated-monotonic-revocation-state-is-decision-bound
+  - successful-effects-require-authenticated-typed-execution-receipts
+  - complete-active-grant-inventory-is-independently-authenticated-and-bound
+  - aggregate-metrics-have-deterministic-formulas-and-authenticated-budget-inputs
+openQuestions:
+  - What concrete policy language/engine and AuthZEN-compatible transport profile should implementation use?
+  - What concrete identity/attestation mechanism should production PDP, PEP, and executor workloads use?
+  - What revocation-state distribution mechanism can meet declared freshness bounds under degraded network conditions?
+  - What implementation will be commissioned for the typed delegation receipt mapping to the repaired AUDIT_EMISSION contract?
+  - What numeric production risk, budget, blast-radius, and monitoring thresholds should commission AUTONOMOUS_WITHIN_POLICY?
+  - What separately governed Council disposition validator should prove required composition, provenance, and quorum before Council approval can produce ALLOW? Existing council/schemas/disposition.schema.yaml and CG-0031 verify Operator dispositions, not Council constitution. Blocking implementation dependency; preserve for Osiris/Theia review.
+currentRevision: draft-2-exact-head-codex-correction
+nextRequiredStep: >-
+  Run focused schema/conformance checks and a fresh Codex review on the exact correction head,
+  then obtain exact-target revision confirmations from Ptah, Thoth, Osiris, and Theia. Require
+  a full lane re-review where the correction materially changes that lane's analysis.
+historyPath: history/
+notes:
+  - Internal-first, product-ready by design.
+  - Draft.2 aligns conceptually with current AuthZEN, NIST zero-trust/access-control, SPIFFE, AI risk-management, ISO AI-management, and OWASP agentic-security practices without claiming certification.
+  - Delegated actors may not modify their own delegation scope, ceilings, policy, classification inputs, revocation/expiry rules, resource mappings, or aggregate-authority logic.
+  - The goal is provable bounded autonomy, not maximal autonomy.
+  - AUDIT_EMISSION shell/heredoc corruption is confirmed and isolated to separate draft repair PR #49.
+  - Council-required ALLOW remains fail-closed until a separately governed disposition validator proves required composition, provenance, and quorum. Existing disposition.schema.yaml and CG-0031 are Operator-disposition records/gates, not Council constitution. v0.1 additionally makes APPROVAL_COUNCIL+ALLOW schema-invalid; a future schema revision is required after that validator is ratified.

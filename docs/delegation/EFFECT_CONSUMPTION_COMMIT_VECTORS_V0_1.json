@@ -1,0 +1,116 @@
+{
+  "$comment": "Normative crash-boundary, approval-reservation, and logical-issuer fixtures for EFFECT_CONSUMPTION_COMMIT_V0_1.",
+  "profile": "EFFECT_CONSUMPTION_COMMIT_V0_1",
+  "vectors": [
+    {
+      "id": "crash-before-reservation",
+      "from_state": "IDLE",
+      "event": "crash",
+      "expected_state": "IDLE",
+      "expected_result": "no_effect_safe_restart"
+    },
+    {
+      "id": "crash-in-reserved-no-dispatch-intent",
+      "from_state": "RESERVED",
+      "event": "crash",
+      "expected_state": "RESERVED",
+      "expected_result": "may_later_commit_dispatch_intent_once",
+      "reserved_is_not_prior_dispatch": true,
+      "silent_new_effect_forbidden": true
+    },
+    {
+      "id": "send-to-persist-external-accept-local-fail",
+      "from_state": "DISPATCH_INTENT",
+      "event": "downstream_accepted_then_local_persist_failed",
+      "expected_state": "UNCERTAIN",
+      "expected_result": "reconcile_no_non_idempotent_redispatch",
+      "silent_non_idempotent_retry_forbidden": true,
+      "send_to_persist_window": true
+    },
+    {
+      "id": "crash-after-receipt-before-approval-finalization",
+      "from_state": "RECEIPTED",
+      "event": "crash",
+      "expected_state": "RECEIPTED",
+      "expected_result": "finalize_reserved_approval_use",
+      "restore_capacity_forbidden": true,
+      "redispatch_forbidden": true
+    },
+    {
+      "id": "concurrent-last-bounded-reuse-use",
+      "from_state": "IDLE",
+      "event": "two_decisions_reserve_last_approval_use",
+      "expected_result": "only_one_reservation_succeeds",
+      "loser_dispatch_forbidden": true
+    },
+    {
+      "id": "concurrent-one-time-approval",
+      "from_state": "IDLE",
+      "event": "two_decisions_reserve_same_one_time_approval",
+      "expected_result": "only_one_reservation_succeeds",
+      "loser_dispatch_forbidden": true
+    },
+    {
+      "id": "confirmed-no-effect-release",
+      "from_state": "RESERVED",
+      "event": "confirmed_no_effect",
+      "expected_result": "release_decision_and_approval_reservations"
+    },
+    {
+      "id": "successful-effect-finalizes-approval",
+      "from_state": "RECEIPTED",
+      "event": "finalize_approval",
+      "expected_result": "reservation_becomes_consumed",
+      "restore_capacity_forbidden": true
+    },
+    {
+      "id": "uncertain-retains-approval-reservation",
+      "from_state": "UNCERTAIN",
+      "event": "crash_after_dispatch_intent",
+      "expected_result": "retain_approval_reservation_until_reconciliation",
+      "release_forbidden": true
+    },
+    {
+      "id": "failed-finalization-does-not-restore-capacity",
+      "from_state": "RECEIPTED",
+      "event": "approval_finalization_fails_after_successful_effect",
+      "expected_result": "must_not_complete_must_not_restore_capacity",
+      "complete_forbidden": true,
+      "restore_capacity_forbidden": true
+    },
+    {
+      "id": "credential-rotation-preserves-logical-issuer",
+      "logical_issuer_id": "issuer-pdp-primary",
+      "kid_before": "pdp-key-1",
+      "kid_after": "pdp-key-2",
+      "expected_result": "same_consumption_namespace"
+    },
+    {
+      "id": "unrelated-credentials-do-not-collapse",
+      "kid_a": "pdp-key-1",
+      "logical_issuer_a": "issuer-pdp-primary",
+      "kid_b": "other-key-1",
+      "logical_issuer_b": "issuer-pdp-other",
+      "expected_result": "distinct_consumption_namespaces"
+    },
+    {
+      "id": "revoked-credential-no-new-namespace",
+      "event": "revoked_kid_presented",
+      "expected_result": "fail_closed_no_new_namespace"
+    },
+    {
+      "id": "weak-nonce",
+      "nonce": "shortnonce",
+      "expected_result": "schema_reject"
+    },
+    {
+      "id": "cross-logical-issuer-collision",
+      "decision_id": "dec-1",
+      "decision_nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+      "logical_issuer_a": "issuer-pdp-a",
+      "logical_issuer_b": "issuer-pdp-b",
+      "expected_result": "distinct_consumption_keys",
+      "shared_slot_forbidden": true
+    }
+  ]
+}

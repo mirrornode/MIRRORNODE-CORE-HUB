@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/aggregate-authority-snapshot-v0.1.schema.json",
+  "title": "MIRRORNODE Aggregate Authority Snapshot v0.1",
+  "description": "Closed, authenticated snapshot hashed into DELEGATION_DECISION_V0_1.aggregate_authority_snapshot_hash using RFC 8785 over the payload excluding issuer_proof, per CANONICALIZATION_V0_1. Completeness is bound to an independently authenticated ACTIVE_GRANT_INVENTORY_V0_1 artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "snapshot_id",
+    "snapshot_version",
+    "subject",
+    "authority_holder_logical_issuer_id",
+    "authority_holder_registry_ref",
+    "authority_holder_registry_snapshot_hash",
+    "evaluation_time",
+    "active_grant_inventory_ref",
+    "active_grant_inventory_hash",
+    "applicable_delegation_payload_hashes",
+    "root_ceiling_ref",
+    "root_ceiling_hash",
+    "forbid_policy_ref",
+    "forbid_policy_hash",
+    "aggregate_authority_policy_ref",
+    "aggregate_authority_policy_hash",
+    "resource_scope",
+    "environment_scope",
+    "cumulative_risk",
+    "cumulative_budget",
+    "cumulative_cardinality",
+    "effective_authority_digest",
+    "evaluator_identity",
+    "evaluator_version",
+    "logical_issuer_id",
+    "issuer_registry_ref",
+    "issuer_registry_snapshot_hash",
+    "issuer_proof"
+  ],
+  "properties": {
+    "snapshot_id": {"$ref": "#/definitions/stableId"},
+    "snapshot_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "subject": {"$ref": "#/definitions/typedEntity"},
+    "authority_holder_logical_issuer_id": {"$ref": "#/definitions/stableId"},
+    "authority_holder_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "authority_holder_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "evaluation_time": {"$ref": "#/definitions/utcTimestamp"},
+    "active_grant_inventory_ref": {"$ref": "#/definitions/repoRef"},
+    "active_grant_inventory_hash": {"$ref": "#/definitions/sha256"},
+    "applicable_delegation_payload_hashes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/definitions/sha256"},
+      "description": "Exact sorted subset of the bound active grant inventory that remains applicable after issuer, scope, lifetime, revocation, and parent-chain validation. As a set-like array, sort by the UTF-8 bytes of each item's RFC 8785 canonical representation before hashing, exactly as required by CANONICALIZATION_V0_1."
+    },
+    "root_ceiling_ref": {"$ref": "#/definitions/repoRef"},
+    "root_ceiling_hash": {"$ref": "#/definitions/sha256"},
+    "forbid_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "forbid_policy_hash": {"$ref": "#/definitions/sha256"},
+    "aggregate_authority_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "aggregate_authority_policy_hash": {"$ref": "#/definitions/sha256"},
+    "resource_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/definitions/canonicalResource"},
+      "description": "Canonical resources form a set-like array. After schema validation and duplicate rejection, sort by the UTF-8 bytes of each item's RFC 8785 canonical representation before hashing, exactly as required by CANONICALIZATION_V0_1. Raw string-byte ordering is not a separate rule."
+    },
+    "environment_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]},
+      "description": "Environment tokens form a set-like array and are sorted by the UTF-8 bytes of each item's RFC 8785 canonical representation before hashing, exactly as required by CANONICALIZATION_V0_1."
+    },
+    "cumulative_risk": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+    "cumulative_budget": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "cumulative_cardinality": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "effective_authority_digest": {"$ref": "#/definitions/sha256"},
+    "evaluator_identity": {"type": "string", "minLength": 1, "maxLength": 256},
+    "evaluator_version": {"type": "string", "minLength": 1, "maxLength": 128},
+    "logical_issuer_id": {"$ref": "#/definitions/stableId"},
+    "issuer_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "issuer_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "issuer_proof": {"$ref": "#/definitions/issuerProof"}
+  },
+  "definitions": {
+    "stableId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "canonicalResource": {"type": "string", "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"},
+    "typedEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "id": {"type": "string", "minLength": 1}
+      }
+    },
+    "issuerProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"],
+      "properties": {
+        "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_REGISTRY_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
+        "issuer_credential_ref": {"type": "string", "minLength": 1},
+        "signed_payload_hash": {"$ref": "#/definitions/sha256"},
+        "proof_value": {"type": "string", "minLength": 16},
+        "proof_ref": {"type": "string", "minLength": 1}
+      },
+      "oneOf": [
+        {"required": ["proof_value"], "not": {"required": ["proof_ref"]}},
+        {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}
+      ]
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrornode.github.io/schemas/delegation-envelope-v0.1.schema.json",
+  "title": "MIRRORNODE Delegation Envelope v0.1",
+  "description": "Draft machine-readable delegation envelope under CG-0036. No implementation or canon authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "delegation_id",
+    "delegation_version",
+    "delegator",
+    "logical_issuer_id",
+    "issuer_registry_ref",
+    "issuer_registry_snapshot_hash",
+    "issuer_authority_kind",
+    "issuer_authority_ref",
+    "issuer_authority_hash",
+    "issuer_proof",
+    "delegate_actor",
+    "delegate_logical_issuer_id",
+    "delegate_identity_registry_ref",
+    "delegate_identity_registry_snapshot_hash",
+    "authority_class",
+    "governing_policy_ref",
+    "policy_version",
+    "policy_content_hash",
+    "policy_bundle_hash",
+    "allowed_operations",
+    "resource_scope",
+    "environment_scope",
+    "authority_ceiling",
+    "authority_rank",
+    "risk_ceiling",
+    "budget_ceiling",
+    "decision_preconditions_ref",
+    "decision_preconditions_hash",
+    "issued_at",
+    "effective_at",
+    "expires_at",
+    "revocation_behavior",
+    "expiry_behavior",
+    "max_revocation_propagation_seconds",
+    "revocation_ref",
+    "revocation_source_hash",
+    "receipt_policy_ref",
+    "receipt_policy_hash",
+    "aggregate_authority_policy_ref",
+    "aggregate_authority_policy_hash",
+    "subdelegation"
+  ],
+  "properties": {
+    "delegation_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "delegation_version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "delegator": {"type": "string", "minLength": 1},
+    "logical_issuer_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "issuer_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "issuer_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "issuer_authority_kind": {"type": "string", "enum": ["ROOT_RECORD", "PARENT_ENVELOPE"]},
+    "issuer_authority_ref": {"type": "string", "minLength": 1},
+    "issuer_authority_hash": {"$ref": "#/definitions/sha256"},
+    "issuer_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proof_type", "issuer_credential_ref", "signed_payload_hash"],
+      "properties": {
+        "proof_type": {"type": "string", "enum": ["DIGITAL_SIGNATURE", "TRUSTED_REGISTRY_ATTESTATION", "HARDWARE_BACKED_ASSERTION"]},
+        "issuer_credential_ref": {"type": "string", "minLength": 1},
+        "signed_payload_hash": {"$ref": "#/definitions/sha256"},
+        "proof_value": {"type": "string", "minLength": 16},
+        "proof_ref": {"type": "string", "minLength": 1}
+      },
+      "oneOf": [
+        {"required": ["proof_value"], "not": {"required": ["proof_ref"]}},
+        {"required": ["proof_ref"], "not": {"required": ["proof_value"]}}
+      ]
+    },
+    "delegate_actor": {"type": "string", "minLength": 1},
+    "delegate_logical_issuer_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"},
+    "delegate_identity_registry_ref": {"$ref": "#/definitions/repoRef"},
+    "delegate_identity_registry_snapshot_hash": {"$ref": "#/definitions/sha256"},
+    "authority_class": {"type": "string", "enum": ["AUTONOMOUS_WITHIN_POLICY", "ADVISORY_ONLY", "OPERATOR_APPROVAL_REQUIRED", "NON_DELEGABLE"]},
+    "governing_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "policy_version": {"type": "string", "minLength": 1},
+    "policy_content_hash": {"$ref": "#/definitions/sha256"},
+    "policy_bundle_hash": {"$ref": "#/definitions/sha256"},
+    "allowed_operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
+    "resource_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/canonicalResource"}},
+    "environment_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "enum": ["DEVELOPMENT", "STAGING", "PRODUCTION", "LOCAL"]}},
+    "authority_ceiling": {"type": "string", "minLength": 1, "description": "Opaque v0.1 ceiling token. ROOT_RECORD envelopes MUST exactly equal the bound root record's authority_ceiling; PARENT_ENVELOPE children MUST exactly equal the parent envelope's authority_ceiling. v0.1 defines no ordering or local taxonomy for differing strings; a mismatch or unknown token fails closed until a separately governed typed strengthening relation exists."},
+    "authority_rank": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "risk_ceiling": {"type": "string", "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+    "budget_ceiling": {"type": "integer", "minimum": 0, "maximum": 9007199254740991, "description": "Authenticated per-grant budget contribution used by CG0036_AGGREGATE_V0_1. Units are defined by the bound aggregate authority policy and MUST be identical across combined grants."},
+    "decision_preconditions_ref": {"$ref": "#/definitions/repoRef"},
+    "decision_preconditions_hash": {"$ref": "#/definitions/sha256"},
+    "issued_at": {"$ref": "#/definitions/utcTimestamp"},
+    "effective_at": {"$ref": "#/definitions/utcTimestamp"},
+    "expires_at": {"$ref": "#/definitions/utcTimestamp"},
+    "revocation_behavior": {"type": "string", "enum": ["CANCEL_ON_REVOCATION", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"]},
+    "non_interruptible_rationale": {"type": "string", "minLength": 20, "pattern": "^(?=.*\\S).{20,}$"},
+    "expiry_behavior": {"type": "string", "enum": ["CANCEL_ON_EXPIRY", "COMPLETE_CURRENT_ATOMIC_STEP", "COMPLETE_CURRENT_TRANSACTION", "ALLOW_COMPLETION_IF_DECISION_WAS_VALID_AND_BOUND"]},
+    "max_revocation_propagation_seconds": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "revocation_ref": {"$ref": "#/definitions/repoRef"},
+    "revocation_source_hash": {"$ref": "#/definitions/sha256"},
+    "receipt_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "receipt_policy_hash": {"$ref": "#/definitions/sha256"},
+    "aggregate_authority_policy_ref": {"$ref": "#/definitions/repoRef"},
+    "aggregate_authority_policy_hash": {"$ref": "#/definitions/sha256"},
+    "subdelegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed"],
+      "properties": {
+        "allowed": {"type": "boolean"},
+        "max_depth": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "eligible_operations": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9:_-]+$"}},
+        "parent_delegation_ref": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9-]{0,127}$"}
+      },
+      "allOf": [
+        {"if": {"properties": {"allowed": {"const": true}}, "required": ["allowed"]}, "then": {"required": ["max_depth", "eligible_operations"]}}
+      ]
+    },
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"revocation_behavior": {"const": "NON_INTERRUPTIBLE_WITH_EXPLICIT_RATIONALE"}}, "required": ["revocation_behavior"]},
+      "then": {"required": ["non_interruptible_rationale"]}
+    },
+    {
+      "if": {"properties": {"issuer_authority_kind": {"const": "PARENT_ENVELOPE"}}, "required": ["issuer_authority_kind"]},
+      "then": {
+        "properties": {
+          "subdelegation": {
+            "required": ["parent_delegation_ref"]
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "repoRef": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"},
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "canonicalResource": {"type": "string", "pattern": "^[a-z][a-z0-9+.-]*://[^\\s]+$"}
+  }
+}
