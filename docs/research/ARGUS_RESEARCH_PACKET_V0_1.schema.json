@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.local/schemas/argus-research-packet-v0.1.json",
+  "title": "ARGUS Research Packet v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_id",
+    "packet_version_id",
+    "question",
+    "scope",
+    "evidence_cutoff",
+    "method_versions",
+    "evidence",
+    "claims",
+    "interpretations",
+    "recommendations",
+    "disagreements",
+    "review",
+    "readiness"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "packet_id": {"type": "string", "minLength": 1},
+    "packet_version_id": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_context", "risk_class", "exclusions"],
+      "properties": {
+        "decision_context": {"type": "string"},
+        "risk_class": {"enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+        "exclusions": {"type": "array", "items": {"type": "string"}},
+        "jurisdictions": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "evidence_cutoff": {"type": "string", "format": "date-time"},
+    "method_versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assurance_contract", "source_quality_model", "disagreement_protocol", "injection_screen"],
+      "properties": {
+        "assurance_contract": {"type": "string"},
+        "source_quality_model": {"type": "string"},
+        "disagreement_protocol": {"type": "string"},
+        "injection_screen": {"type": "string"}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/evidenceRecord"}
+    },
+    "claims": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/claimRecord"}
+    },
+    "interpretations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/interpretationRecord"}
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/recommendationRecord"}
+    },
+    "disagreements": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/disagreementRecord"}
+    },
+    "review": {"$ref": "#/$defs/reviewRecord"},
+    "readiness": {"$ref": "#/$defs/readinessAttestation"},
+    "governance_disposition": {
+      "type": ["object", "null"],
+      "description": "Populated only by an authorized governance/reconciliation path; never by ARGUS research generation itself."
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"enum": ["sha256", "sha512"]},
+        "value": {"type": "string", "minLength": 32}
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "source_identifier",
+        "retrieved_at",
+        "locator",
+        "raw_hash",
+        "normalized_hash",
+        "acquisition",
+        "quality_profile",
+        "independence_cluster",
+        "validation_state",
+        "adversarial_state"
+      ],
+      "properties": {
+        "evidence_id": {"type": "string"},
+        "source_identifier": {"type": "string"},
+        "publisher_or_author": {"type": ["string", "null"]},
+        "published_at": {"type": ["string", "null"], "format": "date-time"},
+        "retrieved_at": {"type": "string", "format": "date-time"},
+        "locator": {"type": "string", "minLength": 1},
+        "mime_type": {"type": ["string", "null"]},
+        "raw_hash": {"$ref": "#/$defs/hash"},
+        "normalized_hash": {"$ref": "#/$defs/hash"},
+        "acquisition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider", "tool", "query_or_prompt_hash", "policy_version", "actor_id"],
+          "properties": {
+            "provider": {"type": "string"},
+            "model": {"type": ["string", "null"]},
+            "tool": {"type": "string"},
+            "query_or_prompt_hash": {"$ref": "#/$defs/hash"},
+            "policy_version": {"type": "string"},
+            "actor_id": {"type": "string"}
+          }
+        },
+        "transform_lineage": {"type": "array", "items": {"type": "string"}},
+        "quality_profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["proximity", "verifiability", "specificity", "integrity", "competence", "incentive_exposure", "independence", "recency", "contestability", "attack_surface"],
+          "properties": {
+            "proximity": {"type": "string"},
+            "verifiability": {"type": "string"},
+            "specificity": {"type": "string"},
+            "integrity": {"type": "string"},
+            "competence": {"type": "string"},
+            "incentive_exposure": {"type": "string"},
+            "independence": {"type": "string"},
+            "recency": {"type": "string"},
+            "contestability": {"type": "string"},
+            "attack_surface": {"type": "string"}
+          }
+        },
+        "independence_cluster": {"type": "string"},
+        "validation_state": {"enum": ["UNVERIFIED", "VERIFIED", "REJECTED"]},
+        "adversarial_state": {"enum": ["CLEAR", "QUARANTINED", "HOSTILE", "UNKNOWN"]},
+        "redaction_map": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "claimRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "text", "claim_type", "evidence_ids", "status"],
+      "properties": {
+        "claim_id": {"type": "string"},
+        "text": {"type": "string"},
+        "claim_type": {"enum": ["FACTUAL", "ASSUMPTION", "FORECAST", "NORMATIVE"]},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "contradicting_evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "status": {"enum": ["SUPPORTED", "PROVISIONAL", "CONTESTED", "UNSUPPORTED", "REJECTED"]}
+      }
+    },
+    "interpretationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interpretation_id", "claim_ids", "assumptions", "alternatives", "uncertainty"],
+      "properties": {
+        "interpretation_id": {"type": "string"},
+        "claim_ids": {"type": "array", "items": {"type": "string"}},
+        "assumptions": {"type": "array", "items": {"type": "string"}},
+        "alternatives": {"type": "array", "items": {"type": "string"}},
+        "uncertainty": {"type": "string"}
+      }
+    },
+    "recommendationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendation_id", "interpretation_ids", "action", "tradeoffs", "reversibility", "blast_radius", "rollback_path", "monitoring_signals", "noncanonical"],
+      "properties": {
+        "recommendation_id": {"type": "string"},
+        "interpretation_ids": {"type": "array", "items": {"type": "string"}},
+        "action": {"type": "string"},
+        "tradeoffs": {"type": "array", "items": {"type": "string"}},
+        "reversibility": {"type": "string"},
+        "blast_radius": {"type": "string"},
+        "rollback_path": {"type": "string"},
+        "monitoring_signals": {"type": "array", "items": {"type": "string"}},
+        "noncanonical": {"const": true}
+      }
+    },
+    "disagreementRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disagreement_id", "claim_ids", "conflict_type", "strongest_cases", "missing_discriminating_evidence", "materiality", "disposition"],
+      "properties": {
+        "disagreement_id": {"type": "string"},
+        "claim_ids": {"type": "array", "items": {"type": "string"}, "minItems": 2},
+        "conflict_type": {"enum": ["FACTUAL", "DEFINITIONAL", "TEMPORAL", "METHODOLOGICAL", "NORMATIVE", "FORECAST", "RECOMMENDATION", "SCOPE"]},
+        "strongest_cases": {"type": "array", "items": {"type": "string"}},
+        "missing_discriminating_evidence": {"type": "array", "items": {"type": "string"}},
+        "materiality": {"type": "string"},
+        "disposition": {"enum": ["RESOLVED", "BOUNDED_DIVERGENCE", "INSUFFICIENT_EVIDENCE", "ESCALATE_HUMAN_REVIEW", "BLOCKED"]}
+      }
+    },
+    "reviewRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "independent_of_synthesis", "packet_version_id", "reviewed_hash", "source_locator_check", "claim_mapping_check", "independence_check", "injection_check", "completed_at"],
+      "properties": {
+        "reviewer_id": {"type": "string"},
+        "independent_of_synthesis": {"const": true},
+        "packet_version_id": {"type": "string"},
+        "reviewed_hash": {"$ref": "#/$defs/hash"},
+        "source_locator_check": {"enum": ["PASS", "FAIL", "HOLD"]},
+        "claim_mapping_check": {"enum": ["PASS", "FAIL", "HOLD"]},
+        "independence_check": {"enum": ["PASS", "FAIL", "HOLD"]},
+        "injection_check": {"enum": ["PASS", "FAIL", "HOLD"]},
+        "completed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "readinessAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "packet_version_id", "eligible_for_reconciliation", "gate_results", "non_authority_statement"],
+      "properties": {
+        "contract_version": {"const": "ARGUS_RESEARCH_ASSURANCE_CONTRACT_V0_1"},
+        "packet_version_id": {"type": "string"},
+        "eligible_for_reconciliation": {"type": "boolean"},
+        "gate_results": {"type": "array", "items": {"type": "string"}},
+        "non_authority_statement": {"const": "Eligibility for reconciliation is not canon promotion, recommendation adoption, implementation authorization, or governance disposition."}
+      }
+    }
+  }
+}
