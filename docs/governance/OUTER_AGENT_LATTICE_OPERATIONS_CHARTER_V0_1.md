@@ -77,7 +77,7 @@ RSR-1 is not an automation escape hatch. It proves the opposite: when the substr
 
 An agent working with repositories must read before writing; establish base and head; avoid direct-main writes unless explicitly authorized; preserve protected-branch semantics; use expected-head merge guards when merging is authorized; treat mergeability as a technical property rather than a governance verdict; request fresh review after material head changes; avoid carrying stale CI/review evidence across changed heads; and record infrastructure failures separately from source-code defects.
 
-If review reconciliation, correction, or any other material change produces a successor head, the agent must treat prior exact-head review as stale and request fresh independent review of the successor after its required checks run. No agent may carry ancestor-head clearance across that change unless a governing rule explicitly permits and records such carry-forward.
+If review reconciliation, correction, or any other material change produces a successor head, the agent must treat prior exact-head review as stale and request fresh independent review of the successor after its required checks run. Ancestor-head clearance never carries forward to a successor head produced by reconciliation, correction, or other material change; fresh exact-head review is mandatory.
 
 ## 8. Review conduct
 
