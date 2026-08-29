@@ -1,0 +1,80 @@
+schemaVersion: "0.1"
+id: CG-0034
+title: Gemini Cognition Capability Boundary
+matterType: governance
+initiator: operator
+createdAt: "2026-08-14T20:39:00Z"
+updatedAt: "2026-08-14T20:46:00Z"
+workflowState: closed
+disposition:
+  status: ratified
+  authority: operator
+  decidedAt: "2026-08-14T20:46:00Z"
+  decision: option-b-sibling-cognition-contract
+  record: history/2026-08-14-operator-disposition.md
+decisionQuestion: >-
+  How should MIRRORNODE represent bounded external AI cognition or inference
+  without granting provider authority, weakening existing approval boundaries,
+  or misclassifying the capability under an unrelated MICC family?
+scope:
+  includes:
+    - classify-bounded-external-model-cognition-under-or-adjacent-to-MICC
+    - compare-new-INFERENCE-or-COGNITION-family-against-separate-contract-class
+    - preserve-provider-versus-presence-separation
+    - define-read-only-Gemini-pilot-constraints
+    - define-required-provenance-and-contestability-properties
+    - identify-conformance-and-receipt-implications
+  excludes:
+    - Gemini-credential-contents-or-access
+    - adapter-implementation
+    - runtime-registry-changes
+    - Room-or-HUD-implementation
+    - MCP-direction-changes
+    - deployment
+    - publication
+    - canon-promotion
+    - merge-authority
+authorityPath:
+  finalAuthority: operator
+  implementationAction: separate-explicit-action
+requiredReviews:
+  - ptah
+  - thoth
+  - osiris
+  - theia
+referenceArtifacts:
+  - id: MICC-V0-1
+    kind: document
+    href: ../../../docs/integration/MICC_V0_1.md
+    canonical: false
+  - id: MIM-V0-1-SCHEMA
+    kind: document
+    href: ../../../docs/integration/MIM_V0_1.schema.json
+    canonical: false
+  - id: CG-0033
+    kind: matter
+    href: ../CG-0033-micc-v0-1/README.md
+    canonical: false
+  - id: REVIEW-SYNTHESIS
+    kind: document
+    href: synthesis/REVIEW_SYNTHESIS.md
+    canonical: false
+  - id: OPERATOR-DISPOSITION
+    kind: document
+    href: history/2026-08-14-operator-disposition.md
+    canonical: false
+openQuestions:
+  - Exact name and schema shape of the sibling cognition contract.
+  - Exact model-version pinning behavior when providers expose mutable aliases.
+  - Exact additive AUDIT_EMISSION mapping for cognition provenance.
+  - Machine-readable boundary between generated position and persistent Room presence.
+currentRevision: operator-disposition-2026-08-14
+nextRequiredStep: >-
+  Open a separate bounded drafting matter for Cognition Contract v0.1 and its
+  machine-readable schema/fixtures. No implementation is authorized by CG-0034.
+historyPath: history/
+notes:
+  - Operator selected Option B: provider-neutral sibling cognition contract interoperating with MICC.
+  - The Operator disposition is authoritative for this matter but is not a canon-promotion record.
+  - EVIDENCE and EXECUTION are rejected as convenience classifications for model cognition.
+  - Any later Gemini pilot begins non-executing with side-effect ceiling NONE unless separately authorized.
