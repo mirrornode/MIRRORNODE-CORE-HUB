@@ -50,15 +50,13 @@ def invoke(name: str, **kwargs) -> InvocationResult:
         )
 
     if cmd.handler is None:
+        # An unwired command has not executed. Reporting success here manufactures
+        # a runtime outcome that the dispatcher cannot prove.
         return InvocationResult(
             command=cmd.name,
             node=cmd.node,
-            success=True,
-            output={
-                "status": "ACKNOWLEDGED",
-                "message": f"Command '{cmd.name}' received by {cmd.node}. Handler not yet wired.",
-                "category": cmd.category,
-            },
+            success=False,
+            error="HANDLER_NOT_WIRED",
         )
 
     try:
