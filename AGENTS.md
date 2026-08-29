@@ -34,6 +34,27 @@ Historical canonical port range for that runtime generation: 7700–7706.
 
 This table is retained as historical runtime evidence. Presence does not prove current activation, current runtime eligibility, or current governance authority. Omission does not prove current exclusion.
 
+## Proposed Infrastructure Presence — Repo Steward v0.1
+
+A new repository-integrity control-plane presence is under implementation in `MIRRORNODE-INFRA`, with corresponding proposed runtime prompt presence in `mirrornode-agent-runtime`.
+
+| Presence | Proposed function | Current authority status |
+|---|---|---|
+| REPO STEWARD | Repository-integrity coordination and administrative proposal integration | Proposed; no independent repository authority |
+| SURVEYOR | Repository census and topology observation | Read-only proposed presence |
+| SENTINEL | Code/check/CI integrity classification | Read-only proposed presence |
+| NOTARY | Exact-head and provenance binding | Evidence-only proposed presence |
+| CUSTODIAN | Bounded repository repair proposals | Proposal-only; no write transport |
+| WARDEN | Permission, secret-risk, and self-expansion boundary review | Defensive review only; no permission authority |
+
+This section records implementation evidence and proposed placement only. It **does not ratify these presences into the unresolved current governance registry**, assign dispatch authority, or authorize repository mutation.
+
+The proposed Repo Steward write boundary is dual control: every future repository mutation through that control plane requires explicit human Operator authorization plus at least one independent attestation from an approved OpenAI, Perplexity, or Claude advisory lane. Neither side alone is sufficient. The advisory attestation is evidentiary/reviewing and does not create repository authority.
+
+No autonomous agent, bot identity, service account, coding agent, or advisory model may independently administer repositories.
+
+See `docs/continuity/REPO_STEWARD_PRESENCE_RECONCILIATION_2026-08-21.md`.
+
 ## Governance Rules
 
 - Agent capability changes must be reflected in current governance/registry evidence before release.
@@ -41,6 +62,7 @@ This table is retained as historical runtime evidence. Presence does not prove c
 - No agent may expand its own authority without explicit human authorization.
 - Runtime location, runtime eligibility, implementation presence, conceptual role, and governance authority must not be conflated.
 - Where current routing authority is unresolved, preserve the conflict and escalate for explicit disposition rather than choosing a dispatcher by inference.
+- Repository administration remains closed to autonomous agents; any future Repo Steward write path requires dual control and independent verification.
 
 ## Coding Agent Instructions
 

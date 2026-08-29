@@ -46,4 +46,12 @@
 | Rotan-neural-modality-kids-game | legacy | Private - story game |
 | biometric-integrated-meditative-RPG | legacy | Biometric RPG experiment |
 
+## Current Addendum — Repo Steward implementation evidence (2026-08-21)
+
+The historical `MIRRORNODE-INFRA | placeholder` row above is preserved as part of the April 28 snapshot and must not be silently rewritten. Current evidence now shows `MIRRORNODE-INFRA` functioning as an estate wrapper and carrying an in-review Repo Steward v0.1 repository-integrity control plane.
+
+Repo Steward implementation presence does not by itself establish governance-registry membership or repository administration authority. Its v0.1 checker is GET-only, its administration engine is proposal-only with write transport absent, and every future repository mutation is specified to require explicit human Operator authorization.
+
+See `docs/continuity/REPO_STEWARD_PRESENCE_RECONCILIATION_2026-08-21.md`.
+
 **Policy:** This map is living documentation. Updates must be audited via `emit_audit()`.
