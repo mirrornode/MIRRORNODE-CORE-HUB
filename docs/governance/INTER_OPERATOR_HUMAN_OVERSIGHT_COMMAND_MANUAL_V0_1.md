@@ -44,16 +44,16 @@ INTER is not a substitute for repository protections, runtime authorization chec
 3. Resolve the authority source.
 4. Inspect preconditions and known holds.
 5. Permit bounded implementation or correction.
-6. Run required automated checks.
+6. Run required automated checks against the exact target.
 7. Request independent exact-target review.
 8. Reconcile review findings.
-9. Re-run exact-target checks after any material change.
-10. Make the human disposition.
+9. **If reconciliation, correction, or any other material change alters the exact subject or head, return to step 6: re-run required checks and obtain fresh independent exact-target review of the successor subject. Ancestor-head review cannot clear a changed head.**
+10. Make the human disposition only after the current exact subject has the required checks and independent review.
 11. Execute only the authorized act.
 12. Verify the resulting state.
 13. Record the final evidence and residual risks.
 
-The sequence may be shortened only when the skipped stages are mechanically irrelevant to the operation class.
+The sequence may be shortened only when the skipped stages are mechanically irrelevant to the operation class. A subject-changing correction never qualifies as mechanically irrelevant to exact-target review.
 
 ## 5. Review-State Rebind Sequence (RSR-1)
 
@@ -78,10 +78,12 @@ RSR-1 is a **recovery sequence for event-delivery gaps**, not a bypass.
 
 Use RSR-1 only when:
 
-- the desired workflow is configured for the human-visible PR state transition or equivalent native event;
+- the desired required workflow or check is configured for, and eligible to run on, the human-visible PR state transition or equivalent native recovery event;
 - no source defect is evidenced that would justify further code changes;
 - existing execution evidence is missing because an event was not emitted, a workflow failed before job creation, or the integration could not cause the native event;
 - the human action is itself permitted and does not expand repository authority.
+
+RSR-1 cannot make an event-ineligible workflow pass. A required workflow that cannot run on the recovery event must be satisfied through its own supported trigger or remain an explicit HOLD.
 
 ### 5.3 RSR-1 procedure
 
@@ -91,13 +93,13 @@ Use RSR-1 only when:
 4. If no code defect is evidenced, preserve HOLD.
 5. Use the smallest native human state transition known to emit the required event.
 6. Confirm that the new workflow run is bound to the same exact head intended for validation.
-7. Require all configured workflows to execute and pass.
+7. Require every **policy-required workflow/check that is eligible for that recovery event and exact subject** to execute and pass. Any required but event-ineligible workflow/check must be satisfied through its own supported trigger or remain HOLD; do not classify it as failed merely because RSR-1 cannot invoke it.
 8. Preserve independent review as a separate gate.
 9. Record the recovery path so later operators do not misclassify the incident as a source-code repair.
 
 ### 5.4 Prohibited uses
 
-RSR-1 must not be used to bypass required review, bypass branch protections or rulesets, substitute a new event for a changed-head review, rerun until a flaky result happens to pass without investigating repeated instability, turn an UNKNOWN authority state into approval, conceal infrastructure reliability issues, or create evidence for a head other than the release subject.
+RSR-1 must not be used to bypass required review, bypass branch protections or rulesets, substitute a new event for a changed-head review, rerun until a flaky result happens to pass without investigating repeated instability, turn an UNKNOWN authority state into approval, conceal infrastructure reliability issues, treat an event-ineligible required workflow as satisfied, or create evidence for a head other than the release subject.
 
 ## 6. Human review rules
 
@@ -146,7 +148,11 @@ Every consequential action should leave enough evidence to answer: what target c
 
 ## 14. Amendments
 
-This manual may be amended by a reviewed documentation change. An amendment does not silently amend the paired OUTER Charter; paired changes must identify both documents and state whether the invariant contract remains compatible.
+This manual may be amended only through the **then-current applicable governance and ratification path**. A reviewed documentation change is necessary evidence but is not, by itself, ratification.
+
+Where the governing canon requires Ptah evaluation, explicit Operator ratification, Council review, or another named authority step, that requirement remains binding. No amendment to INTER may bypass, downgrade, or silently replace that path.
+
+An amendment does not silently amend the paired OUTER Charter; paired changes must identify both documents, state whether the invariant contract remains compatible, and complete the applicable ratification path for each affected authority surface.
 
 ## 15. Paired invariant
 

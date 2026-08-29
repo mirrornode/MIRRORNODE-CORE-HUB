@@ -66,15 +66,18 @@ When agent or connector actions cannot cause the native repository event needed 
 - agents may identify the missing native event and propose the smallest permitted human transition;
 - agents must preserve HOLD until execution evidence appears;
 - agents must verify the resulting workflow run binds to the intended exact head;
-- agents must keep independent review separate from workflow success.
+- agents must keep independent review separate from workflow success;
+- agents must distinguish required workflows/checks that are eligible for the recovery event from required workflows/checks that need a different supported trigger.
 
 Canonical observed example: `MIRRORNODE-INFRA` PR #4, exact successor head `4b1bd8685bfe168faf048c77d5de69b3d5ba65a9`, where a human Draft -> Ready for review transition emitted the missing GitHub event and both `Repo Steward CI` and `Validate Estate Wrapper` subsequently executed successfully on that head.
 
-RSR-1 is not an automation escape hatch. It proves the opposite: when the substrate requires a human-native event, agents must name that boundary accurately and stop.
+RSR-1 is not an automation escape hatch. It proves the opposite: when the substrate requires a human-native event, agents must name that boundary accurately and stop. It also does not manufacture success for workflows that are not eligible to run on the recovery event; those remain subject to their own supported trigger or HOLD.
 
 ## 7. Repository conduct
 
 An agent working with repositories must read before writing; establish base and head; avoid direct-main writes unless explicitly authorized; preserve protected-branch semantics; use expected-head merge guards when merging is authorized; treat mergeability as a technical property rather than a governance verdict; request fresh review after material head changes; avoid carrying stale CI/review evidence across changed heads; and record infrastructure failures separately from source-code defects.
+
+If review reconciliation, correction, or any other material change produces a successor head, the agent must treat prior exact-head review as stale and request fresh independent review of the successor after its required checks run. Ancestor-head clearance never carries forward to a successor head produced by reconciliation, correction, or other material change; fresh exact-head review is mandatory.
 
 ## 8. Review conduct
 
@@ -146,7 +149,11 @@ Agents must not invent repository state; cite a check that did not run; call an 
 
 ## 18. Amendment rule
 
-OUTER amendments require reviewed documentation changes. Changes affecting human approval, merge, dispatch, security, constitutional status, or exception handling must be checked against the paired INTER manual before adoption.
+OUTER amendments require a reviewed documentation change **and** completion of the then-current applicable governance/ratification path. Documentation review alone is not ratification.
+
+Changes affecting human approval, merge, dispatch, security, constitutional status, exception handling, or the paired INTER boundary must be checked against INTER and must satisfy every governing authority step then required, including Ptah evaluation, explicit Operator ratification, Council review, or another named authority where applicable.
+
+No OUTER amendment may bypass, downgrade, or silently replace an existing ratification requirement.
 
 ## 19. Paired invariant
 
