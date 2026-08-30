@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mirrornode://schemas/deliberation-graph/v0.1",
+  "title": "Deliberation Graph v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "deliberation_id", "work_id", "target_ref", "target_state_hash", "moves", "dissent_preserved", "authority_effect"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "deliberation_id": {"type": "string", "minLength": 1},
+    "work_id": {"type": "string", "minLength": 1},
+    "target_ref": {"type": "string", "minLength": 1},
+    "target_state_hash": {"type": "string", "minLength": 1},
+    "moves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["move_id", "actor", "move_type", "body", "confidence", "scope", "target_state_hash", "validity", "created_at"],
+        "properties": {
+          "move_id": {"type": "string", "minLength": 1},
+          "actor": {"type": "string", "minLength": 1},
+          "move_type": {"enum": ["ASSERT", "CHALLENGE", "REVISE", "DEFER", "DISSENT", "EVIDENCE_REQUEST", "SYNTHESIS"]},
+          "body": {"type": "string", "minLength": 1},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "target_state_hash": {"type": "string", "minLength": 1},
+          "validity": {"enum": ["CURRENT", "REASSESS_REQUIRED", "SUPERSEDED", "RESOLVED", "DISPOSITIONED"]},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "responds_to": {"type": ["string", "null"]},
+          "defer_to": {"type": ["string", "null"]},
+          "deference_depth": {"type": "integer", "minimum": 0, "maximum": 1},
+          "disposition": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "required": ["reason_code", "rationale", "dispositioned_by", "dispositioned_at"],
+            "properties": {
+              "reason_code": {"enum": ["RESOLVED_BY_EVIDENCE", "OUT_OF_SCOPE", "ACCEPTED_RISK", "SUPERSEDED_TARGET", "OPERATOR_DECISION", "OTHER_TYPED"]},
+              "rationale": {"type": "string", "minLength": 1},
+              "dispositioned_by": {"type": "string", "minLength": 1},
+              "dispositioned_at": {"type": "string", "format": "date-time"}
+            }
+          },
+          "created_at": {"type": "string", "format": "date-time"}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"move_type": {"const": "DEFER"}}, "required": ["move_type"]},
+            "then": {"required": ["defer_to", "deference_depth"]}
+          },
+          {
+            "if": {"properties": {"validity": {"const": "DISPOSITIONED"}}, "required": ["validity"]},
+            "then": {"required": ["disposition"]}
+          }
+        ]
+      }
+    },
+    "dissent_preserved": {"type": "boolean"},
+    "surviving_dissent_ids": {"type": "array", "items": {"type": "string"}},
+    "deference_effect": {"const": "SYNTHESIS_ONLY"},
+    "deference_counts_toward_quorum": {"const": false},
+    "deference_satisfies_independence": {"const": false},
+    "max_deference_depth": {"const": 1},
+    "assent_perishability_rule": {"const": "ASSERT_AND_SYNTHESIS_REASSESS_ON_TARGET_HASH_CHANGE"},
+    "dissent_durability_rule": {"const": "DISSENT_REMAINS_VISIBLE_AFTER_DISPOSITION"},
+    "authority_effect": {"const": "NONE"}
+  }
+}

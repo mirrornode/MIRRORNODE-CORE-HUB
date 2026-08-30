@@ -4,6 +4,14 @@
 
 ---
 
+## Orientation Bridge
+
+Returning human or AI participants should begin with [`START_HERE.md`](START_HERE.md), then use [`ORIENTATION_PROTOCOL.md`](ORIENTATION_PROTOCOL.md) for the technical re-entry, provenance, freshness, and source-routing contract.
+
+These orientation artifacts sit beside the source of truth but are **not themselves canon and have no authority effect**. Their purpose is to restore coherence and route the reader to current authoritative evidence.
+
+---
+
 ## Authority Boundary
 
 MIRRORNODE-CORE-HUB is the governed canonical surface for MIRRORNODE charters, contracts, schemas, promotion records, and source-of-truth decisions.
@@ -18,6 +26,8 @@ Promotion into canon requires Ptah evaluation and explicit Operator ratification
 
 | Surface | Authority |
 |---|---|
+| `START_HERE.md` | Narrative orientation only; no authority effect |
+| `ORIENTATION_PROTOCOL.md` | Technical coherence-bootstrap/navigation protocol; no authority effect |
 | `MASTER_INDEX.md` | Promotion register for ratified canonical artifacts |
 | `canon/` | Declared canon root for charters, contracts, dossiers, scripts, and index material |
 | `schemas/` | Versioned schemas for governed artifacts such as Osiris audit output |
@@ -89,6 +99,8 @@ Treat those runtime references as stale unless they are verified in the current 
 
 ```text
 MIRRORNODE-CORE-HUB/
+├── START_HERE.md
+├── ORIENTATION_PROTOCOL.md
 ├── MASTER_INDEX.md
 ├── canon/
 ├── examples/
@@ -102,9 +114,10 @@ Additional directories may exist for work in progress, but they do not become ca
 
 ## Status
 
-**Last Updated:** 2026-06-29  
+**Last Updated:** 2026-08-21  
 **Governance Register:** `MASTER_INDEX.md` active  
 **Canon Root:** `canon/` active  
+**Orientation Bridge:** proposal branch only until reviewed/merged  
 **Osiris Schema:** v1.0.0 production ready  
 **Runtime Manifest Claims:** Not asserted by CORE-HUB without current execution-repo evidence
 

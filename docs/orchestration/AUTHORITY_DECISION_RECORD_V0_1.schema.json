@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mirrornode://schemas/authority-decision-record/v0.1",
+  "title": "Authority Decision Record v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "decision_id", "work_id", "authority_envelope_ref", "target_state_hash",
+    "routing_provenance", "admissible_authority_sources", "operator_delta_digest_ref", "platform_state_ref",
+    "decision", "created_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "decision_id": {"type": "string", "minLength": 1},
+    "work_id": {"type": "string", "minLength": 1},
+    "authority_envelope_ref": {"type": "string", "minLength": 1},
+    "target_state_hash": {"type": "string", "minLength": 1},
+    "routing_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selection_function_ref", "intersection_input_used", "reviewers", "attesters"],
+      "properties": {
+        "selection_function_ref": {"type": "string", "minLength": 1},
+        "intersection_input_used": {"const": false},
+        "reviewers": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "attesters": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "independence_evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "admissible_authority_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_class", "source_ref", "integrity_ref"],
+        "properties": {
+          "source_class": {"enum": ["OPERATOR_AUTHORIZATION", "GOVERNING_CONTRACT", "SCOPED_DELEGATION", "PLATFORM_STATE", "EXACT_HEAD_REVIEW", "CI_EVIDENCE", "ATTESTATION_BLOCKING_CONTROL", "DEGRADED_MODE_OVERRIDE"]},
+          "source_ref": {"type": "string", "minLength": 1},
+          "integrity_ref": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "non_authority_context_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "operator_delta_digest_ref": {"type": "string", "minLength": 1},
+    "platform_state_ref": {"type": "string", "minLength": 1},
+    "degraded_mode": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["active", "reason", "ratification_deadline", "residual_risk"],
+      "properties": {
+        "active": {"type": "boolean"},
+        "reason": {"type": "string", "minLength": 1},
+        "ratification_deadline": {"type": "string", "format": "date-time"},
+        "residual_risk": {"type": "string", "minLength": 1}
+      }
+    },
+    "decision": {"enum": ["ELIGIBLE", "HOLD", "FAIL", "ELIGIBLE_WITH_FLAGGED_OVERRIDE"]},
+    "execution_attempt_state": {"enum": ["NOT_ATTEMPTED", "ATTEMPTED_CONFIRMED", "EXECUTION_ATTEMPTED_OUTCOME_UNKNOWN"]},
+    "retry_authorization_ref": {"type": ["string", "null"]},
+    "live_dissent_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "dissent_disposition_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}
