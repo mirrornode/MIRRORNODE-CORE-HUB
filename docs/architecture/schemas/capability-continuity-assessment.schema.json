@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.example/schemas/capability-continuity-assessment.schema.json",
+  "title": "MIRRORNODE Capability Continuity Assessment v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "assessment_id",
+    "function_id",
+    "function_version",
+    "function_contract_sha256",
+    "criticality",
+    "evaluated_at",
+    "trusted_time_ref",
+    "verifier",
+    "paths",
+    "system_disposition",
+    "capability_loss",
+    "evidence_pack_ref",
+    "evidence_pack_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "0.1.0" },
+    "assessment_id": { "type": "string", "minLength": 1 },
+    "function_id": {
+      "type": "string",
+      "pattern": "^mirrornode\\.[a-z0-9][a-z0-9_.-]*$"
+    },
+    "function_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "function_contract_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "criticality": { "const": "CRITICAL" },
+    "evaluated_at": { "type": "string", "format": "date-time" },
+    "trusted_time_ref": { "type": "string", "minLength": 1 },
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verifier_id", "verifier_version", "policy_sha256"],
+      "properties": {
+        "verifier_id": { "type": "string", "minLength": 1 },
+        "verifier_version": { "type": "string", "minLength": 1 },
+        "policy_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        }
+      }
+    },
+    "paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/path_assessment" }
+    },
+    "system_disposition": {
+      "type": "string",
+      "enum": ["CAPABILITY_AVAILABLE", "CAPABILITY_UNAVAILABLE", "HOLD"]
+    },
+    "capability_loss": {
+      "type": "string",
+      "enum": ["NONE", "CRITICAL_FUNCTION_UNAVAILABLE", "UNKNOWN"]
+    },
+    "evidence_pack_ref": { "type": "string", "minLength": 1 },
+    "evidence_pack_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "system_disposition": { "const": "CAPABILITY_AVAILABLE" } },
+        "required": ["system_disposition"]
+      },
+      "then": {
+        "properties": {
+          "capability_loss": { "const": "NONE" },
+          "paths": {
+            "contains": {
+              "type": "object",
+              "required": [
+                "record_status",
+                "eligibility_disposition",
+                "within_recorded_limits",
+                "function_binding_verified",
+                "authority_ceiling_verified",
+                "validity_window_verified",
+                "reevaluation_clear",
+                "tool_environment_available",
+                "substrate_available",
+                "evidence_complete"
+              ],
+              "properties": {
+                "record_status": { "const": "ACTIVE" },
+                "eligibility_disposition": {
+                  "enum": ["ELIGIBLE", "ELIGIBLE_WITH_LIMITS"]
+                },
+                "within_recorded_limits": { "const": true },
+                "function_binding_verified": { "const": true },
+                "authority_ceiling_verified": { "const": true },
+                "validity_window_verified": { "const": true },
+                "reevaluation_clear": { "const": true },
+                "tool_environment_available": { "const": true },
+                "substrate_available": { "const": true },
+                "evidence_complete": { "const": true }
+              }
+            },
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "system_disposition": { "const": "CAPABILITY_UNAVAILABLE" } },
+        "required": ["system_disposition"]
+      },
+      "then": {
+        "properties": {
+          "capability_loss": { "const": "CRITICAL_FUNCTION_UNAVAILABLE" },
+          "paths": {
+            "not": {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "record_status",
+                  "eligibility_disposition",
+                  "within_recorded_limits",
+                  "function_binding_verified",
+                  "authority_ceiling_verified",
+                  "validity_window_verified",
+                  "reevaluation_clear",
+                  "tool_environment_available",
+                  "substrate_available",
+                  "evidence_complete"
+                ],
+                "properties": {
+                  "record_status": { "const": "ACTIVE" },
+                  "eligibility_disposition": {
+                    "enum": ["ELIGIBLE", "ELIGIBLE_WITH_LIMITS"]
+                  },
+                  "within_recorded_limits": { "const": true },
+                  "function_binding_verified": { "const": true },
+                  "authority_ceiling_verified": { "const": true },
+                  "validity_window_verified": { "const": true },
+                  "reevaluation_clear": { "const": true },
+                  "tool_environment_available": { "const": true },
+                  "substrate_available": { "const": true },
+                  "evidence_complete": { "const": true }
+                }
+              },
+              "minContains": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "system_disposition": { "const": "HOLD" } },
+        "required": ["system_disposition"]
+      },
+      "then": {
+        "properties": {
+          "capability_loss": { "const": "UNKNOWN" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "path_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path_id",
+        "eligibility_record_id",
+        "eligibility_record_sha256",
+        "record_status",
+        "eligibility_disposition",
+        "within_recorded_limits",
+        "function_binding_verified",
+        "authority_ceiling_verified",
+        "validity_window_verified",
+        "reevaluation_clear",
+        "tool_environment_available",
+        "substrate_available",
+        "evidence_complete"
+      ],
+      "properties": {
+        "path_id": { "type": "string", "minLength": 1 },
+        "eligibility_record_id": { "type": "string", "minLength": 1 },
+        "eligibility_record_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "record_status": {
+          "type": "string",
+          "enum": ["ACTIVE", "REVOKED", "SUPERSEDED"]
+        },
+        "eligibility_disposition": {
+          "type": "string",
+          "enum": [
+            "ELIGIBLE",
+            "ELIGIBLE_WITH_LIMITS",
+            "INELIGIBLE",
+            "STALE_REEVALUATION_REQUIRED",
+            "UNVERIFIED"
+          ]
+        },
+        "within_recorded_limits": { "type": "boolean" },
+        "function_binding_verified": { "type": "boolean" },
+        "authority_ceiling_verified": { "type": "boolean" },
+        "validity_window_verified": { "type": "boolean" },
+        "reevaluation_clear": { "type": "boolean" },
+        "tool_environment_available": { "type": "boolean" },
+        "substrate_available": { "type": "boolean" },
+        "evidence_complete": { "type": "boolean" }
+      }
+    }
+  },
+  "$comment": "CAPABILITY_AVAILABLE is schema-valid only when at least one path has an active eligible record and every required fail-closed verification flag is true. CAPABILITY_UNAVAILABLE is schema-valid only when no such path exists. Semantic tooling must compute these flags from immutable referenced evidence rather than trusting caller assertions."
+}

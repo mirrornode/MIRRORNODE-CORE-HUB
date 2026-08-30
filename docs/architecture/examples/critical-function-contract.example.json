@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1.0",
+  "function_id": "mirrornode.review.adversarial_exact_target",
+  "function_version": "0.1.0",
+  "purpose": "Perform bounded adversarial review against an immutable target and emit evidence-backed findings without execution authority.",
+  "criticality": "CRITICAL",
+  "owner": "MIRRORNODE",
+  "authority_ceiling": {
+    "source_ref": "example://authority/review-none",
+    "source_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "ceiling_label": "NONE"
+  },
+  "input_contract": {
+    "ref": "example://contracts/review-input-v0.1",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "output_contract": {
+    "ref": "example://contracts/review-output-v0.1",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "tool_contract": {
+    "ref": "example://contracts/review-tools-v0.1",
+    "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "side_effect_contract": {
+    "ref": "example://contracts/review-effects-v0.1",
+    "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "evidence_contract": {
+    "ref": "example://contracts/review-evidence-v0.1",
+    "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "failure_contract": {
+    "ref": "example://contracts/review-failure-v0.1",
+    "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "acceptance_suite": {
+    "suite_ref": "example://acceptance/adversarial-exact-target-v0.1",
+    "suite_version": "0.1.0",
+    "suite_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+    "threshold": "All mandatory invariants pass; no unresolved P1; bounded P2 policy satisfied."
+  },
+  "provenance_requirements": [
+    "Substrate identity and evaluation provenance must be durable.",
+    "Evaluation evidence must bind the exact function and acceptance-suite versions."
+  ],
+  "independence_requirements": [
+    "Technical eligibility does not establish independent-review provenance.",
+    "Independence must be evaluated separately for each governed review matter."
+  ],
+  "supersedes": null
+}

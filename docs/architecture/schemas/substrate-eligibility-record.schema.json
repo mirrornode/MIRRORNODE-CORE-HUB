@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirrornode.example/schemas/substrate-eligibility-record.schema.json",
+  "title": "MIRRORNODE Substrate Eligibility Record v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "eligibility_record_id",
+    "record_status",
+    "function_id",
+    "function_version",
+    "function_contract_sha256",
+    "authority_ceiling_sha256",
+    "substrate",
+    "evaluation",
+    "tool_environment_sha256",
+    "evidence_pack_ref",
+    "evidence_pack_sha256",
+    "eligibility_disposition",
+    "limits",
+    "effective_at",
+    "valid_until",
+    "reevaluation_triggers"
+  ],
+  "properties": {
+    "schema_version": { "const": "0.1.0" },
+    "eligibility_record_id": { "type": "string", "minLength": 1 },
+    "record_status": {
+      "type": "string",
+      "enum": ["ACTIVE", "REVOKED", "SUPERSEDED"]
+    },
+    "function_id": {
+      "type": "string",
+      "pattern": "^mirrornode\\.[a-z0-9][a-z0-9_.-]*$"
+    },
+    "function_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "function_contract_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "authority_ceiling_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "substrate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substrate_id",
+        "substrate_class",
+        "provider_or_owner",
+        "model_or_runtime",
+        "revision",
+        "inference_configuration_sha256"
+      ],
+      "properties": {
+        "substrate_id": { "type": "string", "minLength": 1 },
+        "substrate_class": {
+          "type": "string",
+          "enum": [
+            "HOSTED_COGNITION",
+            "MIRRORNODE_CONTROLLED_INFERENCE",
+            "LOCAL_DETERMINISTIC"
+          ]
+        },
+        "provider_or_owner": { "type": "string", "minLength": 1 },
+        "model_or_runtime": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "inference_configuration_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite_ref",
+        "suite_version",
+        "suite_sha256",
+        "started_at",
+        "completed_at",
+        "trusted_time_ref",
+        "evaluator_id",
+        "evaluator_provenance_ref",
+        "result_sha256",
+        "threshold_met",
+        "known_failures"
+      ],
+      "properties": {
+        "suite_ref": { "type": "string", "minLength": 1 },
+        "suite_version": { "type": "string", "minLength": 1 },
+        "suite_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "started_at": { "type": "string", "format": "date-time" },
+        "completed_at": { "type": "string", "format": "date-time" },
+        "trusted_time_ref": { "type": "string", "minLength": 1 },
+        "evaluator_id": { "type": "string", "minLength": 1 },
+        "evaluator_provenance_ref": { "type": "string", "minLength": 1 },
+        "result_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "threshold_met": { "type": "boolean" },
+        "known_failures": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "tool_environment_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "evidence_pack_ref": { "type": "string", "minLength": 1 },
+    "evidence_pack_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "eligibility_disposition": {
+      "type": "string",
+      "enum": [
+        "ELIGIBLE",
+        "ELIGIBLE_WITH_LIMITS",
+        "INELIGIBLE",
+        "STALE_REEVALUATION_REQUIRED",
+        "UNVERIFIED"
+      ]
+    },
+    "limits": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "effective_at": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "reevaluation_triggers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "revocation_reason": { "type": "string", "minLength": 1 },
+    "superseded_by": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eligibility_disposition": {
+            "enum": ["ELIGIBLE", "ELIGIBLE_WITH_LIMITS"]
+          }
+        },
+        "required": ["eligibility_disposition"]
+      },
+      "then": {
+        "properties": {
+          "evaluation": {
+            "properties": {
+              "threshold_met": { "const": true }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eligibility_disposition": { "const": "ELIGIBLE_WITH_LIMITS" }
+        },
+        "required": ["eligibility_disposition"]
+      },
+      "then": {
+        "properties": {
+          "limits": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_status": { "const": "REVOKED" }
+        },
+        "required": ["record_status"]
+      },
+      "then": { "required": ["revocation_reason"] }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_status": { "const": "SUPERSEDED" }
+        },
+        "required": ["record_status"]
+      },
+      "then": { "required": ["superseded_by"] }
+    }
+  ],
+  "$comment": "Current eligibility additionally requires semantic validation that function/version/digests match, evaluated_at is within the validity interval, recorded limits cover the requested case, required tools/evidence are available, and no reevaluation trigger has fired."
+}
