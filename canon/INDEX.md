@@ -18,13 +18,16 @@ This index does not create authority, promote drafts, or convert implementation 
 
 For recent implementation evidence about the MOPCON / Oracle / Osiris integration, the current branch contains:
 
-- [MIRRORNODE-00 — Operational Addendum — 2026-09-01](./dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-ADDENDUM-2026-09-01.md)
+- [MIRRORNODE-00 — Operational Verification Delta — 2026-09-01](./dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-DELTA-2026-09-01.md) — consult this first for the newest exact-head and verification state.
+- [MIRRORNODE-00 — Operational Addendum — 2026-09-01](./dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-ADDENDUM-2026-09-01.md) — broader session reconciliation and predecessor evidence.
 
-**Status of that addendum: candidate operational evidence / unratified.**
+**Status of both records: candidate operational evidence / unratified.**
 
-It may be used to reconcile current observations and exact-head implementation evidence, but it has **no canonical precedence** and does not supersede ratified canon merely because this branch is merged.
+The verification delta supersedes only stale exact-head and verification anchors in the earlier addendum. It does not rewrite predecessor evidence, grant authority, or create canonical precedence.
 
-Promotion requires the exact gate recorded in `MASTER_INDEX.md`: **Ptah evaluation + explicit Operator ratification + canonical promotion record**. Until then, treat the addendum as branch-bound evidence only.
+These records may be used to reconcile current observations and exact-head implementation evidence, but they have **no canonical precedence** and do not supersede ratified canon merely because this branch is merged.
+
+Promotion requires the exact gate recorded in `MASTER_INDEX.md`: **Ptah evaluation + explicit Operator ratification + canonical promotion record**. Until then, treat these records as branch-bound evidence only.
 
 Earlier dossiers remain historical evidence and retain their original scope and exact-head meaning.
 
