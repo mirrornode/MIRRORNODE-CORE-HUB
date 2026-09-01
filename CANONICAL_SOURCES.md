@@ -10,11 +10,14 @@ Governance canon, continuity records, authority contracts, ratified promotion re
 
 `MASTER_INDEX.md` remains the promotion register. Candidate operational evidence does not become canon without the required Ptah evaluation + explicit Operator ratification + promotion record.
 
-### Candidate operational state record
+### Candidate operational state records
 
-`canon/dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-ADDENDUM-2026-09-01.md`
+Read current branch-bound operational state in this order:
 
-This is **unratified candidate operational evidence**. It may reconcile recent observed/implemented/verified state, but it has no canonical precedence until promoted through the required gate.
+1. `canon/dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-DELTA-2026-09-01.md` — current exact-head verification delta; read this first for present implementation/review anchors.
+2. `canon/dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-ADDENDUM-2026-09-01.md` — broader predecessor reconciliation and historical context.
+
+Both are **unratified candidate operational evidence**. They may reconcile recent observed/implemented/verified state, but neither has canonical precedence until promoted through the required gate.
 
 ## Private Operator Console / MOPCON
 
@@ -72,7 +75,7 @@ For current operational questions, distinguish evidence from canon:
 
 1. directly observed runtime/database/deployment evidence within its stated scope;
 2. exact-head PR/review/test evidence for branch-bound implementation;
-3. latest dated **candidate** CORE-HUB operational record as a reconciliation aid;
+3. latest dated **candidate** CORE-HUB operational delta, followed by its broader addendum, as reconciliation aids;
 4. ratified canon for authority and promotion rules;
 5. older dossiers/contracts as historical evidence unless explicitly reaffirmed.
 
