@@ -3,20 +3,20 @@
 **Date:** 2026-09-01  
 **Status:** DRAFT CURRENT-STATE RECORD  
 **Authority effect:** NONE  
-**Supersedes for current-state questions:** `canon/dossiers/2026-08/MIRRORNODE-00-CLOSEOUT-2026-08-22.md`  
-**Does not rewrite:** any earlier dossier, review, Council disposition, or exact-head attestation
+**Current-state precedence:** supersedes `canon/dossiers/2026-08/MIRRORNODE-00-CLOSEOUT-2026-08-22.md` only for questions of present operational state  
+**Historical integrity:** does not rewrite any earlier dossier, review, Council disposition, exact-head attestation, or authority grant
 
 ## Purpose
 
-This addendum records the current operational state reached during the MOPCON / Oracle / Osiris integration session spanning 2026-08-31 through 2026-09-01.
+This addendum records the operational state reached during the MOPCON / Oracle / Osiris integration session spanning 2026-08-31 through 2026-09-01.
 
-It exists to prevent current implementation truth from drifting away from MIRRORNODE's governance record while preserving strict distinctions between:
+It exists to prevent implementation truth from drifting away from governance while preserving five distinct labels:
 
-- **observed** — directly seen in runtime, database, build, or local endpoint evidence;
+- **observed** — directly seen in runtime, database, build, or endpoint evidence;
 - **implemented** — code exists on an identified branch/head;
 - **verified** — the stated behavior was exercised successfully in the stated scope;
-- **held** — intentionally prevented from advancing pending an authority, evidence, security, or review condition;
-- **not authorized** — no merge, deployment, provider promotion, customer mutation, release, or delivery authority is implied by this record.
+- **held** — intentionally prevented from advancing pending evidence, authority, security, or review;
+- **not authorized** — no merge, deployment, provider promotion, customer mutation, release, or delivery authority is implied.
 
 This document is a current-state record, not a ratification instrument.
 
@@ -24,131 +24,129 @@ This document is a current-state record, not a ratification instrument.
 
 ## 1. Current operating shape
 
-MIRRORNODE is currently converging on one private Operator cockpit with bounded modules rather than separate ad hoc interfaces.
+MIRRORNODE is converging on one private Operator cockpit with bounded modules rather than separate ad hoc interfaces.
 
-### Private Operator surface
+### MOPCON
 
-**MOPCON** — `mirrornode/mirrornode-operator-console`
+Repository: `mirrornode/mirrornode-operator-console`
 
-Current functional modules on the active feature branch include:
+Current feature-branch modules include:
 
 - system/runtime evidence;
 - governed Oracle/runtime plan flow;
-- Operator Debt model;
+- Operator Debt;
 - commercial readiness;
 - Osiris fulfillment state;
 - authenticated private case projection;
-- architecture and workstream state;
-- permitted-next-action / action-rail semantics.
+- architecture/workstream state;
+- permitted-next-action semantics.
 
-The intended operating principle is:
+Operating principle:
 
 > Different types of work, different modules, same Operator interface.
 
-The intended MOPCON shell remains:
+Intended shell:
 
-- top: current lane / target / runtime state / Operator Debt;
-- left: architecture / docs / evidence / context;
-- center: active task module;
-- right: runtime / logs / plans / approvals / blockers;
-- bottom: permitted next actions.
+- top — current lane, target, runtime state, Operator Debt;
+- left — architecture, docs, evidence, context;
+- center — active task module;
+- right — runtime, traces, plans, approvals, blockers;
+- bottom — permitted next actions.
 
-This shell is partially implemented. Layout polish is explicitly lower priority than functional integration and authority correctness.
+Functional integration and authority correctness remain higher priority than visual polish.
 
 ---
 
-## 2. MOPCON implementation state
+## 2. MOPCON exact-head state and verification lineage
 
-### Active draft PR
-
-Repository: `mirrornode/mirrornode-operator-console`  
-PR: `#27` — `feat: assemble local Operator cockpit and read-only Osiris cases`  
+Draft PR: `mirrornode/mirrornode-operator-console#27`  
 Branch: `feat/local-runtime-console-2026-08-31`  
-Exact head recorded for this addendum: `fe63850aa1371126c159d3a64b044ee7b1db6fe2`  
-PR state at capture: **open / draft / mergeable**
+Current exact head: `5bb06891036c7871f60ff90df269e96c98e74004`  
+PR state at this record: **open / draft / mergeable / unmerged**
 
-The PR remains intentionally unmerged.
+### Last exact head with local E2E proof
 
-### Local validation at exact head
+`fe63850aa1371126c159d3a64b044ee7b1db6fe2`
 
-Observed locally at `fe63850aa1371126c159d3a64b044ee7b1db6fe2`:
+Observed and verified at that head:
 
 - `npm run type-check` / `tsc --noEmit` passed;
-- MOPCON was listening on `127.0.0.1:3000`;
-- the authenticated `/cases` surface rendered the live read-only case projection;
+- MOPCON listened on `127.0.0.1:3000`;
 - unauthenticated `/api/private/cases` returned HTTP `401`;
-- authenticated Operator session returned HTTP `200`;
-- private case projection reported `available`;
-- projected mutation authority reported `disabled`.
+- Operator authentication returned HTTP `200`;
+- authenticated `/cases` rendered live cases;
+- projection state was `available`;
+- mutation state was `disabled`;
+- three paid cases were visible through the minimum private projection.
 
-No repository merge, production deployment, customer mutation, release, or delivery was performed.
+### Changes after the verified head
+
+The current head `5bb0689...` contains two truth-reconciliation changes after `fe63850...`:
+
+1. the fulfillment registry was corrected from stale `held_pending_data_source` to `read_only`;
+2. `/fulfillment` was corrected from `HELD PENDING READ-ONLY SOURCE` to `LOCAL READ-ONLY VERIFIED` and now states that production promotion remains separately review-gated.
+
+The current head therefore **must not inherit exact-head type-check/E2E status by implication**. A fresh local type-check and fresh exact-head review are required.
+
+No merge or deployment has occurred.
 
 ---
 
-## 3. MOPCON Operator authentication boundary
+## 3. Operator authentication boundary
 
 MOPCON now has a local single-Operator authentication shell.
 
 Implemented properties:
 
-- `MOPCON_OPERATOR_PASSWORD` is local/server-side only;
+- `MOPCON_OPERATOR_PASSWORD` is server/local only;
 - `MOPCON_SESSION_SECRET` signs the Operator session;
 - session cookie is HttpOnly;
-- SameSite is strict;
+- SameSite is `strict`;
 - production cookie mode is Secure;
 - session TTL is bounded;
 - missing auth configuration fails closed;
-- password verification uses SHA-256 plus timing-safe comparison;
-- private `/cases` and `/api/private/cases` require a valid Operator session;
-- secrets are ignored by Git and are not returned by API responses.
+- password verification uses a timing-safe comparison path;
+- `/cases` and `/api/private/cases` require a valid Operator session;
+- secrets are ignored by Git and are not returned by the APIs.
 
-Current scope caveat:
-
-This is acceptable as a **local single-Operator v0.1 boundary**. It is not a complete remote identity system. Before network exposure or higher-authority write operations, additional hardening remains required, including stronger identity/revocation, rate limiting, explicit CSRF/re-auth controls for state-changing actions, and remote transport protections.
+This is acceptable as a **local single-Operator v0.1 boundary**. It is not a complete remote identity system. Before network exposure or state-changing remote operations, stronger identity/revocation, rate limiting, CSRF/re-auth controls, and remote transport protections remain required.
 
 ---
 
 ## 4. Local network boundary
 
-Current local intended bindings:
+The session used these loopback bindings:
 
 | Surface | Binding | Role |
 |---|---|---|
 | MOPCON | `127.0.0.1:3000` | private Operator cockpit |
-| Platform read projection | `127.0.0.1:3002` | local server-side read bridge to production ledger |
-| Agent runtime / Oracle | `127.0.0.1:8000` | governed reasoning/runtime |
+| Platform case reader | `127.0.0.1:3002` | server-side minimum projection bridge |
+| Governed Oracle/runtime | `127.0.0.1:8000` | reasoning/runtime |
 
-MOPCON `dev` and `start` scripts were changed to bind loopback by default rather than all interfaces.
+MOPCON `dev` and `start` now bind loopback by default. Its development origin configuration was narrowed for loopback use. The Platform reader was explicitly started on loopback.
 
-MOPCON `allowedDevOrigins` was narrowed for loopback development.
-
-The Platform read-projection worktree is also started explicitly with `--hostname 127.0.0.1 --port 3002`.
-
-These bindings reduce accidental LAN exposure. They do not by themselves constitute a complete remote security architecture.
+These controls reduce accidental LAN exposure. They do not constitute a complete remote security architecture.
 
 ---
 
-## 5. Read-only Osiris case projection
+## 5. Platform read-only Osiris case projection
 
-### Platform draft PR
-
-Repository: `mirrornode/mirrornode-platform`  
-PR: `#53` — `feat: add MOPCON read-only Osiris case projection`  
+Draft PR: `mirrornode/mirrornode-platform#53`  
 Branch: `feat/mopcon-readonly-case-projection-2026-08-31`  
-Exact head recorded for this addendum: `062ad630ad3c795dd27c2e84d251880b8c615c3f`  
+Exact head: `062ad630ad3c795dd27c2e84d251880b8c615c3f`  
 Base: `main` at `f47b237cce4fcf0edf495c2f64b2d371d3b08103`  
-PR state at capture: **open / draft / mergeable**  
-Exact-head Vercel status at capture: **success**
+PR state: **open / draft / mergeable**  
+Vercel exact-head build status: **success**
 
-### Projection architecture
+### Boundary design
 
 MOPCON does **not** receive a Supabase service-role credential.
 
-The Platform server retains the existing Supabase service-role authority and exposes a separate GET-only endpoint:
+Platform retains the Supabase service-role authority server-side and exposes one GET-only endpoint:
 
 `/api/internal/mopcon/cases`
 
-The endpoint requires a high-entropy bearer read secret and returns only a minimum Operator projection.
+The endpoint requires a high-entropy bearer read secret and returns only the minimum Operator view.
 
 Projected fields:
 
@@ -157,8 +155,7 @@ Projected fields:
 - payment state;
 - fulfillment state;
 - created/updated timestamps;
-- intake-present state;
-- intake-submitted timestamp;
+- intake-present state and submission timestamp;
 - artifact count;
 - Operator-review timestamp;
 - fulfillment-start timestamp;
@@ -171,74 +168,66 @@ Deliberately omitted:
 - artifact URLs;
 - Supabase credentials;
 - secrets;
-- mutation/release/delivery authority.
+- mutation, release, or delivery authority.
 
 Response caching is disabled with `cache-control: no-store`.
 
-### Fail-closed evidence
+### Verification
 
-Preview behavior was directly exercised before the final config-only Turbopack-root correction and returned:
+The route was observed to fail closed with HTTP `401` without authorization and no customer data. The exact Platform head passed its Vercel build. The local loopback reader at the same branch head was then exercised against the production ledger and consumed successfully by authenticated MOPCON.
 
-- HTTP `401 Unauthorized` without the read secret;
-- `cache-control: no-store`;
-- no customer data.
-
-The current exact Platform head also passed its Vercel build after the Turbopack-root correction.
-
-The current exact implementation was then exercised locally against the production ledger through the loopback bridge.
+Production promotion of this reader remains **held** pending fresh exact-head review and a separately approved secret/deployment strategy.
 
 ---
 
 ## 6. Live Osiris case evidence
 
-A read-only aggregate database query and the authenticated MOPCON projection both established the same current case distribution:
+A read-only aggregate database query and the authenticated MOPCON projection agreed on the same distribution:
 
 - **3 paid Osiris cases total**;
 - **2** at `intake_complete`;
 - **1** at `fulfillment_started`.
 
-The MOPCON case screen rendered those three records with masked customer identity and minimum lifecycle metadata.
+MOPCON rendered those records with masked customer identity and minimum lifecycle metadata.
 
-No raw intake narrative, full customer identity, Stripe identifiers, or artifact URLs were printed during verification.
+During verification:
 
-No production row was mutated by this verification flow.
+- no raw intake narrative was printed;
+- no full customer identity was printed;
+- no Stripe identifier was printed;
+- no artifact URL was printed;
+- no production row was mutated.
 
-### Current projection state
-
-`AVAILABLE`
-
-### Current mutation state
-
-`DISABLED`
+Current proven projection state: **AVAILABLE**  
+Current proven mutation state: **DISABLED**
 
 ---
 
 ## 7. Case identity correction
 
-A previous MOPCON fulfillment description incorrectly treated the Stripe session as effectively doubling as case identity.
+A previous MOPCON description incorrectly treated Stripe identity as effectively doubling as case identity.
 
-That is stale.
+That statement is stale.
 
-`guest_audit_purchases` already contains an independent UUID `id`, and the current projection exposes that value as `case_id`.
+`guest_audit_purchases` already has an independent UUID `id`; the minimum projection exposes it as `case_id`.
 
 Current interpretation:
 
-- case UUID = candidate canonical case identity;
-- Stripe session/customer identifiers = payment identity/evidence only;
-- the remaining structural gap is not creation of a case identifier;
-- the remaining gap is **formal binding of evidence, findings/deliverable versions, release approval, and delivery receipt to the case UUID**.
+- ledger UUID = candidate canonical first-dollar case identity;
+- Stripe IDs = payment identity/evidence only;
+- remaining structural gap = binding evidence, findings/deliverable versions, release approval, and delivery receipt to that case UUID.
 
-MOPCON fulfillment source data was corrected accordingly on head `fe63850aa1371126c159d3a64b044ee7b1db6fe2`.
+The MOPCON fulfillment registry now reflects this correction.
 
 ---
 
-## 8. Operator Debt
+## 8. Operator Debt and NOW
 
-Operator Debt is a first-class MOPCON concept defined as:
+Operator Debt means:
 
 > the count of items that cannot legitimately advance until the Operator acts.
 
-Canonical working states:
+Working states:
 
 - `operator_required`;
 - `execution_active`;
@@ -248,26 +237,20 @@ Canonical working states:
 
 Only `operator_required` contributes to Operator Debt.
 
-### Current derived case debt
+### Derived customer-case debt
 
-The live case projection currently shows:
+The live case projection shows:
 
-- 2 paid cases at `intake_complete` without recorded Operator review;
-- 1 case already at `fulfillment_started` with an Operator review timestamp.
+- two paid cases at `intake_complete` without recorded Operator review;
+- one case at `fulfillment_started` with Operator review recorded.
 
-Under the current manual Osiris fulfillment boundary, the two `intake_complete` cases cannot legitimately enter fulfillment until Operator review.
-
-Therefore:
+Under the current manual fulfillment contract, the two `intake_complete` cases cannot legitimately enter fulfillment until Operator review.
 
 **Derived live customer-case Operator Debt = 2.**
 
-Important distinction:
+This is a derived operational truth from the live ledger plus the fulfillment contract. It is **not yet aggregated into the MOPCON `NOW` home surface**.
 
-This count is currently a **derived operational truth from the live case state and fulfillment contract**. It is not yet fully wired into the MOPCON `NOW` aggregate/home surface at the time of this addendum.
-
-### Intended NOW sources
-
-The Operator Debt / NOW surface should eventually aggregate only genuinely Operator-blocked items from:
+Intended NOW sources are limited to genuinely Operator-blocked items, including:
 
 - customer case review;
 - release approval;
@@ -277,7 +260,7 @@ The Operator Debt / NOW surface should eventually aggregate only genuinely Opera
 - commercial/public-promise decisions;
 - incidents or degraded authority requiring explicit disposition.
 
-Each NOW item should answer:
+Each NOW item should expose:
 
 - WHAT needs the Operator;
 - WHY it cannot advance;
@@ -286,45 +269,43 @@ Each NOW item should answer:
 - EVIDENCE;
 - smallest legitimate ACTION.
 
+Work that can legitimately continue without the Operator does not belong in Operator Debt.
+
 ---
 
-## 9. Oracle / governed runtime state
+## 9. Oracle / governed runtime
 
-Current runtime model remains the governed:
+Current governed runtime model remains:
 
 `plan -> explicit Operator approve -> execute -> trace`
 
-The reviewed repo-steward stack remains bounded to runtime eligibility and does not create GitHub mutation, merge, deploy, or repository-write authority.
-
-The current local Oracle/runtime chain has previously been verified end-to-end as:
+The local chain has previously been verified end-to-end as:
 
 browser -> MOPCON -> runtime proxy -> governed runtime -> model -> trace -> MOPCON.
 
-MOPCON adds server-side evidence context rather than asking the Oracle to invent host/system state.
-
-### Oracle Online status
+MOPCON supplies bounded server-side evidence context rather than asking Oracle to invent host/system state.
 
 The target milestone remains:
 
 `ORACLE ONLINE v0.1 — Durable Advisory Runtime`
 
-Current status is **not fully achieved**.
+It is **not complete**.
 
 Known remaining gaps:
 
 - plan storage remains in-memory;
-- trace durability is not yet sufficient for serverless/restart continuity despite local trace logs;
-- runtime-native explicit remote authentication is incomplete;
-- current local reachability is not equivalent to durable authenticated production service;
-- legacy Vercel `oracle` projects are not the authority for the current governed Oracle runtime.
+- trace durability is insufficient for restart/serverless continuity;
+- runtime-native remote authentication is incomplete;
+- local reachability is not equivalent to durable authenticated production service;
+- legacy Vercel `oracle` projects are not authority for the current governed runtime.
 
-No provider promotion is implied by this addendum.
+Runtime approval does not imply repository write, merge, deployment, or provider-promotion authority.
 
 ---
 
-## 10. Evidence architecture
+## 10. Evidence model
 
-MOPCON now distinguishes at least:
+MOPCON distinguishes at least:
 
 - observed;
 - unreachable;
@@ -332,13 +313,9 @@ MOPCON now distinguishes at least:
 - registered;
 - declared.
 
-The system evidence adapter is server-side and avoids secrets.
+The evidence adapter is server-side and avoids secrets. The runtime proxy adds a bounded MOPCON evidence envelope for Oracle work while preserving the user-facing objective separately.
 
-The runtime proxy appends a bounded MOPCON evidence envelope to Oracle objectives and strips that envelope from the user-facing returned objective while preserving the evidence-bound runtime/trace record.
-
-Current evidence includes runtime/system state plus declared commercial and fulfillment spine state.
-
-This is evidence projection, not canonical-state invention.
+Evidence projection must not be treated as canonical-state invention.
 
 ---
 
@@ -348,21 +325,17 @@ Current commercial progression recorded in MOPCON:
 
 1. **Project Archaeologist** — discovery / lead generation; planned `$5–$29`.
 2. **Osiris Audit** — current bounded `$149` entry offer.
-3. **MOPCON Secure** — recurring control / observation / authority visibility; price not yet locked.
+3. **MOPCON Secure** — recurring control / observation / authority visibility; price TBD.
 4. **Assurance Sprint** — material remediation / implementation; planned `$3.5k+`.
 5. **Enterprise Control Plane** — custom / parked.
 
 ### MOPCON Secure boundary
 
-Approved working boundary:
-
 **IN:** recurring observation, authority visibility, evidence/state tracking, drift detection, alerts, policy/control configuration, Operator escalation.
 
 **OUT:** bespoke remediation, architecture redesign, code changes, migrations, provider integration, material customer-system changes, open-ended consulting.
 
-OUT work belongs to Assurance Sprint.
-
-MOPCON Secure must not silently absorb Lane 4 consulting.
+OUT work belongs to Assurance Sprint. MOPCON Secure must not silently absorb bespoke implementation/consulting.
 
 ---
 
@@ -379,35 +352,34 @@ Current working lifecycle:
 7. Delivery — durable partial.
 8. Delivery Receipt — missing immutable effect receipt.
 
-The existing ledger states remain:
+Current ledger states:
 
-- `intake_pending`;
-- `intake_complete`;
-- `fulfillment_started`;
-- `delivered`;
-- `paused`;
-- `refunded`.
+`intake_pending`, `intake_complete`, `fulfillment_started`, `delivered`, `paused`, `refunded`.
 
-`operator_reviewed_at` is a pre-fulfillment checkpoint, not a release approval receipt.
+Important authority distinctions:
 
-`delivered_at` records delivery timing but does not prove which exact approved artifact/version was delivered.
+- `operator_reviewed_at` = pre-fulfillment checkpoint, not a release approval receipt;
+- `delivered_at` = delivery timestamp, not proof of the exact approved artifact/version delivered;
+- live case projection = read-only visibility, not fulfillment authority.
 
-### Remaining scale blockers
+Remaining scale blockers:
 
-- bind evidence bundles to case UUID and immutable source/version identity;
-- bind findings/deliverable versions to case/evidence versions;
-- create explicit exact-version Operator release approval;
-- create immutable delivery receipt binding case, exact artifact/version/hash, approval, destination, timestamp/effect;
-- preserve fail-closed behavior on stale or incomplete authority/evidence.
+- case-bound versioned evidence records;
+- case/evidence-bound findings or deliverable versions;
+- exact-version Operator release approval;
+- immutable delivery receipt binding case, artifact/version/hash, approval, destination, and effect;
+- fail-closed behavior on stale or incomplete authority/evidence.
+
+The private case projection itself is now **locally verified read-only**. Production promotion remains held.
 
 ---
 
 ## 13. Public-offer / methodology drift
 
-An unresolved commercial-contract drift remains recorded:
+An unresolved commercial-contract drift remains:
 
-- the public Platform sells **Osiris Audit v1** at `$149`;
-- the current `osiris-audit` methodology repo defines **Structural Scan v1** as a distinct `$149` entry engagement before the larger Agent Authority Audit.
+- public Platform sells **Osiris Audit v1** at `$149`;
+- current `osiris-audit` methodology defines **Structural Scan v1** as a distinct `$149` entry engagement before the larger Agent Authority Audit.
 
 MOPCON must not silently choose a new customer promise.
 
@@ -415,27 +387,23 @@ Current disposition:
 
 **OPERATOR REVIEW REQUIRED before storefront copy change or fulfillment scaling.**
 
-This drift does not prevent bounded implementation work that does not alter the public promise.
+This does not block bounded implementation work that leaves the public promise unchanged.
 
 ---
 
-## 14. Security and dependency debt discovered in this session
+## 14. Security and dependency debt discovered
 
-During local Platform worktree installation:
-
-`npm ci` reported **6 high-severity vulnerabilities**.
+During local Platform worktree installation, `npm ci` reported **6 high-severity vulnerabilities**.
 
 Current classification:
 
 - observed package-manager finding;
-- details not yet triaged in this addendum;
+- exact package/path/reachability details not yet triaged in this record;
 - no claim is made that the findings are exploitable in the deployed path;
 - no `npm audit fix` was run;
 - blind dependency mutation was intentionally avoided during the authority-boundary verification.
 
-Required next action:
-
-Run a bounded dependency audit, classify exact packages/paths/reachability, then remediate on a dedicated branch with regression testing rather than accepting automatic broad upgrades.
+Required next action: bounded dependency audit, exact reachability classification, then dedicated remediation with regression testing.
 
 ---
 
@@ -445,85 +413,47 @@ Nothing in this session or addendum authorizes or claims:
 
 - merge of MOPCON PR #27;
 - merge of Platform PR #53;
-- production promotion of the MOPCON case projection;
+- merge of this CORE-HUB source-of-truth branch;
+- production promotion of the case projection;
 - production deployment of MOPCON;
 - Oracle/runtime provider promotion;
-- autonomous case advancement;
-- autonomous fulfillment start;
+- autonomous case advancement or fulfillment start;
 - release approval;
 - customer delivery;
 - customer-data mutation;
-- Supabase credential transfer into MOPCON;
-- Stripe credential transfer into MOPCON;
-- raw customer intake display in the default case table;
-- Scale Ready status for Osiris;
+- Supabase or Stripe credential transfer into MOPCON;
+- raw customer intake in the default case table;
+- Osiris Scale Ready status;
 - full `ORACLE ONLINE v0.1` completion;
-- independent exact-head review of the current MOPCON accumulated feature head.
+- independent exact-head review of the current MOPCON feature head.
 
 ---
 
-## 16. Current exact-head anchors
+## 16. Exact-head anchors
 
 | Surface | Exact head | State |
 |---|---|---|
-| MOPCON PR #27 | `fe63850aa1371126c159d3a64b044ee7b1db6fe2` | draft; local type-check + auth/case E2E verified |
+| MOPCON PR #27 — current | `5bb06891036c7871f60ff90df269e96c98e74004` | draft; truth registry/UI reconciled; fresh type-check/review required |
+| MOPCON — last E2E-verified predecessor | `fe63850aa1371126c159d3a64b044ee7b1db6fe2` | local type-check + auth/case E2E verified |
 | Platform PR #53 | `062ad630ad3c795dd27c2e84d251880b8c615c3f` | draft; Vercel exact-head build success; local case reader operational |
-| Platform base | `f47b237cce4fcf0edf495c2f64b2d371d3b08103` | current PR base recorded at capture |
+| Platform PR #53 base | `f47b237cce4fcf0edf495c2f64b2d371d3b08103` | base at capture |
 
-If either head moves, any exact-head statement in this addendum becomes historical and must not be silently carried forward.
-
----
-
-## 17. Current operational summary
-
-### Verified now
-
-- local MOPCON private Operator gate works;
-- unauthenticated private case access fails closed;
-- MOPCON is loopback-bound in the verified local configuration;
-- local Platform case bridge is loopback-bound;
-- Platform keeps the Supabase service-role credential server-side;
-- MOPCON receives a minimum read-only case projection;
-- three real paid Osiris cases are visible through the authenticated cockpit;
-- projected mutation remains disabled;
-- current case-state distribution is 2 `intake_complete`, 1 `fulfillment_started`;
-- derived customer-case Operator Debt is 2;
-- case identity is an independent UUID, not Stripe identity;
-- MOPCON exact head passes local TypeScript type-check;
-- Platform exact head passes Vercel build.
-
-### Implemented but not yet promoted
-
-- accumulated MOPCON cockpit modules on PR #27;
-- Platform read-only MOPCON case endpoint on PR #53;
-- current commercial and fulfillment registry refinements;
-- case projection UI;
-- Operator auth shell;
-- loopback default MOPCON dev/start behavior.
-
-### Held / next
-
-- aggregate live Operator Debt into MOPCON `NOW`;
-- inspect the two pending Osiris case reviews through a deliberate case-detail workflow;
-- preserve read-only boundary until a separate governed mutation design exists;
-- perform fresh exact-head review before merge eligibility;
-- triage the 6 high npm findings;
-- reconcile Osiris `$149` public-offer/methodology naming drift;
-- add durable evidence/findings/release/delivery-receipt records;
-- complete Oracle durability/authentication work before claiming `ORACLE ONLINE v0.1`.
+If any head moves, its exact-head statement becomes historical and must not be silently carried forward.
 
 ---
 
-## 18. Disposition
+## 17. Current disposition
 
-**CURRENT LOCAL OPERATOR COCKPIT: OPERATIONALLY VERIFIED FOR READ-ONLY CASE VISIBILITY IN THE STATED LOCAL SCOPE.**
+**LOCAL OPERATOR COCKPIT: OPERATIONALLY VERIFIED FOR READ-ONLY CASE VISIBILITY AT `fe63850...` IN THE STATED LOCAL SCOPE.**
 
-**CURRENT MOPCON / PLATFORM CHANGES: REVIEW-HELD DRAFT IMPLEMENTATIONS.**
+**CURRENT MOPCON HEAD `5bb0689...`: TRUTH-RECONCILED DRAFT; FRESH TYPE-CHECK AND EXACT-HEAD REVIEW REQUIRED.**
+
+**PLATFORM READ PROJECTION `062ad630...`: DRAFT; LOCAL READ PATH OPERATIONAL; PRODUCTION PROMOTION HELD.**
+
+**LIVE CUSTOMER-CASE OPERATOR DEBT: 2 — DERIVED; NOT YET AGGREGATED INTO `NOW`.**
 
 **CUSTOMER CASE MUTATION / RELEASE / DELIVERY: NOT AUTHORIZED.**
 
 **ORACLE ONLINE v0.1: INCOMPLETE — DURABILITY/AUTHENTICATION GAPS REMAIN.**
 
-**LIVE CUSTOMER-CASE OPERATOR DEBT: 2 (DERIVED; NOT YET AGGREGATED INTO `NOW`).**
-
-This is the source-of-truth candidate for current operational state until superseded by a later dated record. It becomes mainline source-of-truth only if separately reviewed and merged under the repository's normal authority process.
+This is the current operational source-of-truth candidate until superseded by a later dated record. It becomes mainline canon only if separately reviewed and merged under normal CORE-HUB authority.
