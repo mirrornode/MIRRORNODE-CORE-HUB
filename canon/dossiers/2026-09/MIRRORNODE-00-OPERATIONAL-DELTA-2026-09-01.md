@@ -24,8 +24,9 @@ Current exact head: `b9e788ac6e508973872013c09ced93b838d21c40`
 State:
 
 - open / draft / unmerged;
-- current-head local type-check is **pending**;
-- current head contains the bounded correction set from the exact-head Codex review of predecessor `de3e7c7b5de03d00c3213e5ec24372f89d72411e`.
+- Operator-reported exact-head `npm run type-check` completed cleanly; underlying command `tsc --noEmit`;
+- current head contains the bounded correction set from the exact-head Codex review of predecessor `de3e7c7b5de03d00c3213e5ec24372f89d72411e`;
+- fresh independent review has been requested against exact current head `b9e788ac...`.
 
 ### Latest independent-review findings and corrections
 
@@ -40,10 +41,11 @@ Earlier hardening remains intended: strict minimum case allowlisting, all-or-not
 
 ### Verification lineage preserved
 
-- `de3e7c7b5de03d00c3213e5ec24372f89d72411e` owns the latest reported clean local `npm run type-check` / `tsc --noEmit` evidence before this correction set.
+- `b9e788ac6e508973872013c09ced93b838d21c40` owns the current Operator-reported clean local type-check evidence.
+- `de3e7c7b5de03d00c3213e5ec24372f89d72411e` owns the predecessor clean local type-check and the independent review that generated the final correction set.
 - `fe63850aa1371126c159d3a64b044ee7b1db6fe2` owns the authenticated private-case E2E predecessor: unauthenticated `401`, Operator auth `200`, projection `available`, projected mutation state `disabled`, and three paid Osiris cases observed.
 
-Neither predecessor result is represented as exact-head proof for `b9e788ac...`.
+The predecessor E2E result is not represented as current-head E2E proof for `b9e788ac...`.
 
 ---
 
@@ -57,8 +59,10 @@ Current exact head: `0ab0bd69266fb4831fcb89551acc3031702ab174`
 State:
 
 - open / draft / unmerged;
-- current-head local route-test execution is **pending**;
-- current head contains the bounded correction from the exact-head Codex review of predecessor `95e2fec8deec09f67e62d4eae8f9a0a7fbfa2542`, plus adversarial test coverage for that correction.
+- Operator-reported exact-head `npm test -- app/api/internal/mopcon/cases/route.test.ts` completed cleanly;
+- current exact head has Vercel status `success`;
+- current head contains the bounded correction from the exact-head Codex review of predecessor `95e2fec8deec09f67e62d4eae8f9a0a7fbfa2542`, plus adversarial test coverage for that correction;
+- fresh independent review has been requested against exact current head `0ab0bd69...`.
 
 ### Latest independent-review finding and correction
 
@@ -77,18 +81,18 @@ The checked-in additive UUID migration remains repository-only and has **not** b
 
 ### Verification lineage preserved
 
-- `95e2fec8deec09f67e62d4eae8f9a0a7fbfa2542` owns the latest reported clean current-route test evidence before this correction.
-- `56bfd1d31b8a5964f5de870b59f5e8c3568b418b` owns prior route-test + Vercel-success evidence.
+- `0ab0bd69266fb4831fcb89551acc3031702ab174` owns the current Operator-reported clean local route-test evidence and current Vercel-success evidence.
+- `95e2fec8deec09f67e62d4eae8f9a0a7fbfa2542` owns the predecessor clean local route-test evidence and the independent review that generated the final concurrency correction.
 - `062ad630ad3c795dd27c2e84d251880b8c615c3f` owns the authenticated local production-ledger read-path evidence.
 - `b78152011c81c4d4fa2d09a3c9f1c7e70f9fd78f` owns the earlier unauthenticated preview `401` / no-projection evidence.
 
-Those predecessor results are not silently transferred to `0ab0bd69...`.
+The predecessor live-ledger result is not silently transferred to `0ab0bd69...`.
 
 ---
 
 ## 3. CORE-HUB source navigation correction
 
-`CANONICAL_SOURCES.md` now routes current operational state to this verification delta first and retains the larger operational addendum as broader predecessor reconciliation.
+`CANONICAL_SOURCES.md` routes current operational state to this verification delta first and retains the larger operational addendum as broader predecessor reconciliation.
 
 This fixes the exact-head navigation ambiguity identified by Codex at predecessor CORE-HUB head `a2f8a7af157a99b321fd29916383191ea216faf5`.
 
@@ -111,11 +115,11 @@ This delta does **not** re-attest that count or debt value at the current heads.
 
 ## 5. Current disposition
 
-**MOPCON `b9e788ac...`: latest review findings corrected; exact-head local type-check pending; fresh exact-head independent review pending after local verification.**
+**MOPCON `b9e788ac...`: latest review findings corrected; exact-head local type-check clean; fresh exact-head independent review requested.**
 
-**Platform `0ab0bd69...`: latest concurrency finding corrected with adversarial tests; exact-head local route test pending; fresh exact-head independent review pending after local verification.**
+**Platform `0ab0bd69...`: latest concurrency finding corrected with adversarial tests; exact-head local route test clean; Vercel success; fresh exact-head independent review requested; current-head live read-path verification still pending.**
 
-**CORE-HUB source navigation:** latest review finding corrected; final governance candidate head will require fresh exact-head review after the implementation verification anchors are bound.
+**CORE-HUB source navigation:** latest review finding corrected. This updated candidate head requires fresh exact-head governance review.
 
 **Projected mutation state remains designed as DISABLED. Customer mutation / fulfillment advancement / release / delivery remain NOT AUTHORIZED.**
 
