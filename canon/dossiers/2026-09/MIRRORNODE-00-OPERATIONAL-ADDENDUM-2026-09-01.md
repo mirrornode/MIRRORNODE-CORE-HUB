@@ -61,10 +61,10 @@ Functional integration and authority correctness remain higher priority than vis
 
 Draft PR: `mirrornode/mirrornode-operator-console#27`  
 Branch: `feat/local-runtime-console-2026-08-31`  
-Current exact head: `5bb06891036c7871f60ff90df269e96c98e74004`  
+Current exact head: `0650d0df78dd803856ed1bf2163986db794444c3`  
 PR state at this record: **open / draft / mergeable / unmerged**
 
-### Last exact head with local E2E proof
+### Last exact head with local case E2E proof
 
 `fe63850aa1371126c159d3a64b044ee7b1db6fe2`
 
@@ -79,14 +79,27 @@ Observed and verified at that head:
 - mutation state was `disabled`;
 - three paid cases were visible through the minimum private projection.
 
-### Changes after the verified head
+### Later exact-head type-check proof
 
-The current head `5bb0689...` contains two truth-reconciliation changes after `fe63850...`:
+`5bb06891036c7871f60ff90df269e96c98e74004`
 
-1. the fulfillment registry was corrected from stale `held_pending_data_source` to `read_only`;
-2. `/fulfillment` was corrected from `HELD PENDING READ-ONLY SOURCE` to `LOCAL READ-ONLY VERIFIED` and now states that production promotion remains separately review-gated.
+The Operator locally fetched that exact head and ran:
 
-The current head therefore **must not inherit exact-head type-check/E2E status by implication**. A fresh local type-check and fresh exact-head review are required.
+`npm run type-check` -> `tsc --noEmit`
+
+The command completed without a TypeScript error on 2026-09-01.
+
+This proves exact-head type correctness at `5bb0689...`; it does not silently transfer E2E proof from `fe63850...` or type-check proof to a later head.
+
+### Changes after the type-checked head
+
+The current head `0650d0d...` contains bounded truth/state reconciliation after `5bb0689...`:
+
+1. the system fulfillment endpoint no longer claims the private case projection is held pending an authenticated private-data boundary;
+2. the Oracle evidence envelope was advanced to `mopcon.local-evidence.v0.5`, recognizing that the authenticated case boundary exists while deliberately excluding private case rows from Oracle evidence envelopes;
+3. the live workstream registry retired obsolete next actions to “add authenticated private case projection” and “independent case identity”; the remaining Osiris gap is downstream lifecycle binding to the ledger UUID.
+
+The current head therefore **must not inherit exact-head type-check or review status by implication**. Fresh current-head type-check and exact-head review remain required.
 
 No merge or deployment has occurred.
 
@@ -217,7 +230,7 @@ Current interpretation:
 - Stripe IDs = payment identity/evidence only;
 - remaining structural gap = binding evidence, findings/deliverable versions, release approval, and delivery receipt to that case UUID.
 
-The MOPCON fulfillment registry now reflects this correction.
+The MOPCON fulfillment registry and current workstream state now reflect this correction.
 
 ---
 
@@ -271,6 +284,14 @@ Each NOW item should expose:
 
 Work that can legitimately continue without the Operator does not belong in Operator Debt.
 
+### Superseded static watch surface
+
+MOPCON PR #25 (`feat/mopcon-mobile-command-center-v0-1`) was closed **unmerged** on 2026-09-01 as superseded by the live cockpit in PR #27.
+
+Its static/manual watch entries and pre-customer assumptions remain historical provenance but are no longer current operating truth. No branch history was deleted and no code from PR #25 was merged by that disposition.
+
+The current live workstream registry contains no active `watch` workstream entries at this capture; future watch items should be derived from current evidence rather than resurrected from the static snapshot.
+
 ---
 
 ## 9. Oracle / governed runtime
@@ -311,9 +332,14 @@ MOPCON distinguishes at least:
 - unreachable;
 - unknown;
 - registered;
-- declared.
+- declared;
+- authenticated private-case state as a separately gated class.
+
+The current runtime evidence envelope is `mopcon.local-evidence.v0.5`.
 
 The evidence adapter is server-side and avoids secrets. The runtime proxy adds a bounded MOPCON evidence envelope for Oracle work while preserving the user-facing objective separately.
+
+The existence of the authenticated private-case boundary does **not** mean private customer rows belong in Oracle context. Private purchase/intake rows remain excluded from the Oracle evidence envelope and stay behind the Operator-session-gated case surface unless separately authorized.
 
 Evidence projection must not be treated as canonical-state invention.
 
@@ -422,6 +448,7 @@ Nothing in this session or addendum authorizes or claims:
 - customer delivery;
 - customer-data mutation;
 - Supabase or Stripe credential transfer into MOPCON;
+- private case rows in the Oracle evidence envelope;
 - raw customer intake in the default case table;
 - Osiris Scale Ready status;
 - full `ORACLE ONLINE v0.1` completion;
@@ -433,10 +460,12 @@ Nothing in this session or addendum authorizes or claims:
 
 | Surface | Exact head | State |
 |---|---|---|
-| MOPCON PR #27 — current | `5bb06891036c7871f60ff90df269e96c98e74004` | draft; truth registry/UI reconciled; fresh type-check/review required |
-| MOPCON — last E2E-verified predecessor | `fe63850aa1371126c159d3a64b044ee7b1db6fe2` | local type-check + auth/case E2E verified |
+| MOPCON PR #27 — current | `0650d0df78dd803856ed1bf2163986db794444c3` | draft; stale live claims reconciled; fresh current-head type-check/review required |
+| MOPCON — latest exact type-check | `5bb06891036c7871f60ff90df269e96c98e74004` | `npm run type-check` / `tsc --noEmit` passed locally |
+| MOPCON — last auth/case E2E-verified predecessor | `fe63850aa1371126c159d3a64b044ee7b1db6fe2` | local type-check + auth/case E2E verified |
 | Platform PR #53 | `062ad630ad3c795dd27c2e84d251880b8c615c3f` | draft; Vercel exact-head build success; local case reader operational |
 | Platform PR #53 base | `f47b237cce4fcf0edf495c2f64b2d371d3b08103` | base at capture |
+| Superseded MOPCON PR #25 | `9b46bd37b3c80d02c19959f925c7e59d5ec77af5` | closed unmerged; static watch snapshot retained as history only |
 
 If any head moves, its exact-head statement becomes historical and must not be silently carried forward.
 
@@ -446,7 +475,11 @@ If any head moves, its exact-head statement becomes historical and must not be s
 
 **LOCAL OPERATOR COCKPIT: OPERATIONALLY VERIFIED FOR READ-ONLY CASE VISIBILITY AT `fe63850...` IN THE STATED LOCAL SCOPE.**
 
-**CURRENT MOPCON HEAD `5bb0689...`: TRUTH-RECONCILED DRAFT; FRESH TYPE-CHECK AND EXACT-HEAD REVIEW REQUIRED.**
+**MOPCON TYPE-CHECK: VERIFIED AT `5bb0689...`.**
+
+**CURRENT MOPCON HEAD `0650d0d...`: TRUTH-RECONCILED DRAFT; FRESH CURRENT-HEAD TYPE-CHECK AND EXACT-HEAD REVIEW REQUIRED.**
+
+**STATIC WATCH SNAPSHOT PR #25: SUPERSEDED / CLOSED UNMERGED / HISTORY PRESERVED.**
 
 **PLATFORM READ PROJECTION `062ad630...`: DRAFT; LOCAL READ PATH OPERATIONAL; PRODUCTION PROMOTION HELD.**
 
