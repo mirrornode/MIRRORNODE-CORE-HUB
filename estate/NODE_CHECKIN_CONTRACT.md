@@ -44,12 +44,15 @@ Use only:
 - `PENDING`
 - `IN_PROGRESS`
 - `UNKNOWN`
+- `NOT_REQUIRED`
 - `CLEAR`
 - `CORRECTION_REQUIRED`
 - `BLOCKED`
 - `STALE_HEAD`
 
-A node check-off must name the exact head it inspected.
+`NOT_REQUIRED` is valid only when the named checkpoint is explicitly conditional and its trigger condition did not occur; the receipt must state why it was not invoked.
+
+A node check-off must name the exact head it inspected when an exact head exists.
 
 ## Head-change invalidation
 
