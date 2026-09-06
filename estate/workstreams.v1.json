@@ -15,10 +15,12 @@
     {
       "domain": "Continuity",
       "item": "Estate Worktree / Engineering Doctrine / Consolidation Spine",
-      "exact_subject": "mirrornode/MIRRORNODE-CORE-HUB#63@056cc2136763487ce9a627eca2962b9480c0ce19",
+      "exact_subject": "mirrornode/MIRRORNODE-CORE-HUB#63",
       "owner_seat": "Operator",
       "state": "ACTIVE",
-      "next_evidence_producing_action": "complete acceptance artifacts, update routing docs, mark ready for review"
+      "next_evidence_producing_action": "complete acceptance artifacts, update routing docs, mark ready for review",
+      "source_branch": "theia/estate-worktree-v0-1",
+      "exact_head_source": "GitHub PR #63 live head metadata + external Estate node check-in; self-head is not embedded in files that mutate the head."
     },
     {
       "domain": "Credibility",
