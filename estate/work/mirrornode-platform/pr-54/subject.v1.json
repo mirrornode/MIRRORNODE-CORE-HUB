@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "subject_id": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+  "repository_full_name": "mirrornode/mirrornode-platform",
+  "pull_request_number": 54,
+  "title": "feat: add controlled Osiris fulfillment start",
+  "source_branch": "feat/osiris-controlled-fulfillment-start-v1",
+  "execution_worktree_branch": "mirrornode-musical-funicular",
+  "predecessor_head_sha": "44368a27942dd8cee88e467024f01f298a89866d",
+  "exact_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+  "recorded_date": "2026-09-06",
+  "purpose": "Successor exact-head subject after bounded P1 authorization-statement correction.",
+  "current_phase": "merged_rollout_not_authorized",
+  "node_checkpoints": [
+    {
+      "node": "Copilot2",
+      "state": "CLEAR",
+      "scope": "P1 correction committed and pushed; 53 tests/lint/build/diff-check pass; exact-head DB proof completed separately.",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "GitHub CI",
+      "state": "CLEAR",
+      "scope": "CI workflow success on exact successor head",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "Canon Gate",
+      "state": "CLEAR",
+      "scope": "Canon Gate success on exact successor head",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "ChatGPT",
+      "state": "CLEAR",
+      "scope": "Fresh exact-head code reconciliation: P1 implementation matches adjudicated minimum invariant; database execution proof remains a separate blocker.",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "Perplexity",
+      "state": "CLEAR",
+      "scope": "Fresh independent successor-head reconciliation supplied to the Operator: P1 CLOSED, NEW FINDINGS NONE, P2 nonblocking/unchanged, FINAL VERDICT CLEAR_FOR_OPERATOR_DISPOSITION. This is review evidence, not a submitted GitHub approval.",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "Merlin",
+      "state": "NOT_REQUIRED",
+      "scope": "No fresh ambiguity remained after successor-head Perplexity reconciliation; arbitration not invoked.",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "Copilot2-DB",
+      "state": "CLEAR",
+      "scope": "Disposable local PostgreSQL 17.6.1 exact-head database verification: migration apply/rerun PASS; 25 assertions PASS; 0 failed; no repository modifications.",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    }
+  ],
+  "evidence": {
+    "migration_sha256": "8f9a45359e9d5059f45d7f2b5e8bedd32edbbf702af0d54fae30f6b86ed66d1a",
+    "application_tests": "PASS — 53 tests",
+    "lint": "PASS",
+    "build": "PASS",
+    "git_diff_check": "PASS",
+    "database_verification": "PASS — disposable local Docker PostgreSQL 17.6.1; 25 assertions; 0 failed",
+    "exact_head_ci": "PASS",
+    "exact_head_canon_gate": "PASS",
+    "database_environment": "Disposable local Docker PostgreSQL 17.6.1",
+    "migration_apply": "PASS",
+    "migration_rerun": "PASS",
+    "database_assertions_passed": 25,
+    "database_assertions_failed": 0,
+    "authorization_gate_matrix": {
+      "null": "PASS — NOT_READY, unchanged",
+      "blank": "PASS — NOT_READY, unchanged",
+      "whitespace": "PASS — NOT_READY, unchanged",
+      "timestamp_missing": "PASS — NOT_READY, unchanged",
+      "legacy_row": "PASS — NOT_READY, unchanged",
+      "valid_start": "PASS — STARTED with receipt fields",
+      "idempotent_replay": "PASS — original receipt preserved",
+      "cross_case_conflict": "PASS — IDEMPOTENCY_CONFLICT",
+      "role_grants": "PASS — service_role yes; anon/authenticated no",
+      "refused_rows_unchanged": "PASS"
+    },
+    "perplexity_final_review": "CLEAR_FOR_OPERATOR_DISPOSITION — P1 CLOSED; NEW FINDINGS NONE; P2 nonblocking/unchanged; review supplied to Operator, not submitted as GitHub review."
+  },
+  "remaining_findings": [
+    "Hosted migration remains unapplied by design.",
+    "Deployment/runtime verification and live-case progression remain separately unauthorized."
+  ],
+  "authority_note": "PR #54 is merged. This record does not authorize deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start.",
+  "merge_receipt": {
+    "source_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+    "merge_commit_sha": "f68111bdd3b851350ce60efae55cd80df84e9458",
+    "main_head_after_merge": "f68111bdd3b851350ce60efae55cd80df84e9458",
+    "merge_method": "squash",
+    "provider_ruleset_verification": "PASS — two-field single-Operator delta applied; all preserved controls re-read successfully"
+  }
+}

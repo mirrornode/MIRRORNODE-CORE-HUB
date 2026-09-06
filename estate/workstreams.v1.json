@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-09-06",
+  "status": "DRAFT_CANDIDATE",
+  "no_hidden_work_rule": "No ACTIVE work without domain, owner seat, exact subject, and next evidence-producing action.",
+  "active": [
+    {
+      "domain": "Revenue",
+      "item": "Osiris controlled fulfillment start",
+      "exact_subject": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+      "owner_seat": "Operator",
+      "state": "MERGED_ROLLOUT_NOT_AUTHORIZED",
+      "next_evidence_producing_action": "none in this authorization scope; stop before hosted migration/deployment/live-case start",
+      "implementation_seat": "Builder",
+      "merge_commit_sha": "f68111bdd3b851350ce60efae55cd80df84e9458"
+    },
+    {
+      "domain": "Continuity",
+      "item": "Estate Worktree / Engineering Doctrine / Consolidation Spine",
+      "exact_subject": "mirrornode/MIRRORNODE-CORE-HUB#63",
+      "owner_seat": "Operator",
+      "state": "CORRECTION_REQUIRED",
+      "next_evidence_producing_action": "resolve Codex review findings on current PR #63 head; rerun exact-head checks; request fresh independent review",
+      "source_branch": "theia/estate-worktree-v0-1",
+      "exact_head_source": "GitHub PR #63 live head metadata + external Estate node check-in; self-head is not embedded in files that mutate the head."
+    },
+    {
+      "domain": "Credibility",
+      "item": "GitHub Ops proof audit",
+      "exact_subject": "mirrornode/mirrornode-github-ops#1@bd9479a2b21f062854b6a5108c31e2f4ef880747",
+      "owner_seat": "Builder",
+      "state": "SUPPORT_ACTIVE_NEXT",
+      "next_evidence_producing_action": "produce first customer-legible sample audit after (a) PR #54 reaches MERGED or explicit HOLD with provider-policy disposition, and (b) PR #63 reaches CLEAR_FOR_OPERATOR_DISPOSITION on its then-current exact head",
+      "prerequisites": [
+        "mirrornode/mirrornode-platform#54 reaches MERGED or explicit HOLD with recorded provider-policy disposition",
+        "mirrornode/MIRRORNODE-CORE-HUB#63 reaches CLEAR_FOR_OPERATOR_DISPOSITION on live exact head"
+      ],
+      "source_branch": "feat/github-ops-foundation-v0-1",
+      "base_branch": "main"
+    }
+  ],
+  "parked": [
+    {
+      "item": "Broad MOPCON expansion",
+      "disposition": "PARK",
+      "restart_condition": "first-dollar operation exposes visibility/control blocker",
+      "why_parked": "Not required for first-dollar fulfillment; broad cockpit work would expand scope.",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "item": "Protected Relay implementation",
+      "disposition": "PARK",
+      "restart_condition": "real protected-source workflow or safety requirement",
+      "why_parked": "No current revenue-critical or live protected-source workflow requires implementation.",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "item": "General Oracle multi-provider automation",
+      "disposition": "PARK",
+      "restart_condition": "customer/revenue proof requires it",
+      "why_parked": "Generalized orchestration is not needed for the current revenue/proof loop.",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "item": "Repo Steward mutation authority",
+      "disposition": "PARK",
+      "restart_condition": "read-only proof demonstrates a concrete recurring mutation need",
+      "why_parked": "Read-only proof should precede mutation authority expansion.",
+      "evidence_source": {
+        "path": "estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md",
+        "heading": "5. Read/write separation"
+      },
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "item": "Autonomous remediation/release",
+      "disposition": "PARK",
+      "restart_condition": "explicit risk/ROI case after manual process is proven",
+      "why_parked": "Manual bounded control path is not yet commercially proven enough to justify autonomous authority.",
+      "evidence_source": {
+        "path": "estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md",
+        "heading": "12. Separation of functions"
+      },
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "item": "Broad monitoring subscription",
+      "disposition": "PARK",
+      "restart_condition": "multiple customers request ongoing monitoring",
+      "why_parked": "No repeated customer demand yet establishes this as a paid recurring need.",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "E. Revenue operating spine / Passive / low-touch income experiments"
+      },
+      "last_reviewed": "2026-09-06"
+    },
+    {
+      "item": "Experimental games/art/visual surfaces",
+      "disposition": "PARK",
+      "restart_condition": "separate personal/product priority with protected time budget",
+      "why_parked": "Preserved personal/experimental work is outside the current revenue schedule.",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
+      "last_reviewed": "2026-09-06"
+    }
+  ]
+}
