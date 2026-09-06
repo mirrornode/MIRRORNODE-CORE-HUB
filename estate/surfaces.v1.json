@@ -9,16 +9,17 @@
     "active_subjects": [
       {
         "subject": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
-        "owner_seat": "Builder",
         "operator_disposition": "MERGE_AUTHORIZED",
         "provider_state": "BLOCKED_BY_RULESET_LAST_PUSH_APPROVAL",
-        "next_action": "apply bounded single-Operator ruleset correction, re-read, then merge exact head"
+        "next_action": "Operator/admin executor applies bounded single-Operator ruleset correction; re-read preserved controls; confirm exact-head final review remains CLEAR; then squash-merge exact authorized head.",
+        "implementation_owner_seat": "Builder",
+        "disposition_owner_seat": "Operator"
       },
       {
         "subject": "mirrornode/MIRRORNODE-CORE-HUB#63",
         "owner_seat": "Operator",
-        "provider_state": "DRAFT_OPEN",
-        "next_action": "finish narrow acceptance condition and request review",
+        "provider_state": "OPEN_READY_FOR_REVIEW_CORRECTION_IN_PROGRESS",
+        "next_action": "close Codex exact-head findings, obtain fresh review, then Operator disposition",
         "source_branch": "theia/estate-worktree-v0-1",
         "exact_head_source": "GitHub PR #63 live head metadata + external Estate node check-in; self-head is not embedded in files that mutate the head."
       },
