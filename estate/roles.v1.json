@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-09-06",
+  "status": "DRAFT_CANDIDATE",
+  "doctrine": "Separation of function, not fictional identity.",
+  "seats": [
+    {
+      "seat": "Operator",
+      "core_function": "business/governance/consequential disposition",
+      "inspect": true,
+      "edit": "through approved executor",
+      "authorize": true,
+      "examples": [
+        "Sean/Siseon"
+      ]
+    },
+    {
+      "seat": "Builder",
+      "core_function": "bounded implementation",
+      "inspect": true,
+      "edit": "bounded branch/worktree",
+      "authorize": false,
+      "examples": [
+        "Copilot2",
+        "Theia when explicitly executing bounded code work"
+      ]
+    },
+    {
+      "seat": "Reviewer",
+      "core_function": "independent semantic/adversarial inspection",
+      "inspect": true,
+      "edit": false,
+      "authorize": false,
+      "examples": [
+        "Perplexity",
+        "Theia in review mode"
+      ]
+    },
+    {
+      "seat": "Arbitrator",
+      "core_function": "resolve conflicting findings/evidence",
+      "inspect": true,
+      "edit": false,
+      "authorize": false,
+      "examples": [
+        "Merlin"
+      ]
+    },
+    {
+      "seat": "Final Review Seat",
+      "core_function": "fresh read-only exact-head final disposition",
+      "inspect": true,
+      "edit": false,
+      "authorize": false,
+      "examples": [
+        "isolated final-review AI/model"
+      ]
+    },
+    {
+      "seat": "Projector",
+      "core_function": "normalize and display governed state",
+      "inspect": true,
+      "edit": false,
+      "authorize": false,
+      "examples": [
+        "GitHub Ops read-only projection",
+        "MOPCON read-only views"
+      ]
+    },
+    {
+      "seat": "Executor",
+      "core_function": "perform one specifically approved bounded operation and return receipt",
+      "inspect": "as needed",
+      "edit": "only within approved command",
+      "authorize": false,
+      "examples": [
+        "service-role RPC",
+        "deployment/migration executor when separately authorized"
+      ]
+    }
+  ],
+  "unresolved_legacy_roles": [
+    "Historical Lucian-centered routing/port registry is not current authority.",
+    "Ptah/Lucian/other historical agent identities must not infer present runtime or governance authority from old registry presence."
+  ]
+}
