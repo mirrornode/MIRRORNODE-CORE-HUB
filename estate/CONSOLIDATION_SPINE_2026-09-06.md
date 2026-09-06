@@ -33,6 +33,42 @@ Every repo, PR, cloud project, database, surface, and workflow should receive on
 
 Every current-state record must distinguish implementation, verification, merge, deployment, activation, authorization, and canon status.
 
+### Inventory vs disposition
+
+Inventory and disposition are separate artifacts.
+
+Inventory answers:
+
+```text
+what exists
+where it exists
+what it connects to
+known / unknown
+```
+
+Disposition answers:
+
+```text
+what happens next
+who owns the decision
+restart/retirement condition
+```
+
+Do not mutate, delete, pause, or "clean up" a surface merely because inventory evidence looks stale, duplicated, insecure, or surprising. Discovery is evidence collection; disposition is a deliberate lifecycle decision.
+
+### No hidden work
+
+No ACTIVE work may exist without:
+
+```text
+domain
+owner_seat
+exact_subject
+next_evidence_producing_action
+```
+
+Everything else is PARK, VERIFY, SUPERSEDE, RETIRE, SUPPORT, or EXPERIMENTAL with a recorded reason and restart condition.
+
 ## A. Source-of-truth cleanup
 
 ### CORE-HUB current observations
@@ -337,7 +373,31 @@ Recommended PARK now:
 
 Restart only when a named customer, revenue proof, safety requirement, or blocking dependency earns the work.
 
-## I. Concurrent cleanup work
+## I. Weekly operating outputs
+
+| Domain | Weekly output |
+|---|---|
+| Source of truth | One dated state snapshot with changed facts and unresolved unknowns |
+| Revenue | Qualified conversations, offers sent, paid/negotiated engagements, and next decision dates |
+| Business operations | One closed readiness item |
+| Estate hygiene | One classified inventory increment |
+| Continuity | Exact-head handoff records for all active subjects |
+| Credibility | One public-safe proof or application artifact |
+| Productization | Capture repetition; no speculative asset build |
+| Research/architecture | New work enters only as PARK with restart condition |
+
+Default calendar allocation for the next few weeks:
+
+```text
+50–60%  revenue / sample audits / proposals / conversations / fulfillment readiness
+20–25%  business readiness + minimum delivery-protecting cleanup
+10–15%  credibility / GitHub Developer Program / public-safe proof
+<=10%   continuity + architecture preservation
+```
+
+Revenue is the scheduling authority. If work does not produce revenue, protect fulfillment, establish current truth, or create credible proof, it waits.
+
+## J. Concurrent cleanup work
 
 The consolidation sprint should run in parallel tracks with explicit ownership:
 
@@ -377,7 +437,33 @@ The consolidation sprint should run in parallel tracks with explicit ownership:
 - one delivery checklist;
 - derive consulting and low-touch products from the same spine.
 
-## J. Exit criteria for the consolidation sprint
+## K. PR #63 acceptance condition
+
+PR #63 should remain a bounded continuity spine, not become an encyclopedic database.
+
+Acceptance requires only:
+
+1. every ACTIVE work item has repo/PR or branch, source branch, execution worktree branch when relevant, and exact immutable head;
+2. every repository in the initial census has one lifecycle disposition;
+3. every known production-capable or data-bearing surface has an owner seat and verification status;
+4. revenue-critical work is visibly separated from research, experiments, and parked architecture;
+5. historical documents are labeled historical/superseded rather than silently treated as current control sources;
+6. the Engineering Doctrine remains explicitly candidate guidance until reviewed and promoted.
+
+## L. Revenue-first estate sweep
+
+Sweep from revenue impact outward:
+
+| Order | Sweep | Required outcome |
+|---:|---|---|
+| 1 | PR #54 + production-adjacent platform surfaces | Exact merge/release/migration/case-start boundaries and current state |
+| 2 | CORE-HUB PR #63 | Candidate continuity spine ready for disposition |
+| 3 | GitHub repository census | Every repository assigned a lifecycle class |
+| 4 | Vercel project census | Repo ownership, purpose, deployment policy, keep/freeze/retire decision |
+| 5 | Supabase classification | Production data plane separated from replay/test surfaces |
+| 6 | Local-machine census | Reproducible secrets-free census script plus dated output |
+
+## M. Exit criteria for the consolidation sprint
 
 The sprint is complete when:
 
@@ -392,14 +478,15 @@ The sprint is complete when:
 9. parked work has restart conditions;
 10. the next 30 days of work are dominated by revenue, customer proof, and business readiness rather than new architecture.
 
-## K. Immediate order
+## N. Immediate order
 
 1. Correct the solo-Operator GitHub protection policy without weakening unrelated protections.
 2. Merge the exact-cleared Osiris PR #54 only after the policy is truthful and re-verified.
-3. Keep hosted migration/deploy/live case start separately gated.
-4. Finish/promote the Estate Worktree + Engineering Doctrine as the continuity spine.
-5. Run the local/Vercel/Supabase/open-PR cleanup census.
-6. Generate the GitHub Ops sample audit.
-7. Prepare GitHub Developer Program application/support surface.
-8. Start direct outreach and paid consulting conversations.
-9. Only then reopen parked architecture.
+3. Finish PR #63 to the narrow acceptance condition above.
+4. Generate the first polished GitHub Ops sample audit.
+5. Begin direct outreach and paid/design-partner conversations immediately using truthful current-state claims.
+6. Keep hosted migration/deploy/live-case start separately gated and authorize them only when they are actually needed for fulfillment.
+7. Run the GitHub/Vercel/Supabase/local cleanup sweep from revenue impact outward.
+8. Prepare the GitHub Developer Program application/support surface.
+9. Convert repeated paid delivery work into productized/passive assets.
+10. Reopen parked architecture only when a customer, proof need, safety requirement, or blocking dependency earns it.
