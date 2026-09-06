@@ -15,10 +15,12 @@
         "next_action": "apply bounded single-Operator ruleset correction, re-read, then merge exact head"
       },
       {
-        "subject": "mirrornode/MIRRORNODE-CORE-HUB#63@056cc2136763487ce9a627eca2962b9480c0ce19",
+        "subject": "mirrornode/MIRRORNODE-CORE-HUB#63",
         "owner_seat": "Operator",
         "provider_state": "DRAFT_OPEN",
-        "next_action": "finish narrow acceptance condition and request review"
+        "next_action": "finish narrow acceptance condition and request review",
+        "source_branch": "theia/estate-worktree-v0-1",
+        "exact_head_source": "GitHub PR #63 live head metadata + external Estate node check-in; self-head is not embedded in files that mutate the head."
       },
       {
         "subject": "mirrornode/mirrornode-github-ops#1@bd9479a2b21f062854b6a5108c31e2f4ef880747",
