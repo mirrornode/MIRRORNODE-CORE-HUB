@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-09-06",
+  "status": "DRAFT_CANDIDATE",
+  "note": "Provider/surface inventory with owner seat and verification state. No entry grants deployment, migration, secret, or retirement authority.",
+  "github": {
+    "organization": "mirrornode",
+    "repository_count": 43,
+    "active_subjects": [
+      {
+        "subject": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+        "owner_seat": "Builder",
+        "operator_disposition": "MERGE_AUTHORIZED",
+        "provider_state": "BLOCKED_BY_RULESET_LAST_PUSH_APPROVAL",
+        "next_action": "apply bounded single-Operator ruleset correction, re-read, then merge exact head"
+      },
+      {
+        "subject": "mirrornode/MIRRORNODE-CORE-HUB#63@PENDING_HEAD",
+        "owner_seat": "Operator",
+        "provider_state": "DRAFT_OPEN",
+        "next_action": "finish narrow acceptance condition and request review"
+      },
+      {
+        "subject": "mirrornode/mirrornode-github-ops#1@bd9479a2b21f062854b6a5108c31e2f4ef880747",
+        "owner_seat": "Builder",
+        "provider_state": "DRAFT_OPEN",
+        "next_action": "use as first GitHub Ops proof-audit/sample-report foundation"
+      }
+    ]
+  },
+  "vercel": {
+    "team": {
+      "name": "Mirrornode",
+      "slug": "inphase",
+      "plan": "hobby",
+      "project_count_observed": 25
+    },
+    "owner_seat": "Builder",
+    "verification_status": "INVENTORIED_NOT_FULLY_DISPOSITIONED",
+    "priority_surfaces": [
+      {
+        "name": "mirrornode-platform",
+        "repository": "mirrornode/mirrornode-platform",
+        "disposition": "ACTIVE",
+        "verification": "KNOWN_LINK"
+      },
+      {
+        "name": "public",
+        "repository": "mirrornode/mirrornode-parallax",
+        "disposition": "SUPPORT",
+        "verification": "KNOWN_LINK"
+      },
+      {
+        "name": "theia-core",
+        "repository": "mirrornode/theia-core",
+        "disposition": "SUPPORT",
+        "verification": "KNOWN_LINK"
+      },
+      {
+        "name": "osiris",
+        "repository": "mirrornode/osiris",
+        "disposition": "VERIFY",
+        "verification": "KNOWN_LINK_CURRENT_ROLE_UNVERIFIED"
+      },
+      {
+        "name": "osiris-ui",
+        "repository": "mirrornode/osiris-ui",
+        "disposition": "VERIFY",
+        "verification": "MULTIPLE_VARIANTS_PRESENT"
+      },
+      {
+        "name": "mirrornode",
+        "repository": "mirrornode/mirrornode",
+        "disposition": "SUPPORT",
+        "verification": "KNOWN_LINK"
+      },
+      {
+        "name": "mirrornode-hub",
+        "repository": null,
+        "disposition": "VERIFY",
+        "verification": "NO_CURRENT_REPO_LINK_IN_PROVIDER_RESULT"
+      },
+      {
+        "name": "oracle",
+        "repository": "mirrornode/mirrornode",
+        "disposition": "VERIFY",
+        "verification": "DUPLICATE_ORACLE_VARIANTS_PRESENT"
+      }
+    ],
+    "next_action": "revenue-first project census: ownership, purpose, deployment policy, domain, keep/freeze/retire decision"
+  },
+  "supabase": {
+    "owner_seat": "Executor",
+    "projects": [
+      {
+        "name": "Mirrornode OS",
+        "project_ref": "zomnswctmwjqnvftiayc",
+        "status": "ACTIVE_HEALTHY",
+        "disposition": "ACTIVE",
+        "verification": "PRODUCTION_DATA_PLANE_OBSERVED",
+        "notes": [
+          "PostgreSQL 17",
+          "RLS enabled on all observed public tables",
+          "PR #54 controlled-start migration not hosted yet by design"
+        ]
+      },
+      {
+        "name": "mirrornode-schema-reconciliation-replay",
+        "project_ref": "oddefbsevyyruecgqlen",
+        "status": "ACTIVE_HEALTHY",
+        "disposition": "VERIFY",
+        "verification": "TEST_REPLAY_SURFACE_WITH_RLS_DISABLED",
+        "notes": [
+          "zero observed rows",
+          "RLS disabled on public.guest_audit_purchases",
+          "do not auto-remediate before lifecycle decision"
+        ]
+      }
+    ]
+  },
+  "stripe": {
+    "owner_seat": "Executor",
+    "verification_status": "CONNECTED",
+    "accounts_observed": [
+      {
+        "name": "Mirrornode",
+        "mode": "live",
+        "disposition": "ACTIVE"
+      },
+      {
+        "name": "New business sandbox",
+        "mode": "test",
+        "disposition": "SUPPORT"
+      }
+    ],
+    "note": "No payment mutation performed during consolidation."
+  },
+  "local_machine": {
+    "owner_seat": "Builder",
+    "verification_status": "CENSUS_PENDING",
+    "disposition": "VERIFY",
+    "next_action": "run retained secrets-free local estate census script; record branch/head/worktree/tool versions and provider bindings"
+  }
+}
