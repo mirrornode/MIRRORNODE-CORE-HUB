@@ -4,7 +4,7 @@
   "source": {
     "provider": "GitHub",
     "query": "user:mirrornode",
-    "note": "Inventory only. Repository role/classification and runtime authority require separate evidence."
+    "note": "Inventory plus first-pass lifecycle disposition. VERIFY/UNVERIFIED entries intentionally preserve uncertainty; no disposition grants mutation or retirement authority."
   },
   "owner": "mirrornode",
   "repository_count": 43,
@@ -14,301 +14,474 @@
       "full_name": "mirrornode/-mirrornode-core",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "VERIFY",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "legacy/core-named surface; current authority not inferred"
     },
     {
       "repository_id": "1072975625",
       "full_name": "mirrornode/biometric-integrated-meditative-RPG",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "experimental product surface"
     },
     {
       "repository_id": "1090517154",
       "full_name": "mirrornode/codespaces-react",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "template/prototype surface"
     },
     {
       "repository_id": "1092341140",
       "full_name": "mirrornode/examples",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "examples/reference surface"
     },
     {
       "repository_id": "1093029929",
       "full_name": "mirrornode/flags-sdk-hypertune-nextjs",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "prototype/integration experiment"
     },
     {
       "repository_id": "1072782634",
       "full_name": "mirrornode/Fusion-Energy-Display-Web-Component---Grok_files",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "experimental visual surface"
     },
     {
       "repository_id": "1066072231",
       "full_name": "mirrornode/INPphase",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "VERIFY",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "historical/public surface; current role requires reconciliation"
     },
     {
       "repository_id": "1151803362",
       "full_name": "mirrornode/library",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "shared/reference library surface"
     },
     {
       "repository_id": "1141608806",
       "full_name": "mirrornode/Mirror_surface",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "VERIFY",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "surface role requires current verification"
     },
     {
       "repository_id": "1100689136",
       "full_name": "mirrornode/mirrornode",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Operator",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "monorepo/orchestration root; current authority still scoped by exact work"
     },
     {
       "repository_id": "1304231673",
       "full_name": "mirrornode/mirrornode-agent-runtime",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "runtime/protected-relay work parked unless revenue/safety need earns restart"
     },
     {
       "repository_id": "1159698826",
       "full_name": "mirrornode/mirrornode-backend",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "backend/contract support surface"
     },
     {
       "repository_id": "1138458584",
       "full_name": "mirrornode/MIRRORNODE-CORE-HUB",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "ACTIVE",
+      "owner_seat": "Operator",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "governance/continuity source; PR #63 active"
     },
     {
       "repository_id": "1159699001",
       "full_name": "mirrornode/mirrornode-docs",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "documentation support surface"
     },
     {
       "repository_id": "1356544198",
       "full_name": "mirrornode/mirrornode-github-ops",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "ACTIVE",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "GitHub Ops proof-audit and Developer Program lane"
     },
     {
       "repository_id": "1140962797",
       "full_name": "mirrornode/MirrorNode-HUD-Engine-Interface-Governance-Specification",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "historical/specification surface"
     },
     {
       "repository_id": "1140323196",
       "full_name": "mirrornode/mirrornode-index",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Projector",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "cross-repo index/support surface"
     },
     {
       "repository_id": "1143593064",
       "full_name": "mirrornode/MIRRORNODE-INFRA",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "estate protection/infrastructure controls"
     },
     {
       "repository_id": "1272174208",
       "full_name": "mirrornode/mirrornode-lucian",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "historical orchestration role unresolved"
     },
     {
       "repository_id": "1272174118",
       "full_name": "mirrornode/mirrornode-merlin",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Arbitrator",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "arbitration/review support seat"
     },
     {
       "repository_id": "1295742140",
       "full_name": "mirrornode/mirrornode-operator-console",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Projector",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "broad MOPCON expansion parked; minimum visibility may be reactivated by first-dollar need"
     },
     {
       "repository_id": "1272174452",
       "full_name": "mirrornode/mirrornode-osiris",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Reviewer",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "Osiris support/review surface; commerce path lives in platform"
     },
     {
       "repository_id": "1281663083",
       "full_name": "mirrornode/mirrornode-parallax",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "public/front-door support surface"
     },
     {
       "repository_id": "1159698708",
       "full_name": "mirrornode/mirrornode-platform",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "ACTIVE",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "primary production/revenue platform; PR #54 active"
     },
     {
       "repository_id": "1272174684",
       "full_name": "mirrornode/mirrornode-ptah",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "historical promotion/creation role requires reconciliation"
     },
     {
       "repository_id": "1119728218",
       "full_name": "mirrornode/mirrornode-py",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "runtime/symbolic support; branch authority must be checked before writes"
     },
     {
       "repository_id": "1109370549",
       "full_name": "mirrornode/mirrornode-ring",
       "visibility": "private",
       "default_branch": "master",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "VERIFY",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "legacy/private surface with nonstandard default branch"
     },
     {
       "repository_id": "1272174547",
       "full_name": "mirrornode/mirrornode-rotan",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "research/project lane parked"
     },
     {
       "repository_id": "1272173375",
       "full_name": "mirrornode/mirrornode-theia",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Reviewer",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "Theia role/support surface"
     },
     {
       "repository_id": "1290498312",
       "full_name": "mirrornode/mirrornode-workspace",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "research/doctrine lane parked"
     },
     {
       "repository_id": "1286252076",
       "full_name": "mirrornode/mn-supply-continuity",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "continuity support surface"
     },
     {
       "repository_id": "1106803871",
       "full_name": "mirrornode/osiris",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "legacy/public Osiris surface; not primary revenue implementation"
     },
     {
       "repository_id": "1131279090",
       "full_name": "mirrornode/osiris-audit",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Reviewer",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "audit/review support surface"
     },
     {
       "repository_id": "1121993288",
       "full_name": "mirrornode/osiris-ui",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "VERIFY",
+      "owner_seat": "Builder",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "multiple Vercel variants; current deployment role requires census"
     },
     {
       "repository_id": "1226908923",
       "full_name": "mirrornode/psp-audit",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Reviewer",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "audit experiment/reference"
     },
     {
       "repository_id": "1091998166",
       "full_name": "mirrornode/Rotan-demo",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "demo surface"
     },
     {
       "repository_id": "1090575887",
       "full_name": "mirrornode/Rotan-neural-modality-kids-game",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "family/game project preserved, not current revenue lane"
     },
     {
       "repository_id": "1071268819",
       "full_name": "mirrornode/rotan-resonance",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "experimental research/product surface"
     },
     {
       "repository_id": "1287907162",
       "full_name": "mirrornode/seraphyth-dynamics",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "PARK",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "research/product lane parked"
     },
     {
       "repository_id": "1104504726",
       "full_name": "mirrornode/theia-core",
       "visibility": "public",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Reviewer",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "owned verifier/core support surface"
     },
     {
       "repository_id": "1343959864",
       "full_name": "mirrornode/theia-special",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "SUPPORT",
+      "owner_seat": "Builder",
+      "verification_status": "VERIFIED_REPO_PRESENT",
+      "disposition_note": "local media/ingestion support surface"
     },
     {
       "repository_id": "1095874991",
       "full_name": "mirrornode/Trismcrownflowchart",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "KNOWN_NON_REVENUE",
+      "disposition_note": "visual/research artifact"
     },
     {
       "repository_id": "1091089248",
       "full_name": "mirrornode/vite-react",
       "visibility": "private",
       "default_branch": "main",
-      "archived": false
+      "archived": false,
+      "lifecycle_disposition": "EXPERIMENTAL",
+      "owner_seat": "Operator",
+      "verification_status": "UNVERIFIED_CURRENT_ROLE",
+      "disposition_note": "prototype surface"
     }
-  ]
+  ],
+  "acceptance_note": "All 43 repositories have a lifecycle disposition and owner seat. RETIRE is intentionally unused until a separate evidence-backed retirement decision is made."
 }
