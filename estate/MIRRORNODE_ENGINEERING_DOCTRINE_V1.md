@@ -304,3 +304,98 @@ A MIRRORNODE slice is done when:
 - consequential proof is reproducible.
 
 It is not done merely because more improvements can be imagined.
+
+
+## 17. No hidden work
+
+No active work exists outside the operating register.
+
+Every ACTIVE item must have:
+
+```text
+domain
+owner_seat
+exact_subject
+next_evidence_producing_action
+```
+
+If any of those are missing, the work is not ACTIVE.
+
+Non-active work is recorded with:
+
+```text
+item
+disposition
+why_parked
+restart_condition
+evidence_source
+last_reviewed
+```
+
+PARK is a controlled state, not forgotten context.
+
+## 18. Inventory and disposition are separate acts
+
+Discovery and decision must not be conflated.
+
+Inventory records:
+
+```text
+what exists
+where it exists
+what it connects to
+known state
+unknown state
+```
+
+Disposition records:
+
+```text
+ACTIVE
+SUPPORT
+VERIFY
+PARK
+SUPERSEDE
+RETIRE
+EXPERIMENTAL
+```
+
+Inventory should be fast, reversible, and evidence-oriented. Disposition should be deliberate, attributable, and separately reviewable.
+
+A stale, duplicated, insecure, or surprising surface is not automatically a deletion or mutation instruction.
+
+## 19. Weekly outputs
+
+Critical domains must emit visible weekly outputs so discussion cannot masquerade as movement.
+
+| Domain | Minimum weekly output |
+|---|---|
+| Source of truth | One dated state snapshot with changed facts and unresolved unknowns |
+| Revenue | Qualified conversations, offers sent, paid/negotiated engagements, and next decision dates |
+| Business operations | One closed readiness item: payment, terms, support, bookkeeping, banking, or delivery |
+| Estate hygiene | A classified inventory increment with lifecycle dispositions |
+| Continuity | Exact-head handoff records for all active subjects |
+| Credibility | One public-safe proof artifact, application artifact, or reproducible evidence improvement |
+| Productization | Capture repeated delivery work; do not build assets until repetition is observed |
+| Research/architecture | New items enter only as PARK with a restart condition |
+
+Metrics are not status theater. They distinguish discussion from completed evidence-producing work.
+
+## 20. Revenue is the scheduling authority
+
+For the next commercial phase, calendar allocation is constrained by revenue impact.
+
+Default allocation:
+
+```text
+50–60%  revenue proof, sales conversations, sample audits, proposals, fulfillment readiness
+20–25%  business readiness and minimum estate cleanup that protects delivery
+10–15%  credibility work, including GitHub Developer Program and public-safe proof
+<=10%   continuity preservation and architecture
+```
+
+This allocation may be changed by explicit Operator disposition, but not by spontaneous architecture expansion.
+
+The governing scheduling rule is:
+
+> If work does not produce revenue, protect fulfillment, establish current truth, or create credible proof, it waits.
