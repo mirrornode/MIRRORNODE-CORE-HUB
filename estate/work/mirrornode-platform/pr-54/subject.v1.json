@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "subject_id": "mirrornode/mirrornode-platform#54@44368a27942dd8cee88e467024f01f298a89866d",
+  "repository_full_name": "mirrornode/mirrornode-platform",
+  "pull_request_number": 54,
+  "title": "feat: add controlled Osiris fulfillment start",
+  "branch": "feat/osiris-controlled-fulfillment-start-v1",
+  "exact_head_sha": "44368a27942dd8cee88e467024f01f298a89866d",
+  "recorded_date": "2026-09-06",
+  "purpose": "Revenue-first Osiris controlled fulfillment start review/correction subject.",
+  "current_phase": "independent_arbitration",
+  "node_checkpoints": [
+    {
+      "node": "ChatGPT",
+      "state": "CLEAR",
+      "scope": "subject identity reconciled",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    },
+    {
+      "node": "Perplexity",
+      "state": "CORRECTION_REQUIRED",
+      "scope": "independent review supplied to Operator",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    },
+    {
+      "node": "Merlin",
+      "state": "PENDING",
+      "scope": "independent arbitration of P1/P2",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    },
+    {
+      "node": "Copilot2",
+      "state": "PENDING",
+      "scope": "bounded executor only after arbitration",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    }
+  ],
+  "authority_note": "Registry/checkpoint state does not authorize merge, deployment, hosted migration, live case mutation, secret changes, Vercel settings mutation, or fulfillment start."
+}
