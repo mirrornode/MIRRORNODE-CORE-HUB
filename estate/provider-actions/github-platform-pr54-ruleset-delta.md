@@ -1,13 +1,12 @@
 # GitHub Provider Action — mirrornode-platform PR #54 Ruleset Delta
 
-Status: OPERATOR AUTHORIZED / PROVIDER WRITE PENDING
+Status: EXECUTED / VERIFIED / PR #54 MERGED
 
 Observed repository:
 `mirrornode/mirrornode-platform`
 
 Observed ruleset:
 - name: `MIRRORNODE Baseline Main Protection`
-- ruleset id: `21815948`
 - target: default branch
 - enforcement: active
 
@@ -58,20 +57,30 @@ This is a policy-model correction, not a blanket weakening of repository protect
 
 ## Verification after provider write
 
-Re-read the live ruleset and require:
+Exact provider identifiers are intentionally resolved live through GitHub and are not persisted in this public governance repository.
+
+Re-read the live ruleset and require every preserved field:
 
 ```text
-required_approving_review_count = 0
-require_last_push_approval       = false
+target                            = branch
+enforcement                       = active
+conditions.ref_name.include       = [~DEFAULT_BRANCH]
+conditions.ref_name.exclude       = []
 
-dismiss_stale_reviews_on_push    = true
+required_approving_review_count   = 0
+dismiss_stale_reviews_on_push     = true
+required_reviewers                = []
+require_code_owner_review         = false
+require_last_push_approval        = false
 required_review_thread_resolution = true
 require_extra_approval_for_unattributed_changes = true
-allowed_merge_methods            = [squash]
-deletion protection              = present
-non-fast-forward protection      = present
-required linear history          = present
-bypass actors                    = none
+allowed_merge_methods             = [squash]
+
+deletion protection               = present
+non-fast-forward protection       = present
+required linear history           = present
+bypass actors                     = none
+current user bypass               = never
 ```
 
 If any preserved field changes unexpectedly, STOP and classify the provider state as HOLD.
@@ -103,8 +112,24 @@ This authorization covers:
 
 It does not authorize deployment, hosted Supabase migration, Vercel mutation, secret/config changes, or live customer-case mutation.
 
-## Execution limitation recorded 2026-09-06
+## Execution receipt — 2026-09-06
+
+Provider write was performed manually by the Operator and independently re-read through the connected GitHub API surface.
+
+Verification result: PASS. Only the two authorized pull-request parameters changed; all preserved fields above remained intact.
+
+PR #54 was then squash-merged at exact reviewed head:
+
+```text
+source head: f9365b801ecf0fdb7c4bb94758a5d7e99e334d31
+merge commit: f68111bdd3b851350ce60efae55cd80df84e9458
+main head after merge: f68111bdd3b851350ce60efae55cd80df84e9458
+```
+
+No deployment, hosted migration, Vercel mutation, secret/config change, or live customer-case mutation was performed.
+
+## Prior execution limitation recorded 2026-09-06
 
 The current connected GitHub action surface exposes ruleset reads but not an administrative ruleset-write operation. The active execution environment also does not expose an authenticated `gh` CLI.
 
-Therefore the provider write cannot be truthfully claimed complete from this session. All other preparatory and verification state is retained here so the remaining administrative action is narrow and auditable.
+That limitation applied before the Operator completed the provider-admin write manually. The subsequent live re-read and merge receipt above supersede that pending state.
