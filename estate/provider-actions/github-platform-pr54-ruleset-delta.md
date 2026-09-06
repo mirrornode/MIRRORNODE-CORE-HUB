@@ -86,14 +86,20 @@ expected head: f9365b801ecf0fdb7c4bb94758a5d7e99e334d31
 merge method: squash
 ```
 
-Before merge, re-read PR metadata and exact head. If the head differs, STOP as STALE_HEAD.
+Before merge:
+1. re-read PR metadata and exact head; if the head differs, STOP as STALE_HEAD;
+2. require the Estate subject record for this exact head to show the fresh independent successor-head review as CLEAR_FOR_OPERATOR_DISPOSITION;
+3. require no unresolved material exact-head review finding;
+4. require Operator MERGE authorization for this exact subject.
+
+The current successor-head Perplexity reconciliation is recorded in `estate/work/mirrornode-platform/pr-54/subject.v1.json` as review evidence. It is not a GitHub approval and must not be represented as one.
 
 ## Authority boundary
 
 This authorization covers:
 1. the two-field ruleset correction above;
 2. verification that unrelated protections remain intact;
-3. merge of PR #54 at the exact cleared head if and only if the provider rule no longer blocks it.
+3. merge of PR #54 at the exact cleared head if and only if the provider rule no longer blocks it **and** the exact-head final-review/Operator prerequisites above remain satisfied.
 
 It does not authorize deployment, hosted Supabase migration, Vercel mutation, secret/config changes, or live customer-case mutation.
 
