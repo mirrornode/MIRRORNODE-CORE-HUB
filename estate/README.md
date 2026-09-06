@@ -34,6 +34,7 @@ Canonical shorthand:
 - `NODE_CHECKIN_CONTRACT.md` — mandatory node preflight/check-off rules.
 - `MIRRORNODE_ENGINEERING_DOCTRINE_V1.md` — candidate code/design discipline.
 - `CONSOLIDATION_SPINE_2026-09-06.md` — dated cleanup/revenue/continuity register.
+- `provider-actions/` — bounded provider-admin deltas that are authorized but not yet executed or verified.
 - `work/<repo>/pr-<n>/subject.v1.json` — exact active work subject.
 - GitHub issue **Estate Worktree — Active Subjects** — interactive human/node checklist.
 
