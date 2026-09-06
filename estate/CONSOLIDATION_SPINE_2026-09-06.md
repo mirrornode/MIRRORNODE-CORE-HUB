@@ -71,12 +71,12 @@ Everything else is PARK, VERIFY, SUPERSEDE, RETIRE, SUPPORT, or EXPERIMENTAL wit
 
 ## A. Source-of-truth cleanup
 
-### CORE-HUB current observations
+### CORE-HUB pre-consolidation observations (superseded by this PR where noted)
 
 - `MASTER_INDEX.md` is append-only but materially behind the current estate. It contains only the older promotion record and should not be treated as a complete current operational registry.
-- `CANONICAL_SOURCES.md` is useful but incomplete for the present operating spine; it omits important current surfaces such as operator-console, agent-runtime, GitHub Ops, INFRA, and database/provider ownership.
-- `AGENTS.md` explicitly records an unresolved routing/registry state from 2026-08-13.
-- `AGENTS_TODO.md` explicitly calls for a current registry separating identity, implementation, runtime eligibility, governance status, authority, and evidence.
+- Pre-change: `CANONICAL_SOURCES.md` omitted several current surfaces. Resulting tree: it now routes current-state questions through the Estate Worktree and names the major current owning sources.
+- Pre-change: `AGENTS.md` recorded unresolved routing from 2026-08-13. Resulting tree: current candidate routing is seat-based and the Lucian-centered registry is explicitly historical.
+- Pre-change: `AGENTS_TODO.md` called for a reconciled registry. Resulting tree: the seat/authority and workstream registries satisfy that candidate reconciliation, pending review/promotion.
 - PR #62 is a valuable 2026-09-01 candidate operational record but is already temporally superseded by later Osiris/GitHub-Ops/estate-worktree evidence. Preserve it as dated evidence; do not silently treat it as current truth.
 - PR #63 / Estate Worktree is the current candidate continuity/control surface and should absorb the exact-subject, node-checkin, engineering-doctrine, and consolidation-register model before promotion.
 
@@ -114,7 +114,7 @@ Current key work:
 
 | Subject | Current state | Disposition |
 |---|---|---|
-| `mirrornode-platform#54@f9365b8...` | open, mergeable, exact-head CI/Canon Gate green; bounded DB proof green; Operator merge authorized; provider approval rule blocks merge | ACTIVE / revenue blocker |
+| `mirrornode-platform#54@f9365b8...` | MERGED via squash to `main@f68111b...`; hosted rollout remains separately unauthorized | ACTIVE revenue implementation / rollout HOLD |
 | `CORE-HUB#63@<live GitHub PR head>` | open, non-draft, mergeable; self-head resolved from live PR metadata to avoid self-referential drift | ACTIVE / continuity control surface |
 | `CORE-HUB#62@b7f593c...` | open, non-draft, dated 2026-09-01 operational truth candidate | SUPERSEDE as current; preserve history |
 | `operator-console#29@4d4418b...` | draft, open | PARK unless required for first-dollar visibility |
@@ -259,9 +259,7 @@ visitor
 -> receipt
 ```
 
-Immediate blocker: PR #54 is technically cleared but currently blocked from merge by a GitHub ruleset requiring approval from someone other than the last pusher.
-
-Do not start another Osiris architecture cycle. Close the platform policy mismatch, merge the already-cleared exact head when legitimately permitted, then separately authorize/verify hosted migration and rollout.
+PR #54 is now merged at the exact cleared head. The single-Operator ruleset correction was applied and preserved controls were re-verified. Do not start another Osiris architecture cycle. Hosted migration, deployment, runtime verification, and live-case progression remain separate future operations requiring explicit authorization.
 
 ### Proof product
 
