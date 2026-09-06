@@ -1,50 +1,67 @@
 {
   "schema_version": "1.0",
-  "subject_id": "mirrornode/mirrornode-platform#54@44368a27942dd8cee88e467024f01f298a89866d",
+  "subject_id": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
   "repository_full_name": "mirrornode/mirrornode-platform",
   "pull_request_number": 54,
   "title": "feat: add controlled Osiris fulfillment start",
-  "branch": "feat/osiris-controlled-fulfillment-start-v1",
-  "exact_head_sha": "44368a27942dd8cee88e467024f01f298a89866d",
+  "source_branch": "feat/osiris-controlled-fulfillment-start-v1",
+  "execution_worktree_branch": "mirrornode-musical-funicular",
+  "predecessor_head_sha": "44368a27942dd8cee88e467024f01f298a89866d",
+  "exact_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
   "recorded_date": "2026-09-06",
-  "purpose": "Revenue-first Osiris controlled fulfillment start review/correction subject.",
-  "current_phase": "bounded_correction_ready",
+  "purpose": "Successor exact-head subject after bounded P1 authorization-statement correction.",
+  "current_phase": "fresh_exact_head_reconciliation",
   "node_checkpoints": [
     {
-      "node": "ChatGPT",
+      "node": "Copilot2",
       "state": "CLEAR",
-      "scope": "subject identity reconciled",
-      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+      "scope": "P1 correction committed and pushed; 53 tests/lint/build/diff-check pass; DB harness not run",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "GitHub CI",
+      "state": "CLEAR",
+      "scope": "CI workflow success on exact successor head",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "Canon Gate",
+      "state": "CLEAR",
+      "scope": "Canon Gate success on exact successor head",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "ChatGPT",
+      "state": "IN_PROGRESS",
+      "scope": "fresh exact-head implementation reconciliation",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     },
     {
       "node": "Perplexity",
-      "state": "CORRECTION_REQUIRED",
-      "scope": "P1 authorization statement binding; P2 idempotency semantics",
-      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+      "state": "PENDING",
+      "scope": "fresh independent successor-head reconciliation",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     },
     {
       "node": "Merlin",
-      "state": "CORRECTION_REQUIRED",
-      "scope": "P1 blocking: persist exact authorization statement; P2 nonblocking",
-      "head": "44368a27942dd8cee88e467024f01f298a89866d"
-    },
-    {
-      "node": "Copilot2",
       "state": "PENDING",
-      "scope": "bounded P1 correction only after exact-head preflight",
-      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+      "scope": "successor-head arbitration only if fresh review finds ambiguity",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     }
   ],
-  "correction_constraints": {
-    "p1": "Persist the exact displayed authorization statement alongside the existing intake scope, Stripe/customer binding, and server timestamp; fulfillment start must require it.",
-    "p2": "Deferred; no code change.",
-    "implementation_notes": [
-      "Amend the existing unmerged PR #54 migration rather than add a follow-up migration.",
-      "Use a normal nullable TEXT column; do not use GENERATED ALWAYS AS (null).",
-      "Persist via the existing guarded intake .update(...) after server-side Stripe verification.",
-      "Use one shared source constant for the UI text and server persistence; do not duplicate dynamic statement text.",
-      "Do not backfill legacy rows."
-    ]
+  "evidence": {
+    "migration_sha256": "8f9a45359e9d5059f45d7f2b5e8bedd32edbbf702af0d54fae30f6b86ed66d1a",
+    "application_tests": "PASS — 53 tests",
+    "lint": "PASS",
+    "build": "PASS",
+    "git_diff_check": "PASS",
+    "database_verification": "PENDING — no existing disposable harness found in Copilot2 worktree",
+    "exact_head_ci": "PASS",
+    "exact_head_canon_gate": "PASS"
   },
-  "authority_note": "Registry/checkpoint state does not authorize merge, deployment, hosted migration, live case mutation, secret changes, Vercel settings mutation, or fulfillment start."
+  "remaining_findings": [
+    "Fresh independent successor-head reconciliation pending.",
+    "Database migration behavior has not been re-executed against a disposable PostgreSQL/Supabase target after the migration changed."
+  ],
+  "authority_note": "No merge, deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start is authorized by this record."
 }
