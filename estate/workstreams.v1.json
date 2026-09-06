@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-09-06",
+  "status": "DRAFT_CANDIDATE",
+  "no_hidden_work_rule": "No ACTIVE work without domain, owner seat, exact subject, and next evidence-producing action.",
+  "active": [
+    {
+      "domain": "Revenue",
+      "item": "Osiris controlled fulfillment start",
+      "exact_subject": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+      "owner_seat": "Operator",
+      "state": "BLOCKED_BY_PROVIDER_POLICY",
+      "next_evidence_producing_action": "apply two-field ruleset delta, re-read protection, then merge exact cleared head"
+    },
+    {
+      "domain": "Continuity",
+      "item": "Estate Worktree / Engineering Doctrine / Consolidation Spine",
+      "exact_subject": "mirrornode/MIRRORNODE-CORE-HUB#63@PENDING_HEAD",
+      "owner_seat": "Operator",
+      "state": "ACTIVE",
+      "next_evidence_producing_action": "complete acceptance artifacts, update routing docs, mark ready for review"
+    },
+    {
+      "domain": "Credibility",
+      "item": "GitHub Ops proof audit",
+      "exact_subject": "mirrornode/mirrornode-github-ops#1@bd9479a2b21f062854b6a5108c31e2f4ef880747",
+      "owner_seat": "Builder",
+      "state": "SUPPORT_ACTIVE_NEXT",
+      "next_evidence_producing_action": "produce first customer-legible sample audit after steps 1-3"
+    }
+  ],
+  "parked": [
+    {
+      "item": "Broad MOPCON expansion",
+      "disposition": "PARK",
+      "restart_condition": "first-dollar operation exposes visibility/control blocker"
+    },
+    {
+      "item": "Protected Relay implementation",
+      "disposition": "PARK",
+      "restart_condition": "real protected-source workflow or safety requirement"
+    },
+    {
+      "item": "General Oracle multi-provider automation",
+      "disposition": "PARK",
+      "restart_condition": "customer/revenue proof requires it"
+    },
+    {
+      "item": "Repo Steward mutation authority",
+      "disposition": "PARK",
+      "restart_condition": "read-only proof demonstrates a concrete recurring mutation need"
+    },
+    {
+      "item": "Autonomous remediation/release",
+      "disposition": "PARK",
+      "restart_condition": "explicit risk/ROI case after manual process is proven"
+    },
+    {
+      "item": "Broad monitoring subscription",
+      "disposition": "PARK",
+      "restart_condition": "multiple customers request ongoing monitoring"
+    },
+    {
+      "item": "Experimental games/art/visual surfaces",
+      "disposition": "PARK",
+      "restart_condition": "separate personal/product priority with protected time budget"
+    }
+  ]
+}
