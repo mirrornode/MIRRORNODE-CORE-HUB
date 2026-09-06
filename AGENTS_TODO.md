@@ -1,60 +1,62 @@
 # AGENTS_TODO.md
 
-> **Reconciliation notice — 2026-08-13**
->
-> This file contains priorities from the earlier Lucian-centered runtime generation. The historical `POST /dispatch` routing instruction below is retained as evidence of that generation, not as a newly reaffirmed current mandate.
->
-> Current dispatch/routing authority is **UNRESOLVED pending explicit governance reconciliation**. Do not infer a replacement dispatcher, and do not bypass any applicable approval/governance gate while that question is open.
+Status: **historical reconciliation backlog with current candidate disposition — 2026-09-06**
 
-## MIRRORNODE Agents — Historical Runtime Priorities
+The earlier Lucian-centered runtime tasks below are no longer an implicit active queue.
 
-### Shared Base
-- Historical instruction: route command execution through LUCIAN `POST /dispatch`
-- Current action: reconcile that historical routing rule against the current generic agent runtime and present governance/authority records before any new routing mandate is issued
-- Expose health surfaces honestly
-- Audit runtime actions with `emit_audit()` where applicable to the active runtime generation
-- Avoid documenting non-existent endpoints
-- Keep repo roles aligned with real runtime boundaries
+## Reconciliation disposition
 
-### LUCIAN (Historical Port 7700)
-**Historical focus:** Orchestration & Manifest
-- [ ] Reconcile historical `POST /dispatch` role with current runtime/governance evidence before treating it as canonical
-- [ ] Preserve `/manifest` and `/lattice/status` only where the corresponding runtime exists and is current
-- [ ] Ensure any current dispatch/execution mechanism emits required evidence under the governing contract
-- [ ] Do not infer current dispatch authority from historical command-registry code alone
+- [x] Separate current operating seats from model/vendor identities — candidate in `estate/roles.v1.json`.
+- [x] Stop inferring a canonical dispatcher from the historical `POST /dispatch` generation.
+- [x] Separate identity, implementation presence, governance authority, and source evidence — candidate Estate Worktree model.
+- [x] Route ACTIVE work through domain + owner seat + exact subject + next evidence-producing action.
+- [ ] Review/promote PR #63 before treating the candidate registry as canonical.
+- [ ] Revisit any historical runtime role only when a current customer, revenue, safety, or blocking dependency earns that work.
 
-### OSIRIS (Historical Port 7701)
-**Historical focus:** Payment & Commerce
-- [ ] Reconcile historical commerce-runtime description with current Osiris audit/evidence role and implementation surfaces
-- [ ] Preserve only health/routes that correspond to a current implementation
+## Historical runtime priorities
 
-### HERMES (Historical Port 7702)
-**Historical focus:** Messaging & Protocol
-- [ ] Map current implementation surface, if any
-- [ ] Reconcile current advisory routing role with historical runtime description
+The items below are retained as dated context, not as current active assignments.
 
-### THOTH (Historical Port 7703)
-**Historical focus:** Services & Health
-- [ ] Map current implementation surface, if any
-- [ ] Reconcile security-verdict role with historical runtime description
+### LUCIAN (historical port 7700)
+Historical focus: orchestration & manifest.
 
-### THEIA (Historical Port 7704)
-**Historical focus:** Witness & Observation
-- [ ] Map current implementation surface and current integration/coherence role
-- [ ] Keep implementation capability distinct from governance/integration authority
+Current disposition: PARK / VERIFY if a future routing requirement appears.
 
-### PTAH (Historical Port 7705)
-**Historical focus:** Creation & Bridge
-- [ ] Map current implementation surface and key/forge authority records
-- [ ] Keep implementation capability distinct from governance/key authority
+### OSIRIS (historical port 7701)
+Historical focus: payment & commerce.
 
-### EVE (Historical Port 7706)
-**Historical focus:** Embodiment & Physical Manifest
-- [ ] Resolve current identity/product-lattice status explicitly rather than inheriting historical presence
+Current disposition: SUPPORT as audit/review identity; active commerce/fulfillment implementation is tracked in `mirrornode-platform`.
 
-### Cleanup
-- [ ] Remove stale references that conflict with routes explicitly declared non-real by the current governing contract
-- [ ] Remove or clearly classify stale replay/trace requirements not implemented by the active runtime generation
-- [ ] Separate historical/aspirational architecture from active runtime truth
-- [ ] Produce a current registry that separately records identity, implementation, runtime eligibility, governance status, authority boundary, and source evidence
-- [ ] Obtain explicit disposition on current dispatch/routing authority before declaring a canonical dispatcher
+### HERMES (historical port 7702)
+Historical focus: messaging & protocol.
+
+Current disposition: PARK unless a current messaging/protocol need is admitted.
+
+### THOTH (historical port 7703)
+Historical focus: services & health.
+
+Current disposition: PARK / VERIFY if a current service-health function is required.
+
+### THEIA (historical port 7704)
+Historical focus: witness & observation.
+
+Current disposition: SUPPORT through current review/verifier seats and bounded execution when explicitly authorized.
+
+### PTAH (historical port 7705)
+Historical focus: creation & bridge.
+
+Current disposition: PARK / VERIFY; historical promotion semantics do not automatically grant current runtime authority.
+
+### EVE (historical port 7706)
+Historical focus: embodiment / physical manifest.
+
+Current disposition: PARK.
+
+## Cleanup rule
+
+Historical items are not deleted merely because they are inactive.
+
+They are either:
+- retained as historical evidence;
+- explicitly superseded by a current registry;
+- reactivated only by a recorded admission/restart condition.
