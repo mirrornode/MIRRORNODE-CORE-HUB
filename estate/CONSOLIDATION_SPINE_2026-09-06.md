@@ -133,7 +133,7 @@ Live team observed:
 
 ```text
 team: Mirrornode
-slug: inphase
+provider identifier: resolve live through provider API; do not persist exact environment slug here
 plan: hobby
 projects observed: 25
 ```
