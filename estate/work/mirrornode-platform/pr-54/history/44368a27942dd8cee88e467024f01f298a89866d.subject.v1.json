@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "subject_id": "mirrornode/mirrornode-platform#54@44368a27942dd8cee88e467024f01f298a89866d",
+  "repository_full_name": "mirrornode/mirrornode-platform",
+  "pull_request_number": 54,
+  "title": "feat: add controlled Osiris fulfillment start",
+  "branch": "feat/osiris-controlled-fulfillment-start-v1",
+  "exact_head_sha": "44368a27942dd8cee88e467024f01f298a89866d",
+  "recorded_date": "2026-09-06",
+  "purpose": "Revenue-first Osiris controlled fulfillment start review/correction subject.",
+  "current_phase": "bounded_correction_ready",
+  "node_checkpoints": [
+    {
+      "node": "ChatGPT",
+      "state": "CLEAR",
+      "scope": "subject identity reconciled",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    },
+    {
+      "node": "Perplexity",
+      "state": "CORRECTION_REQUIRED",
+      "scope": "P1 authorization statement binding; P2 idempotency semantics",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    },
+    {
+      "node": "Merlin",
+      "state": "CORRECTION_REQUIRED",
+      "scope": "P1 blocking: persist exact authorization statement; P2 nonblocking",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    },
+    {
+      "node": "Copilot2",
+      "state": "PENDING",
+      "scope": "bounded P1 correction only after exact-head preflight",
+      "head": "44368a27942dd8cee88e467024f01f298a89866d"
+    }
+  ],
+  "correction_constraints": {
+    "p1": "Persist the exact displayed authorization statement alongside the existing intake scope, Stripe/customer binding, and server timestamp; fulfillment start must require it.",
+    "p2": "Deferred; no code change.",
+    "implementation_notes": [
+      "Amend the existing unmerged PR #54 migration rather than add a follow-up migration.",
+      "Use a normal nullable TEXT column; do not use GENERATED ALWAYS AS (null).",
+      "Persist via the existing guarded intake .update(...) after server-side Stripe verification.",
+      "Use one shared source constant for the UI text and server persistence; do not duplicate dynamic statement text.",
+      "Do not backfill legacy rows."
+    ]
+  },
+  "authority_note": "Registry/checkpoint state does not authorize merge, deployment, hosted migration, live case mutation, secret changes, Vercel settings mutation, or fulfillment start."
+}
