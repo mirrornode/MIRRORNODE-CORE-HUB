@@ -10,7 +10,7 @@
   "exact_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
   "recorded_date": "2026-09-06",
   "purpose": "Successor exact-head subject after bounded P1 authorization-statement correction.",
-  "current_phase": "fresh_independent_reconciliation",
+  "current_phase": "operator_merge_authorized_provider_policy_pending",
   "node_checkpoints": [
     {
       "node": "Copilot2",
@@ -38,14 +38,14 @@
     },
     {
       "node": "Perplexity",
-      "state": "PENDING",
-      "scope": "fresh independent successor-head reconciliation",
+      "state": "CLEAR",
+      "scope": "Fresh independent successor-head reconciliation supplied to the Operator: P1 CLOSED, NEW FINDINGS NONE, P2 nonblocking/unchanged, FINAL VERDICT CLEAR_FOR_OPERATOR_DISPOSITION. This is review evidence, not a submitted GitHub approval.",
       "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     },
     {
       "node": "Merlin",
-      "state": "PENDING",
-      "scope": "successor-head arbitration only if fresh review finds ambiguity",
+      "state": "NOT_REQUIRED",
+      "scope": "No fresh ambiguity remained after successor-head Perplexity reconciliation; arbitration not invoked.",
       "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     },
     {
@@ -80,10 +80,11 @@
       "cross_case_conflict": "PASS — IDEMPOTENCY_CONFLICT",
       "role_grants": "PASS — service_role yes; anon/authenticated no",
       "refused_rows_unchanged": "PASS"
-    }
+    },
+    "perplexity_final_review": "CLEAR_FOR_OPERATOR_DISPOSITION — P1 CLOSED; NEW FINDINGS NONE; P2 nonblocking/unchanged; review supplied to Operator, not submitted as GitHub review."
   },
   "remaining_findings": [
-    "Fresh independent Perplexity successor-head reconciliation pending.",
+    "GitHub provider ruleset still requires one approval and last-push approval; bounded single-Operator correction is authorized but not yet executed.",
     "Hosted migration remains unapplied by design; no rollout authority is implied."
   ],
   "authority_note": "No merge, deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start is authorized by this record."
