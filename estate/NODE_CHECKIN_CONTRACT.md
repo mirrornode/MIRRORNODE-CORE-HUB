@@ -9,23 +9,33 @@ A node must report:
 ```text
 NODE:
 REPOSITORY:
-PR:
+PR: <number> | N/A
 BRANCH:
 EXACT_HEAD:
 MODE: inspect | review | execute
 ```
 
-If any field is unresolved, the node must stop execution and resolve identity first.
+For PR-backed work, PR must resolve to a number. For non-PR branch/provider/local work, use `PR: N/A` and bind the subject to the repository/surface + branch or provider object + exact immutable revision/config identity when one exists.
+
+If a required identity field for the applicable subject type is unresolved, the node must stop execution and resolve identity first.
 
 ## Subject identity invariant
 
 Never treat `PR #N` as sufficient identity.
 
-The executable key is:
+For PR-backed work, the executable key is:
 
 ```
 repository_full_name + PR number + branch + exact head SHA
 ```
+
+For non-PR work, use:
+
+```
+repository_or_provider_surface + PR:N/A + branch/config identity + exact revision when available
+```
+
+Examples include a branch-only maintenance subject, a Vercel/Supabase provider inspection, or a local-machine census receipt.
 
 ## Check-off states
 
@@ -33,6 +43,7 @@ Use only:
 
 - `PENDING`
 - `IN_PROGRESS`
+- `UNKNOWN`
 - `CLEAR`
 - `CORRECTION_REQUIRED`
 - `BLOCKED`
