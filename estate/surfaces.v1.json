@@ -10,16 +10,18 @@
       {
         "subject": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
         "operator_disposition": "MERGE_AUTHORIZED",
-        "provider_state": "BLOCKED_BY_RULESET_LAST_PUSH_APPROVAL",
-        "next_action": "Operator/admin executor applies bounded single-Operator ruleset correction; re-read preserved controls; confirm exact-head final review remains CLEAR; then squash-merge exact authorized head.",
+        "provider_state": "MERGED",
+        "next_action": "STOP before rollout. Hosted migration, deployment, secret/config change, and live-case start remain separately unauthorized.",
         "implementation_owner_seat": "Builder",
-        "disposition_owner_seat": "Operator"
+        "disposition_owner_seat": "Operator",
+        "merge_commit_sha": "f68111bdd3b851350ce60efae55cd80df84e9458",
+        "ruleset_verification": "single-Operator delta applied and preserved controls re-read successfully"
       },
       {
         "subject": "mirrornode/MIRRORNODE-CORE-HUB#63",
         "owner_seat": "Operator",
-        "provider_state": "OPEN_READY_FOR_REVIEW_CORRECTION_IN_PROGRESS",
-        "next_action": "close Codex exact-head findings, obtain fresh review, then Operator disposition",
+        "provider_state": "OPEN_CORRECTION_REQUIRED_AFTER_FRESH_REVIEW",
+        "next_action": "correct fresh exact-head Codex findings, rerun checks, request fresh review",
         "source_branch": "theia/estate-worktree-v0-1",
         "exact_head_source": "GitHub PR #63 live head metadata + external Estate node check-in; self-head is not embedded in files that mutate the head."
       },
@@ -34,9 +36,9 @@
   "vercel": {
     "team": {
       "name": "Mirrornode",
-      "slug": "inphase",
       "plan": "hobby",
-      "project_count_observed": 25
+      "project_count_observed": 25,
+      "provider_identifier_source": "resolve live through provider API/connector; exact environment identifiers are not persisted in this public governance repo"
     },
     "owner_seat": "Builder",
     "verification_status": "INVENTORIED_NOT_FULLY_DISPOSITIONED",
@@ -97,7 +99,6 @@
     "projects": [
       {
         "name": "Mirrornode OS",
-        "project_ref": "zomnswctmwjqnvftiayc",
         "status": "ACTIVE_HEALTHY",
         "disposition": "ACTIVE",
         "verification": "PRODUCTION_DATA_PLANE_OBSERVED",
@@ -105,11 +106,11 @@
           "PostgreSQL 17",
           "RLS enabled on all observed public tables",
           "PR #54 controlled-start migration not hosted yet by design"
-        ]
+        ],
+        "provider_identifier_source": "resolve live through provider API/connector; exact environment identifiers are not persisted in this public governance repo"
       },
       {
         "name": "mirrornode-schema-reconciliation-replay",
-        "project_ref": "oddefbsevyyruecgqlen",
         "status": "ACTIVE_HEALTHY",
         "disposition": "VERIFY",
         "verification": "TEST_REPLAY_SURFACE_WITH_RLS_DISABLED",
@@ -117,7 +118,8 @@
           "zero observed rows",
           "RLS disabled on public.guest_audit_purchases",
           "do not auto-remediate before lifecycle decision"
-        ]
+        ],
+        "provider_identifier_source": "resolve live through provider API/connector; exact environment identifiers are not persisted in this public governance repo"
       }
     ]
   },
