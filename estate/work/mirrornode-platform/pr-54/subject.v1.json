@@ -10,12 +10,12 @@
   "exact_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
   "recorded_date": "2026-09-06",
   "purpose": "Successor exact-head subject after bounded P1 authorization-statement correction.",
-  "current_phase": "database_verification_pending",
+  "current_phase": "fresh_independent_reconciliation",
   "node_checkpoints": [
     {
       "node": "Copilot2",
       "state": "CLEAR",
-      "scope": "P1 correction committed and pushed; 53 tests/lint/build/diff-check pass; DB harness not run",
+      "scope": "P1 correction committed and pushed; 53 tests/lint/build/diff-check pass; exact-head DB proof completed separately.",
       "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     },
     {
@@ -47,6 +47,12 @@
       "state": "PENDING",
       "scope": "successor-head arbitration only if fresh review finds ambiguity",
       "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
+    },
+    {
+      "node": "Copilot2-DB",
+      "state": "CLEAR",
+      "scope": "Disposable local PostgreSQL 17.6.1 exact-head database verification: migration apply/rerun PASS; 25 assertions PASS; 0 failed; no repository modifications.",
+      "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     }
   ],
   "evidence": {
@@ -55,13 +61,30 @@
     "lint": "PASS",
     "build": "PASS",
     "git_diff_check": "PASS",
-    "database_verification": "PENDING — no existing disposable harness found in Copilot2 worktree",
+    "database_verification": "PASS — disposable local Docker PostgreSQL 17.6.1; 25 assertions; 0 failed",
     "exact_head_ci": "PASS",
-    "exact_head_canon_gate": "PASS"
+    "exact_head_canon_gate": "PASS",
+    "database_environment": "Disposable local Docker PostgreSQL 17.6.1",
+    "migration_apply": "PASS",
+    "migration_rerun": "PASS",
+    "database_assertions_passed": 25,
+    "database_assertions_failed": 0,
+    "authorization_gate_matrix": {
+      "null": "PASS — NOT_READY, unchanged",
+      "blank": "PASS — NOT_READY, unchanged",
+      "whitespace": "PASS — NOT_READY, unchanged",
+      "timestamp_missing": "PASS — NOT_READY, unchanged",
+      "legacy_row": "PASS — NOT_READY, unchanged",
+      "valid_start": "PASS — STARTED with receipt fields",
+      "idempotent_replay": "PASS — original receipt preserved",
+      "cross_case_conflict": "PASS — IDEMPOTENCY_CONFLICT",
+      "role_grants": "PASS — service_role yes; anon/authenticated no",
+      "refused_rows_unchanged": "PASS"
+    }
   },
   "remaining_findings": [
-    "Database migration behavior has not been re-executed against a disposable PostgreSQL/Supabase target after the migration changed.",
-    "Fresh independent Perplexity successor-head reconciliation should follow database proof."
+    "Fresh independent Perplexity successor-head reconciliation pending.",
+    "Hosted migration remains unapplied by design; no rollout authority is implied."
   ],
   "authority_note": "No merge, deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start is authorized by this record."
 }
