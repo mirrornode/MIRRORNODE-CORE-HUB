@@ -10,7 +10,7 @@
   "exact_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
   "recorded_date": "2026-09-06",
   "purpose": "Successor exact-head subject after bounded P1 authorization-statement correction.",
-  "current_phase": "operator_merge_authorized_provider_policy_pending",
+  "current_phase": "merged_rollout_not_authorized",
   "node_checkpoints": [
     {
       "node": "Copilot2",
@@ -84,8 +84,15 @@
     "perplexity_final_review": "CLEAR_FOR_OPERATOR_DISPOSITION — P1 CLOSED; NEW FINDINGS NONE; P2 nonblocking/unchanged; review supplied to Operator, not submitted as GitHub review."
   },
   "remaining_findings": [
-    "GitHub provider ruleset still requires one approval and last-push approval; bounded single-Operator correction is authorized but not yet executed.",
-    "Hosted migration remains unapplied by design; no rollout authority is implied."
+    "Hosted migration remains unapplied by design.",
+    "Deployment/runtime verification and live-case progression remain separately unauthorized."
   ],
-  "authority_note": "No merge, deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start is authorized by this record."
+  "authority_note": "PR #54 is merged. This record does not authorize deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start.",
+  "merge_receipt": {
+    "source_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
+    "merge_commit_sha": "f68111bdd3b851350ce60efae55cd80df84e9458",
+    "main_head_after_merge": "f68111bdd3b851350ce60efae55cd80df84e9458",
+    "merge_method": "squash",
+    "provider_ruleset_verification": "PASS — two-field single-Operator delta applied; all preserved controls re-read successfully"
+  }
 }
