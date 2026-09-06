@@ -115,7 +115,7 @@ Current key work:
 | Subject | Current state | Disposition |
 |---|---|---|
 | `mirrornode-platform#54@f9365b8...` | open, mergeable, exact-head CI/Canon Gate green; bounded DB proof green; Operator merge authorized; provider approval rule blocks merge | ACTIVE / revenue blocker |
-| `CORE-HUB#63@79271d6...` | draft, open, mergeable | ACTIVE / continuity control surface |
+| `CORE-HUB#63@<live GitHub PR head>` | open, non-draft, mergeable; self-head resolved from live PR metadata to avoid self-referential drift | ACTIVE / continuity control surface |
 | `CORE-HUB#62@b7f593c...` | open, non-draft, dated 2026-09-01 operational truth candidate | SUPERSEDE as current; preserve history |
 | `operator-console#29@4d4418b...` | draft, open | PARK unless required for first-dollar visibility |
 | `MIRRORNODE-INFRA#7` | merged | SUPPORT / successful fail-closed hardening history |
