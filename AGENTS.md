@@ -1,18 +1,39 @@
 # Agents — MIRRORNODE-CORE-HUB
 
-> **Routing/registry reconciliation notice — 2026-08-13**
+> **Current candidate reconciliation — 2026-09-06**
 >
-> The registry below reflects the earlier Lucian-centered runtime generation and must not be treated, by itself, as the current complete governance registry or current dispatch mandate.
+> PR #63 introduces a role/authority registry at `estate/roles.v1.json`.
+> Until reviewed and promoted, it is a candidate current operating model. It supersedes the historical Lucian-centered registry **for current work routing only**, without deleting that historical evidence.
 >
-> Current repository evidence includes a newer generic agent runtime with an Operator approval boundary and no direct Lucian `/dispatch` execution path. Because the historical registry and newer runtime evidence are not yet fully reconciled into one ratified current registry, **current dispatch/routing authority is UNRESOLVED pending explicit governance reconciliation**.
->
-> Until that reconciliation is complete:
-> - do not infer new authority from runtime eligibility;
-> - do not bypass an applicable existing approval/governance gate;
-> - do not treat the historical `POST /dispatch` model as automatically current merely because it is listed below;
-> - do not assign a replacement dispatcher by inference.
->
-> See `docs/continuity/LUCIAN_AND_RUNTIME_RECONCILIATION_2026-08-13.md` and `docs/continuity/AGENT_REGISTRY_EVIDENCE_SNAPSHOT_2026-08-13.md`.
+> Current principle: **the seat defines authority, not the model/vendor identity**.
+
+## Current candidate operating seats
+
+| Seat | Core function | May edit? | May authorize consequential action? |
+|---|---|---:|---:|
+| Operator | Business/governance/consequential disposition | Through approved executor | Yes |
+| Builder | Bounded implementation | Bounded branch/worktree | No |
+| Reviewer | Semantic/adversarial inspection | No | No |
+| Arbitrator | Resolve conflicting findings/evidence | No | No |
+| Final Review Seat | Fresh read-only exact-head final disposition | No | No |
+| Projector | Normalize/display governed state | No | Never |
+| Executor | Perform one explicitly approved bounded operation | Only within approved command | No |
+
+Current examples are recorded in `estate/roles.v1.json`.
+
+## Routing rule
+
+There is no general-purpose canonical dispatcher inferred from historical runtime code.
+
+Current work routes by:
+1. domain;
+2. owner seat;
+3. exact subject;
+4. next evidence-producing action.
+
+See `estate/workstreams.v1.json`.
+
+No ACTIVE work exists without those four fields.
 
 ## Resident Runtime
 
@@ -20,8 +41,10 @@ No agent runtime is hosted in this repository.
 
 ## Historical Org-Wide Runtime Registry Snapshot
 
-| Agent | Port | Role | Source |
-|---|---|---|---|
+The table below is retained as **historical evidence only**.
+
+| Agent | Port | Historical role | Source |
+|---|---:|---|---|
 | LUCIAN | 7700 | Orchestration & Manifest | `lucian/runtime.py` |
 | OSIRIS | 7701 | Payment & Commerce (Stripe) | `osiris/runtime.py` |
 | HERMES | 7702 | Messaging & Protocol | Lucian registry |
@@ -32,16 +55,21 @@ No agent runtime is hosted in this repository.
 
 Historical canonical port range for that runtime generation: 7700–7706.
 
-This table is retained as historical runtime evidence. Presence does not prove current activation, current runtime eligibility, or current governance authority. Omission does not prove current exclusion.
+Presence in this table does not prove current activation, runtime eligibility, routing authority, or governance authority.
 
-## Governance Rules
+See:
+- `docs/continuity/LUCIAN_AND_RUNTIME_RECONCILIATION_2026-08-13.md`
+- `docs/continuity/AGENT_REGISTRY_EVIDENCE_SNAPSHOT_2026-08-13.md`
 
-- Agent capability changes must be reflected in current governance/registry evidence before release.
-- Agent namespace assignments must be documented before new writes ship.
-- No agent may expand its own authority without explicit human authorization.
-- Runtime location, runtime eligibility, implementation presence, conceptual role, and governance authority must not be conflated.
-- Where current routing authority is unresolved, preserve the conflict and escalate for explicit disposition rather than choosing a dispatcher by inference.
+## Governance rules
+
+- No agent may expand its own authority.
+- Runtime location, implementation presence, conceptual role, and governance authority are distinct facts.
+- Exact-head review does not authorize merge.
+- Merge does not authorize deployment, migration, or live-case mutation.
+- Historical role names do not override the current seat/authority registry.
+- UNKNOWN remains UNKNOWN when current evidence is incomplete.
 
 ## Coding Agent Instructions
 
-See `.github/copilot-instructions.md`.
+See `.github/copilot-instructions.md` and the candidate `estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md`.
