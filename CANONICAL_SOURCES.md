@@ -71,7 +71,7 @@ Provider/project identity and lifecycle state are tracked in `estate/surfaces.v1
 Current high-value observations include:
 - Supabase `Mirrornode OS` — ACTIVE production data plane.
 - Supabase `mirrornode-schema-reconciliation-replay` — VERIFY/test-replay surface.
-- Vercel `inphase` team — project census in progress; project existence does not prove production authority.
+- Vercel Mirrornode team — project census in progress; exact provider identifier is resolved live and is not persisted here; project existence does not prove production authority.
 - Stripe `Mirrornode` live account — ACTIVE payment surface; test sandbox retained separately.
 
 ## Rule
