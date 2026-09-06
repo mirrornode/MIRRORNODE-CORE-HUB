@@ -10,7 +10,7 @@
   "exact_head_sha": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
   "recorded_date": "2026-09-06",
   "purpose": "Successor exact-head subject after bounded P1 authorization-statement correction.",
-  "current_phase": "fresh_exact_head_reconciliation",
+  "current_phase": "database_verification_pending",
   "node_checkpoints": [
     {
       "node": "Copilot2",
@@ -32,8 +32,8 @@
     },
     {
       "node": "ChatGPT",
-      "state": "IN_PROGRESS",
-      "scope": "fresh exact-head implementation reconciliation",
+      "state": "CLEAR",
+      "scope": "Fresh exact-head code reconciliation: P1 implementation matches adjudicated minimum invariant; database execution proof remains a separate blocker.",
       "head": "f9365b801ecf0fdb7c4bb94758a5d7e99e334d31"
     },
     {
@@ -60,8 +60,8 @@
     "exact_head_canon_gate": "PASS"
   },
   "remaining_findings": [
-    "Fresh independent successor-head reconciliation pending.",
-    "Database migration behavior has not been re-executed against a disposable PostgreSQL/Supabase target after the migration changed."
+    "Database migration behavior has not been re-executed against a disposable PostgreSQL/Supabase target after the migration changed.",
+    "Fresh independent Perplexity successor-head reconciliation should follow database proof."
   ],
   "authority_note": "No merge, deployment, hosted migration application, live case mutation, secret change, Vercel settings change, or fulfillment start is authorized by this record."
 }
