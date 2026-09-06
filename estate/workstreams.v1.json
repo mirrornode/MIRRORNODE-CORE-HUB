@@ -9,9 +9,10 @@
       "item": "Osiris controlled fulfillment start",
       "exact_subject": "mirrornode/mirrornode-platform#54@f9365b801ecf0fdb7c4bb94758a5d7e99e334d31",
       "owner_seat": "Operator",
-      "state": "BLOCKED_BY_PROVIDER_POLICY",
-      "next_evidence_producing_action": "provider-admin executor applies authorized two-field ruleset delta; Operator verifies preserved protections and exact-head final review; then squash-merge exact cleared head",
-      "implementation_seat": "Builder"
+      "state": "MERGED_ROLLOUT_NOT_AUTHORIZED",
+      "next_evidence_producing_action": "none in this authorization scope; stop before hosted migration/deployment/live-case start",
+      "implementation_seat": "Builder",
+      "merge_commit_sha": "f68111bdd3b851350ce60efae55cd80df84e9458"
     },
     {
       "domain": "Continuity",
@@ -33,7 +34,9 @@
       "prerequisites": [
         "mirrornode/mirrornode-platform#54 reaches MERGED or explicit HOLD with recorded provider-policy disposition",
         "mirrornode/MIRRORNODE-CORE-HUB#63 reaches CLEAR_FOR_OPERATOR_DISPOSITION on live exact head"
-      ]
+      ],
+      "source_branch": "feat/github-ops-foundation-v0-1",
+      "base_branch": "main"
     }
   ],
   "parked": [
@@ -42,7 +45,10 @@
       "disposition": "PARK",
       "restart_condition": "first-dollar operation exposes visibility/control blocker",
       "why_parked": "Not required for first-dollar fulfillment; broad cockpit work would expand scope.",
-      "evidence_source": "estate/CONSOLIDATION_SPINE_2026-09-06.md#standby-register",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
       "last_reviewed": "2026-09-06"
     },
     {
@@ -50,7 +56,10 @@
       "disposition": "PARK",
       "restart_condition": "real protected-source workflow or safety requirement",
       "why_parked": "No current revenue-critical or live protected-source workflow requires implementation.",
-      "evidence_source": "estate/CONSOLIDATION_SPINE_2026-09-06.md#standby-register",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
       "last_reviewed": "2026-09-06"
     },
     {
@@ -58,7 +67,10 @@
       "disposition": "PARK",
       "restart_condition": "customer/revenue proof requires it",
       "why_parked": "Generalized orchestration is not needed for the current revenue/proof loop.",
-      "evidence_source": "estate/CONSOLIDATION_SPINE_2026-09-06.md#standby-register",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
       "last_reviewed": "2026-09-06"
     },
     {
@@ -66,7 +78,10 @@
       "disposition": "PARK",
       "restart_condition": "read-only proof demonstrates a concrete recurring mutation need",
       "why_parked": "Read-only proof should precede mutation authority expansion.",
-      "evidence_source": "estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md#readwrite-separation",
+      "evidence_source": {
+        "path": "estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md",
+        "heading": "5. Read/write separation"
+      },
       "last_reviewed": "2026-09-06"
     },
     {
@@ -74,7 +89,10 @@
       "disposition": "PARK",
       "restart_condition": "explicit risk/ROI case after manual process is proven",
       "why_parked": "Manual bounded control path is not yet commercially proven enough to justify autonomous authority.",
-      "evidence_source": "estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md#separation-of-functions",
+      "evidence_source": {
+        "path": "estate/MIRRORNODE_ENGINEERING_DOCTRINE_V1.md",
+        "heading": "12. Separation of functions"
+      },
       "last_reviewed": "2026-09-06"
     },
     {
@@ -82,7 +100,10 @@
       "disposition": "PARK",
       "restart_condition": "multiple customers request ongoing monitoring",
       "why_parked": "No repeated customer demand yet establishes this as a paid recurring need.",
-      "evidence_source": "estate/CONSOLIDATION_SPINE_2026-09-06.md#passive--low-touch-income-experiments",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "E. Revenue operating spine / Passive / low-touch income experiments"
+      },
       "last_reviewed": "2026-09-06"
     },
     {
@@ -90,7 +111,10 @@
       "disposition": "PARK",
       "restart_condition": "separate personal/product priority with protected time budget",
       "why_parked": "Preserved personal/experimental work is outside the current revenue schedule.",
-      "evidence_source": "estate/CONSOLIDATION_SPINE_2026-09-06.md#standby-register",
+      "evidence_source": {
+        "path": "estate/CONSOLIDATION_SPINE_2026-09-06.md",
+        "heading": "H. Standby register"
+      },
       "last_reviewed": "2026-09-06"
     }
   ]
