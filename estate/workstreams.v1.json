@@ -15,7 +15,7 @@
     {
       "domain": "Continuity",
       "item": "Estate Worktree / Engineering Doctrine / Consolidation Spine",
-      "exact_subject": "mirrornode/MIRRORNODE-CORE-HUB#63@PENDING_HEAD",
+      "exact_subject": "mirrornode/MIRRORNODE-CORE-HUB#63@056cc2136763487ce9a627eca2962b9480c0ce19",
       "owner_seat": "Operator",
       "state": "ACTIVE",
       "next_evidence_producing_action": "complete acceptance artifacts, update routing docs, mark ready for review"
