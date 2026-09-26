@@ -3,7 +3,7 @@
 **Status:** IN_REVIEW / candidate operational evidence; authority effect NONE  
 **Recorded:** 2026-09-26  
 **Implementation subject:** `mirrornode/mirrornode-platform` PR #53, head `8ca41410785f4af316e38d30a9cac25dfc7dcf34`  
-**Schema prerequisite:** draft Platform PR #56, head `bf22464fe51a6a4637c31bef589bac0508aa8b02`  
+**Schema prerequisite:** draft Platform PR #56, head `6b8e52699bcd14b1a2a04c7caae9950ecde5af22`  
 **Scope:** one read-only Osiris case projection for the private MOPCON operator surface.
 
 ## Capability boundary
@@ -18,7 +18,7 @@
 
 ## Verification and release boundary
 
-At the recorded implementation head, the SQL correction has passed a rollback-only PostgreSQL 17.6 fixture replay with 501 actionable and 150 terminal rows: the RPC returned 501 actionable plus the latest 100 terminal rows, with the expected function privileges. The disposable project retained its prior table shape and row count after rollback. A second rollback-only replay applied the exact draft baseline migration from Platform PR #56 followed by the corrected #53 projection migration to a staged legacy Stripe-primary-key fixture; it verified UUID primary key, unique session identifier, 601-row projection, and RPC privileges. This is a combined relevant-migration replay, not a pristine replay of every repository migration. It does not establish performance at production scale, live E2E, or secret provisioning.
+At the recorded implementation head, the SQL correction has passed a rollback-only PostgreSQL 17.6 fixture replay with 501 actionable and 150 terminal rows: the RPC returned 501 actionable plus the latest 100 terminal rows, with the expected function privileges. The disposable project retained its prior table shape and row count after rollback. A second rollback-only replay applied the unchanged draft baseline migration SQL from Platform PR #56 followed by the corrected #53 projection migration to a staged legacy Stripe-primary-key fixture; it verified UUID primary key, unique session identifier, 601-row projection, and RPC privileges. This is a combined relevant-migration replay, not a pristine replay of every repository migration. It does not establish performance at production scale, live E2E, or secret provisioning.
 
 The earlier Codex review on Platform head `d92caeb98ee3a9fb93290964127186b726523b9f` raised P1 CORE-HUB recording and P2 full-ledger materialization. The new Platform head needs fresh independent exact-head review, CI/Canon Gate, and a full disposable migration replay with its schema prerequisite. Neither this record nor ordinary review promotes canon. Any canon promotion follows Ptah evaluation, explicit Operator ratification, and a promotion record under `MASTER_INDEX.md`.
 
