@@ -1,163 +1,86 @@
 # MIRRORNODE Canon - Master Index
 
-**Status:** Operational  
-**Last Updated:** 2026-06-01  
-**Authority:** Desktop Commander + Oracle
+**Status:** Canon navigation  
+**Last Updated:** 2026-09-01  
+**Authority:** Governed by ratified CORE-HUB authority and `MASTER_INDEX.md` promotion rules. No advisory runtime is granted governance authority by this index.
 
 ---
 
 ## What This Is
 
-Constitutional governance infrastructure for MIRRORNODE.
+Navigation for MIRRORNODE governance canon and dated evidence.
 
-Every repo has declared boundaries.  
-Every execution emits audits.  
-Every charter is signed and locked.
+This index does not create authority, promote drafts, or convert implementation state into canon by being updated.
 
-This is not aspirational documentation - this is **enforced reality**.
+---
+
+## Candidate Operational Evidence
+
+For recent implementation evidence about the MOPCON / Oracle / Osiris integration, the current branch contains:
+
+- [MIRRORNODE-00 — Operational Verification Delta — 2026-09-01](./dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-DELTA-2026-09-01.md) — consult this first for the newest exact-head and verification state.
+- [MIRRORNODE-00 — Operational Addendum — 2026-09-01](./dossiers/2026-09/MIRRORNODE-00-OPERATIONAL-ADDENDUM-2026-09-01.md) — broader session reconciliation and predecessor evidence.
+
+**Status of both records: candidate operational evidence / unratified.**
+
+The verification delta supersedes only stale exact-head and verification anchors in the earlier addendum. It does not rewrite predecessor evidence, grant authority, or create canonical precedence.
+
+These records may be used to reconcile current observations and exact-head implementation evidence, but they have **no canonical precedence** and do not supersede ratified canon merely because this branch is merged.
+
+Promotion requires the exact gate recorded in `MASTER_INDEX.md`: **Ptah evaluation + explicit Operator ratification + canonical promotion record**. Until then, treat these records as branch-bound evidence only.
+
+Earlier dossiers remain historical evidence and retain their original scope and exact-head meaning.
+
+See also [`../CANONICAL_SOURCES.md`](../CANONICAL_SOURCES.md) for the source map and unresolved authority distinctions.
 
 ---
 
 ## Directory Structure
-```
+
+```text
 canon/
-├── README.md              # Overview
-├── INDEX.md              # This file - navigation
-│
-├── charters/             # Constitutional authority
-│   ├── LUCIAN_PRIME.md
-│   ├── OSIRIS.md
-│   ├── CORE_HUB.md
-│   ├── INFRA.md
-│   └── MIRRORNODE_PY.md
-│
-├── contracts/            # Technical specifications
-│   ├── AUDIT_EMISSION.md
-│   └── sdk/
-│       ├── audit.py      # Python audit SDK
-│       └── audit.ts      # TypeScript audit SDK
-│
-├── scripts/              # Executable tools
-│   ├── bootstrap.sh      # Initialize canon structure
-│   ├── charter_lucian.sh # Lock Lucian charter
-│   ├── audit.sh          # Audit external repos
-│   ├── index.sh          # Index GitHub org
-│   ├── halt.sh           # Emergency stop
-│   └── enforce_audits.sh # Check compliance
-│
-├── dossiers/             # Audit records (auto-generated)
+├── README.md
+├── INDEX.md
+├── charters/
+├── contracts/
+├── scripts/
+├── dossiers/
 │   └── YYYY-MM/
-│       └── audit-{repo}-{timestamp}.json
-│
-├── index/                # System maps
-│   └── github-{org}.json
-│
-└── status/               # Progress reports and metrics
-    ├── PROGRESS_REPORT_2026-06-01.md
-    ├── canon_completion_register.csv
-    ├── mirrornode_metrics.json
-    └── mirrornode_metrics_table.csv
+├── index/
+└── status/
 ```
 
 ---
 
 ## Progress Reports
 
-- [MIRRORNODE Progress Report — 2026-06-01](./status/PROGRESS_REPORT_2026-06-01.md) — Canon-visible completion tally (9/14 complete, 64%), Phase 1 locked, Phase 2 active, architecture integrity 89.5/100
+- [MIRRORNODE Progress Report — 2026-06-01](./status/PROGRESS_REPORT_2026-06-01.md) — historical canon-visible completion tally at that date.
 
----
-
-## Quick Reference
-
-### Bootstrap New System
-```bash
-./canon/scripts/bootstrap.sh
-./canon/scripts/charter_lucian.sh
-```
-
-### Daily Operations
-```bash
-make audit-check          # Check compliance (warnings only)
-make audit-strict         # Check compliance (fail on violations)
-make audit-test           # Test audit SDK
-make charters             # List all active charters
-```
-
-### Audit External Repo
-```bash
-./canon/scripts/audit.sh https://github.com/org/repo
-```
-
-### Emergency Stop
-```bash
-./canon/scripts/halt.sh
-```
-
----
-
-## Integration Guide
-
-### Python Projects
-```python
-from canon.contracts.sdk.audit import emit_audit, audit_execution
-
-# Manual emission
-audit_id = emit_audit(
-    repo="your-repo",
-    event_type="execution",
-    actor="system",
-    verdict="SUCCESS",
-    evidence={"duration_ms": 123, "error": None}
-)
-
-# Decorator (automatic)
-@audit_execution("your-repo", actor="agent")
-def process_data(data):
-    return {"result": "success"}
-```
-
-### TypeScript Projects
-```typescript
-import { emitAudit, auditExecution } from '@/canon/contracts/sdk/audit';
-
-// Manual emission
-const auditId = emitAudit({
-  repo: 'your-repo',
-  event_type: 'execution',
-  actor: 'system',
-  verdict: 'SUCCESS',
-  evidence: { duration_ms: 123, error: null }
-});
-```
+Do not treat dated progress metrics as current unless a later ratified record explicitly reaffirms them.
 
 ---
 
 ## Governance Principles
 
-1. **Declared State = Observable Reality**
-   - What charters say MUST match what code does
-   - Audits prove alignment or surface drift
+1. **Declared State Must Match Observable Reality**
+   - Current operational evidence must identify its source and exact scope.
+   - Historical records stay historical rather than being silently reinterpreted.
 
 2. **Authority is Traceable**
-   - Every decision references a charter
-   - Every execution emits an audit
-   - No silent changes
+   - Consequential decisions must reference the actual authority boundary.
+   - Runtime approval, repository existence, local verification, or ordinary merge does not create governance authority.
 
-3. **Reversibility is Built In**
-   - Clean git history
-   - Signed charters
-   - Immutable audit trail
-   - halt.sh exists
+3. **Promotion is Explicit**
+   - Candidate evidence remains candidate evidence until the required Ptah + Operator promotion gate is satisfied.
+   - `MASTER_INDEX.md` is not bypassed by navigation changes.
 
-4. **Constitutional Violations are Visible**
-   - Unchartered repos flagged
-   - Failed executions logged
-   - Blocked operations recorded
+4. **Contradictions Stay Visible**
+   - Stale maps, unresolved routing authority, stale status claims, and source drift are reconciliation work—not facts to average together.
 
 ---
 
 ## Support
 
-- **Canon Issues:** File in mirrornode/mirrornode repo
-- **Charter Conflicts:** Escalate to Operator (Sean)
-- **Audit SDK Bugs:** Include audit_id in report
+- **Canon conflicts:** escalate through the applicable CORE-HUB governance path.
+- **Authority conflicts:** escalate to the Operator under the ratified authority model.
+- **Audit defects:** preserve the evidence identity and exact scope when reporting them.
