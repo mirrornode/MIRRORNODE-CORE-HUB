@@ -10,7 +10,7 @@
 
 The platform's public `POST /api/agent` and `POST /api/event` routes previously accepted caller payloads without a defined caller authorization contract. PR #57 changes both handlers to bounded HTTP 503 responses without accepting a request parameter or forwarding the body. The public Osiris page removes the Sync event submission control. The change is a **capability restriction in proposed source**, not an expansion or a currently verified production deployment.
 
-The candidate's [security record](https://github.com/mirrornode/mirrornode-platform/blob/2f09c65638f4b75137fc1a4483fbbedfd76b4fcc/docs/security/PUBLIC_EXPOSURE_CONTAINMENT.md) and route tests describe and test non-consumption, non-forwarding, and bounded responses. At the earlier `be385f7...` head, GitHub CI #200 and Canon Gate #126 passed. Fresh checks and review at the current head must be evaluated separately. No deployment, provider installer, upstream consumer, or credential-revocation conclusion follows from source and CI.
+The candidate's [security record](https://github.com/mirrornode/mirrornode-platform/blob/2f09c65638f4b75137fc1a4483fbbedfd76b4fcc/docs/security/PUBLIC_EXPOSURE_CONTAINMENT.md) and route tests describe and test non-consumption, non-forwarding, and bounded responses. At the earlier `be385f7...` head, GitHub CI #200 and Canon Gate #126 passed. At current head `2f09c65...`, [CI #202](https://github.com/mirrornode/mirrornode-platform/actions/runs/37153121855) and [Canon Gate #128](https://github.com/mirrornode/mirrornode-platform/actions/runs/37153121801) also completed successfully: eight Python tests, 52 application tests, lint and build. npm again reported five high-severity vulnerabilities. No eligible approving review was observed; review and release disposition remain separate. No deployment, provider installer, upstream consumer, or credential-revocation conclusion follows from source and CI.
 
 ## Governance relationship
 
@@ -20,7 +20,7 @@ Before either route is re-enabled, a separately reviewed contract must identify 
 
 ## Holds and disposition
 
-- **OBSERVED:** PR #57 contains the source-level restriction and local/remote checks at the prior head. Its current head requires fresh checks and eligible independent review.
+- **OBSERVED:** PR #57 contains the source-level restriction and local/remote checks at the prior head. Fresh checks at its current head passed; eligible independent approval remains open.
 - **UNKNOWN:** deployed route behavior, actual integration consumers, provider dependency tree, historical credential revocation, and the detailed identities and reachability of five high-severity findings reported by npm in CI #200.
 - **PROPOSED:** retain PR #57 at review/release hold while this evidence is reviewed; determine whether this staged record or another governance/registry artifact is the correct lasting location. Resolve any conflict through the normal CORE-HUB review and Operator ratification process.
 
