@@ -46,6 +46,21 @@ Domain identity claims are separated into **OBSERVED**, **INFERRED**, **UNKNOWN*
 
 This hierarchy records present evidence only. It does not decide whether `mirrornodeconsulting.com` should later redirect to, replace, supplement, or host a separate public surface from `mirrornode.xyz`.
 
+## Reference sweep — 2026-10-06
+
+### GitHub organization
+
+- **OBSERVED:** organization-wide code search returns multiple current references to `mirrornode.xyz`, including the platform README, active-production-surface documentation, canonical metadata for Osiris Audit, CORE-HUB setup material, infrastructure reconciliation records, and runtime examples. The sampled references are consistent with `.xyz` being the current production identity.
+- **OBSERVED:** organization-wide code search returned no matches for `mirrornode.com` in the indexed default branches searched.
+- **OBSERVED:** organization-wide code search returned no matches for `mirrornodeconsulting.com` in the indexed default branches searched.
+- **Boundary:** absence from code search is evidence only for the indexed GitHub scope; it is not proof that no historical branch, local file, private external record, or unindexed source contains a reference.
+
+### Operator Gmail
+
+- **OBSERVED:** exact Gmail search for `mirrornode.com` returned no messages in the connected Operator account.
+- **OBSERVED:** exact Gmail search for `mirrornodeconsulting.com` returned the GoDaddy purchase/marketing trail, including the February 2026 order confirmation; no reviewed result established it as a production hostname.
+- **Boundary:** this search covers the connected Operator Gmail account, not every mailbox, document store, vendor portal, or historical export.
+
 ## Open reconciliation items
 
 ### ACTION REQUIRED — Atlassian email-domain verification
@@ -72,13 +87,7 @@ No role is canonical until an Operator disposition is recorded and implementatio
 
 ### ACTION REQUIRED — stale identity references
 
-Search repository, business, vendor, and public-facing records for references to:
-
-- `mirrornode.com`,
-- `mirrornode.xyz`, and
-- `mirrornodeconsulting.com`.
-
-Classify each occurrence as correct, stale, ambiguous, or requiring migration. Preserve historical records rather than silently rewriting completed evidence packets.
+Continue the sweep across business records, vendor portals, connected drives, printable packets, legal/financial paperwork, email signatures, and public-facing collateral. Classify each occurrence as correct, stale, ambiguous, or requiring migration. Preserve historical records rather than silently rewriting completed evidence packets.
 
 ## Evidence provenance
 
@@ -86,6 +95,8 @@ Classify each occurrence as correct, stale, ambiguous, or requiring migration. P
 - Authenticated Vercel domain and project-domain inventory reviewed 2026-10-06.
 - Atlassian administrator email dated 2026-10-06 reporting continued failure to verify the `mirrornode.xyz` email domain.
 - `MIRRORNODE-CORE-HUB/CANONICAL_SOURCES.md` on `main`, reviewed 2026-10-06.
+- GitHub organization code-search sweep for the three domain names, performed 2026-10-06.
+- Connected Operator Gmail exact-search sweep for `mirrornode.com` and `mirrornodeconsulting.com`, performed 2026-10-06.
 
 ## Change-control boundary
 
