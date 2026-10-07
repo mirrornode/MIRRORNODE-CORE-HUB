@@ -1,9 +1,10 @@
 # Platform public integration containment — proposed governance evidence
 
 **Status:** PROPOSED / in review; no canon promotion or release authority  
-**Observed:** 2026-10-03  
+**Observed:** 2026-10-06  
 **Execution repository:** [mirrornode-platform PR #57](https://github.com/mirrornode/mirrornode-platform/pull/57)  
-**Source head at observation:** `2f09c65638f4b75137fc1a4483fbbedfd76b4fcc`  
+**Current source head:** `3fec902883ab90acc0a8d47bc080735e01aa75a6`  
+**Predecessor source head:** `2f09c65638f4b75137fc1a4483fbbedfd76b4fcc`  
 **Prior verified CI head:** `be385f7221e9b4fbeefb8b0dbe9a4dd89815ee09`
 
 ## Boundary change under review
@@ -25,3 +26,19 @@ Before either route is re-enabled, a separately reviewed contract must identify 
 - **PROPOSED:** retain PR #57 at review/release hold while this evidence is reviewed; determine whether this staged record or another governance/registry artifact is the correct lasting location. Resolve any conflict through the normal CORE-HUB review and Operator ratification process.
 
 No agent promotion, canon authority, merge, deployment, credential change, public release, or capability reactivation is conferred by this document.
+
+## Current-head reconciliation — October 6, 2026
+
+The platform source at `3fec902883ab90acc0a8d47bc080735e01aa75a6` retains both non-forwarding HTTP 503 handlers and removal of the public Sync submission control. The latest incremental correction raises the Node 20 engine floor to 20.19.0; it adds no invocation capability. Ten GitHub checks pass at this head. Copilot returned COMMENTED, preserving capability and dependency concerns; no approving review is claimed.
+
+Fresh isolated npm installation from the exact manifest/lock under Node 20.20.2, with lifecycle scripts disabled, establishes six high package findings: five dev-only findings in eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces 3.0.3, and source-map-js 1.2.1 which remains in the production audit through PostCSS-related paths. These are two underlying advisories, not six distinct exploits: [braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) and [source-map-js](https://github.com/advisories/GHSA-68fv-2mgg-jv7q). Audit exits 1 in both scopes. Deployment reachability is unknown. No vulnerable dependency was changed or risk waived.
+
+### Concrete governance proposal
+
+Retain this continuity document as the cross-repository evidence record for the **proposed temporary restriction** at the exact current platform head. Accept its location for this bounded reconciliation, while preserving the org agent-role registry unchanged: the platform is an integration surface and this proposal does not retire or change an agent's registered runtime role. This is a proposed disposition, not a claim that the authoritative registry is complete or that approval has already occurred.
+
+The Operator's explicit disposition must choose: accept this evidence-record location for the proposed restriction, require an identified registry/contract amendment, or stop/park the change. A reviewer may assess accuracy and sufficiency but cannot substitute technical review for human governance authorization. If another governing contract is identified, reconcile it before release. Record the human decision against this CORE-HUB proposal commit and platform `3fec902883ab90acc0a8d47bc080735e01aa75a6` before disposing the platform capability thread.
+
+Acceptance closes only the record-location question. PR review/merge, dependency remediation or explicit scoped risk disposition, deployed containment, consumer compatibility, historical credential revocation and release authorization remain open. Route reactivation still requires a separately reviewed authorization contract. No canon promotion, agent authority expansion or release permission follows.
+
+Earlier paragraphs are dated predecessor evidence; their five-high count does not describe the current audited tree. Current source reference: [security record](https://github.com/mirrornode/mirrornode-platform/blob/3fec902883ab90acc0a8d47bc080735e01aa75a6/docs/security/PUBLIC_EXPOSURE_CONTAINMENT.md).
