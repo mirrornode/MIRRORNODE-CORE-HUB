@@ -61,7 +61,30 @@ This hierarchy records present evidence only. It does not decide whether `mirror
 - **OBSERVED:** exact Gmail search for `mirrornodeconsulting.com` returned the GoDaddy purchase/marketing trail, including the February 2026 order confirmation; no reviewed result established it as a production hostname.
 - **Boundary:** this search covers the connected Operator Gmail account, not every mailbox, document store, vendor portal, or historical export.
 
+### Google Drive
+
+- **OBSERVED:** search for `mirrornode.xyz` returns historical and working documents that consistently describe `.xyz` as the live/public production surface.
+- **OBSERVED:** searches for `mirrornode.com` and `mirrornodeconsulting.com` returned no Drive results in the connected scope.
+- **Boundary:** absence from Drive search is scope-limited and does not prove universal absence.
+
+### ChatGPT Library / business records
+
+- **OBSERVED — material discrepancy:** `MirrorNode LLC Banking Introduction Packet.png` contains `contact@mirrornode.com` in its company snapshot/contact block. That address depends on a domain whose MIRRORNODE ownership/control has not been established.
+- **Disposition:** classify that contact line as **STALE / UNVERIFIED — DO NOT REUSE** until a controlled email domain and mailbox are proven. Preserve the historical packet; correct by issuing a superseding packet rather than silently overwriting the old record.
+- **OBSERVED:** exact text checks of the later BECU banking packet, executive brief, and August 12 banking packet did not return `mirrornode.com` in their extracted text. This is useful negative evidence but not universal proof of absence.
+
 ## Open reconciliation items
+
+### ACTION REQUIRED — banking/contact identity correction
+
+The banking introduction image is the first confirmed source of the `mirrornode.com` misalignment. Before any future reuse of business-facing contact materials:
+
+1. select and verify the controlled business email domain and mailbox;
+2. issue a superseding banking/company-introduction packet with the verified contact identity;
+3. mark the old packet as historical/superseded in the business record index;
+4. check whether the stale address was supplied to any external institution and, if so, determine whether an administrative contact update is required.
+
+No assumption is made that BECU or any other institution currently has that address on file; that must be verified from the institution's actual record before any update.
 
 ### ACTION REQUIRED — Atlassian email-domain verification
 
@@ -97,7 +120,9 @@ Continue the sweep across business records, vendor portals, connected drives, pr
 - `MIRRORNODE-CORE-HUB/CANONICAL_SOURCES.md` on `main`, reviewed 2026-10-06.
 - GitHub organization code-search sweep for the three domain names, performed 2026-10-06.
 - Connected Operator Gmail exact-search sweep for `mirrornode.com` and `mirrornodeconsulting.com`, performed 2026-10-06.
+- Connected Google Drive search sweep for the three domain names, performed 2026-10-06.
+- ChatGPT Library exact search for `contact@mirrornode.com`, which surfaced the banking introduction packet; later banking packet exact-text checks were also performed 2026-10-06.
 
 ## Change-control boundary
 
-This register may be updated as additional evidence is gathered. DNS mutation, registrar mutation, email-routing changes, domain transfer, production-domain replacement, redirect activation, or public identity migration remain separate actions requiring explicit authorization and implementation evidence.
+This register may be updated as additional evidence is gathered. DNS mutation, registrar mutation, email-routing changes, domain transfer, production-domain replacement, redirect activation, business-contact change at a financial institution, or public identity migration remain separate actions requiring explicit authorization and implementation evidence.
