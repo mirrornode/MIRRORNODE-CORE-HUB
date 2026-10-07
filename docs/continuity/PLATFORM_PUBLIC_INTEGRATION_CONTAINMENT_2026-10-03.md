@@ -1,7 +1,7 @@
 # Platform public integration containment — proposed governance evidence
 
 **Status:** PROPOSED / in review; no canon promotion or release authority
-**Observed:** 2026-10-06
+**Observed:** 2026-10-06; exact-head npm receipt retained 2026-10-07
 **Execution repository:** [mirrornode-platform PR #57](https://github.com/mirrornode/mirrornode-platform/pull/57)
 **Current source head:** `3fec902883ab90acc0a8d47bc080735e01aa75a6`
 **Predecessor source head:** `2f09c65638f4b75137fc1a4483fbbedfd76b4fcc`
@@ -35,7 +35,7 @@ No agent promotion, canon authority, merge, deployment, credential change, publi
 
 The platform source at `3fec902883ab90acc0a8d47bc080735e01aa75a6` retains both non-forwarding HTTP 503 handlers and removal of the public Sync submission control. The latest incremental correction raises the Node 20 engine floor to 20.19.0; it adds no invocation capability. Ten GitHub checks pass at this head. Copilot returned COMMENTED, preserving capability and dependency concerns; no approving review is claimed.
 
-Fresh isolated npm installation from the exact manifest/lock under Node 20.20.2, with lifecycle scripts disabled, establishes six high package findings: five dev-only findings in eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces 3.0.3, and source-map-js 1.2.1 which remains in the production audit through PostCSS-related paths. These are two underlying advisories, not six distinct exploits: [braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) and [source-map-js](https://github.com/advisories/GHSA-68fv-2mgg-jv7q). Audit exits 1 in both scopes. Deployment reachability is unknown. No vulnerable dependency was changed or risk waived.
+A retained [exact-head npm audit receipt](./receipts/PR57_EXACT_HEAD_NPM_AUDIT_2026-10-07.md) now records the isolated installation and audit performed from platform head `3fec902883ab90acc0a8d47bc080735e01aa75a6`: Node `v20.20.2`, npm `10.8.2`, manifest and lockfile SHA-256 identities, `npm ci --ignore-scripts --audit=false` exit 0, full-audit exit 1 with six high findings, production-scope audit exit 1 with one high finding, observed dependency paths, and hashes for the Operator-local raw receipt artifacts. Five findings are on the dev-only eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces 3.0.3 chain; source-map-js 1.2.1 remains in the production tree through Next.js → PostCSS. These are two underlying advisories, not six distinct exploits: [braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) and [source-map-js](https://github.com/advisories/GHSA-68fv-2mgg-jv7q). Deployment reachability is unknown. No vulnerable dependency was changed or risk waived.
 
 ### Concrete governance proposal
 
