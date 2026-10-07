@@ -46,6 +46,26 @@ Domain identity claims are separated into **OBSERVED**, **INFERRED**, **UNKNOWN*
 
 This hierarchy records present evidence only. It does not decide whether `mirrornodeconsulting.com` should later redirect to, replace, supplement, or host a separate public surface from `mirrornode.xyz`.
 
+## Authenticated Vercel surface map — 2026-10-06
+
+The following aliases were observed directly in the authenticated MIRRORNODE Vercel team and are operational attachment evidence, not merely historical documentation:
+
+| Hostname | Observed attachment | Classification |
+|---|---|---|
+| `mirrornode.xyz` | `mirrornode-platform` (`prj_me6Jqod7ceuaBKoacmAxThKpyyCI`) | Canonical apex / production front door |
+| `api.mirrornode.xyz` | `mirrornode-backend` (`prj_Z49H02DQYdo0jixcMKru6IeqA8NL`) | API subdomain |
+| `parallax.mirrornode.xyz` | Vercel project `public` (`prj_OEQwf8QDkeAvqcpxzHhVuuAqUASJ`) | Public subdomain / role requires separate product-governance reconciliation |
+
+**Boundary:** alias attachment proves the current Vercel routing relationship. It does not by itself prove every underlying application path, DNS record, deployment, security control, or intended long-term product role.
+
+## Email identity state
+
+- **OBSERVED:** `contact@mirrornode.com` appears in one historical MIRRORNODE banking-introduction image.
+- **UNKNOWN:** no functioning MIRRORNODE-controlled mailbox on `mirrornode.xyz` or `mirrornodeconsulting.com` has been established by the evidence reviewed in this pass.
+- **OBSERVED:** Gmail searches for `@mirrornode.xyz` primarily surface Atlassian domain-verification notices, not evidence of a working MIRRORNODE mailbox.
+- **OBSERVED:** Gmail searches for `@mirrornodeconsulting.com` surface GoDaddy domain-registration/marketing records, not evidence of a working MIRRORNODE mailbox.
+- **Disposition:** do not publish or reuse a domain-based MIRRORNODE email address until mailbox existence, send/receive behavior, and recovery/admin custody are verified.
+
 ## Reference sweep — 2026-10-06
 
 ### GitHub organization
@@ -112,14 +132,26 @@ No role is canonical until an Operator disposition is recorded and implementatio
 
 Continue the sweep across business records, vendor portals, connected drives, printable packets, legal/financial paperwork, email signatures, and public-facing collateral. Classify each occurrence as correct, stale, ambiguous, or requiring migration. Preserve historical records rather than silently rewriting completed evidence packets.
 
+## Laptop checkpoint — next authenticated actions
+
+When the Operator is at the laptop, continue in this order and record evidence before mutation:
+
+1. **GoDaddy asset check:** open the authenticated domain list and confirm `mirrornode.xyz` and `mirrornodeconsulting.com` are present under the expected account; record current renewal, contact, lock/security, and nameserver state. Do not infer ownership from WHOIS alone.
+2. **Atlassian record check:** open Atlassian Admin → email domains → `mirrornode.xyz` → DNS records and copy the exact records Atlassian expects. Do not add or delete records yet.
+3. **Authoritative DNS comparison:** compare Atlassian's requested values against the actual authoritative `.xyz` DNS zone. Record missing, conflicting, stale, or already-correct entries before proposing a change.
+4. **Business-email decision:** choose which controlled domain, if any, should become the business email identity. Verify a real mailbox and account-recovery path before publishing it.
+5. **Consulting-domain disposition:** decide whether `mirrornodeconsulting.com` is reserved, redirects to `.xyz`, carries business/legal identity, hosts a separate consulting surface, or serves email. Treat the decision and implementation as separate states.
+6. **Banking/contact reconciliation:** determine whether any external institution actually received or retains `contact@mirrornode.com`. Update an institution only if its real record establishes the stale address.
+7. **Superseding artifact:** prepare a corrected company/banking introduction packet using only verified contact information; preserve the historical packet as superseded evidence.
+
 ## Evidence provenance
 
 - GoDaddy transactional order confirmation reviewed 2026-10-06 for the February 2026 purchase of `mirrornode.xyz` and `mirrornodeconsulting.com`.
-- Authenticated Vercel domain and project-domain inventory reviewed 2026-10-06.
+- Authenticated Vercel domain, project-domain, alias, and project inventory reviewed 2026-10-06.
 - Atlassian administrator email dated 2026-10-06 reporting continued failure to verify the `mirrornode.xyz` email domain.
 - `MIRRORNODE-CORE-HUB/CANONICAL_SOURCES.md` on `main`, reviewed 2026-10-06.
 - GitHub organization code-search sweep for the three domain names, performed 2026-10-06.
-- Connected Operator Gmail exact-search sweep for `mirrornode.com` and `mirrornodeconsulting.com`, performed 2026-10-06.
+- Connected Operator Gmail exact-search sweep for `mirrornode.com`, `mirrornodeconsulting.com`, `@mirrornode.xyz`, and `@mirrornodeconsulting.com`, performed 2026-10-06.
 - Connected Google Drive search sweep for the three domain names, performed 2026-10-06.
 - ChatGPT Library exact search for `contact@mirrornode.com`, which surfaced the banking introduction packet; later banking packet exact-text checks were also performed 2026-10-06.
 
