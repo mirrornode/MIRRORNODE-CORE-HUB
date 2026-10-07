@@ -1,11 +1,15 @@
 # Platform public integration containment — proposed governance evidence
 
-**Status:** PROPOSED / in review; no canon promotion or release authority  
-**Observed:** 2026-10-06  
-**Execution repository:** [mirrornode-platform PR #57](https://github.com/mirrornode/mirrornode-platform/pull/57)  
-**Current source head:** `3fec902883ab90acc0a8d47bc080735e01aa75a6`  
-**Predecessor source head:** `2f09c65638f4b75137fc1a4483fbbedfd76b4fcc`  
+**Status:** PROPOSED / in review; no canon promotion or release authority
+**Observed:** 2026-10-06
+**Execution repository:** [mirrornode-platform PR #57](https://github.com/mirrornode/mirrornode-platform/pull/57)
+**Current source head:** `3fec902883ab90acc0a8d47bc080735e01aa75a6`
+**Predecessor source head:** `2f09c65638f4b75137fc1a4483fbbedfd76b4fcc`
 **Prior verified CI head:** `be385f7221e9b4fbeefb8b0dbe9a4dd89815ee09`
+
+## Predecessor evidence retained from October 3
+
+The following source and CI observations belong to the predecessor heads named below. Current-head evidence and proposed disposition follow in the October 6 section.
 
 ## Boundary change under review
 
