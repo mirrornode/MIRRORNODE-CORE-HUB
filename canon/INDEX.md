@@ -1,8 +1,11 @@
 # MIRRORNODE Canon - Master Index
 
 **Status:** Operational  
-**Last Updated:** 2026-06-01  
-**Authority:** Desktop Commander + Oracle
+**Last Updated:** 2026-10-15  
+**Governance source:** MIRRORNODE-CORE-HUB (see `../CANONICAL_SOURCES.md`)  
+**Final governance and conflict disposition:** Human Operator  
+**Coordination role:** Desktop Commander, within separately authorized boundaries  
+**Interpretive / advisory role:** Oracle; no execution authority conferred
 
 ---
 
@@ -12,9 +15,9 @@ Constitutional governance infrastructure for MIRRORNODE.
 
 Every repo has declared boundaries.  
 Every execution emits audits.  
-Every charter is signed and locked.
+Charter ratification and signature validity must be established individually from verified evidence; directory presence alone is not ratification.
 
-This is not aspirational documentation - this is **enforced reality**.
+This index describes governance intent and documented mechanisms. Enforcement claims require current, scope-specific verification; this index alone is not proof of production enforcement.
 
 ---
 
@@ -145,7 +148,7 @@ const auditId = emitAudit({
 
 3. **Reversibility is Built In**
    - Clean git history
-   - Signed charters
+   - Verified charter signatures where established; unverified charters remain pending
    - Immutable audit trail
    - halt.sh exists
 
@@ -161,3 +164,15 @@ const auditId = emitAudit({
 - **Canon Issues:** File in mirrornode/mirrornode repo
 - **Charter Conflicts:** Escalate to Operator (Sean)
 - **Audit SDK Bugs:** Include audit_id in report
+
+---
+
+## Cross-repository authority and ratification status (2026-10-15)
+
+CORE-HUB is the governance source designated in `CANONICAL_SOURCES.md`. The `mirrornode-index` repository is the cross-repository index and technical/historical reference, not an overriding governance authority. Its `canon/MASTER_CANON.md` currently asserts precedence in a conflicting header; this remains an OPEN cross-repository correction until separately reviewed and amended.
+
+The human Operator holds final governance and conflict-disposition authority. Coordination titles and tool access do not themselves confer authority to ratify, merge, deploy, or override security gates.
+
+The current `canon/charters/` directory contains nine Markdown charter files and two matching `.sig` files (`LUCIAN_PRIME.md` and `OSIRIS.md`). This is a file-presence observation only: signature validity, charter scope, and ratification status remain to be checked individually. Do not claim all charters are signed or locked.
+
+See `docs/governance/CANON_AUTHORITY_RECONCILIATION_2026-10-15.md` for source-level contradictions, proposed cross-repository correction, and unresolved review gates. House Ramses authoritative repository placement remains unverified and is not created by this note.
