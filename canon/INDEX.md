@@ -172,6 +172,6 @@ CORE-HUB is the governance source designated in `CANONICAL_SOURCES.md`. The `mir
 
 The human Operator holds final governance and conflict-disposition authority. Coordination titles and tool access do not themselves confer authority to ratify, merge, deploy, or override security gates.
 
-The current `canon/charters/` directory contains ten Markdown charter files and two matching `.sig` files (`LUCIAN_PRIME.md` and `OSIRIS.md`). This is a file-presence observation only: signature validity, charter scope, and ratification status remain to be checked individually. Do not claim all charters are signed or locked.
+The current `canon/charters/` directory contains nine Markdown charter files and two matching `.sig` files (`LUCIAN_PRIME.md` and `OSIRIS.md`). This is a file-presence observation only: signature validity, charter scope, and ratification status remain to be checked individually. Do not claim all charters are signed or locked.
 
 See `docs/governance/CANON_AUTHORITY_RECONCILIATION_2026-10-15.md` for source-level contradictions, proposed cross-repository correction, and unresolved review gates. House Ramses authoritative repository placement remains unverified and is not created by this note.
