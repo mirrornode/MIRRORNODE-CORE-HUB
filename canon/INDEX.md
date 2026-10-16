@@ -1,10 +1,11 @@
 # MIRRORNODE Canon - Master Index
 
 **Status:** Operational  
-**Last Updated:** 2026-06-01  
+**Last Updated:** 2026-10-15  
 **Governance source:** MIRRORNODE-CORE-HUB (see `../CANONICAL_SOURCES.md`)  
 **Final governance and conflict disposition:** Human Operator  
-**Coordination / execution roles:** Desktop Commander + Oracle, only within separately authorized boundaries
+**Coordination role:** Desktop Commander, within separately authorized boundaries  
+**Interpretive / advisory role:** Oracle; no execution authority conferred
 
 ---
 
