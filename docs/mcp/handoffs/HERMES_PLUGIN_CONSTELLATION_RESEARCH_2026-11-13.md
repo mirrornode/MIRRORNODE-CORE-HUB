@@ -1,7 +1,7 @@
 # Hermes — ChatGPT Plugin Constellation Research and Routing Request
 
 **Date:** 2026-11-13  
-**Status:** PREPARED FOR HANDOFF / NOT TRANSMITTED / NO RESEARCH RETURN YET  
+**Status:** PACKET PREPARED / ORIGINAL TRANSMISSION UNVERIFIED / PARTIAL OPERATOR-SUPPLIED ADVISORY INTAKE RECEIVED 2026-11-14  
 **Target:** `docs/mcp/CHATGPT_PLUGIN_CONSTELLATION_AND_LATTICE_V0_1_PROPOSED_2026-11-13.md`  
 **Scope:** Advisory research, source verification and review routing only. Hermes is not THOTH; routing is not a security verdict or approval.
 
@@ -14,7 +14,7 @@
 
 ## Research assignment
 1. Locate the latest official OpenAI documentation on private plugins, public submission, MCP-backed integrations, Sites-hosted tools if supported, developer verification, publication and review requirements; record URLs, explicit update dates, constraints and account/workspace caveats.
-2. Independently verify the reported Higgsfield figure of approximately 10,000 new customers per week attributed to a ChatGPT plugin. Determine exactly whether it refers to customers, subscribers, installs, leads, gross acquisition, paid conversion, or another measure; find primary sourcing and the applicable period. If not defensible, mark UNKNOWN; do not reproduce it as established commercial proof.
+2. Reconcile the earlier approximately 10,000 customers/week claim with the later attributed report of 100,000 new paid subscribers in ten weeks. Current classification: REPORTED / primary-source verification pending. Find the exact primary post URL, publisher, publication date, metric definition and applicable period; the company feed link is only a discovery pointer. Distinguish attributed reporting from independent verification and causal attribution. Do not infer a steady weekly acquisition rate or MIRRORNODE product-market fit. Mark unresolved fields UNKNOWN and do not reuse the figure as established commercial proof.
 3. Identify comparable ChatGPT-integrated B2B services in operational audit, systems inventory, trust assurance, managed remediation, workflow coordination and evidence provenance. Distinguish discovery distribution from sustained paid outcomes.
 4. Define the first buyer problem, search/query language, landing promise, acquisition-to-fulfillment conversion, and measurable proof-of-value for THEIA, PTAH, THOTH or one umbrella plugin. Avoid marketing claims about certification, autonomous remediation, or finished integrations.
 5. Research practical privacy, consent, customer tenancy, third-party data processing, plugin approval and support obligations. Verify current rules rather than extrapolating from earlier product generations.
@@ -31,3 +31,7 @@
 - NO changes to canon, provider configuration, credentials, production, external outreach or publication.
 
 Return findings as advisory evidence; do not claim direct Hermes/runtime participation until separately observed.
+
+## Intake reconciliation — 2026-11-14
+
+The Operator supplied a Perplexity repository readout and hardening assessment against PR #71 head `18118e375bed3305433cfa762600bda20d14294a`. This is a partial advisory return, not completion of the market/policy research assignment or a formal node verdict. Source attribution is Operator-supplied; original packet transmission and authenticated Hermes participation remain unverified. See [the build plan's intake record](PLUGIN_SUITE_BUILD_SEQUENCE_AND_NODE_CONTRIBUTION_PLAN_2026-11-13.md#7-handoff-status) for corroborated observations, remaining evidence gaps and separate hardening scope. Any review of the reconciliation must name the resulting exact head rather than inheriting the old target's checks.

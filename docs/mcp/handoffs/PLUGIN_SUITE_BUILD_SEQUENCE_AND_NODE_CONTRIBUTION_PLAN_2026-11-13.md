@@ -18,7 +18,7 @@ This plan records proposed work envelopes. It does not activate a node, establis
 - The current CORE-HUB AGENTS.md warns that routing authority is unresolved. Merlin’s evidence-supported lane is planning, sequencing, dependency mapping, and orchestration advice; Hermes’s is advisory routing, progress reporting, registry-evidence collection, and handoff/event routing. Neither role grants execution authority or canon control.
 - The MIRRORNODE Coordination Office currently exposes read-only architecture/construct information. Its returned revision 1 is dated 2026-10-04 and has no plugin-suite construct. Treat that snapshot as stale baseline context, not as the live suite register.
 - Current OpenAI developer documentation describes plugins as packages combining skills, MCP servers, or both, with optional UI. The TypeScript MCP quickstart uses Node.js 22.6 or later. ChatGPT testing requires a separately configured MCP connection through an eligible HTTPS endpoint or Secure MCP Tunnel; public distribution has a separate submission and review process. These platform procedures do not override MIRRORNODE approval gates.
-- A current OpenAI for Business LinkedIn post reports that Higgsfield’s ChatGPT plugin brought 100,000 new paid subscribers in 10 weeks. Retain this as REPORTED market evidence. The post is not an independent audit, does not establish how much growth was caused by the plugin, and does not establish MIRRORNODE product-market fit.
+- **REPORTED / primary-source verification pending:** The earlier conversational claim was approximately 10,000 customers per week. The later build plan attributed a claim of 100,000 new paid subscribers in ten weeks to OpenAI for Business on LinkedIn. The retained URL is a company feed, not a direct dated post; the exact primary post, publication date, metric definition and attribution remain unverified in this reconciliation. Preserve the attributed report without presenting the figure, weekly rate, causal effect of the plugin, or MIRRORNODE product-market fit as independently verified. Hermes should return the direct dated source before external reuse.
 
 ## 2. Product architecture to preserve
 
@@ -94,7 +94,21 @@ A twelve-hour target can reasonably aim at a well-documented, synthetic private 
 
 ## 7. Handoff status
 
-The review packets for Claude and Hermes were prepared in PR #71, but this session has not transmitted them. The requested Comet browser tabs were not exposed to the available browser runtime, so no messages have been sent to Merlin, Hermes, Gemini, Grok, or Claude. This status must be updated only after actual transmission and attributable replies.
+### Original preparation record (2026-11-13)
+
+The drafting session prepared Claude and Hermes packets but did not transmit them. Its requested browser tabs were unavailable. This historical record does not establish what other sessions later transmitted.
+
+### Operator-supplied advisory intake (2026-11-14)
+
+Siseon supplied Perplexity's “MIRRORNODE Suite — Repository Readout” and a repository-hardening assessment in the coordination conversation, then explicitly instructed THEIA to reconcile PR #71. Classify the return as **REPORTED / Operator-supplied advisory intake, partially corroborated against GitHub**. This is receipt of supplied text, not proof of the original packet's transmission, authenticated Hermes runtime participation, completion of the full research assignment, or a formal PTAH/THOTH verdict. No conversation permalink or independently authenticated provider receipt was supplied.
+
+The intake's stated review target was `18118e375bed3305433cfa762600bda20d14294a`. THEIA directly corroborated that target's five documentation files, open/draft/unmerged state, three successful check-run conclusions and empty submitted-review list. The PR body omitted this build plan; the market-evidence wording differed across the package. This reconciliation addresses those documentary discrepancies. These observations apply to the old review target, not automatically to the reconciliation commit or any subsequent head.
+
+The intake recommends one umbrella experience, separately attributable THEIA/PTAH/THOTH outputs and a private Lattice. Record this as **PROPOSED / DECISION_NEEDED**; packaging, execution owner and bounded implementation scope remain Operator decisions. Preserve the synthetic-only, non-mutating first demonstration in section 3.
+
+Outstanding: direct dated market source, claim-to-source corrections for the hardening intake, independently attributable feasibility/custody and security responses, and fresh review/check receipts at the resulting head. The intake's numbered hardening citations do not consistently match the claims they accompany; they must not be promoted into verified implementation guidance without primary-source reconciliation.
+
+CORE-HUB workflow hardening belongs on a separate branch/PR from the current default branch. Siseon indicated he would instruct Hermes separately; this record does not assert that instruction was transmitted or the hardening work began. GitHub Ops authentication/collector implementation is another separate scope. No workflow, installation, ruleset, merge or deployment change is authorized by this documentary reconciliation.
 
 ## 8. Source ledger
 
@@ -106,4 +120,4 @@ The review packets for Claude and Hermes were prepared in PR #71, but this sessi
 - OpenAI Build an MCP server: https://developers.openai.com/plugins/build/mcp-server
 - OpenAI Connect and test your plugin: https://developers.openai.com/plugins/deploy/connect-chatgpt
 - OpenAI Upload and submit your plugin: https://developers.openai.com/plugins/deploy/submission
-- OpenAI for Business LinkedIn report of Higgsfield’s 100,000 paid-subscriber claim, surfaced in the Higgsfield company feed: https://www.linkedin.com/company/higgsfield/
+- Discovery pointer only for the attributed Higgsfield report: https://www.linkedin.com/company/higgsfield/ . Exact primary post URL and publication date: UNKNOWN pending Hermes source reconciliation. This feed URL is not a verified direct citation.
