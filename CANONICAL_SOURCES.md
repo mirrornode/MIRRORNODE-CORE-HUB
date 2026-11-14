@@ -33,3 +33,11 @@ Branch and authority status must be verified before modifying this repo because 
 
 ## Rule
 If a downstream tool, model, or dashboard claims a different canonical source, verify against the repository, deployment, and dashboard state before acting.
+
+## Noncanonical proposal / review queue (not promoted)
+The ChatGPT plugin constellation and lattice product concept is **PROPOSED**, not ratified canon or an operational capability: [ChatGPT Plugin Constellation & Lattice v0.1](docs/mcp/CHATGPT_PLUGIN_CONSTELLATION_AND_LATTICE_V0_1_PROPOSED_2026-11-13.md). Prepared review packets: [Claude/PTAH](docs/mcp/handoffs/CLAUDE_PTAH_PLUGIN_CONSTELLATION_REVIEW_2026-11-13.md) and [Hermes](docs/mcp/handoffs/HERMES_PLUGIN_CONSTELLATION_RESEARCH_2026-11-13.md).
+
+This pointer does **not** change the authoritative repository map above, the accepted CG-0032 read-only MCP definition, CG-0033 adapter authority, node roles, `MASTER_INDEX.md`, deployment state, or product publication status. Formal promotion requires the existing Ptah evaluation and explicit Operator ratification gate.
+
+
+The proposed staged implementation and node contribution cadence is **noncanonical, not ratified, and not yet transmitted to participants**: [Plugin Suite Build Sequence and Node Contribution Plan v0.1](docs/mcp/handoffs/PLUGIN_SUITE_BUILD_SEQUENCE_AND_NODE_CONTRIBUTION_PLAN_2026-11-13.md).
