@@ -62,6 +62,52 @@ def trusted_source(repository, event, ref):
     )
 
 
+def workflow_condition_allows(condition, context):
+    terms = re.split(r"\s*(&&|\|\|)\s*", condition)
+    if not terms or len(terms) % 2 == 0:
+        raise ValueError(f"Invalid workflow condition: {condition}")
+
+    def evaluate_term(term):
+        term = term.strip()
+        if term.lower() in ("true", "false"):
+            return term.lower() == "true"
+        match = re.fullmatch(r"([A-Za-z][A-Za-z0-9_.-]*)\s*==\s*'([^']*)'", term)
+        if not match or match.group(1) not in context:
+            raise ValueError(f"Unsupported workflow condition term: {term}")
+        return context[match.group(1)] == match.group(2)
+
+    groups = []
+    current_group = evaluate_term(terms[0])
+    for operator, term in zip(terms[1::2], terms[2::2]):
+        value = evaluate_term(term)
+        if operator == "&&":
+            current_group = current_group and value
+        else:
+            groups.append(current_group)
+            current_group = value
+    return any(groups + [current_group])
+
+
+def workflow_context(repository, event, ref):
+    return {
+        "github.repository": repository,
+        "github.event_name": event,
+        "github.ref": ref,
+        "needs.validate-runtime-surface.outputs.ready": "true",
+        "needs.validate-release-surface.outputs.ready": "true",
+        "needs.integration-tests.result": "success",
+    }
+
+
+def release_condition_is_default_denied(condition, cases):
+    for _, repository, event, ref, _ in cases:
+        if workflow_condition_allows(
+            condition, workflow_context(repository, event, ref)
+        ):
+            return False
+    return True
+
+
 class WorkflowHardeningTests(unittest.TestCase):
     def test_audit_lint_is_unsuppressed_and_keeps_check_name(self):
         text = workflow_text("audit.yml")
@@ -89,7 +135,7 @@ class WorkflowHardeningTests(unittest.TestCase):
             checkout_indexes = [
                 index
                 for index, line in enumerate(lines)
-                if re.match(r"\s*uses:\s*actions/checkout@", line)
+                if re.match(r"\s*(?:-\s*)?uses:\s*actions/checkout@", line)
             ]
             for index in checkout_indexes:
                 indent = len(lines[index]) - len(lines[index].lstrip())
@@ -193,7 +239,9 @@ class WorkflowHardeningTests(unittest.TestCase):
                 condition = job_condition(job_block(text, name))
                 for scenario, repository, event, ref, expected_source in cases:
                     source_allowed = trusted_source(repository, event, ref)
-                    release_enabled = source_allowed and "false" not in condition.lower()
+                    release_enabled = workflow_condition_allows(
+                        condition, workflow_context(repository, event, ref)
+                    )
                     with self.subTest(
                         workflow=workflow,
                         job=name,
@@ -201,9 +249,28 @@ class WorkflowHardeningTests(unittest.TestCase):
                     ):
                         self.assertEqual(source_allowed, expected_source)
                         self.assertFalse(release_enabled)
+                self.assertTrue(release_condition_is_default_denied(condition, cases))
 
         lucian = workflow_text("lucian-release.yml")
         self.assertRegex(lucian, r"(?m)^  workflow_dispatch:\s*$")
+
+    def test_release_gate_rejects_or_bypass_mutations(self):
+        cases = [
+            ("same-repository PR", CANONICAL_REPOSITORY, "pull_request",
+             "refs/pull/42/merge", False),
+        ]
+        for workflow, jobs in RELEASE_JOBS.items():
+            text = workflow_text(workflow)
+            for name in jobs:
+                condition = job_condition(job_block(text, name))
+                with self.subTest(workflow=workflow, job=name):
+                    self.assertTrue(release_condition_is_default_denied(condition, cases))
+                    bypassed_condition = (
+                        f"{condition} || github.event_name == 'pull_request'"
+                    )
+                    self.assertFalse(
+                        release_condition_is_default_denied(bypassed_condition, cases)
+                    )
 
     def test_missing_runtime_surfaces_cannot_satisfy_release_gates(self):
         surfaces = (

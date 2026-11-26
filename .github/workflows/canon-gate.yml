@@ -27,7 +27,7 @@ jobs:
           python-version: '3.11'
 
       - name: Run Canon Gate regression tests
-        run: python -m unittest tests/test_canon_gate.py
+        run: python -m unittest tests/test_canon_gate.py tests/test_workflow_hardening.py
 
       - name: Run Canon Gate
         env:
