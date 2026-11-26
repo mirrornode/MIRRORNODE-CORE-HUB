@@ -24,9 +24,7 @@ on:
       - '.github/workflows/**'
 
 permissions:
-  contents: write
-  packages: write
-  id-token: write
+  contents: read
 
 env:
   IMAGE_REGISTRY: ghcr.io
@@ -36,6 +34,8 @@ jobs:
   verify-platform:
     name: Verify Charters & Integrity
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       ok: ${{ steps.verify.outcome }}
     steps:
@@ -43,6 +43,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Run full integrity verification
         run: |
@@ -57,11 +58,15 @@ jobs:
     name: Validate Runtime Release Surface
     runs-on: ubuntu-latest
     needs: verify-platform
+    permissions:
+      contents: read
     outputs:
       ready: ${{ steps.surface.outputs.ready }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Check runtime Docker surface
         id: surface
@@ -80,30 +85,35 @@ jobs:
             echo "ready=false" >> "$GITHUB_OUTPUT"
           fi
 
-  build-and-test:
-    if: github.event_name == 'push' && needs.validate-release-surface.outputs.ready == 'true'
-    name: Build • Sign • Test (${{ matrix.runtime }})
+  build-and-push:
+    if: >-
+      github.repository == 'mirrornode/MIRRORNODE-CORE-HUB' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.validate-release-surface.outputs.ready == 'true' &&
+      false
+    name: Build • Sign (${{ matrix.runtime }})
     needs: [verify-platform, validate-release-surface]
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     strategy:
       matrix:
         runtime: [lucian, osiris]
     runs-on: ubuntu-latest
+    env:
+      IMAGE_REPO: ${{ github.repository_owner }}/${{ matrix.runtime }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set runtime variables
-        id: vars
-        run: |
-          echo "IMAGE_REPO=${{ github.repository_owner }}/${{ matrix.runtime }}" >> $GITHUB_ENV
-          echo "HEALTH_PORT=$([[ ${{ matrix.runtime }} == 'lucian' ]] && echo 8001 || echo 8002)" >> $GITHUB_ENV
-          echo "HEALTH_PATH=/health" >> $GITHUB_ENV
+        with:
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GHCR
-        if: github.event_name == 'push'
+      - name: Log in to GHCR for image publication
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -138,6 +148,41 @@ jobs:
             --certificate-identity-regexp="^https://github.com/${{ github.repository_owner }}/.github/workflows/.*" \
             --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
             ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPO }}:${{ env.IMAGE_TAG }}
+
+  integration-tests:
+    name: Integration Tests (${{ matrix.runtime }})
+    needs: [validate-release-surface, build-and-push]
+    if: >-
+      github.repository == 'mirrornode/MIRRORNODE-CORE-HUB' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.validate-release-surface.outputs.ready == 'true'
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      matrix:
+        runtime: [lucian, osiris]
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_REPO: ${{ github.repository_owner }}/${{ matrix.runtime }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set runtime variables
+        run: |
+          echo "HEALTH_PORT=$([[ ${{ matrix.runtime }} == 'lucian' ]] && echo 8001 || echo 8002)" >> $GITHUB_ENV
+          echo "HEALTH_PATH=/health" >> $GITHUB_ENV
+
+      - name: Log in to GHCR for read-only test image pull
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare CI compose override
         run: |
@@ -176,16 +221,21 @@ jobs:
 
   promote:
     name: Promote Release Images
-    needs: build-and-test
-    if: needs.build-and-test.result == 'success' && github.ref == 'refs/heads/main'
+    needs: integration-tests
+    if: >-
+      needs.integration-tests.result == 'success' &&
+      github.repository == 'mirrornode/MIRRORNODE-CORE-HUB' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      false
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         runtime: [lucian, osiris]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Set runtime variables
         id: vars
         run: |
@@ -200,53 +250,35 @@ jobs:
           docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REPO }}:${RELEASE_TAG}
 
   platform-dossier:
-    name: Emit Signed Platform Dossier & Update Index
+    name: Upload Platform Release Dossier
     needs: promote
-    if: needs.promote.result == 'success' && github.ref == 'refs/heads/main'
+    if: >-
+      needs.promote.result == 'success' &&
+      github.repository == 'mirrornode/MIRRORNODE-CORE-HUB' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create & sign unified platform dossier
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Create platform release dossier
         run: |
+          set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          DOSSIER="canon/dossiers/mirrornode-platform-release-${{ github.run_id }}.md"
+          DOSSIER="$RUNNER_TEMP/mirrornode-platform-release-${GITHUB_RUN_ID}.md"
           echo "## MIRRORNODE Platform Release" > "$DOSSIER"
-          echo "- run_id: ${{ github.run_id }}" >> "$DOSSIER"
-          echo "- commit: ${{ github.sha }}" >> "$DOSSIER"
+          echo "- run_id: ${GITHUB_RUN_ID}" >> "$DOSSIER"
+          echo "- commit: ${GITHUB_SHA}" >> "$DOSSIER"
           echo "- lucian_image: ghcr.io/${{ github.repository_owner }}/lucian:${{ env.IMAGE_TAG }}" >> "$DOSSIER"
           echo "- osiris_image: ghcr.io/${{ github.repository_owner }}/osiris:${{ env.IMAGE_TAG }}" >> "$DOSSIER"
           echo "- timestamp: $TIMESTAMP" >> "$DOSSIER"
-          echo "- status: success" >> "$DOSSIER"
           echo "" >> "$DOSSIER"
-          echo "Both runtimes released in sync. Full audit trail in artifacts." >> "$DOSSIER"
+          echo "Generated after a successful release path." >> "$DOSSIER"
+          echo "Review and authorize separately." >> "$DOSSIER"
 
-          if [[ -n "${GPG_PRIVATE_KEY:-}" ]]; then
-            echo "${GPG_PRIVATE_KEY}" | base64 --decode > /tmp/gpg.key
-            gpg --batch --import /tmp/gpg.key
-            echo "${GPG_PASSPHRASE}" > /tmp/gpg.pass
-            gpg --batch --yes --pinentry-mode loopback --passphrase-file /tmp/gpg.pass -o "${DOSSIER}.sig" --sign "$DOSSIER"
-            git add "$DOSSIER" "${DOSSIER}.sig"
-          else
-            git add "$DOSSIER"
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore(audit): platform release dossier for run ${{ github.run_id }}" || echo "No changes"
-          git push origin HEAD:${{ github.ref_name }}
-
-      - name: Update signed releases index
-        run: |
-          ./canon/scripts/index.sh --update-releases
-          ./canon/scripts/verify_integrity.sh
-          git add canon/index/releases.json canon/index/releases.json.sig || true
-          git commit -m "chore(index): update platform releases index" || true
-          git push
+      - name: Upload dossier artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mirrornode-platform-release-dossier
+          path: ${{ runner.temp }}/mirrornode-platform-release-*.md
+          retention-days: 7

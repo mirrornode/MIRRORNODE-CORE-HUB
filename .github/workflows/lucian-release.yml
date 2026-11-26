@@ -22,9 +22,13 @@ jobs:
   validate-release-surface:
     name: Validate Lucian Release Surface
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Verify current release boundary
         run: |
